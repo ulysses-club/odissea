@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4f02b71c-7756-473f-8eef-21d2d180abd3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ulysses_club.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-    </list>
+    <list default="true" id="4f02b71c-7756-473f-8eef-21d2d180abd3" name="Changes" comment="edd" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,11 +53,24 @@
       <option name="presentableId" value="Default" />
       <updated>1752146485480</updated>
       <workItem from="1752146486556" duration="206000" />
-      <workItem from="1752147112641" duration="1269000" />
+      <workItem from="1752147112641" duration="1837000" />
     </task>
+    <task id="LOCAL-00001" summary="edd">
+      <option name="closed" value="true" />
+      <created>1752150021317</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1752150021317</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="edd" />
+    <option name="LAST_COMMIT_MESSAGE" value="edd" />
   </component>
 </project>
