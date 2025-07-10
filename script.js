@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
             worksContainer.innerHTML = '<div class="loading-message">Загрузка архива работ...</div>';
             worksContainer.classList.add('loading');
 
-            const sheetId = '1a6EWO5ECaI1OveO4Gy7y9zH5LjFtlm8Alg9iSRP2heE';
+            const sheetId = '1KYU9mYAS5Wv6a9z-RImNxyP0n0Tpgf7BDRl2sNeSXmM';
             const sheetName = 'Video';
             const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
 
