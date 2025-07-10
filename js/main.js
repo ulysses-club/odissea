@@ -64,5 +64,5 @@ document.addEventListener('DOMContentLoaded', function () {
     loadFilmsFromGoogleSheets();
 
     // Автообновление каждую минуту (добавьте эту строку в самом конце)
-    setInterval(loadFilmsFromGoogleSheets, 60000); // 60000 мс = 1 минута
+    setInterval(loadFilmsFromGoogleSheets);
 });
