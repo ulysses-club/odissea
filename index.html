@@ -5,6 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кино-клуб "Одиссея"</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Добавляем стили для обработки загрузки */
+        .film-grid.loading {
+            opacity: 0.5;
+            position: relative;
+        }
+
+        .film-grid.loading::after {
+            content: "Загрузка фильмов...";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #333;
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: #d9534f;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #d9534f;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .retry-button {
+            background-color: #5bc0de;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -22,28 +58,39 @@
 
 <main>
     <section id="our-films" class="film-section">
-        <p>Мы — сборище киноманов, которые каждую неделю устраивают дебаты о фильмах. Нет, мы не смотрим кино вместе (это вам не сеанс в подвале), мы страстно его разбираем — с кофе, горячими мнениями и иногда драматичными оценками.</p>
+        <p>Мы — сборище киноманов, которые каждую неделю устраивают дебаты о фильмах. Нет, мы не смотрим кино вместе
+            (это вам не сеанс в подвале), мы страстно его разбираем — с кофе, горячими мнениями и иногда драматичными
+            оценками.</p>
     </section>
 
-    <div class="about-us" style="font-family: 'Arial', sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background-color: #f5e6ca; border-radius: 10px; border-left: 4px solid #e6af2e;">
+    <div class="about-us"
+         style="font-family: 'Arial', sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background-color: #f5e6ca; border-radius: 10px; border-left: 4px solid #e6af2e;">
         <h2 style="color: #0f1c2e; text-align: center; margin-bottom: 20px;">Как это работает?</h2>
 
         <ul style="padding-left: 20px; color: #333;">
-            <li style="margin-bottom: 10px;"><strong>Смотрите фильм дома</strong> (чтобы не мешать друг другу возмущаться вслух).</li>
-            <li style="margin-bottom: 10px;"><strong>Приходите в кофейню</strong> — обсуждаете, спорите, ставите оценки.</li>
-            <li style="margin-bottom: 20px;"><strong>Фильмы выбирает наш «диктатор»</strong> (но иногда он снисходит до ваших предложений).</li>
+            <li style="margin-bottom: 10px;"><strong>Смотрите фильм дома</strong> (чтобы не мешать друг другу
+                возмущаться вслух).
+            </li>
+            <li style="margin-bottom: 10px;"><strong>Приходите в кофейню</strong> — обсуждаете, спорите, ставите оценки.
+            </li>
+            <li style="margin-bottom: 20px;"><strong>Фильмы выбирает наш «диктатор»</strong> (но иногда он снисходит до
+                ваших предложений).
+            </li>
         </ul>
 
         <p style="background-color: #fff; padding: 15px; border-radius: 5px; font-weight: bold;">
-            <span style="color: #6d1a36;">Деньги?</span> Нет, только ваша любовь к кино (и, возможно, круассан для атмосферы).
+            <span style="color: #6d1a36;">Деньги?</span> Нет, только ваша любовь к кино (и, возможно, круассан для
+            атмосферы).
         </p>
 
         <p style="font-style: italic;">
-            <span style="color: #0f1c2e; font-weight: bold;">Как вступить?</span> Просто приходите — мы не секта, хотя после третьей встречи вы уже будете яростно защищать «Титаник» как артхаус.
+            <span style="color: #0f1c2e; font-weight: bold;">Как вступить?</span> Просто приходите — мы не секта, хотя
+            после третьей встречи вы уже будете яростно защищать «Титаник» как артхаус.
         </p>
 
         <div style="margin-top: 20px; padding: 10px; background-color: #0f1c2e; color: #e6af2e; border-radius: 5px;">
-            <p style="margin: 0;"><strong>P.S.</strong> В день рождения вам разрешат выбрать <em>любой</em> фильм — даже «Человека-паука» в 4K с философским разбором.</p>
+            <p style="margin: 0;"><strong>P.S.</strong> В день рождения вам разрешат выбрать <em>любой</em> фильм — даже
+                «Человека-паука» в 4K с философским разбором.</p>
         </div>
 
         <p style="text-align: center; margin-top: 25px; font-size: 1.2em; color: #6d1a36;">
@@ -90,25 +137,9 @@
             </div>
         </div>
         <h2 class="section-title">История обсуждения</h2>
-        <div class="film-grid">
-            <div class="film-card">
-                <img src="images/Jesus-Christ-Superstar.jpg" alt="Год производства: 1973" class="film-thumbnail">
-                <h3>Jesus Christ Superstar/Иисус Христос – суперзвезда</h3>
-                <p>Обсуждение 247 (05.07.2025)</p>
-                <div class="film-rating">★ ★ ★ ★ ★ ★ ★ ☆ ☆ ☆</div>
-            </div>
-            <div class="film-card">
-                <img src="images/The-Number-23.jpg" alt="Год производства: 2006" class="film-thumbnail">
-                <h3>The Number 23/Роковое число 23</h3>
-                <p>Обсуждение 246 (29.06.2025)</p>
-                <div class="film-rating">★ ★ ★ ★ ★ ★ ☆ ☆ ☆ ☆</div>
-            </div>
-            <div class="film-card">
-                <img src="images/There-Will-Be-Blood.jpg" alt="Год производства: 2007" class="film-thumbnail">
-                <h3>There Will Be Blood/Нефть</h3>
-                <p>Обсуждение 245 (22.06.2025)</p>
-                <div class="film-rating">★ ★ ★ ★ ★ ★ ★ ★ ★ ☆</div>
-            </div>
+        <div class="film-grid" id="films-container">
+            <!-- Фильмы будут загружаться сюда автоматически -->
+            <div class="loading-message">Загрузка списка фильмов...</div>
         </div>
     </section>
 
@@ -142,7 +173,7 @@
         <p style="color: #333; text-align: left;">
             P.S. Если не найдёшь — просто закажи пиццу. Мы обязательно откликнемся на запах.
         </p>
-        <a href="https://t.me/ваш_бот" class="telegram-button" target="_blank">
+        <a href="https://t.me/ulysses_club" class="telegram-button" target="_blank">
             <img src="images/telegram.png" alt="">
             Получать уведомления
         </a>
@@ -153,7 +184,113 @@
     <p>© 2025 Кино-клуб. Все права защищены. Объективностью здесь и не пахнет! (с)</p>
 </footer>
 
-<script src="js/main.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Модальное окно
+        const modal = document.getElementById('modal');
+        if (modal) {
+            const openModalBtn = document.getElementById('openModal');
+            const closeBtn = modal.querySelector('.close');
 
+            openModalBtn?.addEventListener('click', () => modal.style.display = 'block');
+            closeBtn?.addEventListener('click', () => modal.style.display = 'none');
+            window.addEventListener('click', (e) => e.target === modal && (modal.style.display = 'none'));
+        }
+
+        // Форма предложения фильма
+        const form = document.getElementById('film-suggestion-form');
+        const formThanks = document.getElementById('form-thanks');
+
+        if (form && formThanks) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                form.style.display = 'none';
+                formThanks.style.display = 'block';
+                form.reset();
+
+                setTimeout(() => {
+                    form.style.display = 'block';
+                    formThanks.style.display = 'none';
+                }, 3000);
+            });
+        }
+
+        // ===== Загрузка фильмов из Google Sheets =====
+        async function loadFilmsFromGoogleSheets() {
+            const filmsContainer = document.getElementById('films-container');
+            if (!filmsContainer) return;
+
+            try {
+                filmsContainer.innerHTML = '<div class="loading-message">Загрузка списка фильмов...</div>';
+
+                const sheetId = '1a6EWO5ECaI1OveO4Gy7y9zH5LjFtlm8Alg9iSRP2heE';
+                const gid = '0'; // Используем gid вместо названия листа
+                const url = `https://opensheet.elk.sh/${sheetId}/${gid}`;
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Ошибка загрузки данных');
+
+                const data = await response.json();
+
+                // Преобразуем объект в массив, если данные пришли в формате {0: {...}, 1: {...}}
+                const filmsArray = Array.isArray(data) ? data : Object.values(data);
+
+                if (filmsArray.length === 0) {
+                    filmsContainer.innerHTML = '<p>Нет данных о фильмах</p>';
+                    return;
+                }
+
+                let html = '';
+                filmsArray.forEach(film => {
+                    if (!film || !film['Название']) return;
+
+                    const rating = parseInt(film['Рейтинг']) || 0;
+                    const stars = '★'.repeat(Math.min(10, Math.max(0, rating)));
+                    const emptyStars = '☆'.repeat(10 - Math.min(10, Math.max(0, rating)));
+
+                    html += `
+                <div class="film-card">
+                    <img src="${film['Постер URL'] || 'images/default-poster.jpg'}"
+                         alt="${film['Название']} (${film['Год']})"
+                         class="film-thumbnail"
+                         onerror="this.src='images/default-poster.jpg'">
+                    <h3>${film['Название']} (${film['Год']})</h3>
+                    <p>Обсуждение ${film['Номер обсуждения'] || 'N/A'} (${film['Дата'] || 'дата неизвестна'})</p>
+                    <div class="film-rating">${stars}${emptyStars}</div>
+                </div>
+                `;
+                });
+
+                filmsContainer.innerHTML = html || '<p>Нет данных о фильмах</p>';
+
+            } catch (error) {
+                console.error('Ошибка загрузки фильмов:', error);
+                filmsContainer.innerHTML = `
+                <div class="error-message">
+                    <p>Не удалось загрузить список фильмов</p>
+                    <p>${error.message}</p>
+                    <button class="retry-button" onclick="loadFilmsFromGoogleSheets()">Попробовать снова</button>
+                </div>
+            `;
+            }
+        }
+
+        // Загружаем фильмы при загрузке страницы
+        loadFilmsFromGoogleSheets();
+
+        // Автообновление каждые 5 минут
+        let refreshInterval = setInterval(loadFilmsFromGoogleSheets, 300000);
+
+        // Очистка интервала при скрытии страницы (оптимизация)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearInterval(refreshInterval);
+            } else {
+                loadFilmsFromGoogleSheets();
+                refreshInterval = setInterval(loadFilmsFromGoogleSheets, 300000);
+            }
+        });
+    });
+</script>
 </body>
 </html>
