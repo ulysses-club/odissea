@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const sheetId = '1a6EWO5ECaI1OveO4Gy7y9zH5LjFtlm8Alg9iSRP2heE'; // ID таблицы
             const sheetName = 'Films'; // Название листа (gid=0)
+            const gid = '0'; // Из URL: ...edit#gid=0
             const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
 
             const response = await fetch(url);
