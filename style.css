@@ -72,63 +72,80 @@ main {
     margin-bottom: 40px;
 }
 
+/* Добавьте этот стиль в ваш CSS файл */
 .about-us {
-    font-family: 'Arial', sans-serif;
-    max-width: 700px;
-    margin: 0 auto 40px;
-    padding: 20px;
-    background-color: #f5e6ca;
+    background-color: white;
+    padding: 30px;
     border-radius: 10px;
-    border-left: 4px solid var(--gold);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    margin: 40px auto;
+    max-width: 800px;
+    border-left: 5px solid var(--gold);
 }
 
 .about-us h2 {
     color: var(--dark-blue);
-    text-align: center;
     margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.8rem;
 }
 
 .about-us ul {
+    margin: 20px 0;
     padding-left: 20px;
-    color: var(--text-dark);
-    margin-bottom: 20px;
 }
 
 .about-us li {
-    margin-bottom: 10px;
-    list-style-position: inside;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.about-us li strong {
+    color: var(--soft-red);
 }
 
 .highlight {
-    background-color: white;
+    background-color: var(--cream);
     padding: 15px;
     border-radius: 5px;
-    font-weight: bold;
-    margin-bottom: 20px;
+    margin: 20px 0;
+    border-left: 3px solid var(--soft-red);
 }
 
 .highlight span {
+    font-weight: bold;
     color: var(--soft-red);
 }
 
 .italic {
     font-style: italic;
-    margin-bottom: 20px;
+    margin: 20px 0;
+    color: var(--text-dark);
+}
+
+.italic span {
+    font-weight: bold;
+    color: var(--dark-blue);
 }
 
 .ps-note {
-    margin-top: 20px;
-    padding: 10px;
     background-color: var(--dark-blue);
     color: var(--gold);
+    padding: 15px;
     border-radius: 5px;
+    margin: 20px 0;
+}
+
+.ps-note p {
+    margin: 0;
 }
 
 .cta {
     text-align: center;
-    margin-top: 25px;
-    font-size: 1.2em;
+    font-size: 1.2rem;
+    margin: 30px 0 20px;
     color: var(--soft-red);
+    font-weight: bold;
 }
 
 .button-container {
