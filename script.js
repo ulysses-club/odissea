@@ -160,4 +160,3 @@ document.addEventListener('DOMContentLoaded', function () {
     window.loadFilmsFromGoogleSheets = loadFilmsFromGoogleSheets;
     window.loadWorksFromGoogleSheets = loadWorksFromGoogleSheets;
 });
-
