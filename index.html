@@ -5,15 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кино-клуб "Одиссея" | Обсуждение фильмов в Севастополе</title>
     <meta name="description" content="Кино-клуб для настоящих ценителей киноискусства. Еженедельные встречи, горячие обсуждения и анализ фильмов.">
+
+    <!-- Favicon и мета-теги для соцсетей -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta property="og:title" content="Кино-клуб 'Одиссея' | Обсуждение фильмов в Севастополе">
+    <meta property="og:description" content="Кино-клуб для настоящих ценителей киноискусства. Еженедельные встречи, горячие обсуждения и анализ фильмов.">
+    <meta property="og:image" content="images/social-preview.jpg">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Предзагрузка критических ресурсов -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <a class="skip-link visually-hidden" href="#main-content">Перейти к основному содержанию</a>
+
     <header class="header-container" role="banner">
         <div class="logo" aria-label="Логотип кино-клуба Одиссея">
-            <img src="" alt="Кино-клуб Одиссея" width="40" height="40">
+            <img src="images/logo.svg" alt="Кино-клуб Одиссея" width="40" height="40" loading="lazy">
         </div>
         <nav class="main-nav" aria-label="Основное меню">
-            <ul role="menubar">
+            <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="main-menu">
+                <span class="visually-hidden">Меню</span>
+                <span class="menu-icon"></span>
+            </button>
+            <ul id="main-menu" role="menubar">
                 <li role="menuitem"><a href="#our-films">Обсуждения</a></li>
                 <li role="menuitem"><a href="#film-archive">Архив</a></li>
                 <li role="menuitem"><a href="#suggest-film">Предложить фильм</a></li>
@@ -21,9 +41,8 @@
         </nav>
     </header>
 
-    <main role="main">
+    <main id="main-content" role="main">
         <section id="our-films" class="film-section" aria-labelledby="films-heading">
-
             <section id="top-lists" class="film-section" aria-labelledby="top-lists-heading">
                 <h2 id="top-lists-heading" class="section-title">Наши топы</h2>
 
@@ -50,9 +69,8 @@
                     </article>
                 </div>
             </section>
-            <h1 id="films-heading" class="visually-hidden">О нашем кино-клубе</h1>
 
-            <p>Мы — сборище киноманов, которые каждую неделю устраивают дебаты о фильмах. Нет, мы не смотрим кино вместе (это вам не сеанс в подвале), мы страстно его разбираем — с кофе, горячими мнениями и иногда драматичными оценками.</p>
+            <h1 id="films-heading" class="visually-hidden">О нашем кино-клубе</h1>
 
             <article class="about-us">
                 <h2>Как это работает?</h2>
@@ -97,18 +115,26 @@
         <section id="suggest-film" class="film-section" aria-labelledby="suggest-heading">
             <h2 id="suggest-heading" class="section-title">Предложи фильм</h2>
             <form id="film-suggestion-form" class="suggestion-form" aria-label="Форма предложения фильма">
-                <label for="film-title" class="visually-hidden">Название фильма</label>
-                <input type="text" id="film-title" placeholder="Название фильма" required>
+                <div class="form-group">
+                    <label for="film-title">Название фильма</label>
+                    <input type="text" id="film-title" placeholder="Название фильма" required aria-required="true">
+                </div>
 
-                <label for="film-year" class="visually-hidden">Год выпуска</label>
-                <input type="text" id="film-year" placeholder="Год" required>
+                <div class="form-group">
+                    <label for="film-year">Год выпуска</label>
+                    <input type="number" id="film-year" placeholder="Год" min="1888" max="2025" required aria-required="true">
+                </div>
 
-                <label for="film-reason" class="visually-hidden">Причина обсуждения</label>
-                <textarea id="film-reason" placeholder="Почему стоит обсудить?"></textarea>
+                <div class="form-group">
+                    <label for="film-reason">Причина обсуждения</label>
+                    <textarea id="film-reason" placeholder="Почему стоит обсудить?" rows="4"></textarea>
+                </div>
 
-                <button type="submit" class="button">Отправить</button>
+                <div class="form-actions">
+                    <button type="submit" class="button">Отправить</button>
+                </div>
             </form>
-            <div id="form-thanks" role="alert">
+            <div id="form-thanks" role="alert" aria-live="polite">
                 <p>Спасибо! Мы рассмотрим ваш вариант.</p>
             </div>
         </section>
@@ -132,16 +158,35 @@
             <p class="modal-ps">P.S. Если не найдёшь — просто закажи пиццу. Мы обязательно откликнемся на запах.</p>
 
             <a href="https://t.me/Odyssey_Cinema_Club_bot" class="telegram-button" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="" width="20" height="20">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="" width="20" height="20" loading="lazy">
                 Получать уведомления
             </a>
         </div>
     </dialog>
 
     <footer role="contentinfo">
-        <p>© 2025 Кино-клуб. Все права защищены. Объективностью здесь и не пахнет! (с)</p>
+        <div class="footer-content">
+            <p>© 2025 Кино-клуб. Все права защищены. Объективностью здесь и не пахнет! (с)</p>
+            <ul class="footer-links">
+                <li><a href="/privacy">Политика конфиденциальности</a></li>
+                <li><a href="/terms">Условия использования</a></li>
+                <li><a href="mailto:contact@kinoclub.ru">Контакты</a></li>
+            </ul>
+        </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- Загрузка скриптов с учетом производительности -->
+    <script src="script.js" defer></script>
+
+    <!-- Резервный вариант для старых браузеров -->
+    <script>
+        // Проверка поддержки современных возможностей
+        if (!window.Promise || !window.fetch || !window.customElements) {
+            // Загрузка полифиллов для старых браузеров
+            var script = document.createElement('script');
+            script.src = 'https://polyfill.io/v3/polyfill.min.js?features=Promise,fetch,Element.prototype.classList,NodeList.prototype.forEach';
+            document.head.appendChild(script);
+        }
+    </script>
 </body>
 </html>
