@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f02b71c-7756-473f-8eef-21d2d180abd3" name="Changes" comment="update">
-      <change beforePath="$PROJECT_DIR$/ulysses-bot/bot.log" beforeDir="false" afterPath="$PROJECT_DIR$/ulysses-bot/bot.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ulysses-bot/history.json" beforeDir="false" afterPath="$PROJECT_DIR$/ulysses-bot/history.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ulysses-bot/voting.json" beforeDir="false" afterPath="$PROJECT_DIR$/ulysses-bot/voting.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

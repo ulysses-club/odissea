@@ -1,162 +1,243 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Модальное окно
-    const modal = document.getElementById('modal');
-    const openModalBtn = document.getElementById('openModal');
-    const closeBtn = document.querySelector('.close');
+document.addEventListener('DOMContentLoaded', () => {
+    // Конфигурация приложения
+    const CONFIG = {
+        sheets: {
+            films: {
+                id: '1a6EWO5ECaI1OveO4Gy7y9zH5LjFtlm8Alg9iSRP2heE',
+                name: 'Films'
+            },
+            works: {
+                id: '1KYU9mYAS5Wv6a9z-RImNxyP0n0Tpgf7BDRl2sNeSXmM',
+                name: 'Video'
+            }
+        },
+        defaults: {
+            poster: 'images/default-poster.jpg',
+            ratingPrecision: 1,
+            maxRating: 10
+        },
+        selectors: {
+            modal: '#modal',
+            openModal: '#openModal',
+            closeModal: '.close',
+            filmForm: '#film-suggestion-form',
+            formThanks: '#form-thanks',
+            filmsContainer: '#films-container',
+            worksContainer: '#works-container'
+        },
+        messages: {
+            loading: 'Загрузка данных...',
+            noData: 'Нет данных',
+            noFilms: 'Нет данных о фильмах',
+            noWorks: 'Нет данных о работах',
+            connectionError: 'Проблема с подключением к интернету',
+            genericError: 'Не удалось загрузить данные',
+            retry: 'Попробовать снова'
+        }
+    };
 
-    if (modal && openModalBtn && closeBtn) {
-        openModalBtn.addEventListener('click', () => modal.style.display = 'block');
-        closeBtn.addEventListener('click', () => modal.style.display = 'none');
-        window.addEventListener('click', (e) => e.target === modal && (modal.style.display = 'none'));
-    }
+    // DOM элементы
+    const DOM = {
+        modal: document.querySelector(CONFIG.selectors.modal),
+        openModalBtn: document.querySelector(CONFIG.selectors.openModal),
+        closeModalBtn: document.querySelector(CONFIG.selectors.closeModal),
+        filmForm: document.querySelector(CONFIG.selectors.filmForm),
+        formThanks: document.querySelector(CONFIG.selectors.formThanks),
+        filmsContainer: document.querySelector(CONFIG.selectors.filmsContainer),
+        worksContainer: document.querySelector(CONFIG.selectors.worksContainer)
+    };
 
-    // Форма предложения фильма
-    const form = document.getElementById('film-suggestion-form');
-    const formThanks = document.getElementById('form-thanks');
+    // Инициализация модального окна
+    const initModal = () => {
+        if (!DOM.modal || !DOM.openModalBtn || !DOM.closeModalBtn) return;
 
-    if (form && formThanks) {
-        form.addEventListener('submit', function (e) {
+        const showModal = () => DOM.modal.style.display = 'block';
+        const hideModal = () => DOM.modal.style.display = 'none';
+        const handleOutsideClick = (e) => e.target === DOM.modal && hideModal();
+
+        DOM.openModalBtn.addEventListener('click', showModal);
+        DOM.closeModalBtn.addEventListener('click', hideModal);
+        window.addEventListener('click', handleOutsideClick);
+    };
+
+    // Обработка формы предложения фильма
+    const initFilmForm = () => {
+        if (!DOM.filmForm || !DOM.formThanks) return;
+
+        const handleSubmit = (e) => {
             e.preventDefault();
-            form.style.display = 'none';
-            formThanks.style.display = 'block';
-            form.reset();
+
+            DOM.filmForm.style.display = 'none';
+            DOM.formThanks.style.display = 'block';
+            DOM.filmForm.reset();
 
             setTimeout(() => {
-                form.style.display = 'block';
-                formThanks.style.display = 'none';
+                DOM.filmForm.style.display = 'block';
+                DOM.formThanks.style.display = 'none';
             }, 3000);
-        });
-    }
+        };
 
-    // ===== Загрузка фильмов из Google Sheets =====
-    async function loadFilmsFromGoogleSheets() {
-        const filmsContainer = document.getElementById('films-container');
-        if (!filmsContainer) return;
+        DOM.filmForm.addEventListener('submit', handleSubmit);
+    };
 
-        try {
-            filmsContainer.innerHTML = '<div class="loading-message">Загрузка списка фильмов...</div>';
-            filmsContainer.classList.add('loading');
+    // Вспомогательные функции
+    const Utils = {
+        showLoading: (container) => {
+            container.innerHTML = `<div class="loading-message">${CONFIG.messages.loading}</div>`;
+            container.classList.add('loading');
+        },
 
-            const sheetId = '1a6EWO5ECaI1OveO4Gy7y9zH5LjFtlm8Alg9iSRP2heE';
-            const sheetName = 'Films';
+        showError: (container, error, retryFunction) => {
+            console.error('Ошибка загрузки:', error);
+
+            const message = error.message.includes('Failed to fetch')
+                ? CONFIG.messages.connectionError
+                : error.message || CONFIG.messages.genericError;
+
+            container.innerHTML = `
+                <div class="error-message">
+                    <p>${CONFIG.messages.genericError}</p>
+                    <p>${message}</p>
+                    <button class="retry-button" onclick="${retryFunction}()">
+                        ${CONFIG.messages.retry}
+                    </button>
+                </div>
+            `;
+            container.classList.remove('loading');
+        },
+
+        fetchSheetData: async (sheetId, sheetName) => {
             const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
-
             const response = await fetch(url);
-            if (!response.ok) throw new Error(`Ошибка HTTP: ${response.status}`);
+
+            if (!response.ok) {
+                throw new Error(`Ошибка HTTP: ${response.status}`);
+            }
 
             const data = await response.json();
 
-            if (!data || data.length === 0) {
-                throw new Error('Таблица с фильмами не содержит данных');
+            if (!data?.length) {
+                throw new Error(CONFIG.messages.noData);
             }
 
-            let html = '';
-            data.forEach(film => {
-                if (!film || !film['Название']) return;
+            return data;
+        },
 
-                const rating = parseFloat(film['Рейтинг']) || 0;
-                const fullStars = Math.floor(rating);
-                const hasHalfStar = rating % 1 >= 0.5;
-                const emptyStars = 10 - fullStars - (hasHalfStar ? 1 : 0);
+        createRatingStars: (rating) => {
+            const num = parseFloat(rating) || 0;
+            const clamped = Math.min(Math.max(num, 0), CONFIG.maxRating);
+            const full = Math.floor(clamped);
+            const half = clamped % 1 >= 0.5 ? 1 : 0;
 
-                const stars =
-                    '★'.repeat(fullStars) +
-                    (hasHalfStar ? '½' : '') +
-                    '☆'.repeat(emptyStars);
+            return '★'.repeat(full) +
+                   (half ? '½' : '') +
+                   '☆'.repeat(CONFIG.maxRating - full - half);
+        }
+    };
 
-                html += `
-                <div class="film-card">
-                    <img src="${film['Постер URL'] || 'images/default-poster.jpg'}"
+    // Функции рендеринга
+    const Render = {
+        films: (films, container) => {
+            if (!films.length) {
+                container.innerHTML = `<p>${CONFIG.messages.noFilms}</p>`;
+                return;
+            }
+
+            container.innerHTML = films.map(film => `
+                <div class="film-card" role="article">
+                    <img src="${film['Постер URL'] || CONFIG.defaults.poster}"
                          alt="${film['Название']} (${film['Год']})"
                          class="film-thumbnail"
-                         onerror="this.src='images/default-poster.jpg'">
+                         onerror="this.src='${CONFIG.defaults.poster}'"
+                         loading="lazy">
                     <h3>${film['Название']} (${film['Год']})</h3>
                     <p>Обсуждение ${film['Номер обсуждения'] || 'N/A'} (${film['Дата'] || 'дата неизвестна'})</p>
-                    <div class="film-rating" title="Рейтинг: ${rating.toFixed(1)}">${stars}</div>
+                    <div class="film-rating"
+                         title="Рейтинг: ${(parseFloat(film['Рейтинг']) || 0).toFixed(CONFIG.defaults.ratingPrecision)}">
+                        ${Utils.createRatingStars(film['Рейтинг'])}
+                    </div>
                 </div>
-                `;
-            });
+            `).join('');
+        },
 
-            filmsContainer.innerHTML = html || '<p>Нет данных о фильмах</p>';
-            filmsContainer.classList.remove('loading');
-
-        } catch (error) {
-            console.error('Ошибка загрузки фильмов:', error);
-            filmsContainer.innerHTML = `
-            <div class="error-message">
-                <p>Не удалось загрузить список фильмов</p>
-                <p>${error.message.includes('Failed to fetch') ? 'Проблема с подключением к интернету' : error.message}</p>
-                <button class="retry-button" onclick="loadFilmsFromGoogleSheets()">Попробовать снова</button>
-            </div>
-            `;
-            filmsContainer.classList.remove('loading');
-        }
-    }
-
-    // ===== Загрузка архива работ =====
-    async function loadWorksFromGoogleSheets() {
-        const worksContainer = document.getElementById('works-container');
-        if (!worksContainer) return;
-
-        try {
-            worksContainer.innerHTML = '<div class="loading-message">Загрузка архива работ...</div>';
-            worksContainer.classList.add('loading');
-
-            const sheetId = '1KYU9mYAS5Wv6a9z-RImNxyP0n0Tpgf7BDRl2sNeSXmM';
-            const sheetName = 'Video';
-            const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
-
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`Ошибка HTTP: ${response.status}`);
-
-            const data = await response.json();
-
-            if (!data || data.length === 0) {
-                throw new Error('Таблица с работами не содержит данных');
+        works: (works, container) => {
+            if (!works.length) {
+                container.innerHTML = `<p>${CONFIG.messages.noWorks}</p>`;
+                return;
             }
 
-            let html = '';
-            data.forEach(work => {
-                if (!work || !work['Название']) return;
-
-                html += `
-                <div class="film-poster">
-                    <a href="${work['Ссылка на видео']}" target="_blank" class="video-link">
-                        <img src="${work['URL постера'] || 'images/default-poster.jpg'}"
+            container.innerHTML = works.map(work => `
+                <div class="film-poster" role="article">
+                    <a href="${work['Ссылка на видео']}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="video-link">
+                        <img src="${work['URL постера'] || CONFIG.defaults.poster}"
                              alt="${work['Название']} (${work['Год']})"
                              class="poster-image"
-                             onerror="this.src='images/default-poster.jpg'">
+                             onerror="this.src='${CONFIG.defaults.poster}'"
+                             loading="lazy">
                         <div class="play-overlay">
-                            <div class="play-button">▶</div>
+                            <div class="play-button" aria-hidden="true">▶</div>
                             <p class="watch-text">${work['Тип'] || 'Работа'}: "${work['Название']}" (${work['Год']})</p>
                         </div>
                     </a>
                     ${work['Описание'] ? `<p class="work-description">${work['Описание']}</p>` : ''}
                 </div>
-                `;
-            });
-
-            worksContainer.innerHTML = html || '<p>Нет данных о работах</p>';
-            worksContainer.classList.remove('loading');
-
-        } catch (error) {
-            console.error('Ошибка загрузки архива работ:', error);
-            worksContainer.innerHTML = `
-            <div class="error-message">
-                <p>Не удалось загрузить архив работ</p>
-                <p>${error.message.includes('Failed to fetch') ? 'Проблема с подключением к интернету' : error.message}</p>
-                <button class="retry-button" onclick="loadWorksFromGoogleSheets()">Попробовать снова</button>
-            </div>
-            `;
-            worksContainer.classList.remove('loading');
+            `).join('');
         }
-    }
+    };
 
-    // Загружаем данные при загрузке страницы
-    loadFilmsFromGoogleSheets();
-    loadWorksFromGoogleSheets();
+    // Функции загрузки данных
+    const DataLoader = {
+        films: async () => {
+            if (!DOM.filmsContainer) return;
 
-    // Делаем функции доступными глобально для кнопок повтора
-    window.loadFilmsFromGoogleSheets = loadFilmsFromGoogleSheets;
-    window.loadWorksFromGoogleSheets = loadWorksFromGoogleSheets;
+            try {
+                Utils.showLoading(DOM.filmsContainer);
+                const data = await Utils.fetchSheetData(
+                    CONFIG.sheets.films.id,
+                    CONFIG.sheets.films.name
+                );
+                Render.films(data, DOM.filmsContainer);
+            } catch (error) {
+                Utils.showError(DOM.filmsContainer, error, 'DataLoader.films');
+            } finally {
+                DOM.filmsContainer.classList.remove('loading');
+            }
+        },
+
+        works: async () => {
+            if (!DOM.worksContainer) return;
+
+            try {
+                Utils.showLoading(DOM.worksContainer);
+                const data = await Utils.fetchSheetData(
+                    CONFIG.sheets.works.id,
+                    CONFIG.sheets.works.name
+                );
+                Render.works(data, DOM.worksContainer);
+            } catch (error) {
+                Utils.showError(DOM.worksContainer, error, 'DataLoader.works');
+            } finally {
+                DOM.worksContainer.classList.remove('loading');
+            }
+        }
+    };
+
+    // Публичный API
+    window.App = {
+        reloadFilms: DataLoader.films,
+        reloadWorks: DataLoader.works
+    };
+
+    // Инициализация приложения
+    const initApp = () => {
+        initModal();
+        initFilmForm();
+        DataLoader.films();
+        DataLoader.works();
+    };
+
+    initApp();
 });

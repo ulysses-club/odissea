@@ -3,109 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кино-клуб | "Одиссея"</title>
+    <title>Кино-клуб "Одиссея" | Обсуждение фильмов в Севастополе</title>
+    <meta name="description" content="Кино-клуб для настоящих ценителей киноискусства. Еженедельные встречи, горячие обсуждения и анализ фильмов.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <h1>Кино-клуб "Одиссея"</h1>
-            <nav>
-                <ul>
-                    <li><a href="#our-films">Обсуждения</a></li>
-                    <li><a href="#film-archive">Архив</a></li>
-                    <li><a href="#suggest-film">Предложить фильм</a></li>
-                </ul>
-            </nav>
+    <header class="header-container" role="banner">
+        <div class="logo" aria-label="Логотип кино-клуба Одиссея">
+            <img src="" alt="Кино-клуб Одиссея" width="40" height="40">
         </div>
+        <nav class="main-nav" aria-label="Основное меню">
+            <ul role="menubar">
+                <li role="menuitem"><a href="#our-films">Обсуждения</a></li>
+                <li role="menuitem"><a href="#film-archive">Архив</a></li>
+                <li role="menuitem"><a href="#suggest-film">Предложить фильм</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <main>
-        <section id="our-films" class="film-section">
-            <p>Мы — сборище киноманов, которые каждую неделю устраивают дебаты о фильмах. Нет, мы не смотрим кино вместе
-                (это вам не сеанс в подвале), мы страстно его разбираем — с кофе, горячими мнениями и иногда драматичными
-                оценками.</p>
+    <main role="main">
+        <section id="our-films" class="film-section" aria-labelledby="films-heading">
+            <h1 id="films-heading" class="visually-hidden">О нашем кино-клубе</h1>
+            <p>Мы — сборище киноманов, которые каждую неделю устраивают дебаты о фильмах. Нет, мы не смотрим кино вместе (это вам не сеанс в подвале), мы страстно его разбираем — с кофе, горячими мнениями и иногда драматичными оценками.</p>
+
+            <article class="about-us">
+                <h2>Как это работает?</h2>
+                <ul>
+                    <li><strong>Смотрите фильм дома</strong> (чтобы не мешать друг другу возмущаться вслух)</li>
+                    <li><strong>Приходите в кофейню</strong> — обсуждаете, спорите, ставите оценки</li>
+                    <li><strong>Фильмы выбирает наш «диктатор»</strong> (но иногда он снисходит до ваших предложений)</li>
+                </ul>
+
+                <aside class="highlight" aria-label="Важная информация">
+                    <p><span>Деньги?</span> Нет, только ваша любовь к кино (и, возможно, круассан для атмосферы)</p>
+                </aside>
+
+                <blockquote class="italic" aria-label="Как вступить">
+                    <p><span>Как вступить?</span> Просто приходите — мы не секта, хотя после третьей встречи вы уже будете яростно защищать «Титаник» как артхаус</p>
+                </blockquote>
+
+                <div class="ps-note" role="note">
+                    <p><strong>P.S.</strong> В день рождения вам разрешат выбрать <em>любой</em> фильм — даже «Человека-паука» в 4K с философским разбором</p>
+                </div>
+
+                <p class="cta" role="alert"><strong>🎬Давайте жевать попкорн и разбирать кино на молекулы!🍿</strong></p>
+
+                <div class="button-container">
+                    <button id="openModal" class="button" aria-haspopup="dialog">Найти нас</button>
+                </div>
+            </article>
         </section>
 
-        <div class="about-us">
-            <h2>Как это работает?</h2>
-            <ul>
-                <li><strong>Смотрите фильм дома</strong> (чтобы не мешать друг другу возмущаться вслух).</li>
-                <li><strong>Приходите в кофейню</strong> — обсуждаете, спорите, ставите оценки.</li>
-                <li><strong>Фильмы выбирает наш «диктатор»</strong> (но иногда он снисходит до ваших предложений).</li>
-            </ul>
-
-            <p class="highlight">
-                <span>Деньги?</span> Нет, только ваша любовь к кино (и, возможно, круассан для атмосферы).
-            </p>
-
-            <p class="italic">
-                <span>Как вступить?</span> Просто приходите — мы не секта, хотя после третьей встречи вы уже будете яростно защищать «Титаник» как артхаус.
-            </p>
-
-            <div class="ps-note">
-                <p><strong>P.S.</strong> В день рождения вам разрешат выбрать <em>любой</em> фильм — даже «Человека-паука» в 4K с философским разбором.</p>
-            </div>
-
-            <p class="cta">
-                <strong>🎬Давайте жевать попкорн и разбирать кино на молекулы!🍿</strong>
-            </p>
-
-            <div class="button-container">
-                <button id="openModal" class="button">Найти нас</button>
-            </div>
-        </div>
-
-        <section id="film-archive" class="film-section">
-            <h2 class="section-title">Архив наших работ</h2>
-            <div class="video-posters-container" id="works-container">
+        <section id="film-archive" class="film-section" aria-labelledby="archive-heading">
+            <h2 id="archive-heading" class="section-title">Архив наших работ</h2>
+            <div id="works-container" class="video-posters-container" aria-live="polite">
                 <div class="loading-message">Загрузка архива работ...</div>
             </div>
 
             <h2 class="section-title">История обсуждения</h2>
-            <div class="film-grid" id="films-container">
+            <div id="films-container" class="film-grid" aria-live="polite">
                 <div class="loading-message">Загрузка списка фильмов...</div>
             </div>
         </section>
 
-        <section id="suggest-film" class="film-section">
-            <h2 class="section-title">Предложи фильм</h2>
-            <form id="film-suggestion-form" class="suggestion-form">
-                <input type="text" placeholder="Название фильма" required>
-                <input type="text" placeholder="Год" required>
-                <textarea placeholder="Почему стоит обсудить?"></textarea>
+        <section id="suggest-film" class="film-section" aria-labelledby="suggest-heading">
+            <h2 id="suggest-heading" class="section-title">Предложи фильм</h2>
+            <form id="film-suggestion-form" class="suggestion-form" aria-label="Форма предложения фильма">
+                <label for="film-title" class="visually-hidden">Название фильма</label>
+                <input type="text" id="film-title" placeholder="Название фильма" required>
+
+                <label for="film-year" class="visually-hidden">Год выпуска</label>
+                <input type="text" id="film-year" placeholder="Год" required>
+
+                <label for="film-reason" class="visually-hidden">Причина обсуждения</label>
+                <textarea id="film-reason" placeholder="Почему стоит обсудить?"></textarea>
+
                 <button type="submit" class="button">Отправить</button>
             </form>
-            <div id="form-thanks">
+            <div id="form-thanks" role="alert">
                 <p>Спасибо! Мы рассмотрим ваш вариант.</p>
             </div>
         </section>
     </main>
 
-    <div id="modal" class="modal">
+    <dialog id="modal" class="modal" aria-labelledby="modal-heading">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Как до нас добраться?</h2>
-            <p class="modal-intro">
-                Мы живём где-то между мечтами и реальностью. Но если серьёзно...
-            </p>
-            <ul class="contact-info">
-                <li><strong>📍 Место обсуждения:</strong> г. Севастополь, ул. Шмидта, 12. Кофейня "Том Сойер"</li>
-                <li><strong>📞 Телефон для связи:</strong> +79787363212</li>
-                <li><strong>📱 VK:</strong> <a href="https://vk.com/Odyssey_Cinema_Club_bot" target="_blank">Наша группа ВК</a></li>
-                <li><strong>📢 Telegram:</strong> <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank">Наш бот</a></li>
-            </ul>
-            <p class="modal-ps">
-                P.S. Если не найдёшь — просто закажи пиццу. Мы обязательно откликнемся на запах.
-            </p>
-            <a href="https://t.me/Odyssey_Cinema_Club_bot" class="telegram-button" target="_blank">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" width="20">
+            <button class="close" aria-label="Закрыть модальное окно">&times;</button>
+            <h2 id="modal-heading">Как до нас добраться?</h2>
+            <p class="modal-intro">Мы живём где-то между мечтами и реальностью. Но если серьёзно...</p>
+
+            <address>
+                <ul class="contact-info">
+                    <li><strong>📍 Место обсуждения:</strong> г. Севастополь, ул. Шмидта, 12. Кофейня "Том Сойер"</li>
+                    <li><strong>📞 Телефон для связи:</strong> <a href="tel:+79787363212">+79787363212</a></li>
+                    <li><strong>📱 VK:</strong> <a href="https://vk.com/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer">Наша группа ВК</a></li>
+                    <li><strong>📢 Telegram:</strong> <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer">Наш бот</a></li>
+                </ul>
+            </address>
+
+            <p class="modal-ps">P.S. Если не найдёшь — просто закажи пиццу. Мы обязательно откликнемся на запах.</p>
+
+            <a href="https://t.me/Odyssey_Cinema_Club_bot" class="telegram-button" target="_blank" rel="noopener noreferrer">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="" width="20" height="20">
                 Получать уведомления
             </a>
         </div>
-    </div>
+    </dialog>
 
-    <footer>
+    <footer role="contentinfo">
         <p>© 2025 Кино-клуб. Все права защищены. Объективностью здесь и не пахнет! (с)</p>
     </footer>
 
