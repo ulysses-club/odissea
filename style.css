@@ -1,5 +1,5 @@
 :root {
-    /* Colors */
+    /* Цвета */
     --dark-blue: #0F1C2E;
     --gold: #E6AF2E;
     --cream: #F5E6CA;
@@ -16,7 +16,7 @@
     --info-dark-blue: #4aa8c4;
     --error-red: #d9534f;
 
-    /* Spacing */
+    /* Отступы */
     --space-xs: 5px;
     --space-sm: 10px;
     --space-md: 15px;
@@ -25,7 +25,7 @@
     --space-xxl: 30px;
     --space-xxxl: 40px;
 
-    /* Font sizes */
+    /* Размеры шрифтов */
     --text-xs: 0.9rem;
     --text-sm: 1rem;
     --text-md: 1.2rem;
@@ -33,18 +33,18 @@
     --text-xl: 1.8rem;
     --text-xxl: 2rem;
 
-    /* Borders */
+    /* Скругления */
     --radius-sm: 4px;
     --radius-md: 5px;
     --radius-lg: 8px;
     --radius-xl: 10px;
 
-    /* Shadows */
+    /* Тени */
     --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 3px 10px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-    /* Transitions */
+    /* Анимации */
     --transition-fast: 0.3s;
     --transition-medium: 0.4s;
     --transition-slow: 0.5s;
@@ -52,7 +52,7 @@
 
 * {
     box-sizing: border-box;
-    margin: 10;
+    margin: 0;
     padding: 0;
 }
 
@@ -74,22 +74,16 @@ header {
     box-shadow: var(--shadow-sm);
     z-index: 1000;
     padding: var(--space-lg) 0;
-    display: flex;
-    justify-content: center; /* Центрируем содержимое по горизонтали */
 }
 
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%; /* Теперь на всю ширину header */
-    max-width: 1200px; /* Максимальная ширина содержимого */
-    margin: 0 auto; /* Автоматические отступы по бокам для центрирования */
-    padding: 0 var(--space-xxl); /* Боковые отступы */
-}
-
-.header-container h1 {
-    font-size: var(--text-lg);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10 var(--space-xxl);
 }
 
 nav ul {
@@ -117,6 +111,48 @@ main {
 
 .film-section {
     margin-bottom: var(--space-xxxl);
+}
+
+.top-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    margin-top: var(--space-xl);
+}
+
+.top-list {
+    background: var(--white);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.top-list h3 {
+    color: var(--dark-blue);
+    margin-bottom: var(--space-md);
+    font-size: var(--text-lg);
+}
+
+.top-list-items {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.top-list-items li {
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--dark-gray);
+    display: flex;
+    justify-content: space-between;
+}
+
+.top-list-items li:last-child {
+    border-bottom: none;
+}
+
+.top-list-items li span {
+    font-weight: bold;
+    color: var(--soft-red);
 }
 
 .about-us {
@@ -234,16 +270,16 @@ main {
     overflow: hidden;
     box-shadow: var(--shadow-md);
     transition: transform var(--transition-fast);
+    position: relative; /* для позиционирования рейтинга */
 }
 
 .film-card:hover {
     transform: translateY(-5px);
 }
 
-.film-thumbnail {
-    width: 100%;
-    height: 350px;
-    object-fit: cover;
+.film-info {
+    padding: 15px;
+    background: var(--white);
 }
 
 .film-card h3 {
@@ -259,9 +295,45 @@ main {
 }
 
 .film-rating {
-    margin: 0 var(--space-md) var(--space-md);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
     color: var(--gold);
+    padding: 5px 10px;
+    border-radius: var(--radius-md);
+    font-weight: bold;
     font-size: var(--text-md);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 2; /* Чтобы был поверх изображения */
+}
+
+.film-rating-number {
+    font-size: var(--text-sm);
+    color: var(--white);
+}
+
+.rating-stars {
+    color: var(--gold);
+    letter-spacing: 2px;
+}
+
+.film-info {
+    padding: 15px;
+    background: var(--white);
+}
+
+.film-thumbnail {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.film-card:hover .film-thumbnail {
+    transform: scale(1.05);
 }
 
 .video-posters-container {

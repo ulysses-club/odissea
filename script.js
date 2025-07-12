@@ -23,7 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
             filmForm: '#film-suggestion-form',
             formThanks: '#form-thanks',
             filmsContainer: '#films-container',
-            worksContainer: '#works-container'
+            worksContainer: '#works-container',
+            topFilmsList: '#top-films-list',
+            topDirectorsList: '#top-directors-list',
+            topGenresList: '#top-genres-list'
         },
         messages: {
             loading: 'Загрузка данных...',
@@ -36,6 +39,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Мок-данные для топов
+    const topFilms = [
+        { title: "Крестный отец", rating: 9.8 },
+        { title: "Криминальное чтиво", rating: 9.7 },
+        { title: "Темный рыцарь", rating: 9.6 },
+        { title: "Форрест Гамп", rating: 9.5 },
+        { title: "Начало", rating: 9.4 },
+        { title: "Матрица", rating: 9.3 },
+        { title: "Побег из Шоушенка", rating: 9.2 },
+        { title: "Список Шиндлера", rating: 9.1 },
+        { title: "Интерстеллар", rating: 9.0 },
+        { title: "Бойцовский клуб", rating: 8.9 }
+    ];
+
+    const topDirectors = [
+        { name: "Кристофер Нолан", count: 15 },
+        { name: "Мартин Скорсезе", count: 14 },
+        { name: "Стивен Спилберг", count: 13 },
+        { name: "Квентин Тарантино", count: 12 },
+        { name: "Дэвид Финчер", count: 11 },
+        { name: "Альфред Хичкок", count: 10 },
+        { name: "Стэнли Кубрик", count: 9 },
+        { name: "Фрэнсис Форд Коппола", count: 8 },
+        { name: "Ридли Скотт", count: 7 },
+        { name: "Питер Джексон", count: 6 }
+    ];
+
+    const topGenres = [
+        { genre: "Драма", count: 32 },
+        { genre: "Криминал", count: 28 },
+        { genre: "Фантастика", count: 25 },
+        { genre: "Боевик", count: 22 },
+        { genre: "Триллер", count: 20 },
+        { genre: "Комедия", count: 18 },
+        { genre: "Мелодрама", count: 15 },
+        { genre: "Детектив", count: 12 },
+        { genre: "Исторический", count: 10 },
+        { genre: "Ужасы", count: 8 }
+    ];
+
     // DOM элементы
     const DOM = {
         modal: document.querySelector(CONFIG.selectors.modal),
@@ -44,8 +87,27 @@ document.addEventListener('DOMContentLoaded', () => {
         filmForm: document.querySelector(CONFIG.selectors.filmForm),
         formThanks: document.querySelector(CONFIG.selectors.formThanks),
         filmsContainer: document.querySelector(CONFIG.selectors.filmsContainer),
-        worksContainer: document.querySelector(CONFIG.selectors.worksContainer)
+        worksContainer: document.querySelector(CONFIG.selectors.worksContainer),
+        topFilmsList: document.querySelector(CONFIG.selectors.topFilmsList),
+        topDirectorsList: document.querySelector(CONFIG.selectors.topDirectorsList),
+        topGenresList: document.querySelector(CONFIG.selectors.topGenresList)
     };
+
+    // Функция для отрисовки топ-списков
+    function renderTopList(list, container, showRating = true) {
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        list.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                ${index + 1}. ${item.title || item.name || item.genre}
+                ${showRating ? `<span>${item.rating || item.count}</span>` : ''}
+            `;
+            container.appendChild(li);
+        });
+    }
 
     // Инициализация модального окна
     const initModal = () => {
@@ -146,14 +208,16 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = films.map(film => `
                 <div class="film-card" role="article">
                     <img src="${film['Постер URL'] || CONFIG.defaults.poster}"
-                         alt="${film['Название']} (${film['Год']})"
-                         class="film-thumbnail"
-                         onerror="this.src='${CONFIG.defaults.poster}'"
-                         loading="lazy">
+                        alt="${film['Название']} (${film['Год']})"
+                        class="film-thumbnail"
+                        onerror="this.src='${CONFIG.defaults.poster}'"
+                        loading="lazy">
                     <h3>${film['Название']} (${film['Год']})</h3>
+                    <p class="film-director">Режиссер: ${film['Режиссер'] || 'неизвестен'}</p>
+                    <p class="film-genre">Жанр: ${film['Жанр'] || 'не указан'}</p>
                     <p>Обсуждение ${film['Номер обсуждения'] || 'N/A'} (${film['Дата'] || 'дата неизвестна'})</p>
                     <div class="film-rating"
-                         title="Рейтинг: ${(parseFloat(film['Рейтинг']) || 0).toFixed(CONFIG.defaults.ratingPrecision)}">
+                        title="Рейтинг: ${(parseFloat(film['Рейтинг']) || 0).toFixed(CONFIG.defaults.ratingPrecision)}">
                         ${Utils.createRatingStars(film['Рейтинг'])}
                     </div>
                 </div>
@@ -235,6 +299,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const initApp = () => {
         initModal();
         initFilmForm();
+        renderTopList(topFilms, DOM.topFilmsList);
+        renderTopList(topDirectors, DOM.topDirectorsList);
+        renderTopList(topGenres, DOM.topGenresList);
         DataLoader.films();
         DataLoader.works();
     };
