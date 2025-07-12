@@ -1,1 +1,134 @@
-[]
+[
+  {
+    "film": "Jesus Christ Superstar/Иисус Христос – суперзвезда",
+    "director": "Норман Джуисон",
+    "genre": "Мюзикл, драма",
+    "year": "1973",
+    "average": 7.5,
+    "participants": 9,
+    "discussionNumber": "247",
+    "date": "2025-07-05",
+    "poster": "https://sun9-79.userapi.com/s/v1/ig2/llNaLnoFRB8qawXRNMgmPkoXKF-0Js9m1Doq3Vq3F_ZCedHPWjnd-Jbepvw-xO5zOQw4DyKmBSm4Vg3U16U68n9c.jpg?quality=95&as=32x48,48x72,72x108,108x162,160x240,240x360,360x540,480x720,540x810,640x960,720x1087,1080x1630,1280x1932,1440x2174,1696x2560&from=bu&u=LNkCf6lFjGxijzQY8U7Um_l1EXfMvR_F0BfbVqYZZ-0&cs=1696x0"
+  },
+  {
+    "film": "The Number 23/Роковое число 23",
+    "director": "Джоэл Шумахер",
+    "genre": "Триллер, детектив, драма",
+    "year": "2006",
+    "average": 6.5,
+    "participants": 7,
+    "discussionNumber": "246",
+    "date": "2025-06-29",
+    "poster": "https://sun9-81.userapi.com/s/v1/ig2/wSn3Rs97e56N0ZqTpikKUOghGxZORPvGndTnjd_Snr5AW01dzyuSZjUoWnFEIIMAUAC3-dxZMeGG80ABajXJb6Uo.jpg?quality=95&as=32x43,48x65,72x98,108x147,160x218,240x326,360x489,480x653,540x734,640x870,720x979,968x1316&from=bu&cs=968x0"
+  },
+  {
+    "film": "There Will Be Blood/Нефть",
+    "director": "Пол Томас Андерсон",
+    "genre": "Драма",
+    "year": "2007",
+    "average": 8.8,
+    "participants": 11,
+    "discussionNumber": "245",
+    "date": "2025-06-22",
+    "poster": "https://sun9-30.userapi.com/s/v1/ig2/V_3KttbRTW0bJoVRei7bcly-qOnYskKME7fYXjEBMJHY7on10C_yMabYBw86mfZhBTXphw0kW1OIjuImjLpiIqSL.jpg?quality=95&as=32x37,48x56,72x84,108x126,160x187,240x280,360x421,480x561,540x631,640x748,720x841,1005x1174&from=bu&cs=1005x0"
+  },
+  {
+    "film": "Ano natsu, ichiban shizukana umi/Сцены у моря",
+    "director": "Такеши Китано",
+    "genre": "Драма",
+    "year": "1991",
+    "average": 6.1,
+    "participants": 6,
+    "discussionNumber": "244",
+    "date": "2025-06-15",
+    "poster": "https://sun9-56.userapi.com/s/v1/ig2/5OSNRyqYfM1PKEYu0HAGCsi6ROB7pgax0XOq64MH9bXIcmqrRzxCSasDQpyK5lX8hJoqZilsudNiYq2o7KlJxLax.jpg?quality=95&as=32x45,48x68,72x101,108x152,160x225,240x338,360x507,480x676,540x761,640x901,710x1000&from=bu&cs=710x0"
+  },
+  {
+    "film": "La migliore offerta/Лучшее предложение",
+    "director": "Джузеппе Торнаторе",
+    "genre": "Драма, триллер",
+    "year": "2012",
+    "average": 7.1,
+    "participants": 8,
+    "discussionNumber": "243",
+    "date": "2025-06-08",
+    "poster": "https://sun9-7.userapi.com/s/v1/ig2/5af2bgsaOsBwbPec2Lec_MmxW7gEk4pECOHCpMMSaaotKCCOMmf1QjdCV8G3Pe1xhKfGktM-3Xor-2Qewgmuztc0.jpg?quality=95&as=32x47,48x70,72x105,108x158,160x234,240x351,360x527,480x703,540x790,640x937,720x1054,1080x1581,1280x1874,1440x2108,1749x2560&from=bu&cs=1749x0"
+  },
+  {
+    "film": "American Graffiti/Американские граффити",
+    "director": "Джордж Лукас",
+    "genre": "Комедия, драма",
+    "year": "1973",
+    "average": 6.6,
+    "participants": 7,
+    "discussionNumber": "242",
+    "date": "2025-06-01",
+    "poster": "https://sun9-45.userapi.com/s/v1/ig2/Xn60PjUodhE3k_MBBmbm8onw035SF_rP0Lc7s9Xy-19_OSZK2IFJZPsljCdhvNppJ-DCTSCskDpRI8MEsZPFmfCS.jpg?quality=95&as=32x48,48x71,72x107,108x160,160x238,240x356,360x535,480x713,540x802,640x951,720x1069,960x1426&from=bu&cs=960x0"
+  },
+  {
+    "film": "Любовь и дружба. Уважение и сотрудничество",
+    "director": "Алексей Герман мл.",
+    "genre": "Драма",
+    "year": "2011",
+    "average": 8.5,
+    "participants": 10,
+    "discussionNumber": "241",
+    "date": "2025-05-24",
+    "poster": "https://sun9-63.userapi.com/s/v1/ig2/AFTDzCBEZMyPV55WRcP89QnLx0nq1P6UtiicTeQJy2lJ4deDCCHJJa6qoJ5zCKBM1_mgSASDW8YDAoK-SwDThcTz.jpg?quality=95&as=32x43,48x64,72x96,108x143,160x213,240x319,360x478,480x638,540x717,640x850,720x957,1080x1435,1280x1701,1400x1860&from=bu&cs=1400x0"
+  },
+  {
+    "film": "Dead Ringers/Связанные насмерть",
+    "director": "Дэвид Кроненберг",
+    "genre": "Триллер, драма, ужасы",
+    "year": "1988",
+    "average": 6.5,
+    "participants": 6,
+    "discussionNumber": "240",
+    "date": "2025-05-18",
+    "poster": "https://sun9-24.userapi.com/s/v1/ig2/ZWjVbVceVncQmePZPARD4J0rYaiAqnK6vrhfTQo4sYGNZBVu7pRQm5CWMi8CkGoMEqOnFogGAK0VOmxrHlamACA2.jpg?quality=95&as=32x47,48x70,72x105,108x157,160x233,240x349,360x524,480x698,540x785,640x931,720x1047,1080x1571,1280x1862,1440x2094,1736x2525&from=bu&cs=1736x0"
+  },
+  {
+    "film": "В шесть часов вечера после войны",
+    "director": "Иван Пырьев",
+    "genre": "Военный, мелодрама",
+    "year": "1944",
+    "average": 7.6,
+    "participants": 5,
+    "discussionNumber": "239",
+    "date": "2025-05-11",
+    "poster": "https://sun9-54.userapi.com/s/v1/if2/K3jshiObV3xmEdlHpjuTIENXFm9gf4onQdMfVkdTJMAwQQTXjnocAKgL1zC0yNswcHfxCF849_kaoWW3uPLpISJb.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x119,240x179,360x269,480x358,540x403,640x478,720x537,1080x806,1280x955,1440x1075,2560x1911&from=bu&cs=2560x0"
+  },
+  {
+    "film": "Alexis Zorbas/Грек Зорба",
+    "director": "Михалис Какояннис",
+    "genre": "Драма, комедия",
+    "year": "1964",
+    "average": 7.3,
+    "participants": 8,
+    "discussionNumber": "238",
+    "date": "2025-05-03",
+    "poster": "https://sun9-55.userapi.com/s/v1/ig2/Ib0f9L84sv9_opSYuHwxw3ksWz7rL-jSndtLrZ3_lu1OyJKt_JDrv1BX8i6LpkY0y-ZAHmiE3blKHL1Xui6Mm9rG.jpg?quality=95&as=32x40,48x60,72x90,108x135,160x200,240x299,360x449,480x599,540x673,640x798,720x898,1000x1247&from=bu&cs=1000x0"
+  },
+  {
+    "film": "Kira & El Gin/Кира и Эль-Джинн",
+    "director": "Марван Хамид",
+    "genre": "Фантастика, боевик",
+    "year": "2022",
+    "average": 7.0,
+    "participants": 9,
+    "discussionNumber": "237",
+    "date": "2025-04-27",
+    "poster": "https://sun9-81.userapi.com/s/v1/ig2/h_SzicbGiwK-GhDZhRes4C8GNMnsn7SJ1GLe31b_ynd9AIFS-Leqi90yrp8WYK0u_ObEG-R38Od5YTie1vNbH1M7.jpg?quality=95&as=32x48,48x72,72x108,108x162,160x240,240x360,360x540,403x604&from=bu&cs=403x0"
+  },
+  {
+    "film": "Павел Кушаев",
+    "director": "Василий Пронин",
+    "genre": "Драма",
+    "year": "1961",
+    "average": 8.3,
+    "participants": 7,
+    "discussionNumber": "236",
+    "date": "2025-04-19",
+    "poster": "https://sun9-66.userapi.com/s/v1/if2/JKnEaHsZ9LE9zF2jQYjBJToG_J7W6W7MLTLC5maHLeh0U92Ogk8_IZ6GvoN-F9H30a2sDGnL3MyeIyZCj5lfqZ5R.jpg?quality=95&as=32x18,48x27,72x40,108x61,160x90,240x135,360x202,480x270,540x304,640x360,720x405,1080x607,1280x720,1440x810,2160x1215&from=bu&cs=2160x0"
+  }
+]
