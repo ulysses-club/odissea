@@ -1,4 +1,7 @@
-/* Базовые сбросы и настройки */
+/* ==================== */
+/* Базовые настройки и сбросы */
+/* ==================== */
+
 :root {
     /* Цветовая палитра */
     --dark-blue: #0F1C2E;
@@ -57,7 +60,10 @@
     --animation-duration: 0.5s;
 }
 
-/* Сброс стилей и базовые настройки */
+/* ==================== */
+/* Базовые стили */
+/* ==================== */
+
 *,
 *::before,
 *::after {
@@ -85,7 +91,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* ==================== */
 /* Типография */
+/* ==================== */
+
 h1, h2, h3, h4 {
     line-height: 1.2;
     font-weight: 700;
@@ -108,7 +117,10 @@ a:focus {
     text-decoration: underline;
 }
 
-/* Классы для скрытия элементов */
+/* ==================== */
+/* Вспомогательные классы */
+/* ==================== */
+
 .visually-hidden,
 .sr-only {
     position: absolute;
@@ -137,16 +149,9 @@ a:focus {
     top: 0;
 }
 
-/* Шапка */
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--space-sm) var(--space-xl);
-}
+/* ==================== */
+/* Шапка и навигация */
+/* ==================== */
 
 header {
     position: fixed;
@@ -160,6 +165,16 @@ header {
     padding: var(--space-sm) 0;
 }
 
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-sm) var(--space-xl);
+}
+
 .logo img {
     display: block;
     width: 40px;
@@ -167,7 +182,6 @@ header {
     object-fit: contain;
 }
 
-/* Навигация */
 .main-nav ul {
     display: flex;
     list-style: none;
@@ -203,7 +217,10 @@ header {
     width: 100%;
 }
 
+/* ==================== */
 /* Мобильное меню */
+/* ==================== */
+
 .mobile-menu-toggle {
     display: none;
     background: none;
@@ -241,7 +258,10 @@ header {
     bottom: -6px;
 }
 
+/* ==================== */
 /* Основное содержимое */
+/* ==================== */
+
 main {
     flex: 1;
     width: 90%;
@@ -272,7 +292,10 @@ main {
     margin: var(--space-md) auto 0;
 }
 
+/* ==================== */
 /* Топ-списки */
+/* ==================== */
+
 .top-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -330,7 +353,8 @@ main {
     margin: 0 var(--space-sm);
 }
 
-.item-rating, .item-count {
+.item-rating,
+.item-count {
     font-weight: bold;
     color: var(--soft-red);
     min-width: 3rem;
@@ -349,24 +373,10 @@ main {
     padding: var(--space-md);
 }
 
-.top-list-items li {
-    padding: var(--space-sm) 0;
-    border-bottom: 1px solid var(--dark-gray);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.top-list-items li:last-child {
-    border-bottom: none;
-}
-
-.top-list-items li span {
-    font-weight: bold;
-    color: var(--soft-red);
-}
-
+/* ==================== */
 /* Блок "О нас" */
+/* ==================== */
+
 .about-us {
     background-color: var(--white);
     padding: var(--space-xxl);
@@ -414,21 +424,12 @@ main {
     left: -1.5rem;
 }
 
-.about-us li strong {
-    color: var(--soft-red);
-}
-
 .highlight {
     background-color: rgba(245, 230, 202, 0.5);
     padding: var(--space-md);
     border-radius: var(--radius-sm);
     margin: var(--space-lg) 0;
     border-left: 3px solid var(--soft-red);
-}
-
-.highlight span {
-    font-weight: bold;
-    color: var(--soft-red);
 }
 
 .italic {
@@ -440,21 +441,12 @@ main {
     border-radius: var(--radius-sm);
 }
 
-.italic span {
-    font-weight: bold;
-    color: var(--dark-blue);
-}
-
 .ps-note {
     background-color: var(--dark-blue);
     color: var(--gold);
     padding: var(--space-md);
     border-radius: var(--radius-sm);
     margin: var(--space-lg) 0;
-}
-
-.ps-note p {
-    margin: 0;
 }
 
 .cta {
@@ -467,7 +459,10 @@ main {
     letter-spacing: 1px;
 }
 
+/* ==================== */
 /* Карточки фильмов */
+/* ==================== */
+
 .film-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -538,7 +533,10 @@ main {
     font-size: var(--text-sm);
 }
 
+/* ==================== */
 /* Архив работ */
+/* ==================== */
+
 .video-posters-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -625,7 +623,10 @@ main {
     border-top: 1px solid var(--dark-gray);
 }
 
+/* ==================== */
 /* Форма предложения фильма */
+/* ==================== */
+
 .suggestion-form {
     max-width: 500px;
     margin: 0 auto;
@@ -688,7 +689,10 @@ main {
     font-weight: 600;
 }
 
+/* ==================== */
 /* Модальное окно */
+/* ==================== */
+
 .modal {
     display: none;
     position: fixed;
@@ -699,10 +703,6 @@ main {
     height: 100%;
     background-color: rgba(15, 28, 46, 0.9);
     animation: fadeIn var(--transition-medium);
-}
-
-.modal[open] {
-    display: block;
 }
 
 .modal-content {
@@ -773,12 +773,6 @@ main {
     color: var(--dark-blue);
 }
 
-.modal-ps {
-    color: var(--text-dark);
-    margin-bottom: var(--space-lg);
-    font-style: italic;
-}
-
 .telegram-button {
     display: inline-flex;
     align-items: center;
@@ -805,7 +799,10 @@ main {
     height: 20px;
 }
 
+/* ==================== */
 /* Подвал */
+/* ==================== */
+
 footer {
     background: var(--dark-blue);
     color: var(--gold);
@@ -838,7 +835,10 @@ footer {
     text-decoration: underline;
 }
 
+/* ==================== */
 /* Состояния загрузки и ошибок */
+/* ==================== */
+
 .loading {
     position: relative;
     min-height: 200px;
@@ -856,10 +856,6 @@ footer {
     border-top-color: var(--gold);
     border-radius: var(--radius-circle);
     animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .error-message {
@@ -889,7 +885,10 @@ footer {
     background-color: var(--info-dark-blue);
 }
 
+/* ==================== */
 /* Анимации */
+/* ==================== */
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -900,7 +899,14 @@ footer {
     to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ==================== */
 /* Адаптивность */
+/* ==================== */
+
 @media (max-width: 768px) {
     body {
         padding-top: 70px;
@@ -973,7 +979,38 @@ footer {
     }
 }
 
+/* ==================== */
+/* Дополнительные стили */
+/* ==================== */
+
+.discussion-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.discussion-number {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.discussion-date {
+    font-style: italic;
+}
+
+.film-comment {
+    margin-top: 10px;
+    font-size: 0.9em;
+    line-height: 1.4;
+    color: #555;
+}
+
+/* ==================== */
 /* Печатные стили */
+/* ==================== */
+
 @media print {
     header,
     footer,
