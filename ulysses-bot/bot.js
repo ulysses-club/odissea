@@ -14,7 +14,7 @@ function log(message) {
 
 // Конфигурация
 const TOKEN = '7585006393:AAFttPbydsMRVtm6V7g4SixfvjS8pnNY3CU';
-const ADMIN_IDS = ['1147849296', '7644957461']; // Добавлен второй админ
+const ADMIN_IDS = ['1147849296', '863909091']; // Добавлен второй админ
 const SUBSCRIPTIONS_FILE = path.join(__dirname, 'subscriptions.json');
 const VOTING_FILE = path.join(__dirname, 'voting.json');
 const HISTORY_FILE = path.join(__dirname, 'history.json');

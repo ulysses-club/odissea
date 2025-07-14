@@ -555,21 +555,47 @@ function createRatingStars(rating) {
 }
 
 /**
- * Форматирование даты
+ * Форматирование даты в формате дд.мм.гггг
+ */
+/**
+ * Форматирование даты в строгом формате дд.мм.гггг
+ * с защитой от перестановки дня и месяца
  */
 function formatDate(dateString) {
     if (!dateString) return 'дата не указана';
 
     try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('ru-RU', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    } catch {
+        // Парсим дату с учетом возможного разного формата
+        let date;
+
+        // Если дата в формате "гггг-мм-дд" (ISO)
+        if (/^\d{4}-\d{2}-\d{2}/.test(dateString)) {
+            const [year, month, day] = dateString.split('-');
+            date = new Date(year, month - 1, day);
+        }
+        // Если дата в формате "дд.мм.гггг"
+        else if (/^\d{2}\.\d{2}\.\d{4}/.test(dateString)) {
+            const [day, month, year] = dateString.split('.');
+            date = new Date(year, month - 1, day);
+        }
+        // Если дата в другом формате (пробуем стандартный парсинг)
+        else {
+            date = new Date(dateString);
+        }
+
+        // Проверяем валидность даты
+        if (isNaN(date.getTime())) {
+            return dateString; // возвращаем как есть, если не распарсилось
+        }
+
+        // Форматируем в дд.мм.гггг
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${day}.${month}.${year}`;
+    } catch (e) {
+        console.error('Ошибка форматирования даты:', e);
         return dateString;
     }
 }

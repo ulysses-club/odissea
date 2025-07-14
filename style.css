@@ -513,24 +513,22 @@ main {
 
 .film-rating {
     position: absolute;
-    top: var(--space-sm);
-    right: var(--space-sm);
+    top: 0.5rem;
+    right: 0.5rem;
     background: rgba(0, 0, 0, 0.7);
     color: var(--gold);
-    padding: var(--space-xs) var(--space-sm);
     border-radius: var(--radius-md);
-    font-weight: bold;
-    font-size: var(--text-sm);
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
     z-index: 2;
+    max-width: 80px; /* Ограничил максимальную ширину */
 }
 
 .rating-stars {
-    color: var(--gold);
-    letter-spacing: 2px;
-    font-size: var(--text-sm);
+    font-size: 0.8rem;
+    line-height: 1;
+    letter-spacing: -0.1em;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 /* ==================== */
@@ -976,6 +974,19 @@ footer {
     .footer-links {
         flex-direction: column;
         gap: var(--space-sm);
+    }
+
+    .film-rating {
+        flex-wrap: wrap;
+        font-size: 0.7rem;
+    }
+
+    .rating-stars {
+        font-size: 0.7rem;
+    }
+
+    .rating-number {
+        font-size: 0.7rem;
     }
 }
 
