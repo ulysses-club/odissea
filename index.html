@@ -3,7 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кино-клуб "Одиссея" | Обсуждение фильмов в Севастополе</title>
+    <title>Кино-клуб "Одиссея" | Севастополь</title>
+    <style>
+        /* Minimal Modal CSS */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e94560;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background: #16213e;
+            color: white;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #ff6b81;
+        }
+
+        #form-thanks {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(76, 175, 80, 0.2);
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+    </style>
     <meta name="description" content="Кино-клуб для настоящих ценителей киноискусства. Еженедельные встречи, горячие обсуждения и анализ фильмов.">
 
     <!-- Favicon и мета-теги для соцсетей -->
@@ -36,15 +135,43 @@
                 <span class="menu-icon"></span>
             </button>
             <ul id="main-menu" role="menubar">
-                <li role="menuitem"><a href="#our-films">Обсуждения</a></li>
-                <li role="menuitem"><a href="#film-archive">Архив</a></li>
-                <li role="menuitem"><a href="#suggest-film">Предложить фильм</a></li>
+                <li role="menuitem"><a href="#our-films">Наши топы</a></li>
+                <li role="menuitem"><a href="#film-archive">Архив наших работ</a></li>
+                <li role="menuitem"><a href="#suggest-film">Обратная связь</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- Основное содержимое -->
+    <!-- Основное содержимое страницы -->
     <main id="main-content" role="main">
+                    <!-- Информация о клубе -->
+            <article class="about-us">
+                <h2>Как это работает?</h2>
+                <ul>
+                    <li><strong>Смотрите фильм дома</strong> (чтобы не мешать друг другу возмущаться вслух)</li>
+                    <li><strong>Приходите в кофейню</strong> — обсуждаете, спорите, ставите оценки</li>
+                    <li><strong>Фильмы выбирает наш «диктатор»</strong> (но иногда он снисходит до ваших предложений)</li>
+                </ul>
+
+                <aside class="highlight" aria-label="Важная информация">
+                    <p><span>Деньги?</span> Нет, только ваша любовь к кино (и, возможно, круассан для атмосферы)</p>
+                </aside>
+
+                <blockquote class="italic" aria-label="Как вступить">
+                    <p><span>Как вступить?</span> Просто приходите — мы не секта, хотя после третьей встречи вы уже будете яростно защищать «Титаник» как артхаус</p>
+                </blockquote>
+
+                <div class="ps-note" role="note">
+                    <p><strong>P.S.</strong> В день рождения вам разрешат выбрать <em>любой</em> фильм — даже «Человека-паука» в 4K с философским разбором</p>
+                </div>
+
+                <p class="cta" role="alert"><strong>🎬 Давайте жевать попкорн и разбирать кино на молекулы! 🍿</strong></p>
+
+                <div class="button-container">
+                    <button id="openModal" class="button" aria-haspopup="dialog">Найти нас</button>
+                </div>
+            </article>
+
         <!-- Секция с топами и информацией о клубе -->
         <section id="our-films" class="film-section" aria-labelledby="films-heading">
             <section id="top-lists" class="film-section" aria-labelledby="top-lists-heading">
@@ -75,39 +202,11 @@
             </section>
 
             <h1 id="films-heading" class="visually-hidden">О нашем кино-клубе</h1>
-
-            <!-- Информация о клубе -->
-            <article class="about-us">
-                <h2>Как это работает?</h2>
-                <ul>
-                    <li><strong>Смотрите фильм дома</strong> (чтобы не мешать друг другу возмущаться вслух)</li>
-                    <li><strong>Приходите в кофейню</strong> — обсуждаете, спорите, ставите оценки</li>
-                    <li><strong>Фильмы выбирает наш «диктатор»</strong> (но иногда он снисходит до ваших предложений)</li>
-                </ul>
-
-                <aside class="highlight" aria-label="Важная информация">
-                    <p><span>Деньги?</span> Нет, только ваша любовь к кино (и, возможно, круассан для атмосферы)</p>
-                </aside>
-
-                <blockquote class="italic" aria-label="Как вступить">
-                    <p><span>Как вступить?</span> Просто приходите — мы не секта, хотя после третьей встречи вы уже будете яростно защищать «Титаник» как артхаус</p>
-                </blockquote>
-
-                <div class="ps-note" role="note">
-                    <p><strong>P.S.</strong> В день рождения вам разрешат выбрать <em>любой</em> фильм — даже «Человека-паука» в 4K с философским разбором</p>
-                </div>
-
-                <p class="cta" role="alert"><strong>🎬 Давайте жевать попкорн и разбирать кино на молекулы! 🍿</strong></p>
-
-                <div class="button-container">
-                    <button id="openModal" class="button" aria-haspopup="dialog">Найти нас</button>
-                </div>
-            </article>
         </section>
 
         <!-- Секция архива фильмов -->
         <section id="film-archive" class="film-section" aria-labelledby="archive-heading">
-            <h2 id="archive-heading" class="section-title">Архив наших обсуждений</h2>
+            <h2 id="archive-heading" class="section-title">Архив наших работ</h2>
             <div id="works-container" class="video-posters-container" aria-live="polite">
                 <div class="loading-message">Загрузка архива работ...</div>
             </div>
@@ -118,59 +217,190 @@
             </div>
         </section>
 
-        <!-- Секция предложения фильмов -->
-        <section id="suggest-film" class="film-section" aria-labelledby="suggest-heading">
-            <h2 id="suggest-heading" class="section-title">Предложить фильм</h2>
-            <form id="film-suggestion-form" class="suggestion-form" aria-label="Форма предложения фильма">
+    <!-- Кнопка для открытия модального окна -->
+    <button id="openFeedbackModal" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background: #e94560; color: #bfb6b7; border: none; border-radius: 4px; cursor: pointer;">
+        Обратная связь
+    </button>
+
+    <!-- Модальное окно обратной связи -->
+    <div id="feedbackModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2 style="margin-top: 0; color: #e94560;">Обратная связь</h2>
+
+            <form id="film-suggestion-form" class="suggestion-form">
                 <div class="form-group">
-                    <label for="film-title">Название фильма</label>
-                    <input type="text" id="film-title" placeholder="Название фильма" required aria-required="true">
+                    <label for="film-title">Ваше Имя</label>
+                    <input type="text" id="film-title" placeholder="Как к вам обращаться" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="film-year">Год выпуска</label>
-                    <input type="number" id="film-year" placeholder="Год" min="1888" max="2025" required aria-required="true">
+                    <label for="film-year">Сколько вам лет</label>
+                    <input type="number" id="film-year" placeholder="Возраст" min="18" max="100" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="film-reason">Причина обсуждения</label>
-                    <textarea id="film-reason" placeholder="Почему стоит обсудить?" rows="4"></textarea>
+                    <label for="film-reason">Сообщение</label>
+                    <textarea id="film-reason" placeholder="Что у вас на уме?" rows="4" required></textarea>
                 </div>
 
-                <div class="form-actions">
-                    <button type="submit" class="button">Отправить</button>
-                </div>
+                <button type="submit" class="submit-btn">Отправить</button>
             </form>
-            <div id="form-thanks" role="alert" aria-live="polite">
-                <p>Спасибо! Мы рассмотрим ваш вариант.</p>
+
+            <div id="form-thanks">
+                <p>Спасибо! Мы рассмотрим ваше сообщение.</p>
             </div>
-        </section>
+        </div>
+    </div>
+
+    <script>
+        // Управление модальным окном
+        const modal = document.getElementById('feedbackModal');
+        const openBtn = document.getElementById('openFeedbackModal');
+        const closeBtn = document.querySelector('.close-modal');
+        const form = document.getElementById('film-suggestion-form');
+        const thanksMsg = document.getElementById('form-thanks');
+
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Закрытие при клике вне модального окна
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Обработка формы
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Здесь можно добавить отправку формы на сервер
+            // Пока просто покажем сообщение об успехе
+            form.style.display = 'none';
+            thanksMsg.style.display = 'block';
+
+            // Через 3 секунды закрываем модальное окно
+            setTimeout(() => {
+                modal.classList.remove('active');
+                form.style.display = 'block';
+                thanksMsg.style.display = 'none';
+                form.reset();
+            }, 3000);
+        });
+    </script>
     </main>
 
-    <!-- Модальное окно с контактами -->
-    <dialog id="modal" class="modal" aria-labelledby="modal-heading">
-        <div class="modal-content">
-            <button class="close" aria-label="Закрыть модальное окно">&times;</button>
-            <h2 id="modal-heading">Как до нас добраться?</h2>
-            <p class="modal-intro">Мы живём где-то между мечтами и реальностью. Но если серьёзно...</p>
+<dialog id="modal" class="modal" aria-labelledby="modal-heading" style="
+    border: none;
+    padding: 0;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+">
+    <div class="modal-content" style="padding: 2rem; position: relative;">
+        <button class="close" aria-label="Закрыть модальное окно" style="
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        ">&times;</button>
 
-            <address>
-                <ul class="contact-info">
-                    <li><strong>📍 Место встреч:</strong> г. Севастополь, ул. Шмидта, 12. Кофейня "Том Сойер"</li>
-                    <li><strong>📞 Телефон для связи:</strong> <a href="tel:+79787363212">+79787363212</a></li>
-                    <li><strong>📱 VK:</strong> <a href="https://vk.com/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer">Наша группа ВК</a></li>
-                    <li><strong>📢 Telegram:</strong> <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer">Наш бот</a></li>
-                </ul>
-            </address>
+        <h2 id="modal-heading" style="
+            margin-top: 0;
+            color: #e94560;
+            font-size: 1.8rem;
+            text-align: center;
+        ">Как до нас добраться?</h2>
 
-            <p class="modal-ps">P.S. Если не найдёте — просто закажите пиццу. Мы обязательно откликнемся на запах.</p>
+        <p class="modal-intro" style="
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        ">Мы живём где-то между мечтами и реальностью. Но если серьёзно...</p>
 
-            <a href="https://t.me/Odyssey_Cinema_Club_bot" class="telegram-button" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="" width="20" height="20" loading="lazy">
-                Получать уведомления
-            </a>
-        </div>
-    </dialog>
+<address style="font-style: normal;">
+    <ul class="contact-info" style="
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2rem 0;
+        display: grid;
+        gap: 1rem;
+    ">
+        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+            <span style="color: #e94560; font-size: 1.2rem;">📍</span>
+            <div style="color: gray;">
+                <strong style="display: block; color: #e94560;">Место встреч:</strong>
+                г. Севастополь, ул. Шмидта, 12. Кофейня "Том Сойер"
+            </div>
+        </li>
+        <li style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="color: #e94560; font-size: 1.2rem;">📞</span>
+            <div style="color: gray;">
+                <strong style="display: block; color: #e94560;">Телефон для связи:</strong>
+                <a href="tel:+79787363212" style="color: white; text-decoration: none;">+79787363212</a>
+            </div>
+        </li>
+        <li style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="color: #e94560; font-size: 1.2rem;">📱</span>
+            <div style="color: gray;">
+                <strong style="display: block; color: #e94560;">VK:</strong>
+                <a href="https://vk.com/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none;">Наша группа ВК</a>
+            </div>
+        </li>
+        <li style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="color: #e94560; font-size: 1.2rem;">📢</span>
+            <div style="color: gray;">
+                <strong style="display: block; color: #e94560;">Telegram:</strong>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none;">Наш бот</a>
+            </div>
+        </li>
+    </ul>
+</address>
+
+        <p class="modal-ps" style="
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(233, 69, 96, 0.1);
+            border-radius: 8px;
+        ">P.S. Если не найдёте — просто закажите пиццу. Мы обязательно откликнемся на запах.</p>
+
+        <a href="https://t.me/Odyssey_Cinema_Club_bot" class="telegram-button" target="_blank" rel="noopener noreferrer" style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: #0088cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            margin: 0 auto;
+            max-width: 250px;
+            transition: background 0.3s;
+        " onmouseover="this.style.background='#0095e0'" onmouseout="this.style.background='#0088cc'">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="" width="20" height="20" loading="lazy" style="filter: brightness(0) invert(1);">
+            Получать уведомления
+        </a>
+    </div>
+</dialog>
 
     <!-- Подвал сайта -->
     <footer role="contentinfo">
