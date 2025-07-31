@@ -127,7 +127,6 @@
     <!-- Шапка сайта -->
     <header class="header-container" role="banner">
         <div class="logo" aria-label="Логотип кино-клуба Одиссея">
-            <img src="images/logo.svg" alt="Кино-клуб Одиссея" width="40" height="40" loading="lazy">
         </div>
         <nav class="main-nav" aria-label="Основное меню">
             <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="main-menu">
@@ -314,7 +313,7 @@
             right: 1rem;
             background: transparent;
             border: none;
-            color: white;
+            color: rgb(0, 0, 0);
             font-size: 1.5rem;
             cursor: pointer;
             padding: 0.5rem;
@@ -333,41 +332,49 @@
             margin-bottom: 2rem;
             opacity: 0.8;
         ">Мы живём где-то между мечтами и реальностью. Но если серьёзно...</p>
-
-<address style="font-style: normal;">
-    <ul class="contact-info" style="
-        list-style: none;
-        padding: 0;
-        margin: 0 0 2rem 0;
-        display: grid;
-        gap: 1rem;
-    ">
-        <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
-            <span style="color: #e94560; font-size: 1.2rem;">📍</span>
-            <div style="color: gray;">
-                <strong style="display: block; color: #e94560;">Место встреч:</strong>
-                г. Севастополь, ул. Шмидта, 12. Кофейня "Том Сойер"
+<address class="contact-info-wrapper">
+    <ul class="contact-info" itemscope itemtype="https://schema.org/LocalBusiness">
+        <li class="contact-item" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+            <span class="contact-icon" aria-hidden="true">📍</span>
+            <div class="contact-details">
+                <strong class="contact-label">Место встреч:</strong>
+                <span itemprop="streetAddress">ул. Шмидта, 12</span>, 
+                <span itemprop="addressLocality">Севастополь</span>. 
+                Кофейня "<span itemprop="name">Том Сойер</span>"
             </div>
         </li>
-        <li style="display: flex; align-items: center; gap: 0.5rem;">
-            <span style="color: #e94560; font-size: 1.2rem;">📞</span>
-            <div style="color: gray;">
-                <strong style="display: block; color: #e94560;">Телефон для связи:</strong>
-                <a href="tel:+79787363212" style="color: white; text-decoration: none;">+79787363212</a>
+        <li class="contact-item">
+            <span class="contact-icon" aria-hidden="true">📞</span>
+            <div class="contact-details">
+                <strong class="contact-label">Телефон для связи:</strong>
+                <a href="tel:+79787363212" itemprop="telephone" class="contact-link">+7 (978) 736-32-12</a>
             </div>
         </li>
-        <li style="display: flex; align-items: center; gap: 0.5rem;">
-            <span style="color: #e94560; font-size: 1.2rem;">📱</span>
-            <div style="color: gray;">
-                <strong style="display: block; color: #e94560;">VK:</strong>
-                <a href="https://vk.com/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none;">Наша группа ВК</a>
+        <li class="contact-item">
+            <span class="contact-icon" aria-hidden="true">📱</span>
+            <div class="contact-details">
+                <strong class="contact-label">VK:</strong>
+                <a href="https://vk.com/ulysses_club" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   itemprop="sameAs" 
+                   class="contact-link"
+                   aria-label="Наша группа ВКонтакте (откроется в новой вкладке)">
+                    Наша группа ВК
+                </a>
             </div>
         </li>
-        <li style="display: flex; align-items: center; gap: 0.5rem;">
-            <span style="color: #e94560; font-size: 1.2rem;">📢</span>
-            <div style="color: gray;">
-                <strong style="display: block; color: #e94560;">Telegram:</strong>
-                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none;">Наш бот</a>
+        <li class="contact-item">
+            <span class="contact-icon" aria-hidden="true">📢</span>
+            <div class="contact-details">
+                <strong class="contact-label">Telegram:</strong>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="contact-link"
+                   aria-label="Наш Telegram-бот (откроется в новой вкладке)">
+                    Наш бот
+                </a>
             </div>
         </li>
     </ul>
@@ -378,7 +385,7 @@
             text-align: center;
             margin-bottom: 2rem;
             padding: 1rem;
-            background: rgba(233, 69, 96, 0.1);
+            background: rgba(139, 20, 40, 0.808);
             border-radius: 8px;
         ">P.S. Если не найдёте — просто закажите пиццу. Мы обязательно откликнемся на запах.</p>
 
