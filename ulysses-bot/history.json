@@ -1,5 +1,18 @@
 [
   {
+    "film": "Everything Is Illuminated/Свет вокруг",
+    "director": "Лив Шрайбер",
+    "genre": "драма, комедия",
+    "country": "США",
+    "year": "2005",
+    "description": "Описание",
+    "average": 6.25,
+    "participants": 8,
+    "date": "2025-08-04T15:26:58.894Z",
+    "poster": "https://sun9-86.userapi.com/s/v1/ig2/25HH7-1n-TMfyJxFVxK83vV_K9BH7EL8hA8iMNRxVEUF6UVD08FHjSAD17TVqpC4AW6rF84ljvm9o15_H9LJYM58.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x221,240x331,360x497,435x600&from=bu&cs=435x0",
+    "discussionNumber": "251"
+  },
+  {
     "film": "Я шагаю по Москве",
     "director": "Георгий Данелия",
     "genre": "Мелодрама, Комедия",
@@ -44,16 +57,5 @@
     "discussionNumber": "247",
     "date": "2025-07-05",
     "poster": "https://sun9-79.userapi.com/s/v1/ig2/llNaLnoFRB8qawXRNMgmPkoXKF-0Js9m1Doq3Vq3F_ZCedHPWjnd-Jbepvw-xO5zOQw4DyKmBSm4Vg3U16U68n9c.jpg?quality=95&as=32x48,48x72,72x109,108x163,160x241,240x362,360x543,480x725,540x815,640x966,720x1087,1080x1630,1280x1932,1440x2174,1696x2560&from=bu&cs=1696x0"
-  },
-  {
-    "film": "The Number 23/Роковое число 23",
-    "director": "Джоэл Шумахер",
-    "genre": "Триллер, детектив, драма",
-    "year": "2006",
-    "average": 6.5,
-    "participants": 7,
-    "discussionNumber": "246",
-    "date": "2025-06-29",
-    "poster": "https://sun9-81.userapi.com/s/v1/ig2/wSn3Rs97e56N0ZqTpikKUOghGxZORPvGndTnjd_Snr5AW01dzyuSZjUoWnFEIIMAUAC3-dxZMeGG80ABajXJb6Uo.jpg?quality=95&as=32x43,48x65,72x98,108x147,160x218,240x326,360x489,480x653,540x734,640x870,720x979,968x1316&from=bu&cs=968x0"
   }
 ]

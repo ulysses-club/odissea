@@ -1,6 +1,15 @@
 {
-  "ratings": {},
-  "average": null,
+  "ratings": {
+    "user_1": 8,
+    "user_2": 10,
+    "user_3": 4,
+    "user_4": 2,
+    "user_5": 4,
+    "user_6": 7,
+    "user_7": 8,
+    "user_8": 7
+  },
+  "average": 6.25,
   "film": "Everything Is Illuminated/Свет вокруг",
   "director": "Лив Шрайбер",
   "genre": "драма, комедия",
