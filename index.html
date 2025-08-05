@@ -3,434 +3,1624 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кино-клуб "Одиссея" | Севастополь</title>
+    <title>Киноклуб "ОДИССЕЯ"</title>
     <style>
-        /* Minimal Modal CSS */
-        .modal-overlay {
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff4d4d;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark), #16213e);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Шапка */
+        .header {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            padding: 1.5rem 5%;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
         }
 
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
+        .header.scrolled {
+            padding: 1rem 5%;
+            background: rgba(10, 10, 20, 0.95);
         }
 
-        .modal-content {
-            background: #1a1a2e;
-            color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .logo__icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav__link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
             position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition);
         }
 
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .close-modal {
+        .nav__link::after {
+            content: '';
             position: absolute;
-            top: 10px;
-            right: 10px;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            transition: var(--transition);
+        }
+
+        .nav__link:hover::after {
+            width: 100%;
+        }
+
+        .nav__link:hover {
+            color: var(--accent);
+        }
+
+        .mobile-menu-btn {
+            display: none;
             background: none;
             border: none;
-            color: white;
+            color: var(--light);
             font-size: 1.5rem;
             cursor: pointer;
         }
 
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #e94560;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #333;
-            border-radius: 4px;
-            background: #16213e;
-            color: white;
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .submit-btn {
-            background: #e94560;
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .submit-btn:hover {
-            background: #ff6b81;
-        }
-
-        #form-thanks {
-            display: none;
-            text-align: center;
-            padding: 1rem;
-            background: rgba(76, 175, 80, 0.2);
-            border-radius: 4px;
-            margin-top: 1rem;
-        }
-    </style>
-    <meta name="description" content="Кино-клуб для настоящих ценителей киноискусства. Еженедельные встречи, горячие обсуждения и анализ фильмов.">
-
-    <!-- Favicon и мета-теги для соцсетей -->
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <meta property="og:title" content="Кино-клуб 'Одиссея' | Обсуждение фильмов в Севастополе">
-    <meta property="og:description" content="Кино-клуб для настоящих ценителей киноискусства. Еженедельные встречи, горячие обсуждения и анализ фильмов.">
-    <meta property="og:image" content="images/social-preview.jpg">
-    <meta property="og:url" content="https://yourwebsite.com">
-    <meta name="twitter:card" content="summary_large_image">
-
-    <!-- Предзагрузка критических ресурсов -->
-    <link rel="preload" href="style.css" as="style">
-    <link rel="preload" href="script.js" as="script">
-
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- Пропуск ссылки для доступности -->
-    <a class="skip-link visually-hidden" href="#main-content">Перейти к основному содержанию</a>
-
-    <!-- Шапка сайта -->
-    <header class="header-container" role="banner">
-        <div class="logo" aria-label="Логотип кино-клуба Одиссея">
-        </div>
-        <nav class="main-nav" aria-label="Основное меню">
-            <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="main-menu">
-                <span class="visually-hidden">Меню</span>
-                <span class="menu-icon"></span>
-            </button>
-            <ul id="main-menu" role="menubar">
-                <li role="menuitem"><a href="#our-films">Наши топы</a></li>
-                <li role="menuitem"><a href="#film-archive">Архив наших работ</a></li>
-                <li role="menuitem"><a href="#suggest-film">Обратная связь</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Основное содержимое страницы -->
-    <main id="main-content" role="main">
-                    <!-- Информация о клубе -->
-            <article class="about-us">
-                <h2>Как это работает?</h2>
-                <ul>
-                    <li><strong>Смотрите фильм дома</strong> (чтобы не мешать друг другу возмущаться вслух)</li>
-                    <li><strong>Приходите в кофейню</strong> — обсуждаете, спорите, ставите оценки</li>
-                    <li><strong>Фильмы выбирает наш «диктатор»</strong> (но иногда он снисходит до ваших предложений)</li>
-                </ul>
-
-                <aside class="highlight" aria-label="Важная информация">
-                    <p><span>Деньги?</span> Нет, только ваша любовь к кино (и, возможно, круассан для атмосферы)</p>
-                </aside>
-
-                <blockquote class="italic" aria-label="Как вступить">
-                    <p><span>Как вступить?</span> Просто приходите — мы не секта, хотя после третьей встречи вы уже будете яростно защищать «Титаник» как артхаус</p>
-                </blockquote>
-
-                <div class="ps-note" role="note">
-                    <p><strong>P.S.</strong> В день рождения вам разрешат выбрать <em>любой</em> фильм — даже «Человека-паука» в 4K с философским разбором</p>
-                </div>
-
-                <p class="cta" role="alert"><strong>🎬 Давайте жевать попкорн и разбирать кино на молекулы! 🍿</strong></p>
-
-                <div class="button-container">
-                    <button id="openModal" class="button" aria-haspopup="dialog">Найти нас</button>
-                </div>
-            </article>
-
-        <!-- Секция с топами и информацией о клубе -->
-        <section id="our-films" class="film-section" aria-labelledby="films-heading">
-            <section id="top-lists" class="film-section" aria-labelledby="top-lists-heading">
-                <h2 id="top-lists-heading" class="section-title">Наши топы</h2>
-
-                <div class="top-container">
-                    <article class="top-list" aria-labelledby="top-films-heading">
-                        <h3 id="top-films-heading">Топ 10 фильмов</h3>
-                        <ol id="top-films-list" class="top-list-items" aria-live="polite">
-                            <li class="loading-message">Загрузка списка...</li>
-                        </ol>
-                    </article>
-
-                    <article class="top-list" aria-labelledby="top-directors-heading">
-                        <h3 id="top-directors-heading">Топ 10 режиссеров</h3>
-                        <ol id="top-directors-list" class="top-list-items" aria-live="polite">
-                            <li class="loading-message">Загрузка списка...</li>
-                        </ol>
-                    </article>
-
-                    <article class="top-list" aria-labelledby="top-genres-heading">
-                        <h3 id="top-genres-heading">Топ 10 жанров</h3>
-                        <ol id="top-genres-list" class="top-list-items" aria-live="polite">
-                            <li class="loading-message">Загрузка списка...</li>
-                        </ol>
-                    </article>
-                </div>
-            </section>
-
-            <h1 id="films-heading" class="visually-hidden">О нашем кино-клубе</h1>
-        </section>
-
-        <!-- Секция архива фильмов -->
-        <section id="film-archive" class="film-section" aria-labelledby="archive-heading">
-            <h2 id="archive-heading" class="section-title">Архив наших работ</h2>
-            <div id="works-container" class="video-posters-container" aria-live="polite">
-                <div class="loading-message">Загрузка архива работ...</div>
-            </div>
-
-            <h2 id="discussion-history-heading" class="section-title">История обсуждений</h2>
-            <div id="films-container" class="film-grid" aria-live="polite">
-                <div class="loading-message">Загрузка списка фильмов...</div>
-            </div>
-        </section>
-
-    <!-- Кнопка для открытия модального окна -->
-    <button id="openFeedbackModal" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background: #e94560; color: #bfb6b7; border: none; border-radius: 4px; cursor: pointer;">
-        Обратная связь
-    </button>
-
-    <!-- Модальное окно обратной связи -->
-    <div id="feedbackModal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal">&times;</button>
-            <h2 style="margin-top: 0; color: #e94560;">Обратная связь</h2>
-
-            <form id="film-suggestion-form" class="suggestion-form">
-                <div class="form-group">
-                    <label for="film-title">Ваше Имя</label>
-                    <input type="text" id="film-title" placeholder="Как к вам обращаться" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="film-year">Сколько вам лет</label>
-                    <input type="number" id="film-year" placeholder="Возраст" min="18" max="100" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="film-reason">Сообщение</label>
-                    <textarea id="film-reason" placeholder="Что у вас на уме?" rows="4" required></textarea>
-                </div>
-
-                <button type="submit" class="submit-btn">Отправить</button>
-            </form>
-
-            <div id="form-thanks">
-                <p>Спасибо! Мы рассмотрим ваше сообщение.</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Управление модальным окном
-        const modal = document.getElementById('feedbackModal');
-        const openBtn = document.getElementById('openFeedbackModal');
-        const closeBtn = document.querySelector('.close-modal');
-        const form = document.getElementById('film-suggestion-form');
-        const thanksMsg = document.getElementById('form-thanks');
-
-        openBtn.addEventListener('click', () => {
-            modal.classList.add('active');
-        });
-
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-
-        // Закрытие при клике вне модального окна
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
-        });
-
-        // Обработка формы
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Здесь можно добавить отправку формы на сервер
-            // Пока просто покажем сообщение об успехе
-            form.style.display = 'none';
-            thanksMsg.style.display = 'block';
-
-            // Через 3 секунды закрываем модальное окно
-            setTimeout(() => {
-                modal.classList.remove('active');
-                form.style.display = 'block';
-                thanksMsg.style.display = 'none';
-                form.reset();
-            }, 3000);
-        });
-    </script>
-    </main>
-
-<dialog id="modal" class="modal" aria-labelledby="modal-heading" style="
-    border: none;
-    padding: 0;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    color: white;
-">
-    <div class="modal-content" style="padding: 2rem; position: relative;">
-        <button class="close" aria-label="Закрыть модальное окно" style="
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: transparent;
-            border: none;
-            color: rgb(0, 0, 0);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-        ">&times;</button>
-
-        <h2 id="modal-heading" style="
-            margin-top: 0;
-            color: #e94560;
-            font-size: 1.8rem;
-            text-align: center;
-        ">Как до нас добраться?</h2>
-
-        <p class="modal-intro" style="
-            text-align: center;
-            font-style: italic;
-            margin-bottom: 2rem;
-            opacity: 0.8;
-        ">Мы живём где-то между мечтами и реальностью. Но если серьёзно...</p>
-<address class="contact-info-wrapper">
-    <ul class="contact-info" itemscope itemtype="https://schema.org/LocalBusiness">
-        <li class="contact-item" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
-            <span class="contact-icon" aria-hidden="true">📍</span>
-            <div class="contact-details">
-                <strong class="contact-label">Место встреч:</strong>
-                <span itemprop="streetAddress">ул. Шмидта, 12</span>, 
-                <span itemprop="addressLocality">Севастополь</span>. 
-                Кофейня "<span itemprop="name">Том Сойер</span>"
-            </div>
-        </li>
-        <li class="contact-item">
-            <span class="contact-icon" aria-hidden="true">📞</span>
-            <div class="contact-details">
-                <strong class="contact-label">Телефон для связи:</strong>
-                <a href="tel:+79787363212" itemprop="telephone" class="contact-link">+7 (978) 736-32-12</a>
-            </div>
-        </li>
-        <li class="contact-item">
-            <span class="contact-icon" aria-hidden="true">📱</span>
-            <div class="contact-details">
-                <strong class="contact-label">VK:</strong>
-                <a href="https://vk.com/ulysses_club" 
-                   target="_blank" 
-                   rel="noopener noreferrer" 
-                   itemprop="sameAs" 
-                   class="contact-link"
-                   aria-label="Наша группа ВКонтакте (откроется в новой вкладке)">
-                    Наша группа ВК
-                </a>
-            </div>
-        </li>
-        <li class="contact-item">
-            <span class="contact-icon" aria-hidden="true">📢</span>
-            <div class="contact-details">
-                <strong class="contact-label">Telegram:</strong>
-                <a href="https://t.me/Odyssey_Cinema_Club_bot" 
-                   target="_blank" 
-                   rel="noopener noreferrer" 
-                   class="contact-link"
-                   aria-label="Наш Telegram-бот (откроется в новой вкладке)">
-                    Наш бот
-                </a>
-            </div>
-        </li>
-    </ul>
-</address>
-
-        <p class="modal-ps" style="
-            font-style: italic;
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: rgba(139, 20, 40, 0.808);
-            border-radius: 8px;
-        ">P.S. Если не найдёте — просто закажите пиццу. Мы обязательно откликнемся на запах.</p>
-
-        <a href="https://t.me/Odyssey_Cinema_Club_bot" class="telegram-button" target="_blank" rel="noopener noreferrer" style="
+        /* Герой секция */
+        .hero {
+            min-height: 100vh;
             display: flex;
+            align-items: center;
+            padding: 0 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(106, 17, 203, 0.2), transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(37, 117, 252, 0.2), transparent 50%);
+            z-index: -1;
+        }
+
+        .hero__content {
+            max-width: 600px;
+            z-index: 1;
+        }
+
+        .hero__title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero__subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero__cta {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            padding: 0.8rem 1.5rem;
-            background: #0088cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            margin: 0 auto;
-            max-width: 250px;
-            transition: background 0.3s;
-        " onmouseover="this.style.background='#0095e0'" onmouseout="this.style.background='#0088cc'">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="" width="20" height="20" loading="lazy" style="filter: brightness(0) invert(1);">
-            Получать уведомления
-        </a>
-    </div>
-</dialog>
+        }
 
-    <!-- Подвал сайта -->
-    <footer role="contentinfo">
-        <div class="footer-content">
-            <p>© 2025 Кино-клуб. Все права защищены. Объективностью здесь и не пахнет! (с)</p>
-            <ul class="footer-links">
-                <li><a href="/privacy">Политика конфиденциальности</a></li>
-                <li><a href="/terms">Условия использования</a></li>
-                <li><a href="mailto:contact@kinoclub.ru">Контакты</a></li>
-            </ul>
+        .btn--primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: var(--light);
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.4);
+        }
+
+        .btn--primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(106, 17, 203, 0.6);
+        }
+
+        .btn--outline {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn--outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .hero__image {
+            position: absolute;
+            right: 5%;
+            bottom: 10%;
+            width: 40%;
+            max-width: 600px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Стили для топ-листов */
+        .top-list-items {
+            list-style-type: none;
+            counter-reset: top-counter;
+            padding-left: 0;
+        }
+
+        .top-list-items li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 0.8rem;
+            counter-increment: top-counter;
+        }
+
+        .top-list-items li::before {
+            content: counter(top-counter);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: var(--secondary);
+            background: rgba(106, 17, 203, 0.2);
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .loading-message {
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        .movie-card__description ol {
+            padding-left: 1rem;
+        }
+
+        .movie-card__description li {
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+        }
+
+        /* О киноклубе */
+        .about {
+            padding: 5rem 5%;
+            background: rgba(10, 10, 20, 0.7);
+            position: relative;
+        }
+
+        .about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .section__title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section__title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
+        .about__content {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about__text {
+            flex: 1;
+        }
+
+        .about__image {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .about__image:hover {
+            transform: scale(1.02);
+        }
+
+        .about__image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .about__quote {
+            font-style: italic;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 5px 5px 0;
+            position: relative;
+        }
+
+        .about__quote::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.1);
+            font-family: serif;
+        }
+
+        /* Фильмы */
+        .movies {
+            padding: 5rem 5%;
+        }
+
+        .movies__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .movie-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .movie-card__image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .movie-card__content {
+            padding: 1.5rem;
+        }
+
+        .movie-card__title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .movie-card__meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .movie-card__description {
+            max-height: 1000px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .top-list-items {
+            list-style-type: none;
+            counter-reset: top-counter;
+            padding-left: 0;
+            margin: 0;
+        }
+        
+        .top-list-items li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 0.8rem;
+            counter-increment: top-counter;
+        }
+        
+        .top-list-items li::before {
+            content: counter(top-counter);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: var(--secondary);
+            background: rgba(106, 17, 203, 0.2);
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        
+        .loading-message {
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        .movie-card__btn {
+            width: 100%;
+        }
+
+        .movie-card__badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Контакты */
+        .contacts {
+            padding: 5rem 5%;
+            background: rgba(10, 10, 20, 0.7);
+        }
+
+        .contacts__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .contact-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .contact-card__icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .contact-card__title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-card__link {
+            color: var(--light);
+            text-decoration: none;
+            transition: var(--transition);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-card__link:hover {
+            color: var(--accent);
+        }
+
+        /* Форма */
+        .form {
+            max-width: 600px;
+            margin: 3rem auto 0;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .form__group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form__label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form__input,
+        .form__textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: var(--light);
+            transition: var(--transition);
+        }
+
+        .form__input:focus,
+        .form__textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form__textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Футер */
+        .footer {
+            background: #0f0f1a;
+            padding: 3rem 5%;
+            text-align: center;
+        }
+
+        .footer__content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer__logo {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .footer__links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer__link {
+            color: var(--light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer__link:hover {
+            color: var(--accent);
+        }
+
+        .footer__social {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social__link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social__link:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .footer__copyright {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .hero__title {
+                font-size: 2.8rem;
+            }
+            
+            .about__content {
+                flex-direction: column;
+            }
+            
+            .hero__image {
+                position: relative;
+                width: 80%;
+                margin: 2rem auto 0;
+                right: auto;
+                bottom: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: var(--dark);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2rem;
+                transition: var(--transition);
+                z-index: 999;
+            }
+            
+            .nav.active {
+                right: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                z-index: 1000;
+            }
+            
+            .hero__title {
+                font-size: 2.2rem;
+            }
+            
+            .hero__subtitle {
+                font-size: 1rem;
+            }
+            
+            .hero__cta {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section__title {
+                font-size: 2rem;
+            }
+            
+            .movie-card__image {
+                height: 250px;
+            }
+        }
+
+        
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header class="header">
+        <a href="#" class="logo">
+            <div class="logo__icon"></div>
+            ОДИССЕЯ
+        </a>
+        
+        <nav class="nav">
+            <a href="#about" class="nav__link">О киноклубе</a>
+            <a href="#movies" class="nav__link">Фильмы</a>
+            <a href="#contacts" class="nav__link">Контакты</a>
+            <a href="#form" class="nav__link">Обратная связь</a>
+        </nav>
+        
+        <button class="mobile-menu-btn">☰</button>
+    </header>
+
+<!-- Герой секция -->
+<section class="hero">
+    <div class="hero__content">
+        <h1 class="hero__title">Киноклуб "ОДИССЕЯ"</h1>
+        <p class="hero__subtitle">Есть о чем поговорить!</p>
+        <div class="hero__cta">
+            <a href="#movies" class="btn btn--primary">Смотреть наши топы</a>
+            <a href="#about" class="btn btn--outline">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="currentColor"/>
+                </svg>
+                О нас
+            </a>
+        </div>
+    </div>
+
+    <div class="hero__image">
+        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6a11cb" />
+                    <stop offset="100%" stop-color="#2575fc" />
+                </linearGradient>
+            </defs>
+            
+            <!-- Фоновая форма -->
+            <path fill="url(#gradient)" d="M250,50 C350,50 450,150 450,250 C450,350 350,450 250,450 C150,450 50,350 50,250 C50,150 150,50 250,50 Z" opacity="0.8"/>
+            
+            <!-- Упрощенная иконка кинопленки -->
+            <rect x="150" y="150" width="200" height="200" fill="none" stroke="#ffffff" stroke-width="4" rx="5" opacity="0.8"/>
+            <!-- Перфорации -->
+            <rect x="140" y="160" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <rect x="140" y="190" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <rect x="140" y="220" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <rect x="140" y="250" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <rect x="140" y="280" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <rect x="350" y="160" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <rect x="350" y="190" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <rect x="350" y="220" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <rect x="350" y="250" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <rect x="350" y="280" width="10" height="20" fill="#fff" opacity="0.6"/>
+            <!-- Кадры фильма -->
+            <rect x="170" y="170" width="40" height="40" fill="#fff" opacity="0.3"/>
+            <rect x="170" y="230" width="40" height="40" fill="#fff" opacity="0.3"/>
+            <rect x="290" y="170" width="40" height="40" fill="#fff" opacity="0.3"/>
+            <rect x="290" y="230" width="40" height="40" fill="#fff" opacity="0.3"/>
+        </svg>
+    </div>
+</section>
+
+<!-- О киноклубе -->
+<section id="about" class="about">
+    <h2 class="section__title fade-in">О нашем киноклубе</h2>
+    
+    <div class="about__content">
+        <!-- Обёртка для карточек FAQ -->
+        <div class="faq-grid fade-in delay-1">
+            <!-- Колонка 1 -->
+            <div class="faq-column">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-icon">🎬</span>
+                        <h3>Кто вы?</h3>
+                    </div>
+                    <p class="faq-answer">Команда киноманов, которые каждую неделю собираются потрещать о фильме.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-icon">💸</span>
+                        <h3>Это платно?</h3>
+                    </div>
+                    <p class="faq-answer">Нет, но если не купишь кофе — мы тебя осуждаем (шутка… или нет).</p>
+                </div>
+            </div>
+            
+            <!-- Колонка 2 -->
+            <div class="faq-column">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-icon">🗣️</span>
+                        <h3>Как проходят встречи?</h3>
+                    </div>
+                    <p class="faq-answer">Фильм смотрим дома, а на встрече — споры, восторги и "как это вообще можно было снять?!". В начале — мини-лекция о фильме, потом — громкие обсуждения. В конце ставим оценки и выводим "клубный рейтинг".</p>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-icon">👑</span>
+                        <h3>Кто выбирает фильмы?</h3>
+                    </div>
+                    <p class="faq-answer">Наш "кино-диктатор", но иногда он снисходит до мнения народа. В день рождения твой выбор — закон!</p>
+                </div>
+            </div>
+            
+            <!-- Колонка 3 -->
+            <div class="faq-column">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-icon">🚪</span>
+                        <h3>Как вступить?</h3>
+                    </div>
+                    <p class="faq-answer">Просто приходи! Узнаешь нас по фото в группе или по горящим глазам.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="faq-icon">📢</span>
+                        <h3>Где следить за анонсами?</h3>
+                    </div>
+                    <p class="faq-answer">ВК, ТГ-бот и сайт. Все ссылки тут: <a href="#contacts" class="gradient-link">в разделе контактов</a>.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Цитата под карточками -->
+        <div class="about__quote fade-in delay-2">
+            <div class="quote-icon">❝</div>
+            <p>"Киноклуб Одиссея - объективностью здесь и не пахнет! (с)"</p>
+            <div class="quote-author">— Неизвестный критик</div>
+        </div>
+        
+        <!-- Увеличенное изображение -->
+        <div class="image-container-wrapper fade-in delay-3">
+            <div class="image-container">
+                <img src="images/image-container.jpg" alt="Киноклуб Одиссея" class="main-image">
+                <div class="film-strip"></div>
+                <div class="projector-light"></div>
+                <div class="cine-logo">Киноклуб "ОДИССЕЯ"</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Дополнительные стили для секции "О киноклубе" */
+    .about__content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        width: 100%;
+    }
+
+    .faq-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .faq-item {
+        margin-bottom: 0;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        padding: 1.5rem;
+        transition: var(--transition);
+        border-left: 3px solid transparent;
+        height: 100%;
+    }
+
+    .faq-item:hover {
+        background: rgba(255, 255, 255, 0.07);
+        border-left: 3px solid var(--accent);
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .faq-question {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        cursor: pointer;
+        margin-bottom: 0.5rem;
+    }
+
+    .faq-question h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--light);
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .faq-icon {
+        font-size: 1.5rem;
+        background: rgba(106, 17, 203, 0.2);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .faq-answer {
+        margin-top: 0.5rem;
+        padding-left: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .about__quote {
+        font-style: italic;
+        margin: 0 auto;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 800px;
+        width: 100%;
+    }
+
+    .quote-icon {
+        position: absolute;
+        top: 0.5rem;
+        left: 1rem;
+        font-size: 3rem;
+        color: rgba(255, 77, 77, 0.2);
+    }
+
+    .about__quote p {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .quote-author {
+        text-align: right;
+        color: var(--accent);
+        font-weight: 600;
+    }
+
+    .gradient-link {
+        color: var(--light);
+        text-decoration: none;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 600;
+        position: relative;
+    }
+
+    .gradient-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        transition: var(--transition);
+    }
+
+    .gradient-link:hover::after {
+        height: 2px;
+    }
+
+    .image-container-wrapper {
+        width: 100%;
+        margin-top: 2rem;
+    }
+
+    .image-container {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        transform: perspective(1000px) rotateY(-5deg);
+        transition: var(--transition);
+        height: 400px;
+    }
+
+    .image-container:hover {
+        transform: perspective(1000px) rotateY(0deg);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .main-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: relative;
+        z-index: 1;
+    }
+
+    .film-strip {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 20px,
+            rgba(255, 255, 255, 0.1) 20px,
+            rgba(255, 255, 255, 0.1) 22px
+        );
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .projector-light {
+        position: absolute;
+        top: -20px;
+        left: -20px;
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+        filter: blur(5px);
+        z-index: 3;
+        animation: projector 4s infinite alternate;
+    }
+
+    .cine-logo {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+        z-index: 3;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes projector {
+        0%, 100% {
+            transform: translate(10px, 10px);
+            opacity: 0.7;
+        }
+        50% {
+            transform: translate(30px, 30px);
+            opacity: 0.9;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .faq-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .image-container {
+            height: 350px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .faq-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .faq-item {
+            padding: 1rem;
+        }
+        
+        .image-container {
+            height: 300px;
+            transform: none;
+        }
+        
+        .cine-logo {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    // Анимация вопросов при загрузке
+    document.querySelectorAll('.faq-item').forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        item.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1 + 0.3}s`;
+    });
+
+    // Интерактивность вопросов
+    document.querySelectorAll('.faq-question').forEach(question => {
+        question.addEventListener('click', () => {
+            const answer = question.nextElementSibling;
+            answer.style.maxHeight = answer.style.maxHeight ? null : `${answer.scrollHeight}px`;
+        });
+    });
+</script>
+
+<!-- Фильмы -->
+    <section id="movies" class="movies">
+        <h2 class="section__title">Наши топы</h2>
+        
+        <div class="movies__grid">
+            <!-- Топ 10 фильмов -->
+            <div class="movie-card">
+                <div class="movie-card__badge">Топ-10</div>
+                <div class="movie-card__content">
+                    <h3 class="movie-card__title">Лучшие фильмы</h3>
+                    <div class="movie-card__description">
+                        <ol id="top-films-list" class="top-list-items" aria-live="polite">
+                            <li class="loading-message">Загрузка списка... Или включите VPN</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Топ 10 режиссеров -->
+            <div class="movie-card">
+                <div class="movie-card__badge">Топ-10</div>
+                <div class="movie-card__content">
+                    <h3 class="movie-card__title">Лучшие режиссеры</h3>
+                    <div class="movie-card__description">
+                        <ol id="top-directors-list" class="top-list-items" aria-live="polite">
+                            <li class="loading-message">Загрузка списка... Или включите VPN</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Топ 10 жанров -->
+            <div class="movie-card">
+                <div class="movie-card__badge">Топ-10</div>
+                <div class="movie-card__content">
+                    <h3 class="movie-card__title">Популярные жанры</h3>
+                    <div class="movie-card__description">
+                        <ol id="top-genres-list" class="top-list-items" aria-live="polite">
+                            <li class="loading-message">Загрузка списка... Или включите VPN</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция архива фильмов -->
+<section id="film-archive" class="film-archive">
+    <h2 class="section__title fade-in">Архив наших работ</h2>
+    
+    <div id="works-container" class="video-posters-grid fade-in delay-1" aria-live="polite">
+        <div class="loading-message">
+            <div class="spinner"></div>
+            Загрузка архива работ...
+        </div>
+    </div>
+
+    <h2 class="section__title fade-in delay-2">История обсуждений</h2>
+    <div id="films-container" class="film-grid fade-in delay-3" aria-live="polite">
+        <div class="loading-message">
+            <div class="spinner"></div>
+            Загрузка списка фильмов...
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Стили для секции архива */
+    .film-archive {
+        padding: 5rem 5%;
+        background: rgba(10, 10, 20, 0.5);
+        position: relative;
+    }
+    
+    .film-archive::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+        opacity: 0.3;
+        z-index: -1;
+    }
+    
+    /* Сетка для видео постеров */
+    .video-posters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+    
+    /* Сетка для фильмов */
+    .film-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+    
+    /* Карточка фильма */
+    .film-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: var(--transition);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+    
+    .film-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .film-card-image {
+        position: relative;
+        width: 100%;
+        height: 350px;
+        overflow: hidden;
+    }
+    
+    .film-thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+    
+    .film-card:hover .film-thumbnail {
+        transform: scale(1.05);
+    }
+    
+    .film-rating {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(5px);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: bold;
+    }
+    
+    .rating-stars {
+        color: #ffd700;
+    }
+    
+    .rating-number {
+        color: var(--light);
+    }
+    
+    .film-info {
+        padding: 1.5rem;
+    }
+    
+    .discussion-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--gray);
+    }
+    
+    .film-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--light);
+    }
+    
+    .film-director,
+    .film-genre {
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+        color: var(--gray);
+    }
+    
+    .film-comment {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--light);
+        opacity: 0.8;
+    }
+    
+    /* Карточка видео работы */
+    .film-poster {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: var(--transition);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .film-poster:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .video-link {
+        position: relative;
+        display: block;
+        height: 300px;
+        overflow: hidden;
+    }
+    
+    .poster-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+    
+    .film-poster:hover .poster-image {
+        transform: scale(1.05);
+    }
+    
+    .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: var(--transition);
+    }
+    
+    .film-poster:hover .play-overlay {
+        opacity: 1;
+    }
+    
+    .play-button {
+        font-size: 3rem;
+        color: white;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .watch-text {
+        color: white;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    
+    .work-info {
+        padding: 1.5rem;
+    }
+    
+    .work-info h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: var(--light);
+    }
+    
+    .work-description {
+        font-size: 0.9rem;
+        color: var(--gray);
+    }
+    
+    /* Сообщения о загрузке */
+    .loading-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        color: var(--gray);
+        grid-column: 1 / -1;
+    }
+    
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(106, 17, 203, 0.2);
+        border-top-color: var(--secondary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .video-posters-grid,
+        .film-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+        
+        .film-card-image,
+        .video-link {
+            height: 250px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .video-posters-grid,
+        .film-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script src="script.js" defer></script>
+
+    <!-- Контакты -->
+    <section id="contacts" class="contacts">
+        <h2 class="section__title">Контакты</h2>
+        
+        <div class="contacts__grid">
+            <div class="contact-card">
+                <div class="contact-card__icon">📱</div>
+                <h3 class="contact-card__title">Телефон</h3>
+                <a href="tel:+79787363212" class="contact-card__link">+7 (978) 736-32-12</a>
+                <p>Настенька (организатор)</p>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-card__icon">✉️</div>
+                <h3 class="contact-card__title">Соцсети</h3>
+                <a href="https://vk.com/club199046020" target="_blank" class="contact-card__link">Группа ВКонтакте</a>
+                <p>Актуальные новости и анонсы</p>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-card__icon">🤖</div>
+                <h3 class="contact-card__title">Телеграм</h3>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" class="contact-card__link">@Odyssey_Cinema_Club_bot</a>
+                <p>Telegram-бот</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Форма -->
+    <section id="form" class="form-section">
+        <div class="form">
+            <h2 class="section__title" style="margin-bottom: 2rem;">Обратная связь</h2>
+            
+            <form>
+                <div class="form__group">
+                    <label for="name" class="form__label">Ваше имя</label>
+                    <input type="text" id="name" class="form__input" placeholder="Как к вам обращаться?">
+                </div>
+                
+                <div class="form__group">
+                    <label for="email" class="form__label">Email или телефон</label>
+                    <input type="text" id="email" class="form__input" placeholder="Как с вами связаться?">
+                </div>
+                
+                <div class="form__group">
+                    <label for="message" class="form__label">Ваше сообщение</label>
+                    <textarea id="message" class="form__textarea" placeholder="Что вы хотите нам сказать?"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn--primary" style="width: 100%;">Отправить</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="footer__content">
+            <div class="footer__logo">ОДИССЕЯ</div>
+            
+            <div class="footer__links">
+                <a href="#about" class="footer__link">О нас</a>
+                <a href="#movies" class="footer__link">Фильмы</a>
+                <a href="#contacts" class="footer__link">Контакты</a>
+                <a href="#form" class="footer__link">Обратная связь</a>
+            </div>
+            
+            <div class="footer__social">
+                <a href="https://vk.com/club199046020" target="_blank" class="social__link">VK</a>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" class="social__link">TG</a>
+            </div>
+            
+            <p class="footer__copyright">© 2025 Киноклуб "ОДИССЕЯ".</p>
         </div>
     </footer>
 
-    <!-- Загрузка скриптов -->
-    <script src="script.js" defer></script>
-
-    <!-- Полифиллы для старых браузеров -->
     <script>
-        if (!window.Promise || !window.fetch || !window.customElements) {
-            const script = document.createElement('script');
-            script.src = 'https://polyfill.io/v3/polyfill.min.js?features=Promise,fetch,Element.prototype.classList,NodeList.prototype.forEach';
-            document.head.appendChild(script);
-        }
-    </script>
-</body>
-</html>
+        // Мобильное меню
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const nav = document.querySelector('.nav');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            nav.classList.toggle('active');
+            mobileMenuBtn.textContent = nav.classList.contains('active') ? '✕' : '☰';
+        });
+        
+        // Закрытие меню при клике на ссылку
+        const navLinks = document.querySelectorAll('.nav__link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('active');
+                mobileMenuBtn.textContent = '☰';
+            });
+        });
+        
+        // Эффект при скролле для шапки
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Плавная прокрутка
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Анимация элементов при скролле
+    const animateOnScroll = () => {
+        const elements = document.querySelectorAll('.fade-in:not(.animated)');
+        
+        elements.forEach(element => {
+            const elementPosition = element.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+            
+            if (elementPosition < windowHeight - 100) {
+                element.classList.add('animated');
+            }
+        });
+    };
+
+    // Проверяем при загрузке
+    window.addEventListener('load', animateOnScroll);
+    // И при скролле
+    window.addEventListener('scroll', animateOnScroll);
+
+    // Форма обратной связи
+    const contactForm = document.querySelector('form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Здесь можно добавить AJAX-отправку формы
+            alert('Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.');
+            contactForm.reset();
+        });
+    }
+
+    // Дополнительные эффекты для карточек фильмов
+    const movieCards = document.querySelectorAll('.movie-card');
+    movieCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const angleX = (y - centerY) / 20;
+            const angleY = (centerX - x) / 20;
+            
+            card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
+    });
+</script>
