@@ -1,85 +1,3 @@
-// Мобильное меню
-const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-const nav = document.querySelector('.nav');
-
-mobileMenuBtn.addEventListener('click', () => {
-    nav.classList.toggle('active');
-    mobileMenuBtn.textContent = nav.classList.contains('active') ? '✕' : '☰';
-});
-
-// Закрытие меню при клике на ссылку
-const navLinks = document.querySelectorAll('.nav__link');
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        nav.classList.remove('active');
-        mobileMenuBtn.textContent = '☰';
-    });
-});
-
-// Эффект при скролле для шапки
-window.addEventListener('scroll', () => {
-    const header = document.querySelector('.header');
-    if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
-});
-
-// Плавная прокрутка
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-    const targetId = this.getAttribute('href');
-    const targetElement = document.querySelector(targetId);
-    
-    if (targetElement) {
-        window.scrollTo({
-            top: targetElement.offsetTop - 80,
-            behavior: 'smooth'
-        });
-    }
-});
-});
-
-// Анимация элементов при скролле
-const animateOnScroll = () => {
-    const elements = document.querySelectorAll('.fade-in:not(.animated)');
-    
-    elements.forEach(element => {
-        const elementPosition = element.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        
-        if (elementPosition < windowHeight - 100) {
-            element.classList.add('animated');
-        }
-    });
-};
-
-// Проверяем при загрузке
-window.addEventListener('load', animateOnScroll);
-// И при скролле
-window.addEventListener('scroll', animateOnScroll);
-
-// Дополнительные эффекты для карточек фильмов
-const movieCards = document.querySelectorAll('.movie-card');
-movieCards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const angleX = (y - centerY) / 20;
-        const angleY = (centerX - x) / 20;
-        
-        card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-    });
-    
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-    });
-});
-
 /**
  * Кино-клуб "Одиссея" - скрипт для веб-приложения
  * Основные функции: загрузка данных, рендеринг, управление UI
@@ -127,18 +45,11 @@ const CONFIG = {
 
     // Селекторы DOM
     selectors: {
-        modal: '#modal',
-        openModal: '#openModal',
-        closeModal: '.close',
-        filmForm: '#film-suggestion-form',
-        formThanks: '#form-thanks',
         filmsContainer: '#films-container',
         worksContainer: '#works-container',
         topFilmsList: '#top-films-list',
         topDirectorsList: '#top-directors-list',
         topGenresList: '#top-genres-list',
-        mobileMenuToggle: '.mobile-menu-toggle',
-        mainMenu: '#main-menu'
     },
 
     // Сообщения
@@ -151,7 +62,6 @@ const CONFIG = {
         serverError: 'Ошибка сервера',
         genericError: 'Произошла ошибка',
         retry: 'Попробовать снова',
-        formSuccess: 'Спасибо! Мы рассмотрим ваш вариант.'
     },
 
     // API
@@ -174,18 +84,11 @@ const STATE = {
 
 // DOM элементы
 const DOM = {
-    modal: null,
-    openModalBtn: null,
-    closeModalBtn: null,
-    filmForm: null,
-    formThanks: null,
     filmsContainer: null,
     worksContainer: null,
     topFilmsList: null,
     topDirectorsList: null,
     topGenresList: null,
-    mobileMenuToggle: null,
-    mainMenu: null
 };
 
 /**
@@ -203,59 +106,21 @@ function initApp() {
  * Кэширование DOM элементов
  */
 function cacheDOM() {
-    DOM.modal = document.querySelector(CONFIG.selectors.modal);
-    DOM.openModalBtn = document.querySelector(CONFIG.selectors.openModal);
-    DOM.closeModalBtn = document.querySelector(CONFIG.selectors.closeModal);
-    DOM.filmForm = document.querySelector(CONFIG.selectors.filmForm);
-    DOM.formThanks = document.querySelector(CONFIG.selectors.formThanks);
     DOM.filmsContainer = document.querySelector(CONFIG.selectors.filmsContainer);
     DOM.worksContainer = document.querySelector(CONFIG.selectors.worksContainer);
     DOM.topFilmsList = document.querySelector(CONFIG.selectors.topFilmsList);
     DOM.topDirectorsList = document.querySelector(CONFIG.selectors.topDirectorsList);
     DOM.topGenresList = document.querySelector(CONFIG.selectors.topGenresList);
-    DOM.mobileMenuToggle = document.querySelector(CONFIG.selectors.mobileMenuToggle);
-    DOM.mainMenu = document.querySelector(CONFIG.selectors.mainMenu);
 }
 
 /**
  * Инициализация обработчиков событий
  */
 function initEventListeners() {
-    // Модальное окно
-    if (DOM.openModalBtn) {
-        DOM.openModalBtn.addEventListener('click', showModal);
-    }
-
-    if (DOM.closeModalBtn) {
-        DOM.closeModalBtn.addEventListener('click', hideModal);
-    }
-
-    // Форма предложения фильма
-    if (DOM.filmForm) {
-        DOM.filmForm.addEventListener('submit', handleFilmFormSubmit);
-    }
-
-    // Мобильное меню
-    if (DOM.mobileMenuToggle) {
-        DOM.mobileMenuToggle.addEventListener('click', toggleMobileMenu);
-    }
 
     // События онлайн/офлайн
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
-
-    // Закрытие модального окна
-    window.addEventListener('click', (e) => {
-        if (e.target === DOM.modal) {
-            hideModal();
-        }
-    });
-
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && DOM.modal.style.display === 'block') {
-            hideModal();
-        }
-    });
 }
 
 /**
@@ -363,9 +228,7 @@ async function loadTopLists() {
  */
 function updateTopGenres(films) {
     if (!films || !films.length) return;
-
     const fields = CONFIG.sheets.films.fields;
-
     const genresMap = films.reduce((acc, film) => {
         const genres = (film[fields.genre] || 'Не указан').split(',').map(g => g.trim());
         genres.forEach(genre => {
@@ -373,7 +236,6 @@ function updateTopGenres(films) {
         });
         return acc;
     }, {});
-
     const sortedGenres = Object.entries(genresMap)
         .map(([genre, count]) => ({ genre, count }))
         .sort((a, b) => b.count - a.count)
@@ -388,15 +250,12 @@ function updateTopGenres(films) {
  */
 function updateTopDirectors(films) {
     if (!films || !films.length) return;
-
     const fields = CONFIG.sheets.films.fields;
-
     const directorsMap = films.reduce((acc, film) => {
         const director = film[fields.director] || 'Неизвестен';
         acc[director] = (acc[director] || 0) + 1;
         return acc;
     }, {});
-
     const sortedDirectors = Object.entries(directorsMap)
         .map(([name, count]) => ({ name, count }))
         .sort((a, b) => b.count - a.count)
@@ -411,9 +270,7 @@ function updateTopDirectors(films) {
  */
 function updateTopFilms(films) {
     if (!films || !films.length) return;
-
     const fields = CONFIG.sheets.films.fields;
-
     const sortedFilms = [...films]
         .filter(film => film[fields.rating])
         .sort((a, b) => parseFloat(b[fields.rating]) - parseFloat(a[fields.rating]))
@@ -631,7 +488,7 @@ function createRatingStars(rating) {
 
     return `
         <span class="rating-stars" aria-hidden="true">
-            ${'★'.repeat(full)}${half ? '½' : ''}${'☆'.repeat(empty)}
+            ${'★'.repeat(full)}${half ? '⯨' : ''}${'☆'.repeat(empty)}
         </span>
     `;
 }
@@ -673,87 +530,10 @@ function formatDate(dateString) {
         const year = date.getFullYear();
 
         return `${day}.${month}.${year}`;
+
     } catch (e) {
         console.error('Ошибка форматирования даты:', e);
         return dateString;
-    }
-}
-
-/**
- * Управление модальным окном
- */
-function showModal() {
-    if (!DOM.modal) return;
-
-    DOM.modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.setProperty('--scrollbar-width', `${window.innerWidth - document.documentElement.clientWidth}px`);
-    document.body.style.paddingRight = 'var(--scrollbar-width)';
-
-    const focusable = DOM.modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    focusable?.focus();
-}
-
-function hideModal() {
-    if (!DOM.modal) return;
-
-    DOM.modal.style.display = 'none';
-    document.body.style.overflow = '';
-    document.body.style.paddingRight = '';
-    DOM.openModalBtn?.focus();
-}
-
-/**
- * Обработка формы предложения фильма
- */
-function handleFilmFormSubmit(e) {
-    e.preventDefault();
-    if (!DOM.filmForm || !DOM.formThanks) return;
-
-    const formData = new FormData(DOM.filmForm);
-    const filmData = {
-        title: formData.get('film-title'),
-        year: formData.get('film-year'),
-        reason: formData.get('film-reason'),
-        timestamp: new Date().toISOString()
-    };
-
-    console.log('Предложен фильм:', filmData);
-
-    DOM.filmForm.style.display = 'none';
-    DOM.formThanks.textContent = CONFIG.messages.formSuccess;
-    DOM.formThanks.style.display = 'block';
-    DOM.filmForm.reset();
-
-    setTimeout(() => {
-        DOM.filmForm.style.display = 'block';
-        DOM.formThanks.style.display = 'none';
-    }, 3000);
-}
-
-/**
- * Управление мобильным меню
- */
-function toggleMobileMenu() {
-    STATE.menuOpen = !STATE.menuOpen;
-
-    if (DOM.mobileMenuToggle && DOM.mainMenu) {
-        DOM.mobileMenuToggle.setAttribute('aria-expanded', STATE.menuOpen);
-        DOM.mainMenu.setAttribute('aria-expanded', STATE.menuOpen);
-
-        if (STATE.menuOpen) {
-            DOM.mainMenu.style.display = 'flex';
-            setTimeout(() => {
-                DOM.mainMenu.style.opacity = '1';
-                DOM.mainMenu.style.transform = 'translateY(0)';
-            }, 10);
-        } else {
-            DOM.mainMenu.style.opacity = '0';
-            DOM.mainMenu.style.transform = 'translateY(-10px)';
-            setTimeout(() => {
-                DOM.mainMenu.style.display = 'none';
-            }, 300);
-        }
     }
 }
 
@@ -766,7 +546,5 @@ window.App = {
     state: STATE,
     dom: DOM,
     reloadFilms: loadFilmsData,
-    reloadWorks: loadWorksData,
-    showModal,
-    hideModal
+    reloadWorks: loadWorksData
 };
