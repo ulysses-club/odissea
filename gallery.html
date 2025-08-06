@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фотогалерея | Киноклуб "ОДИССЕЯ"</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Шапка -->
+    <header class="header">
+        <a href="index.html" class="logo">
+            <div class="logo__icon"></div>
+            ОДИССЕЯ
+        </a>
+        <nav class="nav">
+            <a href="index.html#about" class="nav__link">О киноклубе</a>
+            <a href="index.html#contacts" class="nav__link">Контакты</a>
+            <a href="index.html#movies" class="nav__link">Фильмы</a>
+        </nav>
+        <button class="mobile-menu-btn">☰</button>
+    </header>
+
+    <!-- Герой секция -->
+    <section class="hero hero--gallery">
+        <div class="hero__content">
+            <h1 class="hero__title">Фотогалерея</h1>
+            <p class="hero__subtitle">Наши моменты, встречи и приключения</p>
+        </div>
+    </section>
+
+    <!-- Галерея -->
+    <section class="gallery">
+        <div class="gallery__controls">
+            <div class="gallery__filter-buttons">
+                <button class="filter-btn active" data-filter="all">Все</button>
+                <button class="filter-btn" data-filter="meetings">Встречи</button>
+                <button class="filter-btn" data-filter="outings">Вылазки</button>
+                <button class="filter-btn" data-filter="hobbies">Хобби</button>
+                <button class="filter-btn" data-filter="works">Работы</button>
+                <button class="filter-btn" data-filter="members">Участники</button>
+                <button class="filter-btn" data-filter="places">Места</button>
+                <button class="filter-btn" data-filter="announcements">Объявления</button>
+                <button class="filter-btn" data-filter="friends">Друзья</button>
+            </div>
+            <div class="gallery__search">
+                <input type="text" id="gallery-search" placeholder="Поиск по галерее...">
+            </div>
+        </div>
+
+        <div class="gallery__container" id="gallery-container">
+            <!-- Фотографии будут загружаться здесь автоматически -->
+            <div class="loading-message">
+                <div class="spinner"></div>
+                Загрузка фотографий...
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="footer__content">
+            <div class="footer__logo">ОДИССЕЯ</div>
+            <div class="footer__links">
+                <a href="index.html#about" class="footer__link">О нас</a>
+                <a href="index.html#movies" class="footer__link">Фильмы</a>
+                <a href="index.html#contacts" class="footer__link">Контакты</a>
+                <a href="gallery.html" class="footer__link">Галерея</a>
+                <a href="stanislav.html" class="footer__link">Автор сайта</a>
+            </div>
+            <div class="footer__social">
+                <a href="https://vk.com/club199046020" target="_blank" class="social__link">VK</a>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" class="social__link">TG</a>
+            </div>
+            <p class="footer__copyright">© 2025 Киноклуб "ОДИССЕЯ".</p>
+        </div>
+    </footer>
+
+    <!-- Модальное окно для просмотра фото -->
+    <div class="modal" id="image-modal">
+        <span class="modal__close">&times;</span>
+        <img class="modal__content" id="modal-image">
+        <div class="modal__caption" id="modal-caption"></div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="gallery.js"></script>
+</body>
+</html>
