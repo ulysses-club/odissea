@@ -1,3 +1,85 @@
+// Мобильное меню
+const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+const nav = document.querySelector('.nav');
+
+mobileMenuBtn.addEventListener('click', () => {
+    nav.classList.toggle('active');
+    mobileMenuBtn.textContent = nav.classList.contains('active') ? '✕' : '☰';
+});
+
+// Закрытие меню при клике на ссылку
+const navLinks = document.querySelectorAll('.nav__link');
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        nav.classList.remove('active');
+        mobileMenuBtn.textContent = '☰';
+    });
+});
+
+// Эффект при скролле для шапки
+window.addEventListener('scroll', () => {
+    const header = document.querySelector('.header');
+    if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+});
+
+// Плавная прокрутка
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+    const targetId = this.getAttribute('href');
+    const targetElement = document.querySelector(targetId);
+    
+    if (targetElement) {
+        window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+        });
+    }
+});
+});
+
+// Анимация элементов при скролле
+const animateOnScroll = () => {
+    const elements = document.querySelectorAll('.fade-in:not(.animated)');
+    
+    elements.forEach(element => {
+        const elementPosition = element.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (elementPosition < windowHeight - 100) {
+            element.classList.add('animated');
+        }
+    });
+};
+
+// Проверяем при загрузке
+window.addEventListener('load', animateOnScroll);
+// И при скролле
+window.addEventListener('scroll', animateOnScroll);
+
+// Дополнительные эффекты для карточек фильмов
+const movieCards = document.querySelectorAll('.movie-card');
+movieCards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const angleX = (y - centerY) / 20;
+        const angleY = (centerX - x) / 20;
+        
+        card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+    });
+    
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    });
+});
+
 /**
  * Кино-клуб "Одиссея" - скрипт для веб-приложения
  * Основные функции: загрузка данных, рендеринг, управление UI
@@ -554,9 +636,6 @@ function createRatingStars(rating) {
     `;
 }
 
-/**
- * Форматирование даты в формате дд.мм.гггг
- */
 /**
  * Форматирование даты в строгом формате дд.мм.гггг
  * с защитой от перестановки дня и месяца
