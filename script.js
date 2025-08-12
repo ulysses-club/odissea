@@ -11,14 +11,17 @@ const CONFIG = {
             id: '1a6EWO5ECaI1OveO4Gy7y9zH5LjFtlm8Alg9iSRP2heE',
             name: 'Films',
             fields: {
-                title: 'Название',
-                year: 'Год',
+                title: 'Фильм',
                 director: 'Режиссер',
                 genre: 'Жанр',
+                country: 'Страна',
+                year: 'Год',
+                rating: 'Оценка',
                 discussion: 'Номер обсуждения',
                 date: 'Дата',
-                rating: 'Рейтинг',
-                poster: 'Постер URL'
+                poster: 'Постер URL',
+                description: 'Описание',
+                participants: 'Участников'
             }
         },
         works: {
@@ -40,7 +43,9 @@ const CONFIG = {
         poster: 'images/default-poster.jpg',
         ratingPrecision: 1,
         maxRating: 10,
-        maxTopItems: 10
+        maxTopItems: 10,
+        cacheTTL: 3600000, // 1 час в миллисекундах
+        filmsPerPage: 20
     },
 
     // Селекторы DOM
@@ -50,6 +55,8 @@ const CONFIG = {
         topFilmsList: '#top-films-list',
         topDirectorsList: '#top-directors-list',
         topGenresList: '#top-genres-list',
+        loadMoreBtn: '#load-more-films',
+        scrollToTopBtn: '#scroll-to-top'
     },
 
     // Сообщения
@@ -62,6 +69,9 @@ const CONFIG = {
         serverError: 'Ошибка сервера',
         genericError: 'Произошла ошибка',
         retry: 'Попробовать снова',
+        offline: 'Вы сейчас офлайн. Показаны кэшированные данные.',
+        loadMore: 'Показать еще',
+        allFilmsLoaded: 'Все фильмы загружены'
     },
 
     // API
@@ -74,12 +84,23 @@ const CONFIG = {
 // Состояние приложения
 const STATE = {
     films: [],
+    sortedFilms: [], // Отсортированная копия фильмов
     works: [],
     topFilms: [],
     topDirectors: [],
     topGenres: [],
     isOnline: navigator.onLine,
-    menuOpen: false
+    lastUpdated: null,
+    pagination: {
+        currentPage: 1,
+        totalFilms: 0,
+        hasMore: true
+    },
+    cache: {
+        films: null,
+        works: null,
+        topLists: null
+    }
 };
 
 // DOM элементы
@@ -89,6 +110,8 @@ const DOM = {
     topFilmsList: null,
     topDirectorsList: null,
     topGenresList: null,
+    loadMoreBtn: null,
+    scrollToTopBtn: null
 };
 
 /**
@@ -100,6 +123,7 @@ function initApp() {
     checkConnectivity();
     loadInitialData();
     updateOnlineStatus();
+    initScrollToTop();
 }
 
 /**
@@ -111,16 +135,46 @@ function cacheDOM() {
     DOM.topFilmsList = document.querySelector(CONFIG.selectors.topFilmsList);
     DOM.topDirectorsList = document.querySelector(CONFIG.selectors.topDirectorsList);
     DOM.topGenresList = document.querySelector(CONFIG.selectors.topGenresList);
+    DOM.scrollToTopBtn = document.querySelector(CONFIG.selectors.scrollToTopBtn);
+    
+    // Создаем кнопку "Показать еще", если ее нет в DOM
+    if (!DOM.loadMoreBtn) {
+        DOM.loadMoreBtn = document.createElement('button');
+        DOM.loadMoreBtn.id = 'load-more-films';
+        DOM.loadMoreBtn.className = 'load-more-btn';
+        DOM.loadMoreBtn.textContent = CONFIG.messages.loadMore;
+        DOM.loadMoreBtn.setAttribute('aria-label', 'Загрузить больше фильмов');
+        DOM.loadMoreBtn.style.display = 'none';
+        
+        const filmArchiveSection = document.querySelector('#film-archive');
+        if (filmArchiveSection) {
+            filmArchiveSection.appendChild(DOM.loadMoreBtn);
+        }
+    }
 }
 
 /**
  * Инициализация обработчиков событий
  */
 function initEventListeners() {
-
     // События онлайн/офлайн
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
+    
+    // Кнопка "Попробовать снова"
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('retry-button')) {
+            loadInitialData();
+        }
+    });
+    
+    // Кнопка "Показать еще"
+    if (DOM.loadMoreBtn) {
+        DOM.loadMoreBtn.addEventListener('click', loadMoreFilms);
+    }
+
+    // Прокрутка страницы
+    window.addEventListener('scroll', handleScroll);
 }
 
 /**
@@ -154,8 +208,8 @@ function showOfflineMessage() {
     const offlineMessage = document.createElement('div');
     offlineMessage.className = 'offline-message';
     offlineMessage.innerHTML = `
-        <p>Вы сейчас офлайн. Некоторые функции могут быть недоступны.</p>
-        <button onclick="window.location.reload()">Обновить</button>
+        <p>${CONFIG.messages.offline}</p>
+        <button class="retry-button">${CONFIG.messages.retry}</button>
     `;
     document.body.prepend(offlineMessage);
 }
@@ -165,14 +219,96 @@ function showOfflineMessage() {
  */
 async function loadInitialData() {
     try {
+        // Проверяем кэш перед загрузкой
+        if (STATE.cache.films && isCacheValid()) {
+            loadFromCache();
+            return;
+        }
+
+        showLoading(DOM.filmsContainer);
+        showLoading(DOM.worksContainer);
+        showLoading(DOM.topFilmsList.parentElement);
+
         await Promise.all([
             loadFilmsData(),
-            loadWorksData(),
-            loadTopLists()
+            loadWorksData()
         ]);
+
+        updateTopLists(STATE.films);
+        saveToCache();
+        
     } catch (error) {
         console.error('Ошибка загрузки данных:', error);
         showError(DOM.filmsContainer, error);
+    }
+}
+
+/**
+ * Загрузка данных из кэша
+ */
+function loadFromCache() {
+    STATE.films = STATE.cache.films;
+    STATE.works = STATE.cache.works;
+    STATE.topFilms = STATE.cache.topLists?.topFilms || [];
+    STATE.topDirectors = STATE.cache.topLists?.topDirectors || [];
+    STATE.topGenres = STATE.cache.topLists?.topGenres || [];
+    
+    sortFilmsByDate();
+    resetPagination();
+    renderAllData();
+}
+
+/**
+ * Сортировка фильмов по дате (новые сверху)
+ */
+function sortFilmsByDate() {
+    const fields = CONFIG.sheets.films.fields;
+    STATE.sortedFilms = [...STATE.films].sort((a, b) => {
+        const dateA = parseDate(a[fields.date]);
+        const dateB = parseDate(b[fields.date]);
+        return dateB - dateA;
+    });
+}
+
+/**
+ * Сброс состояния пагинации
+ */
+function resetPagination() {
+    STATE.pagination = {
+        currentPage: 1,
+        totalFilms: STATE.sortedFilms.length,
+        hasMore: STATE.sortedFilms.length > CONFIG.defaults.filmsPerPage
+    };
+}
+
+/**
+ * Проверка валидности кэша
+ */
+function isCacheValid() {
+    if (!STATE.lastUpdated) return false;
+    return (Date.now() - STATE.lastUpdated) < CONFIG.defaults.cacheTTL;
+}
+
+/**
+ * Сохранение данных в кэш
+ */
+function saveToCache() {
+    STATE.cache = {
+        films: STATE.films,
+        works: STATE.works,
+        topLists: {
+            topFilms: STATE.topFilms,
+            topDirectors: STATE.topDirectors,
+            topGenres: STATE.topGenres
+        }
+    };
+    STATE.lastUpdated = Date.now();
+    
+    try {
+        localStorage.setItem('cinemaClubCache', JSON.stringify(STATE.cache));
+        localStorage.setItem('cinemaClubLastUpdated', STATE.lastUpdated.toString());
+    } catch (e) {
+        console.error('Ошибка сохранения в localStorage:', e);
     }
 }
 
@@ -181,13 +317,38 @@ async function loadInitialData() {
  */
 async function loadFilmsData() {
     try {
-        showLoading(DOM.filmsContainer);
         const data = await fetchData(CONFIG.sheets.films.id, CONFIG.sheets.films.name);
         STATE.films = data;
-        renderFilms(data);
-        updateTopFilms(data);
+        sortFilmsByDate();
+        resetPagination();
+        renderFilms();
     } catch (error) {
-        showError(DOM.filmsContainer, error, loadFilmsData);
+        tryLoadFromLocalStorage();
+        throw error;
+    }
+}
+
+/**
+ * Попытка загрузки из localStorage
+ */
+function tryLoadFromLocalStorage() {
+    try {
+        const cache = localStorage.getItem('cinemaClubCache');
+        const lastUpdated = localStorage.getItem('cinemaClubLastUpdated');
+        
+        if (cache && lastUpdated) {
+            STATE.cache = JSON.parse(cache);
+            STATE.lastUpdated = parseInt(lastUpdated);
+            
+            if (isCacheValid()) {
+                STATE.films = STATE.cache.films;
+                sortFilmsByDate();
+                resetPagination();
+                renderFilms();
+            }
+        }
+    } catch (e) {
+        console.error('Ошибка загрузки из кэша:', e);
     }
 }
 
@@ -196,7 +357,6 @@ async function loadFilmsData() {
  */
 async function loadWorksData() {
     try {
-        showLoading(DOM.worksContainer);
         const data = await fetchData(CONFIG.sheets.works.id, CONFIG.sheets.works.name);
         STATE.works = data;
         renderWorks(data);
@@ -206,63 +366,202 @@ async function loadWorksData() {
 }
 
 /**
- * Загрузка топ-списков
+ * Загрузка дополнительных фильмов
  */
-async function loadTopLists() {
-    try {
-        if (!STATE.films || !STATE.films.length) {
-            await loadFilmsData();
-        }
+function loadMoreFilms() {
+    if (!STATE.pagination.hasMore) return;
+    
+    STATE.pagination.currentPage += 1;
+    renderFilms();
+}
 
-        updateTopFilms(STATE.films);
-        updateTopDirectors(STATE.films);
-        updateTopGenres(STATE.films);
-    } catch (error) {
-        console.error('Ошибка загрузки топ-списков:', error);
-        showError(DOM.topFilmsList, error);
+/**
+ * Рендеринг списка фильмов с пагинацией
+ */
+function renderFilms() {
+    if (!DOM.filmsContainer) return;
+
+    if (!STATE.sortedFilms?.length) {
+        DOM.filmsContainer.innerHTML = `<p class="no-data">${CONFIG.messages.noFilms}</p>`;
+        if (DOM.loadMoreBtn) DOM.loadMoreBtn.style.display = 'none';
+        return;
+    }
+
+    const filmsToShow = Math.min(
+        CONFIG.defaults.filmsPerPage * STATE.pagination.currentPage,
+        STATE.sortedFilms.length
+    );
+    
+    const paginatedFilms = STATE.sortedFilms.slice(0, filmsToShow);
+    STATE.pagination.hasMore = STATE.sortedFilms.length > filmsToShow;
+    
+    updateLoadMoreButton();
+
+    const fields = CONFIG.sheets.films.fields;
+    const filmsHTML = paginatedFilms.map(film => createFilmCard(film, fields)).join('');
+
+    if (STATE.pagination.currentPage === 1) {
+        DOM.filmsContainer.innerHTML = filmsHTML;
+    } else {
+        const newFilmsStart = CONFIG.defaults.filmsPerPage * (STATE.pagination.currentPage - 1);
+        const newFilms = STATE.sortedFilms.slice(newFilmsStart, filmsToShow);
+        addFilmsWithAnimation(newFilms, fields);
     }
 }
 
 /**
- * Обновление топ жанров
+ * Создает HTML для карточки фильма
  */
-function updateTopGenres(films) {
-    if (!films || !films.length) return;
-    const fields = CONFIG.sheets.films.fields;
-    const genresMap = films.reduce((acc, film) => {
-        const genres = (film[fields.genre] || 'Не указан').split(',').map(g => g.trim());
-        genres.forEach(genre => {
-            acc[genre] = (acc[genre] || 0) + 1;
-        });
-        return acc;
-    }, {});
-    const sortedGenres = Object.entries(genresMap)
-        .map(([genre, count]) => ({ genre, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, CONFIG.defaults.maxTopItems);
+function createFilmCard(film, fields) {
+    const rating = parseFloat(film[fields.rating]) || 0;
+    const formattedRating = rating.toFixed(CONFIG.defaults.ratingPrecision);
+    
+    const director = film[fields.director] || 'Неизвестен';
+    const genre = film[fields.genre] || 'Не указан';
+    const country = film[fields.country] || 'Не указана';
+    const participants = film[fields.participants] || 'Не указано';
 
-    STATE.topGenres = sortedGenres;
-    renderTopList(sortedGenres, DOM.topGenresList, false);
+    return `
+    <article class="film-card" role="article" aria-labelledby="film-${film[fields.discussion]}-title">
+        <div class="film-card-image">
+            <img src="${film[fields.poster] || CONFIG.defaults.poster}"
+                 alt="Постер: ${film[fields.title]} (${film[fields.year]})"
+                 class="film-thumbnail"
+                 loading="lazy"
+                 onerror="this.src='${CONFIG.defaults.poster}'">
+            <div class="film-rating" aria-label="Рейтинг: ${formattedRating}">
+                ${createRatingStars(rating)}
+                <span class="rating-number">${formattedRating}</span>
+            </div>
+        </div>
+        <div class="film-info">
+            <div class="discussion-header">
+                <span class="discussion-number">Обсуждение #${film[fields.discussion] || 'N/A'}</span>
+                <span class="discussion-date">${formatDate(film[fields.date])}</span>
+            </div>
+            <h3 id="film-${film[fields.discussion]}-title">${film[fields.title]} (${film[fields.year]})</h3>
+            <p class="film-meta"><span class="meta-label">Режиссер:</span> ${director}</p>
+            <p class="film-meta"><span class="meta-label">Жанр:</span> ${genre}</p>
+            <p class="film-meta"><span class="meta-label">Страна:</span> ${country}</p>
+            <p class="film-meta"><span class="meta-label">Участников:</span> ${participants}</p>
+            ${film[fields.description] ? `<p class="film-description">${film[fields.description]}</p>` : ''}
+        </div>
+    </article>
+    `;
 }
 
 /**
- * Обновление топ режиссеров
+ * Добавляет новые фильмы с анимацией
  */
-function updateTopDirectors(films) {
-    if (!films || !films.length) return;
-    const fields = CONFIG.sheets.films.fields;
-    const directorsMap = films.reduce((acc, film) => {
-        const director = film[fields.director] || 'Неизвестен';
-        acc[director] = (acc[director] || 0) + 1;
-        return acc;
-    }, {});
-    const sortedDirectors = Object.entries(directorsMap)
-        .map(([name, count]) => ({ name, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, CONFIG.defaults.maxTopItems);
+function addFilmsWithAnimation(newFilms, fields) {
+    newFilms.forEach((film, index) => {
+        const filmHTML = createFilmCard(film, fields);
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = filmHTML;
+        const filmElement = tempDiv.firstElementChild;
+        
+        filmElement.style.opacity = '0';
+        filmElement.style.transform = 'translateY(20px)';
+        filmElement.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        filmElement.style.transitionDelay = `${index * 0.1}s`;
+        
+        DOM.filmsContainer.appendChild(filmElement);
+        
+        setTimeout(() => {
+            filmElement.style.opacity = '1';
+            filmElement.style.transform = 'translateY(0)';
+        }, 10);
+    });
+}
 
-    STATE.topDirectors = sortedDirectors;
-    renderTopList(sortedDirectors, DOM.topDirectorsList, false);
+/**
+ * Обновляет состояние кнопки "Показать еще"
+ */
+function updateLoadMoreButton() {
+    if (!DOM.loadMoreBtn) return;
+    
+    if (STATE.pagination.hasMore) {
+        DOM.loadMoreBtn.style.display = 'block';
+        DOM.loadMoreBtn.textContent = CONFIG.messages.loadMore;
+        DOM.loadMoreBtn.removeAttribute('disabled');
+    } else if (STATE.pagination.currentPage > 1) {
+        DOM.loadMoreBtn.textContent = CONFIG.messages.allFilmsLoaded;
+        DOM.loadMoreBtn.setAttribute('disabled', 'true');
+        setTimeout(() => {
+            DOM.loadMoreBtn.style.display = 'none';
+        }, 3000);
+    } else {
+        DOM.loadMoreBtn.style.display = 'none';
+    }
+}
+
+/**
+ * Рендеринг работ
+ */
+function renderWorks(works) {
+    if (!DOM.worksContainer) return;
+
+    if (!works?.length) {
+        DOM.worksContainer.innerHTML = `<p class="no-data">${CONFIG.messages.noWorks}</p>`;
+        return;
+    }
+
+    const fields = CONFIG.sheets.works.fields;
+
+    DOM.worksContainer.innerHTML = works.map(work => `
+        <article class="film-poster" role="article" aria-labelledby="work-${work[fields.title]}-title">
+            <a href="${work[fields.videoLink]}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="video-link"
+               aria-label="${work[fields.type] || 'Работа'}: ${work[fields.title]} (${work[fields.year]})">
+                <img src="${work[fields.poster] || CONFIG.defaults.poster}"
+                     alt="${work[fields.title]} (${work[fields.year]})"
+                     class="poster-image"
+                     loading="lazy"
+                     onerror="this.src='${CONFIG.defaults.poster}'">
+                <div class="play-overlay">
+                    <div class="play-button" aria-hidden="true">▶</div>
+                    <p class="watch-text">Смотреть ${work[fields.type] || 'работу'}</p>
+                </div>
+            </a>
+            <div class="work-info">
+                <h3 id="work-${work[fields.title]}-title">${work[fields.title]} (${work[fields.year]})</h3>
+                ${work[fields.description] ? `<p class="work-description">${work[fields.description]}</p>` : ''}
+            </div>
+        </article>
+    `).join('');
+}
+
+/**
+ * Обновление всех топ-списков
+ */
+function updateTopLists(films) {
+    if (!films || !films.length) return;
+    
+    updateTopFilms(films);
+    updateTopDirectors(films);
+    updateTopGenres(films);
+    
+    renderTopLists();
+}
+
+/**
+ * Рендеринг всех данных
+ */
+function renderAllData() {
+    renderFilms();
+    renderWorks(STATE.works);
+    renderTopLists();
+}
+
+/**
+ * Рендеринг всех топ-списков
+ */
+function renderTopLists() {
+    renderTopList(STATE.topFilms, DOM.topFilmsList, true);
+    renderTopList(STATE.topDirectors, DOM.topDirectorsList, false);
+    renderTopList(STATE.topGenres, DOM.topGenresList, false);
 }
 
 /**
@@ -271,18 +570,62 @@ function updateTopDirectors(films) {
 function updateTopFilms(films) {
     if (!films || !films.length) return;
     const fields = CONFIG.sheets.films.fields;
+    
     const sortedFilms = [...films]
         .filter(film => film[fields.rating])
-        .sort((a, b) => parseFloat(b[fields.rating]) - parseFloat(a[fields.rating]))
+        .sort((a, b) => {
+            const ratingA = parseFloat(a[fields.rating]) || 0;
+            const ratingB = parseFloat(b[fields.rating]) || 0;
+            return ratingB - ratingA;
+        })
         .slice(0, CONFIG.defaults.maxTopItems);
 
-    const formattedFilms = sortedFilms.map(film => ({
-        title: film[fields.title],
-        rating: parseFloat(film[fields.rating]).toFixed(CONFIG.defaults.ratingPrecision)
+    STATE.topFilms = sortedFilms.map(film => ({
+        title: `${film[fields.title]} (${film[fields.year]})`,
+        rating: parseFloat(film[fields.rating]).toFixed(CONFIG.defaults.ratingPrecision),
+        director: film[fields.director],
+        genre: film[fields.genre]
     }));
+}
 
-    STATE.topFilms = formattedFilms;
-    renderTopList(formattedFilms, DOM.topFilmsList, true);
+/**
+ * Обновление топ режиссеров
+ */
+function updateTopDirectors(films) {
+    if (!films || !films.length) return;
+    const fields = CONFIG.sheets.films.fields;
+    
+    const directorsMap = films.reduce((acc, film) => {
+        const director = film[fields.director] || 'Неизвестен';
+        acc[director] = (acc[director] || 0) + 1;
+        return acc;
+    }, {});
+    
+    STATE.topDirectors = Object.entries(directorsMap)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, CONFIG.defaults.maxTopItems);
+}
+
+/**
+ * Обновление топ жанров
+ */
+function updateTopGenres(films) {
+    if (!films || !films.length) return;
+    const fields = CONFIG.sheets.films.fields;
+    
+    const genresMap = films.reduce((acc, film) => {
+        const genres = (film[fields.genre] || 'Не указан').split(',').map(g => g.trim());
+        genres.forEach(genre => {
+            acc[genre] = (acc[genre] || 0) + 1;
+        });
+        return acc;
+    }, {});
+    
+    STATE.topGenres = Object.entries(genresMap)
+        .map(([genre, count]) => ({ genre, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, CONFIG.defaults.maxTopItems);
 }
 
 /**
@@ -343,7 +686,6 @@ function showError(container, error, retryFunction = null) {
 
     container.innerHTML = `
         <div class="error-message">
-            <p>${CONFIG.messages.genericError}</p>
             <p>${errorMessage}</p>
             ${retryFunction ? `
                 <button class="retry-button" aria-label="${CONFIG.messages.retry}">
@@ -353,98 +695,6 @@ function showError(container, error, retryFunction = null) {
         </div>
     `;
     container.classList.remove('loading-state');
-
-    if (retryFunction) {
-        container.querySelector('.retry-button')?.addEventListener('click', retryFunction);
-    }
-}
-
-/**
- * Рендеринг списка фильмов
- */
-function renderFilms(films) {
-    if (!DOM.filmsContainer) return;
-
-    if (!films?.length) {
-        DOM.filmsContainer.innerHTML = `<p class="no-data">${CONFIG.messages.noFilms}</p>`;
-        return;
-    }
-
-    const fields = CONFIG.sheets.films.fields;
-    const sortedFilms = [...films].sort((a, b) => {
-        const dateA = new Date(a[fields.date] || 0);
-        const dateB = new Date(b[fields.date] || 0);
-        return dateB - dateA;
-    });
-
-    DOM.filmsContainer.innerHTML = sortedFilms.map(film => {
-        const rating = parseFloat(film[fields.rating]) || 0;
-        const formattedRating = rating.toFixed(CONFIG.defaults.ratingPrecision);
-
-        return `
-        <article class="film-card" role="article" aria-labelledby="film-${film[fields.discussion]}-title">
-            <div class="film-card-image">
-                <img src="${film[fields.poster] || CONFIG.defaults.poster}"
-                     alt="Постер: ${film[fields.title]} (${film[fields.year]})"
-                     class="film-thumbnail"
-                     loading="lazy"
-                     onerror="this.src='${CONFIG.defaults.poster}'">
-                <div class="film-rating" aria-label="Рейтинг: ${formattedRating}">
-                    ${createRatingStars(rating)}
-                    <span class="rating-number">${formattedRating}</span>
-                </div>
-            </div>
-            <div class="film-info">
-                <div class="discussion-header">
-                    <span class="discussion-number">Обсуждение #${film[fields.discussion] || 'N/A'}</span>
-                    <span class="discussion-date">${formatDate(film[fields.date])}</span>
-                </div>
-                <h3 id="film-${film[fields.discussion]}-title">${film[fields.title]} (${film[fields.year]})</h3>
-                <p class="film-director">Режиссер: ${film[fields.director] || 'неизвестен'}</p>
-                <p class="film-genre">Жанр: ${film[fields.genre] || 'не указан'}</p>
-                ${film['Комментарий'] ? `<p class="film-comment">${film['Комментарий']}</p>` : ''}
-            </div>
-        </article>
-        `;
-    }).join('');
-}
-
-/**
- * Рендеринг работ
- */
-function renderWorks(works) {
-    if (!DOM.worksContainer) return;
-
-    if (!works?.length) {
-        DOM.worksContainer.innerHTML = `<p class="no-data">${CONFIG.messages.noWorks}</p>`;
-        return;
-    }
-
-    const fields = CONFIG.sheets.works.fields;
-
-    DOM.worksContainer.innerHTML = works.map(work => `
-        <article class="film-poster" role="article" aria-labelledby="work-${work[fields.title]}-title">
-            <a href="${work[fields.videoLink]}"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="video-link"
-               aria-label="${work[fields.type] || 'Работа'}: ${work[fields.title]} (${work[fields.year]})">
-                <img src="${work[fields.poster] || CONFIG.defaults.poster}"
-                     alt="${work[fields.title]} (${work[fields.year]})"
-                     class="poster-image"
-                     loading="lazy"
-                     onerror="this.src='${CONFIG.defaults.poster}'">
-                <div class="play-overlay">
-                    <div class="play-button" aria-hidden="true">▶</div>
-                    <p class="watch-text">Смотреть ${work[fields.type] || 'работу'}</p>
-                </div>
-            </a>
-            <div class="work-info">
-                <h3 id="work-${work[fields.title]}-title">${work[fields.title]} (${work[fields.year]})</h3>
-                ${work[fields.description] ? `<p class="work-description">${work[fields.description]}</p>` : ''}
-            </div>
-        </article>
-    `).join('');
 }
 
 /**
@@ -494,57 +744,94 @@ function createRatingStars(rating) {
 }
 
 /**
+ * Парсинг даты из строки
+ */
+function parseDate(dateString) {
+    if (!dateString) return new Date(0);
+    
+    const formats = [
+        /^(\d{2})\.(\d{2})\.(\d{4})$/, // дд.мм.гггг
+        /^(\d{4})-(\d{2})-(\d{2})$/,    // гггг-мм-дд
+        /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/ // мм/дд/гггг
+    ];
+    
+    for (const format of formats) {
+        const match = dateString.match(format);
+        if (match) {
+            if (format === formats[0]) { // дд.мм.гггг
+                return new Date(`${match[3]}-${match[2]}-${match[1]}`);
+            } else if (format === formats[1]) { // гггг-мм-дд
+                return new Date(dateString);
+            } else { // мм/дд/гггг
+                return new Date(`${match[3]}-${match[1]}-${match[2]}`);
+            }
+        }
+    }
+    
+    return new Date();
+}
+
+/**
  * Форматирование даты в строгом формате дд.мм.гггг
- * с защитой от перестановки дня и месяца
  */
 function formatDate(dateString) {
     if (!dateString) return 'дата не указана';
+    
+    const date = parseDate(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    
+    return `${day}.${month}.${year}`;
+}
 
-    try {
-        // Парсим дату с учетом возможного разного формата
-        let date;
+/**
+ * Прокрутка вверх
+ */
+function initScrollToTop() {
+    if (!DOM.scrollToTopBtn) return;
+    
+    window.addEventListener('scroll', handleScroll);
+    DOM.scrollToTopBtn.addEventListener('click', scrollToTop);
+}
 
-        // Если дата в формате "гггг-мм-дд" (ISO)
-        if (/^\d{4}-\d{2}-\d{2}/.test(dateString)) {
-            const [year, month, day] = dateString.split('-');
-            date = new Date(year, month - 1, day);
-        }
-        // Если дата в формате "дд.мм.гггг"
-        else if (/^\d{2}\.\d{2}\.\d{4}/.test(dateString)) {
-            const [day, month, year] = dateString.split('.');
-            date = new Date(year, month - 1, day);
-        }
-        // Если дата в другом формате (пробуем стандартный парсинг)
-        else {
-            date = new Date(dateString);
-        }
-
-        // Проверяем валидность даты
-        if (isNaN(date.getTime())) {
-            return dateString; // возвращаем как есть, если не распарсилось
-        }
-
-        // Форматируем в дд.мм.гггг
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-
-        return `${day}.${month}.${year}`;
-
-    } catch (e) {
-        console.error('Ошибка форматирования даты:', e);
-        return dateString;
+function handleScroll() {
+    if (!DOM.scrollToTopBtn) return;
+    
+    if (window.pageYOffset > 300) {
+        DOM.scrollToTopBtn.classList.add('visible');
+    } else {
+        DOM.scrollToTopBtn.classList.remove('visible');
     }
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 }
 
 // Инициализация приложения после загрузки DOM
 document.addEventListener('DOMContentLoaded', initApp);
 
-// Экспорт в глобальную область видимости для отладки
-window.App = {
-    config: CONFIG,
-    state: STATE,
-    dom: DOM,
-    reloadFilms: loadFilmsData,
-    reloadWorks: loadWorksData
-};
+// Загрузка кэша из localStorage при загрузке страницы
+window.addEventListener('load', () => {
+    try {
+        const cache = localStorage.getItem('cinemaClubCache');
+        const lastUpdated = localStorage.getItem('cinemaClubLastUpdated');
+        
+        if (cache && lastUpdated) {
+            STATE.cache = JSON.parse(cache);
+            STATE.lastUpdated = parseInt(lastUpdated);
+            
+            if (isCacheValid()) {
+                loadFromCache();
+            }
+        }
+    } catch (e) {
+        console.error('Ошибка загрузки кэша:', e);
+    }
+});

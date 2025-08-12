@@ -4,21 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Фотогалерея | Киноклуб "ОДИССЕЯ"</title>
+    <meta name="description" content="Фотогалерея киноклуба Одиссея - наши встречи, мероприятия и моменты">
+    <meta name="keywords" content="киноклуб, фотографии, галерея, встречи, Одиссея">
     <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="images/gallery-hero.jpg" as="image">
 </head>
 <body>
     <!-- Шапка -->
     <header class="header">
-        <a href="index.html" class="logo">
-            <div class="logo__icon"></div>
+        <a href="index.html" class="logo" aria-label="На главную">
+            <div class="logo__icon" aria-hidden="true"></div>
             ОДИССЕЯ
         </a>
-        <nav class="nav">
+        <nav class="nav" aria-label="Основная навигация">
             <a href="index.html#about" class="nav__link">О киноклубе</a>
             <a href="index.html#contacts" class="nav__link">Контакты</a>
             <a href="index.html#movies" class="nav__link">Фильмы</a>
         </nav>
-        <button class="mobile-menu-btn">☰</button>
+        <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">☰</button>
     </header>
 
     <!-- Герой секция -->
@@ -30,32 +33,33 @@
     </section>
 
     <!-- Галерея -->
-    <section class="gallery">
+    <main class="gallery">
         <div class="gallery__controls">
-            <div class="gallery__filter-buttons">
-                <button class="filter-btn active" data-filter="all">Все</button>
-                <button class="filter-btn" data-filter="meetings">Встречи</button>
-                <button class="filter-btn" data-filter="outings">Вылазки</button>
-                <button class="filter-btn" data-filter="hobbies">Хобби</button>
-                <button class="filter-btn" data-filter="works">Работы</button>
-                <button class="filter-btn" data-filter="members">Участники</button>
-                <button class="filter-btn" data-filter="places">Места</button>
-                <button class="filter-btn" data-filter="announcements">Объявления</button>
-                <button class="filter-btn" data-filter="friends">Друзья</button>
+            <div class="gallery__filter-buttons" role="toolbar" aria-label="Фильтры галереи">
+                <button class="filter-btn active" data-filter="all" aria-pressed="true">Все</button>
+                <button class="filter-btn" data-filter="meetings" aria-pressed="false">Встречи</button>
+                <button class="filter-btn" data-filter="outings" aria-pressed="false">Вылазки</button>
+                <button class="filter-btn" data-filter="hobbies" aria-pressed="false">Хобби</button>
+                <button class="filter-btn" data-filter="works" aria-pressed="false">Работы</button>
+                <button class="filter-btn" data-filter="members" aria-pressed="false">Участники</button>
+                <button class="filter-btn" data-filter="places" aria-pressed="false">Места</button>
+                <button class="filter-btn" data-filter="announcements" aria-pressed="false">Объявления</button>
+                <button class="filter-btn" data-filter="friends" aria-pressed="false">Друзья</button>
             </div>
             <div class="gallery__search">
-                <input type="text" id="gallery-search" placeholder="Поиск по галерее...">
+                <label for="gallery-search" class="visually-hidden">Поиск по галерее</label>
+                <input type="text" id="gallery-search" placeholder="Поиск по галерее..." aria-label="Поиск по галерее">
             </div>
         </div>
 
-        <div class="gallery__container" id="gallery-container">
+        <div class="gallery__container" id="gallery-container" aria-live="polite">
             <!-- Фотографии будут загружаться здесь автоматически -->
             <div class="loading-message">
-                <div class="spinner"></div>
-                Загрузка фотографий...
+                <div class="spinner" aria-hidden="true"></div>
+                <p>Загрузка фотографий...</p>
             </div>
         </div>
-    </section>
+    </main>
 
     <!-- Футер -->
     <footer class="footer">
@@ -69,17 +73,17 @@
                 <a href="stanislav.html" class="footer__link">Автор сайта</a>
             </div>
             <div class="footer__social">
-                <a href="https://vk.com/club199046020" target="_blank" class="social__link">VK</a>
-                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" class="social__link">TG</a>
+                <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="social__link" aria-label="ВКонтакте">VK</a>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" class="social__link" aria-label="Telegram">TG</a>
             </div>
             <p class="footer__copyright">© 2025 Киноклуб "ОДИССЕЯ".</p>
         </div>
     </footer>
 
     <!-- Модальное окно для просмотра фото -->
-    <div class="modal" id="image-modal">
-        <span class="modal__close">&times;</span>
-        <img class="modal__content" id="modal-image">
+    <div class="modal" id="image-modal" role="dialog" aria-modal="true" aria-labelledby="modal-caption" hidden>
+        <button class="modal__close" aria-label="Закрыть">&times;</button>
+        <img class="modal__content" id="modal-image" alt="">
         <div class="modal__caption" id="modal-caption"></div>
     </div>
 

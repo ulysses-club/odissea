@@ -5,152 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Киноклуб "ОДИССЕЯ"</title>
     <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Киноклуб Одиссея - место для настоящих ценителей кино. Обсуждения фильмов, топ-рейтинги и архив встреч.">
+    <meta name="keywords" content="кино, киноклуб, фильмы, обсуждение, рейтинги, Одиссея">
 </head>
 <body>
     <!-- Шапка -->
     <header class="header">
-        <a href="#" class="logo">
+        <a href="#" class="logo" aria-label="Киноклуб Одиссея - главная страница">
             <div class="logo__icon"></div>
             ОДИССЕЯ
         </a>
-        <nav class="nav">
+        <nav class="nav" aria-label="Основная навигация">
             <a href="#about" class="nav__link">О киноклубе</a>
             <a href="#contacts" class="nav__link">Контакты</a>
             <a href="#movies" class="nav__link">Фильмы</a>
             <a href="gallery.html" class="nav__link">Фотогалерея</a>
         </nav>
-        <button class="mobile-menu-btn">☰</button>
+        <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">☰</button>
     </header>
 
-<!-- Герой секция -->
-<section class="hero">
-    <div class="hero__content">
-        <h1 class="hero__title">Киноклуб "ОДИССЕЯ"</h1>
-        <p class="hero__subtitle">Есть о чем поговорить!</p>
-        <div class="hero__cta">
-            <a href="#movies" class="btn btn--primary">Смотреть наши топы</a>
-            <a href="#about" class="btn btn--outline">
-                <svg viewBox="0 0 24 24" width="20" height="20">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="currentColor"/>
-                </svg>
-                О нас
-            </a>
+    <!-- Герой секция -->
+    <section class="hero">
+        <div class="hero__content">
+            <h1 class="hero__title">Киноклуб "ОДИССЕЯ"</h1>
+            <p class="hero__subtitle">Есть о чем поговорить!</p>
+            <div class="hero__cta">
+                <a href="#movies" class="btn btn--primary">Смотреть наши топы</a>
+                <a href="#about" class="btn btn--outline">
+                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="currentColor"/>
+                    </svg>
+                    О нас
+                </a>
+            </div>
         </div>
-    </div>
-<div class="hero__image">
-    <img src="images/logo-group-vk.jpg" 
-         alt="Киноклуб Одиссея" 
-         class="hero__image-img">
-    <div class="film-strip-overlay"></div>
-</div>
-</section>
+        <div class="hero__image">
+            <img src="images/logo-group-vk.jpg" 
+                 alt="Участники киноклуба Одиссея" 
+                 class="hero__image-img"
+                 width="600"
+                 height="400"
+                 loading="lazy">
+            <div class="film-strip-overlay"></div>
+        </div>
+    </section>
 
-<!-- О киноклубе -->
-<section id="about" class="about">
-    <h2 class="section__title fade-in">О нашем киноклубе</h2>
-    <div class="about__content">
-        <!-- Обёртка для карточек FAQ -->
-        <div class="faq-grid fade-in delay-1">
-            <!-- Колонка 1 -->
-            <div class="faq-column">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span class="faq-icon">🎬</span>
-                        <h3>Кто мы?</h3>
+    <!-- О киноклубе -->
+    <section id="about" class="about">
+        <h2 class="section__title fade-in">О нашем киноклубе</h2>
+        <div class="about__content">
+            <!-- Обёртка для карточек FAQ -->
+            <div class="faq-grid fade-in delay-1">
+                <!-- Колонка 1 -->
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="faq-icon" aria-hidden="true">🎬</span>
+                            <h3>Кто мы?</h3>
+                        </div>
+                        <p class="faq-answer">Команда киноманов, которые каждую неделю собираются потрещать о фильме.</p>
                     </div>
-                    <p class="faq-answer">Команда киноманов, которые каждую неделю собираются потрещать о фильме.</p>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="faq-icon" aria-hidden="true">💸</span>
+                            <h3>Это платно?</h3>
+                        </div>
+                        <p class="faq-answer">Нет, но если не купишь кофе — мы тебя осуждаем (шутка… или нет).</p>
+                    </div>
                 </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span class="faq-icon">💸</span>
-                        <h3>Это платно?</h3>
+                
+                <!-- Колонка 2 -->
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="faq-icon" aria-hidden="true">🗣️</span>
+                            <h3>Как проходят встречи?</h3>
+                        </div>
+                        <p class="faq-answer">Фильм смотрим дома, а на встрече — споры, восторги и "как это вообще можно было снять?!". В начале — мини-лекция о фильме, потом — громкие обсуждения. В конце ставим оценки и выводим "клубный рейтинг".</p>
                     </div>
-                    <p class="faq-answer">Нет, но если не купишь кофе — мы тебя осуждаем (шутка… или нет).</p>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="faq-icon" aria-hidden="true">👑</span>
+                            <h3>Кто выбирает фильмы?</h3>
+                        </div>
+                        <p class="faq-answer">Наш "кино-диктатор", но иногда он снисходит до мнения народа. В день рождения твой выбор — закон!</p>
+                    </div>
+                </div>
+                
+                <!-- Колонка 3 -->
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="faq-icon" aria-hidden="true">🚪</span>
+                            <h3>Как вступить?</h3>
+                        </div>
+                        <p class="faq-answer">Просто приходи! Узнаешь нас по фото в группе или по горящим глазам.</p>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="faq-icon" aria-hidden="true">📢</span>
+                            <h3>Где следить за анонсами?</h3>
+                        </div>
+                        <p class="faq-answer">ВК, ТГ-бот и сайт. Все ссылки тут: <a href="#contacts" class="gradient-link">в разделе контактов</a>.</p>
+                    </div>
                 </div>
             </div>
             
-            <!-- Колонка 2 -->
-            <div class="faq-column">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span class="faq-icon">🗣️</span>
-                        <h3>Как проходят встречи?</h3>
-                    </div>
-                    <p class="faq-answer">Фильм смотрим дома, а на встрече — споры, восторги и "как это вообще можно было снять?!". В начале — мини-лекция о фильме, потом — громкие обсуждения. В конце ставим оценки и выводим "клубный рейтинг".</p>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span class="faq-icon">👑</span>
-                        <h3>Кто выбирает фильмы?</h3>
-                    </div>
-                    <p class="faq-answer">Наш "кино-диктатор", но иногда он снисходит до мнения народа. В день рождения твой выбор — закон!</p>
-                </div>
+            <!-- Цитата под карточками -->
+            <div class="about__quote fade-in delay-2">
+                <div class="quote-icon" aria-hidden="true">❝</div>
+                <p>"Киноклуб Одиссея - объективностью здесь и не пахнет! (с)"</p>
+                <div class="quote-author">— Неизвестный критик</div>
             </div>
             
-            <!-- Колонка 3 -->
-            <div class="faq-column">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span class="faq-icon">🚪</span>
-                        <h3>Как вступить?</h3>
-                    </div>
-                    <p class="faq-answer">Просто приходи! Узнаешь нас по фото в группе или по горящим глазам.</p>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span class="faq-icon">📢</span>
-                        <h3>Где следить за анонсами?</h3>
-                    </div>
-                    <p class="faq-answer">ВК, ТГ-бот и сайт. Все ссылки тут: <a href="#contacts" class="gradient-link">в разделе контактов</a>.</p>
+            <!-- Увеличенное изображение -->
+            <div class="image-container-wrapper fade-in delay-3">
+                <div class="image-container">
+                    <img src="images/image-container.jpg" alt="Участники киноклуба на встрече" class="main-image" loading="lazy">
+                    <div class="film-strip" aria-hidden="true"></div>
+                    <div class="projector-light" aria-hidden="true"></div>
+                    <div class="cine-logo">Киноклуб "ОДИССЕЯ"</div>
                 </div>
             </div>
         </div>
-        
-        <!-- Цитата под карточками -->
-        <div class="about__quote fade-in delay-2">
-            <div class="quote-icon">❝</div>
-            <p>"Киноклуб Одиссея - объективностью здесь и не пахнет! (с)"</p>
-            <div class="quote-author">— Неизвестный критик</div>
-        </div>
-        
-        <!-- Увеличенное изображение -->
-        <div class="image-container-wrapper fade-in delay-3">
-            <div class="image-container">
-                <img src="images/image-container.jpg" alt="Киноклуб Одиссея" class="main-image">
-                <div class="film-strip"></div>
-                <div class="projector-light"></div>
-                <div class="cine-logo">Киноклуб "ОДИССЕЯ"</div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <!-- Контакты -->
     <section id="contacts" class="contacts">
         <h2 class="section__title">Контакты</h2>
         <div class="contacts__grid">
             <div class="contact-card">
-                <div class="contact-card__icon">📱</div>
+                <div class="contact-card__icon" aria-hidden="true">📱</div>
                 <h3 class="contact-card__title">Телефон</h3>
                 <a href="tel:+79787363212" class="contact-card__link">+7 (978) 736-32-12</a>
                 <p>Настенька (организатор)</p>
             </div>
             <div class="contact-card">
-                <div class="contact-card__icon">✉️</div>
+                <div class="contact-card__icon" aria-hidden="true">✉️</div>
                 <h3 class="contact-card__title">Соцсети</h3>
-                <a href="https://vk.com/club199046020" target="_blank" class="contact-card__link">Группа ВКонтакте</a>
+                <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="contact-card__link">Группа ВКонтакте</a>
                 <p>Актуальные новости и анонсы</p>
             </div>
             <div class="contact-card">
-                <div class="contact-card__icon">🤖</div>
+                <div class="contact-card__icon" aria-hidden="true">🤖</div>
                 <h3 class="contact-card__title">Телеграм</h3>
-                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" class="contact-card__link">@Odyssey_Cinema_Club_bot</a>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" class="contact-card__link">@Odyssey_Cinema_Club_bot</a>
                 <p>Telegram-бот</p>
             </div>
         </div>
     </section>
 
-<!-- Фильмы -->
+    <!-- Фильмы -->
     <section id="movies" class="movies">
         <h2 class="section__title">Наши топы</h2>
         
@@ -162,7 +167,7 @@
                     <h3 class="movie-card__title">Лучшие фильмы</h3>
                     <div class="movie-card__description">
                         <ol id="top-films-list" class="top-list-items" aria-live="polite">
-                            <li class="loading-message">Загрузка списка... Или включите VPN</li>
+                            <li class="loading-message">Загрузка списка...</li>
                         </ol>
                     </div>
                 </div>
@@ -175,7 +180,7 @@
                     <h3 class="movie-card__title">Популярные режиссеры</h3>
                     <div class="movie-card__description">
                         <ol id="top-directors-list" class="top-list-items" aria-live="polite">
-                            <li class="loading-message">Загрузка списка... Или включите VPN</li>
+                            <li class="loading-message">Загрузка списка...</li>
                         </ol>
                     </div>
                 </div>
@@ -188,7 +193,7 @@
                     <h3 class="movie-card__title">Популярные жанры</h3>
                     <div class="movie-card__description">
                         <ol id="top-genres-list" class="top-list-items" aria-live="polite">
-                            <li class="loading-message">Загрузка списка... Или включите VPN</li>
+                            <li class="loading-message">Загрузка списка...</li>
                         </ol>
                     </div>
                 </div>
@@ -197,22 +202,22 @@
     </section>
 
     <!-- Секция архива фильмов -->
-<section id="film-archive" class="film-archive">
-    <h2 class="section__title fade-in">Архив наших работ</h2>
-    <div id="works-container" class="video-posters-grid fade-in delay-1" aria-live="polite">
-        <div class="loading-message">
-            <div class="spinner"></div>
-            Загрузка архива работ...
+    <section id="film-archive" class="film-archive">
+        <h2 class="section__title fade-in">Архив наших работ</h2>
+        <div id="works-container" class="video-posters-grid fade-in delay-1" aria-live="polite">
+            <div class="loading-message">
+                <div class="spinner" aria-hidden="true"></div>
+                Загрузка архива работ...
+            </div>
         </div>
-    </div>
-    <h2 class="section__title fade-in delay-2">История обсуждений</h2>
-    <div id="films-container" class="film-grid fade-in delay-3" aria-live="polite">
-        <div class="loading-message">
-            <div class="spinner"></div>
-            Загрузка списка фильмов...
+        <h2 class="section__title fade-in delay-2">История обсуждений</h2>
+        <div id="films-container" class="film-grid fade-in delay-3" aria-live="polite">
+            <div class="loading-message">
+                <div class="spinner" aria-hidden="true"></div>
+                Загрузка списка фильмов...
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Футер -->
     <footer class="footer">
@@ -225,13 +230,16 @@
                 <a href="stanislav.html" class="footer__link">Автор сайта</a>
             </div>
             <div class="footer__social">
-                <a href="https://vk.com/club199046020" target="_blank" class="social__link">VK</a>
-                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" class="social__link">TG</a>
+                <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="social__link" aria-label="ВКонтакте">VK</a>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" class="social__link" aria-label="Telegram">TG</a>
             </div>
             <p class="footer__copyright">© 2025 Киноклуб "ОДИССЕЯ".</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
+    <button id="scroll-to-top" class="load-more-btn" aria-label="Наверх" title="Наверх">
+        ↑
+    </button>
 </body>
 </html>
