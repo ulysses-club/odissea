@@ -61,7 +61,7 @@ const CONFIG = {
 
     // Сообщения
     messages: {
-        loading: 'Загрузка данных...',
+        loading: 'Загрузка данных... или включи VPN',
         noData: 'Нет данных для отображения',
         noFilms: 'Нет данных о фильмах',
         noWorks: 'Нет данных о работах',
@@ -835,3 +835,37 @@ window.addEventListener('load', () => {
         console.error('Ошибка загрузки кэша:', e);
     }
 });
+
+// Инициализация карты
+if (typeof ymaps !== 'undefined') {
+    initYandexMap();
+} else {
+    // Динамическая загрузка API Яндекс.Карт
+    const script = document.createElement('script');
+    script.src = 'https://api-maps.yandex.ru/2.1/?apikey=ваш_api_ключ&lang=ru_RU';
+    script.onload = initYandexMap;
+    document.head.appendChild(script);
+}
+
+function initYandexMap() {
+    ymaps.ready(function() {
+        const map = new ymaps.Map('map', {
+            center: [44.601145, 33.520966], // Координаты кофейни
+            zoom: 16,
+            controls: ['zoomControl']
+        });
+
+        // Добавляем метку
+        const placemark = new ymaps.Placemark([44.601145, 33.520966], {
+            hintContent: 'Кофейня "Том Сойер"',
+            balloonContent: 'ул. Шмидта, 12<br>Место встреч киноклуба'
+        }, {
+            iconLayout: 'default#image',
+            iconImageHref: 'https://cdn-icons-png.flaticon.com/512/2776/2776067.png',
+            iconImageSize: [40, 40],
+            iconImageOffset: [-20, -40]
+        });
+
+        map.geoObjects.add(placemark);
+    });
+}

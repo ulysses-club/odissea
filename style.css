@@ -1565,3 +1565,167 @@ img {
 .fade-in-up {
     animation: fadeInUp 0.5s ease forwards;
 }
+
+/* Секция с картой */
+.map-section {
+    padding: var(--space-xxl) 5%;
+    background: linear-gradient(135deg, rgba(106, 17, 203, 0.1), rgba(37, 117, 252, 0.1));
+    position: relative;
+    overflow: hidden;
+}
+
+.map-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.map-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#map {
+    width: 100%;
+    height: 500px;
+    filter: grayscale(100%) contrast(90%) brightness(90%);
+    transition: var(--transition);
+}
+
+.map-container:hover #map {
+    filter: grayscale(0%) contrast(100%) brightness(100%);
+}
+
+.map-info {
+    position: absolute;
+    top: var(--space-lg); /* Позиционируем сверху */
+    right: var(--space-lg); /* Перемещаем вправо */
+    left: auto; /* Отключаем левое позиционирование */
+    bottom: auto; /* Отключаем нижнее позиционирование */
+    background: rgba(26, 26, 46, 0.95);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    max-width: 300px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(20px);
+    opacity: 0;
+    animation: fadeInUp 0.5s ease 0.3s forwards;
+}
+
+.map-info h3 {
+    color: var(--accent);
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-sm);
+    position: relative;
+    padding-bottom: var(--space-sm);
+}
+
+.map-info h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    border-radius: 2px;
+}
+
+.map-info p {
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-sm);
+    color: var(--light);
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+.map-info .contact-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--secondary);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.map-info .contact-card__link:hover {
+    color: var(--accent);
+    transform: translateX(5px);
+}
+
+.map-info .contact-card__link::before {
+    content: '→';
+    transition: var(--transition);
+}
+
+.map-info .contact-card__link:hover::before {
+    transform: translateX(3px);
+}
+
+/* Анимация для карты */
+@keyframes mapFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.map-container {
+    animation: mapFadeIn 1s ease forwards;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    #map {
+        height: 350px;
+    }
+    
+    .map-info {
+        max-width: 250px;
+        padding: var(--space-md);
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        bottom: var(--space-md);
+    }
+    
+    .map-info h3 {
+        font-size: var(--text-lg);
+    }
+}
+
+@media (max-width: 576px) {
+    #map {
+        height: 300px;
+    }
+    
+    .map-info {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        max-width: 100%;
+        margin-top: var(--space-md);
+        backdrop-filter: none;
+        background: rgba(26, 26, 46, 0.8);
+        transform: none;
+        animation: none;
+        opacity: 1;
+    }
+}
