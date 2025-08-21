@@ -1,12 +1,159 @@
+[file name]: index.html
+[file content begin]
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Киноклуб "ОДИССЕЯ"</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <meta name="description" content="Киноклуб Одиссея - место для настоящих ценителей кино. Обсуждения фильмов, топ-рейтинги и архив встреч.">
     <meta name="keywords" content="кино, киноклуб, фильмы, обсуждение, рейтинги, Одиссея">
+    <style>
+        /* Стили для компактных топов */
+        .tops-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-xl);
+            margin-bottom: var(--space-xxl);
+        }
+        
+        .top-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border-left: 4px solid transparent;
+            transition: var(--transition);
+            height: 100%;
+        }
+        
+        .top-section:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .top-title {
+            font-size: var(--text-xl);
+            margin-bottom: var(--space-lg);
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .top-list {
+            display: grid;
+            gap: var(--space-md);
+        }
+        
+        .top-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-sm);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+        
+        .top-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            transform: translateX(5px);
+        }
+        
+        .top-poster {
+            width: 50px;
+            height: 75px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .top-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .top-rank {
+            font-size: var(--text-lg);
+            font-weight: bold;
+            color: var(--secondary);
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .top-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .top-film-title {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            color: var(--light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .top-film-meta {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            font-size: var(--text-xs);
+            color: var(--gray);
+        }
+        
+        .top-rating {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .rating-badge {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: bold;
+            background: var(--primary-light);
+            color: var(--light);
+        }
+        
+        /* Адаптивность для топов */
+        @media (max-width: 992px) {
+            .tops-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .top-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-sm);
+                text-align: center;
+            }
+            
+            .top-poster {
+                align-self: center;
+            }
+            
+            .top-film-meta {
+                flex-direction: column;
+                gap: var(--space-xs);
+                align-items: center;
+            }
+            
+            .top-rank {
+                align-self: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Шапка -->
@@ -17,9 +164,10 @@
         </a>
         <nav class="nav" aria-label="Основная навигация">
             <a href="#about" class="nav__link">О киноклубе</a>
+            <a href="#top-films" class="nav__link">Топы</a>
             <a href="#contacts" class="nav__link">Контакты</a>
-            <a href="#movies" class="nav__link">Фильмы</a>
-            <a href="gallery.html" class="nav__link">Фотогалерея</a>
+            <a href="#film-archive" class="nav__link">Фильмы</a>
+            <a href="assets/pages/gallery.html" class="nav__link">Фотогалерея</a>
         </nav>
         <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">☰</button>
     </header>
@@ -30,7 +178,7 @@
             <h1 class="hero__title">Киноклуб "ОДИССЕЯ"</h1>
             <p class="hero__subtitle">Есть о чем поговорить!</p>
             <div class="hero__cta">
-                <a href="#movies" class="btn btn--primary">Смотреть наши топы</a>
+                <a href="#top-films" class="btn btn--primary">Смотреть наши топы</a>
                 <a href="#about" class="btn btn--outline">
                     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="currentColor"/>
@@ -40,8 +188,8 @@
             </div>
         </div>
         <div class="hero__image">
-            <img src="images/logo-group-vk.jpg" 
-                 alt="Участники киноклуба Одиссея" 
+            <img src="assets/images//logo-group-vk.jpg"
+                 alt="Участники киноклуба на встрече" 
                  class="hero__image-img"
                  width="600"
                  height="400"
@@ -137,10 +285,61 @@
             <!-- Увеличенное изображение -->
             <div class="image-container-wrapper fade-in delay-3">
                 <div class="image-container">
-                    <img src="images/image-container.jpg" alt="Участники киноклуба на встрече" class="main-image" loading="lazy">
+                    <img src="assets/images//image-container.jpg" alt="Участники киноклуба на встрече" class="main-image" loading="lazy">
                     <div class="film-strip" aria-hidden="true"></div>
                     <div class="projector-light" aria-hidden="true"></div>
                     <div class="cine-logo">Киноклуб "ОДИССЕЯ"</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Топ фильмов -->
+    <section id="top-films" class="movies">
+        <h2 class="section__title fade-in">Наши топы</h2>
+        
+        <div class="tops-grid">
+            <!-- Топ лучших фильмов -->
+            <div class="top-section fade-in delay-1">
+                <h3 class="top-title">🏆 Топ лучших фильмов</h3>
+                <div id="top-best-films" class="top-list">
+                    <div class="loading-message">
+                        <div class="spinner" aria-hidden="true"></div>
+                        Загрузка лучших фильмов...
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Топ худших фильмов -->
+            <div class="top-section fade-in delay-2">
+                <h3 class="top-title">💩 Топ худших фильмов</h3>
+                <div id="top-worst-films" class="top-list">
+                    <div class="loading-message">
+                        <div class="spinner" aria-hidden="true"></div>
+                        Загрузка худших фильмов...
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Популярные жанры -->
+            <div class="top-section fade-in delay-3">
+                <h3 class="top-title">🎭 Популярные жанры</h3>
+                <div id="top-genres" class="top-list">
+                    <div class="loading-message">
+                        <div class="spinner" aria-hidden="true"></div>
+                        Загрузка жанров...
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Популярные режиссеры -->
+            <div class="top-section fade-in delay-4">
+                <h3 class="top-title">🎬 Популярные режиссеры</h3>
+                <div id="top-directors" class="top-list">
+                    <div class="loading-message">
+                        <div class="spinner" aria-hidden="true"></div>
+                        Загрузка режиссеров...
+                    </div>
                 </div>
             </div>
         </div>
@@ -171,52 +370,6 @@
         </div>
     </section>
 
-    <!-- Фильмы -->
-    <section id="movies" class="movies">
-        <h2 class="section__title">Наши топы</h2>
-        
-        <div class="movies__grid">
-            <!-- Топ 10 фильмов -->
-            <div class="movie-card">
-                <div class="movie-card__badge">Топ-10</div>
-                <div class="movie-card__content">
-                    <h3 class="movie-card__title">Лучшие фильмы</h3>
-                    <div class="movie-card__description">
-                        <ol id="top-films-list" class="top-list-items" aria-live="polite">
-                            <li class="loading-message">Загрузка списка...</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Топ 10 режиссеров -->
-            <div class="movie-card">
-                <div class="movie-card__badge">Топ-10</div>
-                <div class="movie-card__content">
-                    <h3 class="movie-card__title">Популярные режиссеры</h3>
-                    <div class="movie-card__description">
-                        <ol id="top-directors-list" class="top-list-items" aria-live="polite">
-                            <li class="loading-message">Загрузка списка...</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Топ 10 жанров -->
-            <div class="movie-card">
-                <div class="movie-card__badge">Топ-10</div>
-                <div class="movie-card__content">
-                    <h3 class="movie-card__title">Популярные жанры</h3>
-                    <div class="movie-card__description">
-                        <ol id="top-genres-list" class="top-list-items" aria-live="polite">
-                            <li class="loading-message">Загрузка списка...</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Секция архива фильмов -->
     <section id="film-archive" class="film-archive">
         <h2 class="section__title fade-in">Архив наших работ</h2>
@@ -241,9 +394,10 @@
             <div class="footer__logo">ОДИССЕЯ</div>
             <div class="footer__links">
                 <a href="#about" class="footer__link">О нас</a>
-                <a href="#movies" class="footer__link">Фильмы</a>
+                <a href="#top-films" class="footer__link">Топы</a>
+                <a href="#film-archive" class="footer__link">Фильмы</a>
                 <a href="#contacts" class="footer__link">Контакты</a>
-                <a href="stanislav.html" class="footer__link">Автор сайта</a>
+                <a href="assets/pages/stanislav.html" class="footer__link">Автор сайта</a>
             </div>
             <div class="footer__social">
                 <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="social__link" aria-label="ВКонтакте">VK</a>
@@ -253,7 +407,8 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/gallery.js"></script>
     <button id="scroll-to-top" class="load-more-btn" aria-label="Наверх" title="Наверх">
         ↑
     </button>

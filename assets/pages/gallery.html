@@ -6,20 +6,54 @@
     <title>Фотогалерея | Киноклуб "ОДИССЕЯ"</title>
     <meta name="description" content="Фотогалерея киноклуба Одиссея - наши встречи, мероприятия и моменты">
     <meta name="keywords" content="киноклуб, фотографии, галерея, встречи, Одиссея">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preload" href="images/gallery-hero.jpg" as="image">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preload" href="../images/gallery-hero.jpg" as="image">
+    <style>
+        .odyssey-home-button {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 0 5%;
+        }
+
+        .odyssey-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow-primary);
+            border: none;
+            cursor: pointer;
+        }
+
+        .odyssey-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(106, 17, 203, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .odyssey-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Шапка -->
     <header class="header">
-        <a href="index.html" class="logo" aria-label="На главную">
+        <a href="../../index.html" class="logo" aria-label="На главную">
             <div class="logo__icon" aria-hidden="true"></div>
             ОДИССЕЯ
         </a>
         <nav class="nav" aria-label="Основная навигация">
-            <a href="index.html#about" class="nav__link">О киноклубе</a>
-            <a href="index.html#contacts" class="nav__link">Контакты</a>
-            <a href="index.html#movies" class="nav__link">Фильмы</a>
+            <a href="../../index.html#about" class="nav__link">О киноклубе</a>
+            <a href="../../index.html#top-films" class="nav__link">Топы</a>
+            <a href="../../index.html#contacts" class="nav__link">Контакты</a>
+            <a href="../../index.html#movies" class="nav__link">Фильмы</a>
         </nav>
         <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">☰</button>
     </header>
@@ -59,6 +93,11 @@
                 <p>Загрузка фотографий...</p>
             </div>
         </div>
+
+        <!-- Кнопка возврата на главную -->
+        <div class="odyssey-home-button">
+            <a href="../../index.html" class="odyssey-btn">← Вернуться на главную</a>
+        </div>
     </main>
 
     <!-- Футер -->
@@ -66,9 +105,9 @@
         <div class="footer__content">
             <div class="footer__logo">ОДИССЕЯ</div>
             <div class="footer__links">
-                <a href="index.html#about" class="footer__link">О нас</a>
-                <a href="index.html#movies" class="footer__link">Фильмы</a>
-                <a href="index.html#contacts" class="footer__link">Контакты</a>
+                <a href="../../index.html#about" class="footer__link">О нас</a>
+                <a href="../../index.html#movies" class="footer__link">Фильмы</a>
+                <a href="../../index.html#contacts" class="footer__link">Контакты</a>
                 <a href="gallery.html" class="footer__link">Галерея</a>
                 <a href="stanislav.html" class="footer__link">Автор сайта</a>
             </div>
@@ -87,7 +126,7 @@
         <div class="modal__caption" id="modal-caption"></div>
     </div>
 
-    <script src="script.js"></script>
-    <script src="gallery.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/gallery.js"></script>
 </body>
 </html>
