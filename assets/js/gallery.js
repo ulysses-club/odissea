@@ -357,10 +357,3 @@ function searchGallery(term) {
     // Показываем сообщение, если нет результатов
     showNoResultsMessage(visibleCount);
 }
-
-// Обработчик ошибок изображений
-function handleImageError(img) {
-    img.onerror = null;
-    img.src = GALLERY_CONFIG.defaultImage;
-    return true;
-}

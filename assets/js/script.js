@@ -1,35 +1,16 @@
 // Конфигурация приложения
 const CONFIG = {
-    // Настройки Google Sheets
-    sheets: {
+    // Настройки данных через GitHub
+    dataSources: {
         films: {
-            id: '1a6EWO5ECaI1OveO4Gy7y9zH5LjFtlm8Alg9iSRP2heE',
-            name: 'Films',
-            fields: {
-                title: 'Фильм',
-                director: 'Режиссер',
-                genre: 'Жанр',
-                country: 'Страна',
-                year: 'Год',
-                rating: 'Оценка',
-                discussion: 'Номер обсуждения',
-                date: 'Дата',
-                poster: 'Постер URL',
-                description: 'Описание',
-                participants: 'Участников'
-            }
+            url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/films.json',
+            type: 'json',
+            fallback: 'assets/data/films.json'
         },
         works: {
-            id: '1KYU9mYAS5Wv6a9z-RImNxyP0n0Tpgf7BDRl2sNeSXmM',
-            name: 'Video',
-            fields: {
-                title: 'Название',
-                year: 'Год',
-                type: 'Тип',
-                videoLink: 'Ссылка на видео',
-                poster: 'URL постера',
-                description: 'Описание'
-            }
+            url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/works.json',
+            type: 'json',
+            fallback: 'assets/data/works.json'
         }
     },
 
@@ -73,8 +54,7 @@ const CONFIG = {
 
     // API
     api: {
-        baseUrl: 'https://opensheet.elk.sh',
-        timeout: 15000
+        timeout: 10000 // 10 секунд
     }
 };
 
@@ -216,7 +196,12 @@ function showOfflineMessage() {
 async function loadInitialData() {
     try {
         // Проверяем кэш перед загрузкой
-        if (STATE.cache.films && isCacheValid()) {
+        const cachedFilms = tryLoadFromCache(CONFIG.dataSources.films);
+        const cachedWorks = tryLoadFromCache(CONFIG.dataSources.works);
+        
+        if (cachedFilms && cachedWorks && isCacheValid()) {
+            STATE.films = cachedFilms;
+            STATE.works = cachedWorks;
             loadFromCache();
             return;
         }
@@ -225,16 +210,11 @@ async function loadInitialData() {
         showLoading(DOM.worksContainer);
         showLoadingForTops();
 
-        // Пытаемся загрузить данные с API
-        try {
-            await Promise.all([
-                loadFilmsData(),
-                loadWorksData()
-            ]);
-            saveToCache();
-        } catch (apiError) {
-            console.warn('API недоступно, используем mock данные:', apiError);
-        }
+        // Загружаем данные с GitHub или fallback
+        await Promise.all([
+            loadFilmsData(),
+            loadWorksData()
+        ]);
         
     } catch (error) {
         console.error('Ошибка загрузки данных:', error);
@@ -280,10 +260,9 @@ function loadFromCache() {
  * Сортировка фильмов по дате (новые сверху)
  */
 function sortFilmsByDate() {
-    const fields = CONFIG.sheets.films.fields;
     STATE.sortedFilms = [...STATE.films].sort((a, b) => {
-        const dateA = parseDate(a[fields.date]);
-        const dateB = parseDate(b[fields.date]);
+        const dateA = parseDate(a['Дата']);
+        const dateB = parseDate(b['Дата']);
         return dateB - dateA;
     });
 }
@@ -315,8 +294,8 @@ function saveToCache() {
         films: STATE.films,
         works: STATE.works,
         tops: {
-            best: getTopBestFilms(),
-            worst: getTopWorstFilms(),
+            best: getTopFilms('best'),
+            worst: getTopFilms('worst'),
             genres: getTopGenres(),
             directors: getTopDirectors()
         }
@@ -336,16 +315,140 @@ function saveToCache() {
  */
 async function loadFilmsData() {
     try {
-        const data = await fetchData(CONFIG.sheets.films.id, CONFIG.sheets.films.name);
+        const data = await fetchDataWithFallback(CONFIG.dataSources.films);
         STATE.films = data;
         sortFilmsByDate();
         resetPagination();
         renderFilms();
         analyzeDataAndCreateTops();
+        saveToCache();
     } catch (error) {
+        console.error('Ошибка загрузки фильмов:', error);
         tryLoadFromLocalStorage();
+        // Если кэш тоже не работает - загружаем mock данные
+        if (!STATE.films.length) {
+            loadMockFilmsData();
+        }
+    }
+}
+
+/**
+ * Загрузка данных о работах
+ */
+async function loadWorksData() {
+    try {
+        const data = await fetchDataWithFallback(CONFIG.dataSources.works);
+        STATE.works = data;
+        renderWorks(data);
+        saveToCache();
+    } catch (error) {
+        console.error('Ошибка загрузки работ:', error);
+        // Загружаем mock данные
+        loadMockWorksData();
+    }
+}
+
+/**
+ * Загрузка данных с fallback механизмом
+ */
+async function fetchDataWithFallback(sourceConfig) {
+    try {
+        // Пытаемся загрузить с GitHub
+        console.log('Загрузка данных с GitHub:', sourceConfig.url);
+        const data = await fetchRemoteData(sourceConfig.url);
+        
+        if (data && data.length > 0) {
+            // Сохраняем успешные данные в кэш
+            cacheSuccessfulData(sourceConfig.url, data);
+            return data;
+        }
+        throw new Error('Пустые данные с GitHub');
+        
+    } catch (githubError) {
+        console.warn('GitHub недоступен, пробуем локальный fallback:', githubError);
+        
+        try {
+            // Пробуем локальный fallback
+            const localData = await fetchRemoteData(sourceConfig.fallback);
+            if (localData && localData.length > 0) {
+                return localData;
+            }
+            throw new Error('Пустые локальные данные');
+            
+        } catch (localError) {
+            console.error('Локальный fallback тоже не сработал:', localError);
+            throw new Error('Все источники данных недоступны');
+        }
+    }
+}
+
+/**
+ * Загрузка удаленных данных
+ */
+async function fetchRemoteData(url) {
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), CONFIG.api.timeout);
+
+        const response = await fetch(url, {
+            signal: controller.signal,
+            headers: {
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache'
+            }
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+        
+    } catch (error) {
+        console.error('Ошибка загрузки с', url, error);
         throw error;
     }
+}
+
+/**
+ * Кэширование успешных данных
+ */
+function cacheSuccessfulData(url, data) {
+    try {
+        const cacheKey = `cache_${url.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        const cacheData = {
+            data: data,
+            timestamp: Date.now(),
+            url: url
+        };
+        localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+    } catch (e) {
+        console.warn('Не удалось сохранить в кэш:', e);
+    }
+}
+
+/**
+ * Попытка загрузки из кэша
+ */
+function tryLoadFromCache(sourceConfig) {
+    try {
+        const cacheKey = `cache_${sourceConfig.url.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        const cached = localStorage.getItem(cacheKey);
+        
+        if (cached) {
+            const cacheData = JSON.parse(cached);
+            // Проверяем актуальность кэша (1 день)
+            if (Date.now() - cacheData.timestamp < 86400000) {
+                return cacheData.data;
+            }
+        }
+    } catch (e) {
+        console.warn('Ошибка загрузки из кэша:', e);
+    }
+    return null;
 }
 
 /**
@@ -366,19 +469,6 @@ function tryLoadFromLocalStorage() {
         }
     } catch (e) {
         console.error('Ошибка загрузки из кэша:', e);
-    }
-}
-
-/**
- * Загрузка данных о работах
- */
-async function loadWorksData() {
-    try {
-        const data = await fetchData(CONFIG.sheets.works.id, CONFIG.sheets.works.name);
-        STATE.works = data;
-        renderWorks(data);
-    } catch (error) {
-        showError(DOM.worksContainer, error, loadWorksData);
     }
 }
 
@@ -414,35 +504,34 @@ function renderFilms() {
     
     updateLoadMoreButton();
 
-    const fields = CONFIG.sheets.films.fields;
-    const filmsHTML = paginatedFilms.map(film => createFilmCard(film, fields)).join('');
+    const filmsHTML = paginatedFilms.map(film => createFilmCard(film)).join('');
 
     if (STATE.pagination.currentPage === 1) {
         DOM.filmsContainer.innerHTML = filmsHTML;
     } else {
         const newFilmsStart = CONFIG.defaults.filmsPerPage * (STATE.pagination.currentPage - 1);
         const newFilms = STATE.sortedFilms.slice(newFilmsStart, filmsToShow);
-        addFilmsWithAnimation(newFilms, fields);
+        addFilmsWithAnimation(newFilms);
     }
 }
 
 /**
  * Создает HTML для карточки фильма
  */
-function createFilmCard(film, fields) {
-    const rating = parseFloat(film[fields.rating]) || 0;
+function createFilmCard(film) {
+    const rating = parseFloat(film['Оценка']) || 0;
     const formattedRating = rating.toFixed(CONFIG.defaults.ratingPrecision);
     
-    const director = film[fields.director] || 'Неизвестен';
-    const genre = film[fields.genre] || 'Не указан';
-    const country = film[fields.country] || 'Не указана';
-    const participants = film[fields.participants] || 'Не указано';
+    const director = film['Режиссер'] || 'Неизвестен';
+    const genre = film['Жанр'] || 'Не указан';
+    const country = film['Страна'] || 'Не указана';
+    const participants = film['Участников'] || 'Не указано';
 
     return `
-    <article class="film-card" role="article" aria-labelledby="film-${film[fields.discussion]}-title">
+    <article class="film-card" role="article" aria-labelledby="film-${film['Номер обсуждения']}-title">
         <div class="film-card-image">
-            <img src="${film[fields.poster] || CONFIG.defaults.poster}"
-                 alt="Постер: ${film[fields.title]} (${film[fields.year]})"
+            <img src="${film['Постер URL'] || CONFIG.defaults.poster}"
+                 alt="Постер: ${film['Фильм']} (${film['Год']})"
                  class="film-thumbnail"
                  loading="lazy"
                  onerror="this.src='${CONFIG.defaults.poster}'">
@@ -453,15 +542,15 @@ function createFilmCard(film, fields) {
         </div>
         <div class="film-info">
             <div class="discussion-header">
-                <span class="discussion-number">Обсуждение #${film[fields.discussion] || 'N/A'}</span>
-                <span class="discussion-date">${formatDate(film[fields.date])}</span>
+                <span class="discussion-number">Обсуждение #${film['Номер обсуждения'] || 'N/A'}</span>
+                <span class="discussion-date">${formatDate(film['Дата'])}</span>
             </div>
-            <h3 id="film-${film[fields.discussion]}-title">${film[fields.title]} (${film[fields.year]})</h3>
+            <h3 id="film-${film['Номер обсуждения']}-title">${film['Фильм']} (${film['Год']})</h3>
             <p class="film-meta"><span class="meta-label">Режиссер:</span> ${director}</p>
             <p class="film-meta"><span class="meta-label">Жанр:</span> ${genre}</p>
             <p class="film-meta"><span class="meta-label">Страна:</span> ${country}</p>
             <p class="film-meta"><span class="meta-label">Участников:</span> ${participants}</p>
-            ${film[fields.description] ? `<p class="film-description">${film[fields.description]}</p>` : ''}
+            ${film['Описание'] ? `<p class="film-description">${film['Описание']}</p>` : ''}
         </div>
     </article>
     `;
@@ -470,9 +559,9 @@ function createFilmCard(film, fields) {
 /**
  * Добавляет новые фильмы с анимацией
  */
-function addFilmsWithAnimation(newFilms, fields) {
+function addFilmsWithAnimation(newFilms) {
     newFilms.forEach((film, index) => {
-        const filmHTML = createFilmCard(film, fields);
+        const filmHTML = createFilmCard(film);
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = filmHTML;
         const filmElement = tempDiv.firstElementChild;
@@ -523,27 +612,25 @@ function renderWorks(works) {
         return;
     }
 
-    const fields = CONFIG.sheets.works.fields;
-
     DOM.worksContainer.innerHTML = works.map(work => `
-        <article class="film-poster" role="article" aria-labelledby="work-${work[fields.title]}-title">
-            <a href="${work[fields.videoLink] || '#'}"
-               ${work[fields.videoLink] ? 'target="_blank" rel="noopener noreferrer"' : ''}
+        <article class="film-poster" role="article" aria-labelledby="work-${work['Название']}-title">
+            <a href="${work['Ссылка на видео'] || '#'}"
+               ${work['Ссылка на видео'] ? 'target="_blank" rel="noopener noreferrer"' : ''}
                class="video-link"
-               aria-label="${work[fields.type] || 'Работа'}: ${work[fields.title]} (${work[fields.year]})">
-                <img src="${work[fields.poster] || CONFIG.defaults.poster}"
-                     alt="${work[fields.title]} (${work[fields.year]})"
+               aria-label="${work['Тип'] || 'Работа'}: ${work['Название']} (${work['Год']})">
+                <img src="${work['URL постера'] || CONFIG.defaults.poster}"
+                     alt="${work['Название']} (${work['Год']})"
                      class="poster-image"
                      loading="lazy"
                      onerror="this.src='${CONFIG.defaults.poster}'">
                 <div class="play-overlay">
                     <div class="play-button" aria-hidden="true">▶</div>
-                    <p class="watch-text">Смотреть ${work[fields.type] || 'работу'}</p>
+                    <p class="watch-text">Смотреть ${work['Тип'] || 'работу'}</p>
                 </div>
             </a>
             <div class="work-info">
-                <h3 id="work-${work[fields.title]}-title">${work[fields.title]} (${work[fields.year]})</h3>
-                ${work[fields.description] ? `<p class="work-description">${work[fields.description]}</p>` : ''}
+                <h3 id="work-${work['Название']}-title">${work['Название']} (${work['Год']})</h3>
+                ${work['Описание'] ? `<p class="work-description">${work['Описание']}</p>` : ''}
             </div>
         </article>
     `).join('');
@@ -555,36 +642,6 @@ function renderWorks(works) {
 function renderAllData() {
     renderFilms();
     renderWorks(STATE.works);
-}
-
-/**
- * Загрузка данных с Google Sheets
- */
-async function fetchData(sheetId, sheetName) {
-    if (!STATE.isOnline) {
-        throw new Error(CONFIG.messages.connectionError);
-    }
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), CONFIG.api.timeout);
-
-    try {
-        const response = await fetch(`${CONFIG.api.baseUrl}/${sheetId}/${sheetName}`, {
-            signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-            throw new Error(`${CONFIG.messages.serverError}: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data?.length ? data : Promise.reject(new Error(CONFIG.messages.noData));
-    } catch (error) {
-        clearTimeout(timeoutId);
-        throw error;
-    }
 }
 
 /**
@@ -723,13 +780,11 @@ function analyzeDataAndCreateTops() {
         return;
     }
     
-    const fields = CONFIG.sheets.films.fields;
-    
     // Создаем топы
-    createTopFilms('best', fields);
-    createTopFilms('worst', fields);
-    createTopGenres(fields);
-    createTopDirectors(fields);
+    createTopFilms('best');
+    createTopFilms('worst');
+    createTopGenres();
+    createTopDirectors();
 }
 
 /**
@@ -747,51 +802,37 @@ function showNoDataForTops() {
 /**
  * Создание топов фильмов
  */
-function createTopFilms(type, fields) {
+function createTopFilms(type) {
     const containerId = type === 'best' ? 'top-best-films' : 'top-worst-films';
     const container = document.getElementById(containerId);
     
     if (!container) return;
     
-    // Фильтруем фильмы с рейтингом
-    const ratedFilms = STATE.films.filter(film => {
-        const rating = parseFloat(film[fields.rating]);
-        return !isNaN(rating) && rating > 0;
-    });
+    const topFilms = getTopFilms(type);
     
-    if (ratedFilms.length < 3) {
+    if (topFilms.length < 3) {
         container.innerHTML = `<p class="no-data">${CONFIG.messages.noTopData}</p>`;
         return;
     }
     
-    // Сортируем по рейтингу
-    const sortedFilms = [...ratedFilms].sort((a, b) => {
-        const ratingA = parseFloat(a[fields.rating]);
-        const ratingB = parseFloat(b[fields.rating]);
-        return type === 'best' ? ratingB - ratingA : ratingA - ratingB;
-    });
-    
-    // Берем топ-10
-    const topFilms = sortedFilms.slice(0, CONFIG.defaults.topLimit);
-    
     const filmsHTML = topFilms.map((film, index) => {
-        const posterUrl = film[fields.poster] || CONFIG.defaults.poster;
+        const posterUrl = film['Постер URL'] || CONFIG.defaults.poster;
         return `
         <div class="top-item">
             <div class="top-rank">${index + 1}</div>
             <div class="top-poster">
                 <img src="${posterUrl}" 
-                     alt="${film[fields.title]}" 
+                     alt="${film['Фильм']}" 
                      loading="lazy"
                      onerror="this.src='${CONFIG.defaults.poster}'">
             </div>
             <div class="top-info">
-                <div class="top-film-title">${film[fields.title]} (${film[fields.year]})</div>
+                <div class="top-film-title">${film['Фильм']} (${film['Год']})</div>
                 <div class="top-film-meta">
-                    <span class="top-director">${film[fields.director] || 'Неизвестен'}</span>
+                    <span class="top-director">${film['Режиссер'] || 'Неизвестен'}</span>
                     <span class="top-rating">
-                        <span class="rating-stars">${createRatingStars(parseFloat(film[fields.rating]))}</span>
-                        ${parseFloat(film[fields.rating]).toFixed(1)}
+                        <span class="rating-stars">${createRatingStars(parseFloat(film['Оценка']))}</span>
+                        ${parseFloat(film['Оценка']).toFixed(1)}
                     </span>
                 </div>
             </div>
@@ -805,36 +846,18 @@ function createTopFilms(type, fields) {
 /**
  * Создание топов жанров
  */
-function createTopGenres(fields) {
+function createTopGenres() {
     const container = document.getElementById('top-genres');
     if (!container) return;
     
-    const genreCount = {};
+    const topGenres = getTopGenres();
     
-    STATE.films.forEach(film => {
-        const genre = film[fields.genre];
-        if (genre) {
-            // Разделяем жанры по запятой и обрабатываем каждый
-            const genres = genre.split(',').map(g => g.trim().toLowerCase()).filter(g => g);
-            
-            genres.forEach(normalizedGenre => {
-                if (normalizedGenre) {
-                    genreCount[normalizedGenre] = (genreCount[normalizedGenre] || 0) + 1;
-                }
-            });
-        }
-    });
-    
-    const sortedGenres = Object.entries(genreCount)
-        .sort(([,a], [,b]) => b - a)
-        .slice(0, CONFIG.defaults.topLimit);
-    
-    if (!sortedGenres.length) {
+    if (!topGenres.length) {
         container.innerHTML = `<p class="no-data">${CONFIG.messages.noTopData}</p>`;
         return;
     }
     
-    const genresHTML = sortedGenres.map(([genre, count], index) => `
+    const genresHTML = topGenres.map(({genre, count}, index) => `
         <div class="top-item">
             <div class="top-rank">${index + 1}</div>
             <div class="top-info">
@@ -850,61 +873,20 @@ function createTopGenres(fields) {
 }
 
 /**
- * Получить топ жанров
- */
-function getTopGenres() {
-    const fields = CONFIG.sheets.films.fields;
-    const genreCount = {};
-    
-    STATE.films.forEach(film => {
-        const genre = film[fields.genre];
-        if (genre) {
-            // Разделяем жанры по запятой и обрабатываем каждый
-            const genres = genre.split(',').map(g => g.trim().toLowerCase()).filter(g => g);
-            
-            genres.forEach(normalizedGenre => {
-                if (normalizedGenre) {
-                    genreCount[normalizedGenre] = (genreCount[normalizedGenre] || 0) + 1;
-                }
-            });
-        }
-    });
-    
-    return Object.entries(genreCount)
-        .sort(([,a], [,b]) => b - a)
-        .slice(0, CONFIG.defaults.topLimit)
-        .map(([genre, count]) => ({ genre, count }));
-}
-
-/**
  * Создание топов режиссеров
  */
-function createTopDirectors(fields) {
+function createTopDirectors() {
     const container = document.getElementById('top-directors');
     if (!container) return;
     
-    const directorCount = {};
+    const topDirectors = getTopDirectors();
     
-    STATE.films.forEach(film => {
-        const director = film[fields.director];
-        if (director) {
-            const normalizedDirector = director.trim().toLowerCase();
-            if (normalizedDirector) {
-                directorCount[normalizedDirector] = (directorCount[normalizedDirector] || 0) + 1;
-            }
-        }
-    });
-    
-    const sortedDirectors = Object.entries(directorCount)
-        .sort(([,a], [,b]) => b - a)
-        .slice(0, CONFIG.defaults.topLimit);
-    
-    if (!sortedDirectors.length) {
+    if (!topDirectors.length) {
         container.innerHTML = `<p class="no-data">${CONFIG.messages.noTopData}</p>`;
         return;
     }
     
-    const directorsHTML = sortedDirectors.map(([director, count], index) => `
+    const directorsHTML = topDirectors.map(({director, count}, index) => `
         <div class="top-item">
             <div class="top-rank">${index + 1}</div>
             <div class="top-info">
@@ -946,36 +928,18 @@ function capitalizeFirstLetter(string) {
 }
 
 /**
- * Получить топ лучших фильмов
+ * Получить топ фильмов
  */
-function getTopBestFilms() {
-    const fields = CONFIG.sheets.films.fields;
+function getTopFilms(type) {
     const ratedFilms = STATE.films.filter(film => {
-        const rating = parseFloat(film[fields.rating]);
+        const rating = parseFloat(film['Оценка']);
         return !isNaN(rating) && rating > 0;
     });
     
     return [...ratedFilms].sort((a, b) => {
-        const ratingA = parseFloat(a[fields.rating]);
-        const ratingB = parseFloat(b[fields.rating]);
-        return ratingB - ratingA;
-    }).slice(0, CONFIG.defaults.topLimit);
-}
-
-/**
- * Получить топ худших фильмов
- */
-function getTopWorstFilms() {
-    const fields = CONFIG.sheets.films.fields;
-    const ratedFilms = STATE.films.filter(film => {
-        const rating = parseFloat(film[fields.rating]);
-        return !isNaN(rating) && rating > 0;
-    });
-    
-    return [...ratedFilms].sort((a, b) => {
-        const ratingA = parseFloat(a[fields.rating]);
-        const ratingB = parseFloat(b[fields.rating]);
-        return ratingA - ratingB;
+        const ratingA = parseFloat(a['Оценка']);
+        const ratingB = parseFloat(b['Оценка']);
+        return type === 'best' ? ratingB - ratingA : ratingA - ratingB;
     }).slice(0, CONFIG.defaults.topLimit);
 }
 
@@ -983,16 +947,19 @@ function getTopWorstFilms() {
  * Получить топ жанров
  */
 function getTopGenres() {
-    const fields = CONFIG.sheets.films.fields;
     const genreCount = {};
     
     STATE.films.forEach(film => {
-        const genre = film[fields.genre];
+        const genre = film['Жанр'];
         if (genre) {
-            const normalizedGenre = genre.trim().toLowerCase();
-            if (normalizedGenre) {
-                genreCount[normalizedGenre] = (genreCount[normalizedGenre] || 0) + 1;
-            }
+            // Разделяем жанры по запятой и обрабатываем каждый
+            const genres = genre.split(',').map(g => g.trim().toLowerCase()).filter(g => g);
+            
+            genres.forEach(normalizedGenre => {
+                if (normalizedGenre) {
+                    genreCount[normalizedGenre] = (genreCount[normalizedGenre] || 0) + 1;
+                }
+            });
         }
     });
     
@@ -1006,11 +973,10 @@ function getTopGenres() {
  * Получить топ режиссеров
  */
 function getTopDirectors() {
-    const fields = CONFIG.sheets.films.fields;
     const directorCount = {};
     
     STATE.films.forEach(film => {
-        const director = film[fields.director];
+        const director = film['Режиссер'];
         if (director) {
             const normalizedDirector = director.trim().toLowerCase();
             if (normalizedDirector) {
@@ -1031,28 +997,26 @@ function getTopDirectors() {
 function renderTopsFromCache() {
     if (!STATE.cache.tops) return;
     
-    const fields = CONFIG.sheets.films.fields;
-    
     // Рендерим лучшие фильмы
     if (DOM.topBestFilms && STATE.cache.tops.best) {
         const bestFilmsHTML = STATE.cache.tops.best.map((film, index) => {
-            const posterUrl = film[fields.poster] || CONFIG.defaults.poster;
+            const posterUrl = film['Постер URL'] || CONFIG.defaults.poster;
             return `
             <div class="top-item">
                 <div class="top-rank">${index + 1}</div>
                 <div class="top-poster">
                     <img src="${posterUrl}" 
-                         alt="${film[fields.title]}" 
+                         alt="${film['Фильм']}" 
                          loading="lazy"
                          onerror="this.src='${CONFIG.defaults.poster}'">
                 </div>
                 <div class="top-info">
-                    <div class="top-film-title">${film[fields.title]} (${film[fields.year]})</div>
+                    <div class="top-film-title">${film['Фильм']} (${film['Год']})</div>
                     <div class="top-film-meta">
-                        <span class="top-director">${film[fields.director] || 'Неизвестен'}</span>
+                        <span class="top-director">${film['Режиссер'] || 'Неизвестен'}</span>
                         <span class="top-rating">
-                            <span class="rating-stars">${createRatingStars(parseFloat(film[fields.rating]))}</span>
-                            ${parseFloat(film[fields.rating]).toFixed(1)}
+                            <span class="rating-stars">${createRatingStars(parseFloat(film['Оценка']))}</span>
+                            ${parseFloat(film['Оценка']).toFixed(1)}
                         </span>
                     </div>
                 </div>
@@ -1065,23 +1029,23 @@ function renderTopsFromCache() {
     // Рендерим худшие фильмы
     if (DOM.topWorstFilms && STATE.cache.tops.worst) {
         const worstFilmsHTML = STATE.cache.tops.worst.map((film, index) => {
-            const posterUrl = film[fields.poster] || CONFIG.defaults.poster;
+            const posterUrl = film['Постер URL'] || CONFIG.defaults.poster;
             return `
             <div class="top-item">
                 <div class="top-rank">${index + 1}</div>
                 <div class="top-poster">
                     <img src="${posterUrl}" 
-                         alt="${film[fields.title]}" 
+                         alt="${film['Фильм']}" 
                          loading="lazy"
                          onerror="this.src='${CONFIG.defaults.poster}'">
                 </div>
                 <div class="top-info">
-                    <div class="top-film-title">${film[fields.title]} (${film[fields.year]})</div>
+                    <div class="top-film-title">${film['Фильм']} (${film['Год']})</div>
                     <div class="top-film-meta">
-                        <span class="top-director">${film[fields.director] || 'Неизвестен'}</span>
+                        <span class="top-director">${film['Режиссер'] || 'Неизвестен'}</span>
                         <span class="top-rating">
-                            <span class="rating-stars">${createRatingStars(parseFloat(film[fields.rating]))}</span>
-                            ${parseFloat(film[fields.rating]).toFixed(1)}
+                            <span class="rating-stars">${createRatingStars(parseFloat(film['Оценка']))}</span>
+                            ${parseFloat(film['Оценка']).toFixed(1)}
                         </span>
                     </div>
                 </div>
@@ -1124,8 +1088,115 @@ function renderTopsFromCache() {
     }
 }
 
-// Инициализация приложения после загрузки DOM
-document.addEventListener('DOMContentLoaded', initApp);
+/**
+ * Mock данные для фильмов (fallback)
+ */
+function loadMockFilmsData() {
+    const mockFilms = [
+        {
+            "Фильм": "Начало",
+            "Режиссер": "Кристофер Нолан",
+            "Жанр": "Фантастика, Триллер",
+            "Страна": "США, Великобритания",
+            "Год": "2010",
+            "Оценка": "8.7",
+            "Номер обсуждения": "1",
+            "Дата": "01.01.2023",
+            "Постер URL": "assets/images/default-poster.jpg",
+            "Описание": "Проникая в сны других людей, Дом Кобб должен выполнить задание, которое станет возможностью искупить его прошлые прегрешения.",
+            "Участников": "7"
+        },
+        {
+            "Фильм": "Паразиты",
+            "Режиссер": "Пон Джун Хо",
+            "Жанр": "Драма, Комедия",
+            "Страна": "Южная Корея",
+            "Год": "2019",
+            "Оценка": "8.6",
+            "Номер обсуждения": "2",
+            "Дата": "08.01.2023",
+            "Постер URL": "assets/images/default-poster.jpg",
+            "Описание": "Бедная корейская семья внедряется в жизнь богатого дома, что приводит к неожиданным последствиям.",
+            "Участников": "6"
+        },
+        {
+            "Фильм": "Криминальное чтиво",
+            "Режиссер": "Квентин Тарантино",
+            "Жанр": "Криминал, Драма",
+            "Страна": "США",
+            "Год": "1994",
+            "Оценка": "8.9",
+            "Номер обсуждения": "3",
+            "Дата": "15.01.2023",
+            "Постер URL": "assets/images/default-poster.jpg",
+            "Описание": "Несколько взаимосвязанных историй из жизни бандитов и мелких преступников.",
+            "Участников": "8"
+        }
+    ];
+    
+    STATE.films = mockFilms;
+    sortFilmsByDate();
+    resetPagination();
+    renderFilms();
+    analyzeDataAndCreateTops();
+    
+    showMockDataWarning('фильмов');
+}
+
+/**
+ * Mock данные для работ (fallback)
+ */
+function loadMockWorksData() {
+    const mockWorks = [
+        {
+            "Название": "Экспериментальное видео 'Рассвет'",
+            "Год": "2023",
+            "Тип": "Короткометражный фильм",
+            "Ссылка на видео": "#",
+            "URL постера": "assets/images/default-poster.jpg",
+            "Описание": "Пример творческой работы участников киноклуба"
+        },
+        {
+            "Название": "Документальный этюд",
+            "Гой": "2023",
+            "Тип": "Документальный фильм",
+            "Ссылка на видео": "#",
+            "URL постера": "assets/images/default-poster.jpg",
+            "Описание": "Исследование городской среды через призму кинокамеры"
+        }
+    ];
+    
+    STATE.works = mockWorks;
+    renderWorks(mockWorks);
+    
+    showMockDataWarning('работ');
+}
+
+/**
+ * Показать предупреждение о mock данных
+ */
+function showMockDataWarning(dataType) {
+    // Убираем предыдущие предупреждения
+    const existingWarning = document.querySelector('.mock-warning');
+    if (existingWarning) existingWarning.remove();
+    
+    const warning = document.createElement('div');
+    warning.className = 'mock-warning';
+    warning.innerHTML = `
+        <p>⚠️ Данные ${dataType} загружены в демо-режиме. 
+        Для актуальной информации обновите файлы на GitHub.</p>
+        <button onclick="location.reload()" class="retry-button">Обновить страницу</button>
+    `;
+    document.body.prepend(warning);
+    
+    // Автоматическое скрытие через 10 секунд
+    setTimeout(() => {
+        if (warning.parentNode) {
+            warning.style.opacity = '0';
+            setTimeout(() => warning.remove(), 500);
+        }
+    }, 10000);
+}
 
 // Загрузка кэша из localStorage при загрузке страницы
 window.addEventListener('load', () => {
@@ -1278,13 +1349,24 @@ document.addEventListener('DOMContentLoaded', function() {
 const style = document.createElement('style');
 style.textContent = `
     .mock-warning {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
         background: linear-gradient(135deg, #ff9800, #f44336);
         color: white;
-        padding: 1rem;
-        text-align: center;
-        margin: 1rem 5%;
+        padding: 1rem 1.5rem;
         border-radius: 8px;
-        animation: pulse 2s infinite;
+        text-align: center;
+        z-index: 10000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        max-width: 90%;
+        animation: slideDown 0.3s ease;
+    }
+    
+    .mock-warning p {
+        margin: 0 0 1rem 0;
+        font-weight: 500;
     }
     
     .network-status {
@@ -1330,15 +1412,20 @@ style.textContent = `
         font-weight: bold;
     }
     
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.7; }
-        100% { opacity: 1; }
+    @keyframes slideDown {
+        from { transform: translate(-50%, -100%); opacity: 0; }
+        to { transform: translate(-50%, 0); opacity: 1; }
     }
     
     @keyframes slideIn {
         from { transform: translateX(100px); opacity: 0; }
         to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.02); }
+        100% { opacity: 1; transform: scale(1); }
     }
     
     .no-data {
@@ -1361,6 +1448,20 @@ style.textContent = `
         justify-content: center;
         padding: 2rem;
         color: var(--gray);
+    }
+    
+    @media (max-width: 768px) {
+        .mock-warning {
+            top: 10px;
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .offline-message {
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.5rem;
+        }
     }
 `;
 document.head.appendChild(style);
