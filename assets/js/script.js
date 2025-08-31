@@ -627,7 +627,7 @@ function createFilmCard(film, options = {}) {
                    rel="noopener noreferrer"
                    class="kinopoisk-poster-button"
                    aria-label="Информация о фильме ${filmName} на КиноПоиске">
-                   🎬 ${isTopItem ? 'КиноПоиск' : 'Информацию о фильме'}
+                   🎬 ${isTopItem ? 'КиноПоиск' : 'Информация о фильме'}
                 </a>
             </div>
             ` : ''}
