@@ -8,6 +8,36 @@
     <meta name="description" content="Киноклуб Одиссея - место для настоящих ценителей кино. Обсуждения фильмов, топ-рейтинги и архив встреч.">
     <meta name="keywords" content="кино, киноклуб, фильмы, обсуждение, рейтинги, Одиссея">
     <style>
+    .next-meeting-kinopoisk-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.5rem;
+        background: linear-gradient(135deg, #3d13af, #155877);
+        color: white !important;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .next-meeting-kinopoisk-btn:hover {
+        background: linear-gradient(135deg, #6200ff, #0084ff);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(160, 160, 160, 0.8);
+    }
+
+    /* Адаптивность для мобильных */
+    @media (max-width: 768px) {
+        .next-meeting-kinopoisk-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 0.7rem 1.2rem;
+            font-size: 0.9rem;
+        }
+    }
         /* Стили для компактных топов */
         .tops-grid {
             display: grid;
@@ -327,15 +357,15 @@
     </section>
 
     <!-- Предстоящая встреча -->
-    <section id="next-meeting" class="next-meeting">
-        <h2 class="section__title fade-in">Ближайшая встреча</h2>
-        <div id="next-meeting-container" class="next-meeting__container fade-in delay-1" aria-live="polite">
-            <div class="loading-message">
-                <div class="spinner" aria-hidden="true"></div>
-                Загрузка информации о встрече...
-            </div>
-        </div>
-    </section>
+   <section id="next-meeting" class="next-meeting">
+       <h2 class="section__title fade-in">Ближайшая встреча</h2>
+       <div id="next-meeting-container" class="next-meeting__container fade-in delay-1" aria-live="polite">
+           <div class="loading-message">
+               <div class="spinner" aria-hidden="true"></div>
+               Загрузка информации о встрече...
+           </div>
+       </div>
+   </section>
 
     <!-- Карта -->
     <section class="map-section">

@@ -352,8 +352,6 @@ function renderNextMeeting(meetingData) {
             <div class="next-meeting-poster">
                 <img src="${poster || defaults.poster}" alt="Постер: ${film || 'Фильм'} (${year || 'Год'})" loading="lazy" onerror="this.src='${defaults.poster}'">
                 <div class="next-meeting-badge">Обсуждение #${discussionNumber || 'N/A'}</div>
-                ${kinopoiskUrl ? `
-                ` : ''}
             </div>
             <div class="next-meeting-info">
                 <div class="next-meeting-header">
@@ -369,18 +367,17 @@ function renderNextMeeting(meetingData) {
                     ${createMeetingDetail('📍', 'Место:', place)}
                 </div>
                 ${description ? `
-                    ${kinopoiskUrl ? `
-                    <div style="margin-top: 1rem;">
-                        <a href="${kinopoiskUrl}" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           class="btn btn--primary"
-                           style="display: inline-flex; align-items: center; gap: 0.5rem;">
-                           <span>🎬</span>
-                           <span>Информация на КиноПоиске</span>
-                        </a>
+                    <div class="next-meeting-description">
+                        <p>${description}</p>
                     </div>
-                    ` : ''}
+                ` : ''}
+                ${kinopoiskUrl ? `
+                    <a href="${kinopoiskUrl}" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="next-meeting-kinopoisk-btn">
+                       🎬 Информация о фильме на КиноПоиске
+                    </a>
                 ` : ''}
                 ${requirements ? `<div class="next-meeting-requirements"><p>⚠️ <strong>Важно:</strong> ${requirements}</p></div>` : ''}
             </div>
