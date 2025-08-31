@@ -1810,6 +1810,124 @@ img {
     margin-bottom: var(--space-md);
 }
 
+.next-meeting-card {
+    display: grid;
+    grid-template-columns: minmax(250px, 350px) 1fr;
+    gap: var(--space-lg);
+}
+
+.next-meeting-poster {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    aspect-ratio: 2/3;
+}
+
+.next-meeting-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Стили для кнопки КиноПоиска на постере */
+.poster-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.next-meeting-poster:hover .poster-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.kinopoisk-poster-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #3d13af, #155877);
+    color: white !important;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    transform: translateY(20px);
+    opacity: 0;
+}
+
+.next-meeting-poster:hover .kinopoisk-poster-button {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.kinopoisk-poster-button:hover {
+    background: linear-gradient(135deg, #6200ff, #0084ff);
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(160, 160, 160, 0.8);
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .next-meeting-card {
+        grid-template-columns: minmax(200px, 300px) 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .next-meeting-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .next-meeting-poster {
+        height: 400px;
+        aspect-ratio: unset;
+    }
+    
+    .next-meeting-info {
+        padding: var(--space-lg);
+    }
+    
+    .next-meeting-title {
+        font-size: var(--text-xl);
+    }
+    
+    /* Мобильная версия кнопки КиноПоиска */
+    .poster-overlay {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.6);
+    }
+    
+    .kinopoisk-poster-button {
+        transform: translateY(0);
+        opacity: 1;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .next-meeting-poster {
+        height: 350px;
+    }
+    
+    .kinopoisk-poster-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+}
+
 @keyframes pulse {
     0% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.8; transform: scale(1.02); }
