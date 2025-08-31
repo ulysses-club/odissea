@@ -11,6 +11,11 @@ const CONFIG = {
             url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/works.json',
             type: 'json',
             fallback: 'assets/data/works.json'
+        },
+        nextMeeting: {
+            url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/next-meeting.json',
+            type: 'json',
+            fallback: 'assets/data/next-meeting.json'
         }
     },
 
@@ -28,6 +33,7 @@ const CONFIG = {
     selectors: {
         filmsContainer: '#films-container',
         worksContainer: '#works-container',
+        nextMeetingContainer: '#next-meeting-container',
         topBestFilms: '#top-best-films',
         topWorstFilms: '#top-worst-films',
         topGenres: '#top-genres',
@@ -42,6 +48,7 @@ const CONFIG = {
         noData: 'Нет данных для отображения',
         noFilms: 'Нет данных о фильмах',
         noWorks: 'Нет данных о работах',
+        noMeeting: 'Информация о следующей встрече пока не доступна',
         connectionError: 'Ошибка подключения к интернету',
         serverError: 'Ошибка сервера',
         genericError: 'Произошла ошибка',
@@ -49,7 +56,8 @@ const CONFIG = {
         offline: 'Вы сейчас офлайн. Показаны кэшированные данные.',
         loadMore: 'Показать еще',
         allFilmsLoaded: 'Все фильмы загружены',
-        noTopData: 'Недостаточно данных для формирования топа'
+        noTopData: 'Недостаточно данных для формирования топа',
+        meetingAnnouncement: 'Ближайшая встреча будет анонсирована позже'
     },
 
     // API
@@ -63,6 +71,7 @@ const STATE = {
     films: [],
     sortedFilms: [],
     works: [],
+    nextMeeting: null,
     isOnline: navigator.onLine,
     lastUpdated: null,
     pagination: {
@@ -73,6 +82,7 @@ const STATE = {
     cache: {
         films: null,
         works: null,
+        nextMeeting: null,
         tops: null
     }
 };
@@ -81,6 +91,7 @@ const STATE = {
 const DOM = {
     filmsContainer: null,
     worksContainer: null,
+    nextMeetingContainer: null,
     topBestFilms: null,
     topWorstFilms: null,
     topGenres: null,
@@ -97,6 +108,7 @@ function initApp() {
     initEventListeners();
     checkConnectivity();
     loadInitialData();
+    loadNextMeeting();
     updateOnlineStatus();
     initScrollToTop();
 }
@@ -107,6 +119,7 @@ function initApp() {
 function cacheDOM() {
     DOM.filmsContainer = document.querySelector(CONFIG.selectors.filmsContainer);
     DOM.worksContainer = document.querySelector(CONFIG.selectors.worksContainer);
+    DOM.nextMeetingContainer = document.querySelector(CONFIG.selectors.nextMeetingContainer);
     DOM.topBestFilms = document.querySelector(CONFIG.selectors.topBestFilms);
     DOM.topWorstFilms = document.querySelector(CONFIG.selectors.topWorstFilms);
     DOM.topGenres = document.querySelector(CONFIG.selectors.topGenres);
@@ -141,6 +154,7 @@ function initEventListeners() {
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('retry-button')) {
             loadInitialData();
+            loadNextMeeting();
         }
     });
     
@@ -223,6 +237,115 @@ async function loadInitialData() {
 }
 
 /**
+ * Загрузка информации о предстоящей встрече
+ */
+async function loadNextMeeting() {
+    try {
+        const data = await fetchDataWithFallback(CONFIG.dataSources.nextMeeting);
+        STATE.nextMeeting = data;
+        renderNextMeeting(data);
+    } catch (error) {
+        console.error('Ошибка загрузки информации о встрече:', error);
+        showNextMeetingError();
+    }
+}
+
+/**
+ * Отображение информации о предстоящей встрече
+ */
+function renderNextMeeting(meetingData) {
+    if (!DOM.nextMeetingContainer) return;
+
+    if (!meetingData) {
+        DOM.nextMeetingContainer.innerHTML = `
+            <div class="no-data">
+                <p>${CONFIG.messages.noMeeting}</p>
+                <p>Следите за обновлениями в наших соцсетях</p>
+            </div>
+        `;
+        return;
+    }
+
+    const meetingDate = parseDate(meetingData.date);
+    const isPastMeeting = meetingDate < new Date();
+
+    if (isPastMeeting) {
+        DOM.nextMeetingContainer.innerHTML = `
+            <div class="no-data">
+                <p>${CONFIG.messages.meetingAnnouncement}</p>
+                <p>Следите за обновлениями в наших соцсетях</p>
+            </div>
+        `;
+        return;
+    }
+
+    DOM.nextMeetingContainer.innerHTML = `
+        <div class="next-meeting-card">
+            <div class="next-meeting-poster">
+                <img src="${meetingData.poster || CONFIG.defaults.poster}" 
+                     alt="Постер: ${meetingData.film} (${meetingData.year})"
+                     loading="lazy"
+                     onerror="this.src='${CONFIG.defaults.poster}'">
+                <div class="next-meeting-badge">Обсуждение #${meetingData.discussionNumber}</div>
+            </div>
+            <div class="next-meeting-info">
+                <div class="next-meeting-header">
+                    <h3 class="next-meeting-title">${meetingData.film} (${meetingData.year})</h3>
+                    <div class="next-meeting-meta">
+                        <span class="next-meeting-datetime">
+                            📅 ${formatDate(meetingData.date)} 🕒 ${meetingData.time}
+                        </span>
+                    </div>
+                </div>
+                <div class="next-meeting-details">
+                    <div class="next-meeting-detail">
+                        <span class="detail-icon">🎬</span>
+                        <span><strong>Режиссер:</strong> ${meetingData.director}</span>
+                    </div>
+                    <div class="next-meeting-detail">
+                        <span class="detail-icon">🎭</span>
+                        <span><strong>Жанр:</strong> ${meetingData.genre}</span>
+                    </div>
+                    <div class="next-meeting-detail">
+                        <span class="detail-icon">🌍</span>
+                        <span><strong>Страна:</strong> ${meetingData.country}</span>
+                    </div>
+                    <div class="next-meeting-detail">
+                        <span class="detail-icon">📍</span>
+                        <span><strong>Место:</strong> ${meetingData.place}</span>
+                    </div>
+                </div>
+                ${meetingData.description ? `
+                <div class="next-meeting-description">
+                    <p><strong>О фильме:</strong> ${meetingData.description}</p>
+                </div>
+                ` : ''}
+                ${meetingData.requirements ? `
+                <div class="next-meeting-requirements">
+                    <p>⚠️ <strong>Важно:</strong> ${meetingData.requirements}</p>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Показать ошибку загрузки информации о встрече
+ */
+function showNextMeetingError() {
+    const container = document.getElementById('next-meeting-container');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="error-message">
+            <p>Не удалось загрузить информацию о встрече</p>
+            <button class="retry-button" onclick="loadNextMeeting()">${CONFIG.messages.retry}</button>
+        </div>
+    `;
+}
+
+/**
  * Показать состояние загрузки для топов
  */
 function showLoadingForTops() {
@@ -245,6 +368,7 @@ function showLoadingForTops() {
 function loadFromCache() {
     if (STATE.cache?.films) STATE.films = STATE.cache.films;
     if (STATE.cache?.works) STATE.works = STATE.cache.works;
+    if (STATE.cache?.nextMeeting) STATE.nextMeeting = STATE.cache.nextMeeting;
     if (STATE.cache?.tops) {
         renderTopsFromCache();
         return;
@@ -293,6 +417,7 @@ function saveToCache() {
     STATE.cache = {
         films: STATE.films,
         works: STATE.works,
+        nextMeeting: STATE.nextMeeting,
         tops: {
             best: getTopFilms('best'),
             worst: getTopFilms('worst'),
@@ -355,61 +480,45 @@ async function fetchDataWithFallback(sourceConfig) {
     try {
         // Пытаемся загрузить с GitHub
         console.log('Загрузка данных с GitHub:', sourceConfig.url);
-        const data = await fetchRemoteData(sourceConfig.url);
-        
-        if (data && data.length > 0) {
-            // Сохраняем успешные данные в кэш
-            cacheSuccessfulData(sourceConfig.url, data);
-            return data;
-        }
-        throw new Error('Пустые данные с GitHub');
-        
-    } catch (githubError) {
-        console.warn('GitHub недоступен, пробуем локальный fallback:', githubError);
-        
-        try {
-            // Пробуем локальный fallback
-            const localData = await fetchRemoteData(sourceConfig.fallback);
-            if (localData && localData.length > 0) {
-                return localData;
-            }
-            throw new Error('Пустые локальные данные');
-            
-        } catch (localError) {
-            console.error('Локальный fallback тоже не сработал:', localError);
-            throw new Error('Все источники данных недоступны');
-        }
-    }
-}
-
-/**
- * Загрузка удаленных данных
- */
-async function fetchRemoteData(url) {
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), CONFIG.api.timeout);
-
-        const response = await fetch(url, {
-            signal: controller.signal,
+        const response = await fetch(sourceConfig.url, {
             headers: {
                 'Accept': 'application/json',
                 'Cache-Control': 'no-cache'
             }
         });
 
-        clearTimeout(timeoutId);
-
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        return Array.isArray(data) ? data : [];
         
-    } catch (error) {
-        console.error('Ошибка загрузки с', url, error);
-        throw error;
+        // Для совместимости с массивами и одиночными объектами
+        if (Array.isArray(data)) {
+            return data.length > 0 ? data : null;
+        }
+        return data; // Возвращаем объект как есть
+
+    } catch (githubError) {
+        console.warn('GitHub недоступен, пробуем локальный fallback:', githubError);
+        
+        try {
+            const localResponse = await fetch(sourceConfig.fallback);
+            if (!localResponse.ok) {
+                throw new Error(`Local HTTP error! status: ${localResponse.status}`);
+            }
+            
+            const localData = await localResponse.json();
+            
+            if (Array.isArray(localData)) {
+                return localData.length > 0 ? localData : null;
+            }
+            return localData;
+
+        } catch (localError) {
+            console.error('Локальный fallback тоже не сработал:', localError);
+            throw new Error('Все источники данных недоступны');
+        }
     }
 }
 
@@ -530,7 +639,7 @@ function createFilmCard(film) {
     return `
     <article class="film-card" role="article" aria-labelledby="film-${film['Номер обсуждения']}-title">
         <div class="film-card-image">
-            <img src="${film['Постер URL'] || CONFIG.defaults.poster}"
+            <img src="${film['Постер URL'] || CONFIG.defaults.poster}" 
                  alt="Постер: ${film['Фильм']} (${film['Год']})"
                  class="film-thumbnail"
                  loading="lazy"
@@ -614,11 +723,11 @@ function renderWorks(works) {
 
     DOM.worksContainer.innerHTML = works.map(work => `
         <article class="film-poster" role="article" aria-labelledby="work-${work['Название']}-title">
-            <a href="${work['Ссылка на видео'] || '#'}"
+            <a href="${work['Ссылка на видео'] || '#'}" 
                ${work['Ссылка на видео'] ? 'target="_blank" rel="noopener noreferrer"' : ''}
                class="video-link"
                aria-label="${work['Тип'] || 'Работа'}: ${work['Название']} (${work['Год']})">
-                <img src="${work['URL постера'] || CONFIG.defaults.poster}"
+                <img src="${work['URL постера'] || CONFIG.defaults.poster}" 
                      alt="${work['Название']} (${work['Год']})"
                      class="poster-image"
                      loading="lazy"
@@ -666,8 +775,8 @@ function showError(container, error, retryFunction = null) {
     if (!container) return;
 
     console.error('Ошибка:', error);
-    const errorMessage = error.message.includes('Failed to fetch')
-        ? CONFIG.messages.connectionError
+    const errorMessage = error.message.includes('Failed to fetch') 
+        ? CONFIG.messages.connectionError 
         : error.message || CONFIG.messages.genericError;
 
     container.innerHTML = `
@@ -1158,7 +1267,7 @@ function loadMockWorksData() {
         },
         {
             "Название": "Документальный этюд",
-            "Гой": "2023",
+            "Год": "2023",
             "Тип": "Документальный фильм",
             "Ссылка на видео": "#",
             "URL постера": "assets/images/default-poster.jpg",
@@ -1170,6 +1279,31 @@ function loadMockWorksData() {
     renderWorks(mockWorks);
     
     showMockDataWarning('работ');
+}
+
+/**
+ * Mock данные для предстоящей встречи (fallback)
+ */
+function loadMockNextMeetingData() {
+    const mockMeeting = {
+        "date": "31.08.2025",
+        "time": "15:00",
+        "place": "Кофейня \"Том Сойер\", ул. Шмидта, 12",
+        "film": "Sommaren med Monika/Лето с Моникой",
+        "director": "Ингмар Бергман",
+        "genre": "Драма, Мелодрама",
+        "country": "Швеция",
+        "year": "1953",
+        "poster": "assets/images/default-poster.jpg",
+        "discussionNumber": "255",
+        "description": "Молодые влюбленные пытаются сбежать от скучной реальности, но их идиллическое лето заканчивается суровым столкновением с действительностью.",
+        "requirements": "Рекомендуем посмотреть фильм заранее"
+    };
+    
+    STATE.nextMeeting = mockMeeting;
+    renderNextMeeting(mockMeeting);
+    
+    showMockDataWarning('информации о встрече');
 }
 
 /**
@@ -1210,6 +1344,9 @@ window.addEventListener('load', () => {
             
             if (isCacheValid() && STATE.cache.tops) {
                 renderTopsFromCache();
+            }
+            if (isCacheValid() && STATE.cache.nextMeeting) {
+                renderNextMeeting(STATE.cache.nextMeeting);
             }
         }
     } catch (e) {
@@ -1270,7 +1407,7 @@ function initYandexMap() {
     }
 }
 
-// Показать fallback для карты
+// Показать fallback для карта
 function showMapFallback() {
     const mapContainer = document.getElementById('map');
     if (!mapContainer) return;
