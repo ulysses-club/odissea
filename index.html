@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Киноклуб "ОДИССЕЯ"</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <meta name="description" content="Киноклуб Одиссея - место для настоящих ценителей кино. Обсуждения фильмов, топ-рейтинги и архив встреч.">
@@ -463,57 +463,63 @@
             <p></p>
         </div>
     </section>
+    
+<!-- Топ фильмов -->
+<section id="top-films" class="movies">
+    <h2 class="section__title fade-in">Наши топы</h2>
+    
+    <!-- Кнопки управления -->
+    <div class="tops-controls fade-in delay-1">
+        <button class="toggle-tops-btn active" data-limit="3">Топ-3</button>
+        <button class="toggle-tops-btn" data-limit="10">Топ-10</button>
+    </div>
 
-    <!-- Топ фильмов -->
-    <section id="top-films" class="movies">
-        <h2 class="section__title fade-in">Наши топы</h2>
-        
-        <div class="tops-grid">
-            <!-- Топ лучших фильмов -->
-            <div class="top-section fade-in delay-1">
-                <h3 class="top-title">🏆 Топ лучших фильмов</h3>
-                <div id="top-best-films" class="top-list">
-                    <div class="loading-message">
-                        <div class="spinner" aria-hidden="true"></div>
-                        Загрузка лучших фильмов...
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Топ худших фильмов -->
-            <div class="top-section fade-in delay-2">
-                <h3 class="top-title">💩 Топ худших фильмов</h3>
-                <div id="top-worst-films" class="top-list">
-                    <div class="loading-message">
-                        <div class="spinner" aria-hidden="true"></div>
-                        Загрузка худших фильмов...
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Популярные жанры -->
-            <div class="top-section fade-in delay-3">
-                <h3 class="top-title">🎭 Популярные жанры</h3>
-                <div id="top-genres" class="top-list">
-                    <div class="loading-message">
-                        <div class="spinner" aria-hidden="true"></div>
-                        Загрузка жанров...
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Популярные режиссеры -->
-            <div class="top-section fade-in delay-4">
-                <h3 class="top-title">🎬 Популярные режиссеры</h3>
-                <div id="top-directors" class="top-list">
-                    <div class="loading-message">
-                        <div class="spinner" aria-hidden="true"></div>
-                        Загрузка режиссеров...
-                    </div>
+    <div class="tops-grid">
+        <!-- Топ лучших фильмов -->
+        <div class="top-section fade-in delay-1">
+            <h3 class="top-title">🏆 Топ лучших фильмов</h3>
+            <div id="top-best-films" class="top-list">
+                <div class="loading-message">
+                    <div class="spinner" aria-hidden="true"></div>
+                    Загрузка лучших фильмов...
                 </div>
             </div>
         </div>
-    </section>
+        
+        <!-- Топ худших фильмов -->
+        <div class="top-section fade-in delay-2">
+            <h3 class="top-title">💩 Топ худших фильмов</h3>
+            <div id="top-worst-films" class="top-list">
+                <div class="loading-message">
+                    <div class="spinner" aria-hidden="true"></div>
+                    Загрузка худших фильмов...
+                </div>
+            </div>
+        </div>
+        
+        <!-- Популярные жанры -->
+        <div class="top-section fade-in delay-3">
+            <h3 class="top-title">🎭 Популярные жанры</h3>
+            <div id="top-genres" class="top-list">
+                <div class="loading-message">
+                    <div class="spinner" aria-hidden="true"></div>
+                    Загрузка жанров...
+                </div>
+            </div>
+        </div>
+        
+        <!-- Популярные режиссеры -->
+        <div class="top-section fade-in delay-4">
+            <h3 class="top-title">🎬 Популярные режиссеры</h3>
+            <div id="top-directors" class="top-list">
+                <div class="loading-message">
+                    <div class="spinner" aria-hidden="true"></div>
+                    Загрузка режиссеров...
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- Контакты -->
     <section id="contacts" class="contacts">

@@ -1307,32 +1307,35 @@ img {
         gap: var(--space-xl);
         transition: var(--transition);
         z-index: 999;
+        padding: var(--space-xl);
     }
     
-    .nav.active { right: 0; }
-    .mobile-menu-btn { display: block; }
+    .nav.active { 
+        right: 0; 
+        width: 80%;
+    }
     
-    .hero__title { font-size: var(--text-xxxl); }
-    .hero__subtitle { font-size: var(--text-base); }
-    .hero__cta { flex-direction: column; }
-    .btn { width: 100%; text-align: center; }
+    .mobile-menu-btn { 
+        display: block; 
+        position: fixed;
+        right: 20px;
+        top: 20px;
+    }
     
-    .faq-grid { grid-template-columns: 1fr; }
-    .faq-item { padding: var(--space-md); }
-    .image-container { height: 300px; }
-    .cine-logo { font-size: var(--text-xxl); }
+    /* Добавить оверлей для меню */
+    .nav-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 998;
+    }
     
-    .video-posters-grid,
-    .film-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-    
-    .film-card-image,
-    .video-link { height: 250px; }
-
-    .gallery__container { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-    .gallery__filter-buttons {
-        overflow-x: auto;
-        padding-bottom: var(--space-sm);
-        justify-content: flex-start;
+    .nav-overlay.active {
+        display: block;
     }
 }
 
@@ -1878,6 +1881,79 @@ img {
     box-shadow: 0 6px 20px rgba(160, 160, 160, 0.8);
 }
 
+/* Стили для управления топами */
+.tops-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    flex-wrap: wrap;
+}
+
+.toggle-tops-btn {
+    padding: var(--space-sm) var(--space-lg);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--light);
+    border: 2px solid var(--secondary-light);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.toggle-tops-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.toggle-tops-btn.active {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    border-color: transparent;
+}
+
+/* Компактное отображение топов */
+.top-item.compact {
+    padding: var(--space-xs) var(--space-sm);
+}
+
+.top-item.compact .top-poster {
+    width: 40px;
+    height: 60px;
+}
+
+.top-item.compact .top-rank {
+    font-size: var(--text-md);
+    min-width: 20px;
+}
+
+.top-item.compact .top-film-title {
+    font-size: var(--text-xs);
+}
+
+.top-item.hidden {
+    display: none;
+}
+
+.top-item.visible {
+    display: flex;
+}
+
+/* Анимация появления */
+@keyframes slideInTop {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.top-item {
+    animation: slideInTop 0.3s ease forwards;
+}
+
 /* Адаптивность */
 @media (max-width: 992px) {
     .next-meeting-card {
@@ -2036,4 +2112,164 @@ img {
         backdrop-filter: none;
         background: rgba(26, 26, 46, 0.9);
     }
+}
+
+/* Исправления для мобильной версии */
+@media (max-width: 480px) {
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+    
+    .header {
+        padding: var(--space-md) 3%;
+    }
+    
+    .hero {
+        padding: 0 3%;
+    }
+    
+    .hero__title {
+        font-size: var(--text-xxxl);
+        text-align: center;
+    }
+    
+    .hero__subtitle {
+        font-size: var(--text-base);
+        text-align: center;
+    }
+    
+    .hero__cta {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .hero__image {
+        width: 95%;
+        margin: var(--space-xl) auto 0;
+        transform: none;
+        animation: float-mobile 6s ease-in-out infinite;
+    }
+    
+    .section {
+        padding: var(--space-xl) 3%;
+    }
+    
+    .section__title {
+        font-size: var(--text-xxxl);
+        margin-bottom: var(--space-xl);
+    }
+    
+    /* Фикс для FAQ сетки */
+    .faq-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+    
+    .faq-item {
+        padding: var(--space-md);
+    }
+    
+    /* Фикс для контейнеров */
+    .films-container, 
+    .works-container,
+    .video-posters-grid,
+    .film-grid {
+        width: 100%;
+        margin: 0 auto;
+    }
+    
+    /* Карточки фильмов */
+    .film-card {
+        margin: 0 auto;
+        max-width: 100%;
+    }
+    
+    .film-card-image {
+        height: 250px;
+    }
+    
+    /* Топы */
+    .tops-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+    
+    .top-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .top-poster {
+        margin: 0 auto;
+    }
+    
+    /* Контакты */
+    .contacts__grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-card {
+        text-align: center;
+    }
+    
+    /* Футер */
+    .footer__links {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    /* Модальное окно */
+    .modal__content {
+        max-width: 95%;
+        max-height: 70vh;
+    }
+    
+    .modal__close {
+        top: 5px;
+        right: 15px;
+        font-size: var(--text-xxl);
+    }
+}
+
+/* Дополнительные исправления для очень маленьких экранов */
+@media (max-width: 360px) {
+    :root {
+        --space-xl: 1.5rem;
+        --space-lg: 1rem;
+        --space-md: 0.75rem;
+    }
+    
+    .hero__title {
+        font-size: var(--text-xxl);
+    }
+    
+    .section__title {
+        font-size: var(--text-xl);
+    }
+    
+    .btn {
+        padding: var(--space-sm) var(--space-md);
+        font-size: var(--text-sm);
+    }
+}
+
+/* Предотвращение горизонтального скролла */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }

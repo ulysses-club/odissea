@@ -27,7 +27,8 @@ const CONFIG = {
         maxRating: 10,
         cacheTTL: 3600000,
         filmsPerPage: 20,
-        topLimit: 10
+        topLimit: 10,
+        compactTopLimit: 3
     },
 
     selectors: {
@@ -81,6 +82,10 @@ const STATE = {
         works: null,
         nextMeeting: null,
         tops: null
+    },
+    topsView: {
+        limit: 3,
+        expanded: false
     }
 };
 
@@ -117,7 +122,49 @@ const EVENT_HANDLERS = {
 
 let scrollTimeout = null;
 
+// Мобильное меню
+function initMobileMenu() {
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const nav = document.querySelector('.nav');
+    const body = document.body;
+    
+    if (!menuBtn || !nav) return;
+    
+    // Создаем оверлей
+    const overlay = document.createElement('div');
+    overlay.className = 'nav-overlay';
+    document.body.appendChild(overlay);
+    
+    menuBtn.addEventListener('click', function() {
+        nav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        menuBtn.setAttribute('aria-expanded', 
+            nav.classList.contains('active') ? 'true' : 'false'
+        );
+        body.classList.toggle('no-scroll');
+    });
+    
+    overlay.addEventListener('click', function() {
+        nav.classList.remove('active');
+        overlay.classList.remove('active');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        body.classList.remove('no-scroll');
+    });
+    
+    // Закрытие меню при клике на ссылку
+    const navLinks = nav.querySelectorAll('.nav__link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            nav.classList.remove('active');
+            overlay.classList.remove('active');
+            menuBtn.setAttribute('aria-expanded', 'false');
+            body.classList.remove('no-scroll');
+        });
+    });
+}
+
 function initApp() {
+    initMobileMenu();
     cacheDOM();
     initEventListeners();
     checkConnectivity();
@@ -125,6 +172,7 @@ function initApp() {
     loadNextMeeting();
     updateOnlineStatus();
     initScrollToTop();
+    initTopsControls();
 }
 
 function cacheDOM() {
@@ -408,6 +456,7 @@ function loadFromCache() {
     if (cache.nextMeeting) STATE.nextMeeting = cache.nextMeeting;
     if (cache.tops) {
         renderTopsFromCache();
+        initTopsControls();
         return;
     }
     
@@ -795,6 +844,8 @@ function analyzeDataAndCreateTops() {
     createTopFilms('worst');
     createTopGenres();
     createTopDirectors();
+    renderTops();
+    initTopsControls();
 }
 
 function showNoDataForTops() {
@@ -913,7 +964,24 @@ function getRussianWordForm(number, one, two, five) {
 
 function capitalizeFirstLetter(string) {
     if (!string) return '';
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    
+    // Разделяем строку на слова (учитываем пробелы, дефисы и апострофы)
+    return string.split(/([\s\-']+)/)
+        .map(word => {
+            // Пропускаем разделители
+            if (/^[\s\-']+$/.test(word)) return word;
+            
+            // Обрабатываем специальные случаи (Mc, Mac, O' и т.д.)
+            if (word.match(/^(mc|mac|o'|d')[a-z]/i)) {
+                return word.charAt(0).toUpperCase() + 
+                       word.charAt(1).toUpperCase() + 
+                       word.slice(2).toLowerCase();
+            }
+            
+            // Стандартное преобразование: первая буква заглавная, остальные строчные
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join('');
 }
 
 function getTopFilms(type) {
@@ -953,7 +1021,7 @@ function getTopDirectors() {
     STATE.films.forEach(film => {
         const director = film['Режиссер'];
         if (director) {
-            const normalizedDirector = director.trim().toLowerCase();
+            const normalizedDirector = capitalizeFirstLetter(director.trim().toLowerCase());
             if (normalizedDirector) directorCount[normalizedDirector] = (directorCount[normalizedDirector] || 0) + 1;
         }
     });
@@ -964,40 +1032,160 @@ function getTopDirectors() {
         .map(([director, count]) => ({ director, count }));
 }
 
+// Функция для создания элемента топа с учетом лимита
+function createTopItem(item, index, type, isCompact = false) {
+    const isVisible = index < STATE.topsView.limit;
+    const itemClass = `top-item ${isCompact ? 'compact' : ''} ${isVisible ? 'visible' : 'hidden'}`;
+    
+    if (type === 'film') {
+        const posterUrl = item['Постер URL'] || CONFIG.defaults.poster;
+        const rating = parseFloat(item['Оценка']);
+        const filmName = item['Фильм'] || 'Неизвестный фильм';
+        const filmYear = item['Год'] || '';
+        
+        return `
+        <div class="${itemClass}" data-index="${index}">
+            <div class="top-rank">${index + 1}</div>
+            <div class="top-poster">
+                <img src="${posterUrl}" alt="${filmName}" loading="lazy" 
+                     onerror="this.src='${CONFIG.defaults.poster}'">
+            </div>
+            <div class="top-info">
+                <div class="top-film-title">${filmName} ${filmYear ? `(${filmYear})` : ''}</div>
+                <div class="top-film-meta">
+                    <span class="top-director">${item['Режиссер'] || 'Неизвестен'}</span>
+                    <span class="top-rating">
+                        <span class="rating-stars">${createRatingStars(rating)}</span>
+                        ${rating.toFixed(1)}
+                    </span>
+                </div>
+            </div>
+        </div>
+        `;
+    } else if (type === 'genre') {
+        return `
+        <div class="${itemClass}" data-index="${index}">
+            <div class="top-rank">${index + 1}</div>
+            <div class="top-info">
+                <div class="top-film-title">${capitalizeFirstLetter(item.genre)}</div>
+                <div class="top-film-meta">
+                    <span class="rating-badge">${item.count} ${getRussianWordForm(item.count, 'фильм', 'фильма', 'фильмов')}</span>
+                </div>
+            </div>
+        </div>
+        `;
+    } else if (type === 'director') {
+        return `
+        <div class="${itemClass}" data-index="${index}">
+            <div class="top-rank">${index + 1}</div>
+            <div class="top-info">
+                <div class="top-film-title">${capitalizeFirstLetter(item.director)}</div>
+                <div class="top-film-meta">
+                    <span class="rating-badge">${item.count} ${getRussianWordForm(item.count, 'фильм', 'фильма', 'фильмов')}</span>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+}
+
+// Обновленная функция отрисовки топов
+function renderTops() {
+    if (!STATE.films.length) return;
+    
+    const bestFilms = getTopFilms('best');
+    const worstFilms = getTopFilms('worst');
+    const topGenres = getTopGenres();
+    const topDirectors = getTopDirectors();
+    
+    // Рендерим лучшие фильмы
+    if (DOM.topBestFilms && bestFilms.length) {
+        DOM.topBestFilms.innerHTML = bestFilms.map((film, index) => 
+            createTopItem(film, index, 'film', STATE.topsView.limit === 3)
+        ).join('');
+    }
+    
+    // Рендерим худшие фильмы
+    if (DOM.topWorstFilms && worstFilms.length) {
+        DOM.topWorstFilms.innerHTML = worstFilms.map((film, index) => 
+            createTopItem(film, index, 'film', STATE.topsView.limit === 3)
+        ).join('');
+    }
+    
+    // Рендерим жанры
+    if (DOM.topGenres && topGenres.length) {
+        DOM.topGenres.innerHTML = topGenres.map((genre, index) => 
+            createTopItem(genre, index, 'genre', STATE.topsView.limit === 3)
+        ).join('');
+    }
+    
+    // Рендерим режиссеров
+    if (DOM.topDirectors && topDirectors.length) {
+        DOM.topDirectors.innerHTML = topDirectors.map((director, index) => 
+            createTopItem(director, index, 'director', STATE.topsView.limit === 3)
+        ).join('');
+    }
+}
+
+// Функция переключения лимита
+function toggleTopsLimit(limit) {
+    STATE.topsView.limit = limit;
+    STATE.topsView.expanded = limit === 10;
+    
+    // Обновляем активную кнопку
+    document.querySelectorAll('.toggle-tops-btn').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.limit) === limit);
+    });
+    
+    // Перерисовываем топы
+    renderTops();
+}
+
+// Инициализация управления топами
+function initTopsControls() {
+    const buttons = document.querySelectorAll('.toggle-tops-btn');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            const limit = parseInt(this.dataset.limit);
+            toggleTopsLimit(limit);
+        });
+    });
+}
+
 function renderTopsFromCache() {
     if (!STATE.cache.tops) return;
     const { tops } = STATE.cache;
     
-    if (DOM.topBestFilms && tops.best) renderTopFromCache(DOM.topBestFilms, tops.best);
-    if (DOM.topWorstFilms && tops.worst) renderTopFromCache(DOM.topWorstFilms, tops.worst);
+    // Рендерим лучшие фильмы
+    if (DOM.topBestFilms && tops.best) {
+        DOM.topBestFilms.innerHTML = tops.best.map((film, index) => 
+            createTopItem(film, index, 'film', STATE.topsView.limit === 3)
+        ).join('');
+    }
     
+    // Рендерим худшие фильмы
+    if (DOM.topWorstFilms && tops.worst) {
+        DOM.topWorstFilms.innerHTML = tops.worst.map((film, index) => 
+            createTopItem(film, index, 'film', STATE.topsView.limit === 3)
+        ).join('');
+    }
+    
+    // Рендерим жанры
     if (DOM.topGenres && tops.genres) {
-        DOM.topGenres.innerHTML = tops.genres.map(({genre, count}, index) => `
-            <div class="top-item">
-                <div class="top-rank">${index + 1}</div>
-                <div class="top-info">
-                    <div class="top-film-title">${capitalizeFirstLetter(genre)}</div>
-                    <div class="top-film-meta">
-                        <span class="rating-badge">${count} ${getRussianWordForm(count, 'фильм', 'фильма', 'фильмов')}</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+        DOM.topGenres.innerHTML = tops.genres.map((genre, index) => 
+            createTopItem(genre, index, 'genre', STATE.topsView.limit === 3)
+        ).join('');
     }
     
+    // Рендерим режиссеров
     if (DOM.topDirectors && tops.directors) {
-        DOM.topDirectors.innerHTML = tops.directors.map(({director, count}, index) => `
-            <div class="top-item">
-                <div class="top-rank">${index + 1}</div>
-                <div class="top-info">
-                    <div class="top-film-title">${capitalizeFirstLetter(director)}</div>
-                    <div class="top-film-meta">
-                        <span class="rating-badge">${count} ${getRussianWordForm(count, 'фильм', 'фильма', 'фильмов')}</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+        DOM.topDirectors.innerHTML = tops.directors.map((director, index) => 
+            createTopItem(director, index, 'director', STATE.topsView.limit === 3)
+        ).join('');
     }
+    
+    initTopsControls();
 }
 
 function renderTopFromCache(container, films) {
@@ -1407,3 +1595,25 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Обработчик изменения размера окна
+window.addEventListener('resize', function() {
+    // Фикс ширины для мобильных
+    if (window.innerWidth < 768) {
+        const containers = [
+            '.films-container',
+            '.works-container', 
+            '.video-posters-grid',
+            '.film-grid',
+            '#gallery-container'
+        ];
+        
+        containers.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.width = '100%';
+                element.style.margin = '0 auto';
+            }
+        });
+    }
+});

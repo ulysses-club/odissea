@@ -43,6 +43,12 @@ function initGallery() {
         return;
     }
     
+    // Установить фиксированную ширину для мобильных
+    if (window.innerWidth < 768) {
+        galleryContainer.style.width = '100%';
+        galleryContainer.style.margin = '0 auto';
+    }
+    
     // Показываем сообщение о загрузке
     galleryContainer.innerHTML = `
         <div class="loading-message">
