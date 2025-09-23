@@ -1,43 +1,46 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Киноклуб "ОДИССЕЯ"</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <meta name="description" content="Киноклуб Одиссея - место для настоящих ценителей кино. Обсуждения фильмов, топ-рейтинги и архив встреч.">
+    <meta name="description"
+        content="Киноклуб Одиссея - место для настоящих ценителей кино. Обсуждения фильмов, топ-рейтинги и архив встреч.">
     <meta name="keywords" content="кино, киноклуб, фильмы, обсуждение, рейтинги, Одиссея">
     <style>
-    .next-meeting-kinopoisk-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.8rem 1.5rem;
-        background: linear-gradient(135deg, #3d13af, #155877);
-        color: white !important;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        margin-top: 1rem;
-    }
-
-    .next-meeting-kinopoisk-btn:hover {
-        background: linear-gradient(135deg, #6200ff, #0084ff);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(160, 160, 160, 0.8);
-    }
-
-    /* Адаптивность для мобильных */
-    @media (max-width: 768px) {
         .next-meeting-kinopoisk-btn {
-            width: 100%;
-            justify-content: center;
-            padding: 0.7rem 1.2rem;
-            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #3d13af, #155877);
+            color: white !important;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
         }
-    }
+
+        .next-meeting-kinopoisk-btn:hover {
+            background: linear-gradient(135deg, #6200ff, #0084ff);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(160, 160, 160, 0.8);
+        }
+
+        /* Адаптивность для мобильных */
+        @media (max-width: 768px) {
+            .next-meeting-kinopoisk-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
         /* Стили для компактных топов */
         .tops-grid {
             display: grid;
@@ -45,7 +48,7 @@
             gap: var(--space-xl);
             margin-bottom: var(--space-xxl);
         }
-        
+
         .top-section {
             background: rgba(255, 255, 255, 0.05);
             border-radius: var(--radius-md);
@@ -54,13 +57,13 @@
             transition: var(--transition);
             height: 100%;
         }
-        
+
         .top-section:hover {
             background: rgba(255, 255, 255, 0.08);
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
-        
+
         .top-title {
             font-size: var(--text-xl);
             margin-bottom: var(--space-lg);
@@ -69,12 +72,12 @@
             align-items: center;
             gap: var(--space-sm);
         }
-        
+
         .top-list {
             display: grid;
             gap: var(--space-md);
         }
-        
+
         .top-item {
             display: flex;
             align-items: center;
@@ -84,12 +87,12 @@
             border-radius: var(--radius-sm);
             transition: var(--transition);
         }
-        
+
         .top-item:hover {
             background: rgba(255, 255, 255, 0.07);
             transform: translateX(5px);
         }
-        
+
         .top-poster {
             width: 50px;
             height: 75px;
@@ -97,13 +100,13 @@
             overflow: hidden;
             flex-shrink: 0;
         }
-        
+
         .top-poster img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
         .top-rank {
             font-size: var(--text-lg);
             font-weight: bold;
@@ -111,12 +114,12 @@
             min-width: 25px;
             text-align: center;
         }
-        
+
         .top-info {
             flex: 1;
             min-width: 0;
         }
-        
+
         .top-film-title {
             font-size: var(--text-sm);
             font-weight: 600;
@@ -126,7 +129,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .top-film-meta {
             display: flex;
             flex-direction: column;
@@ -134,7 +137,7 @@
             font-size: var(--text-xs);
             color: var(--gray);
         }
-        
+
         .top-rating {
             display: flex;
             align-items: center;
@@ -142,7 +145,7 @@
             font-weight: bold;
             color: var(--secondary);
         }
-        
+
         .rating-badge {
             padding: var(--space-xs) var(--space-sm);
             border-radius: var(--radius-full);
@@ -151,13 +154,13 @@
             background: var(--primary-light);
             color: var(--light);
         }
-        
+
         /* Стили для предстоящей встречи */
         .next-meeting {
             padding: var(--space-xxl) 5%;
             background: linear-gradient(135deg, rgba(106, 17, 203, 0.1), rgba(37, 117, 252, 0.1));
         }
-        
+
         .next-meeting__container {
             max-width: 800px;
             margin: 0 auto;
@@ -167,25 +170,25 @@
             box-shadow: var(--shadow-xl);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .next-meeting-card {
             display: grid;
             grid-template-columns: 300px 1fr;
             gap: var(--space-lg);
         }
-        
+
         .next-meeting-poster {
             position: relative;
             overflow: hidden;
         }
-        
+
         .next-meeting-poster img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
-        
+
         .next-meeting-badge {
             position: absolute;
             top: var(--space-md);
@@ -197,25 +200,25 @@
             font-weight: bold;
             font-size: var(--text-sm);
         }
-        
+
         .next-meeting-info {
             padding: var(--space-xl);
             display: flex;
             flex-direction: column;
             gap: var(--space-md);
         }
-        
+
         .next-meeting-header {
             border-bottom: 2px solid var(--primary-light);
             padding-bottom: var(--space-md);
         }
-        
+
         .next-meeting-title {
             font-size: var(--text-xxl);
             margin-bottom: var(--space-sm);
             color: var(--light);
         }
-        
+
         .next-meeting-meta {
             display: flex;
             flex-wrap: wrap;
@@ -223,7 +226,7 @@
             font-size: var(--text-sm);
             color: var(--gray);
         }
-        
+
         .next-meeting-datetime {
             background: var(--primary-light);
             padding: var(--space-sm) var(--space-md);
@@ -231,25 +234,25 @@
             font-weight: bold;
             color: var(--secondary);
         }
-        
+
         .next-meeting-details {
             display: grid;
             gap: var(--space-sm);
         }
-        
+
         .next-meeting-detail {
             display: flex;
             align-items: center;
             gap: var(--space-sm);
         }
-        
+
         .detail-icon {
             color: var(--secondary);
             font-size: var(--text-lg);
             width: 24px;
             text-align: center;
         }
-        
+
         .next-meeting-description {
             background: rgba(255, 255, 255, 0.03);
             padding: var(--space-md);
@@ -257,7 +260,7 @@
             border-left: 3px solid var(--accent);
             margin-top: var(--space-md);
         }
-        
+
         .next-meeting-requirements {
             background: rgba(255, 77, 77, 0.1);
             padding: var(--space-md);
@@ -265,14 +268,14 @@
             border-left: 3px solid var(--accent);
             margin-top: var(--space-md);
         }
-        
+
         /* Адаптивность для топов */
         @media (max-width: 992px) {
             .tops-grid {
                 grid-template-columns: 1fr;
             }
         }
-        
+
         @media (max-width: 768px) {
             .top-item {
                 flex-direction: column;
@@ -280,39 +283,40 @@
                 gap: var(--space-sm);
                 text-align: center;
             }
-            
+
             .top-poster {
                 align-self: center;
             }
-            
+
             .top-film-meta {
                 flex-direction: column;
                 gap: var(--space-xs);
                 align-items: center;
             }
-            
+
             .top-rank {
                 align-self: center;
             }
-            
+
             .next-meeting-card {
                 grid-template-columns: 1fr;
             }
-            
+
             .next-meeting-poster {
                 height: 400px;
             }
-            
+
             .next-meeting-info {
                 padding: var(--space-lg);
             }
-            
+
             .next-meeting-title {
                 font-size: var(--text-xl);
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Шапка -->
     <header class="header">
@@ -339,33 +343,31 @@
                 <a href="#top-films" class="btn btn--primary">Смотреть наши топы</a>
                 <a href="#about" class="btn btn--outline">
                     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="currentColor"/>
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+                            fill="currentColor" />
                     </svg>
                     О нас
                 </a>
             </div>
         </div>
         <div class="hero__image">
-            <img src="assets/images/logo-group-vk.jpg"
-                 alt="Участники киноклуба на встрече" 
-                 class="hero__image-img"
-                 width="600"
-                 height="400"
-                 loading="lazy">
+            <img src="assets/images/logo-group-vk.jpg" alt="Участники киноклуба на встрече" class="hero__image-img"
+                width="600" height="400" loading="lazy">
             <div class="film-strip-overlay"></div>
         </div>
     </section>
 
     <!-- Предстоящая встреча -->
-   <section id="next-meeting" class="next-meeting">
-       <h2 class="section__title fade-in">Ближайшая встреча</h2>
-       <div id="next-meeting-container" class="next-meeting__container fade-in delay-1" aria-live="polite">
-           <div class="loading-message">
-               <div class="spinner" aria-hidden="true"></div>
-               Загрузка информации о встрече...
-           </div>
-       </div>
-   </section>
+    <section id="next-meeting" class="next-meeting">
+        <h2 class="section__title fade-in">Ближайшая встреча</h2>
+        <div id="next-meeting-container" class="next-meeting__container fade-in delay-1" aria-live="polite">
+            <div class="loading-message">
+                <div class="spinner" aria-hidden="true"></div>
+                Загрузка информации о встрече...
+            </div>
+        </div>
+    </section>
 
     <!-- Карта -->
     <section class="map-section">
@@ -375,10 +377,12 @@
             <div class="map-info">
                 <h3>Кофейня "Том Сойер"</h3>
                 <p>ул. Шмидта, 12, Севастополь</p>
-                <a href="https://vk.com/tomsoyerbartending" target="_blank" rel="noopener noreferrer" class="contact-card__link">Tom Soyer Bartending</a>
+                <a href="https://vk.com/tomsoyerbartending" target="_blank" rel="noopener noreferrer"
+                    class="contact-card__link">Tom Soyer Bartending</a>
                 <p>Собираемся каждую неделю в выходные</p>
                 <p>Точное время и дату узнавать тут:</p>
-                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" class="contact-card__link">@Odyssey_Cinema_Club_bot</a>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer"
+                    class="contact-card__link">@Odyssey_Cinema_Club_bot</a>
             </div>
         </div>
     </section>
@@ -396,7 +400,8 @@
                             <span class="faq-icon" aria-hidden="true">🎬</span>
                             <h3>Кто мы?</h3>
                         </div>
-                        <p class="faq-answer">Команда киноманов, которые каждую неделю собираются потрещать о фильме.</p>
+                        <p class="faq-answer">Команда киноманов, которые каждую неделю собираются потрещать о фильме.
+                        </p>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question">
@@ -406,7 +411,7 @@
                         <p class="faq-answer">Нет, но если не купишь кофе — мы тебя осуждаем (шутка… или нет).</p>
                     </div>
                 </div>
-                
+
                 <!-- Колонка 2 -->
                 <div class="faq-column">
                     <div class="faq-item">
@@ -414,17 +419,20 @@
                             <span class="faq-icon" aria-hidden="true">🗣️</span>
                             <h3>Как проходят встречи?</h3>
                         </div>
-                        <p class="faq-answer">Фильм смотрим дома, а на встрече — споры, восторги и "как это вообще можно было снять?!". В начале — мини-лекция о фильме, потом — громкие обсуждения. В конце ставим оценки и выводим "клубный рейтинг".</p>
+                        <p class="faq-answer">Фильм смотрим дома, а на встрече — споры, восторги и "как это вообще можно
+                            было снять?!". В начале — мини-лекция о фильме, потом — громкие обсуждения. В конце ставим
+                            оценки и выводим "клубный рейтинг".</p>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question">
                             <span class="faq-icon" aria-hidden="true">👑</span>
                             <h3>Кто выбирает фильмы?</h3>
                         </div>
-                        <p class="faq-answer">Наш "кино-диктатор", но иногда он снисходит до мнения народа. В день рождения твой выбор — закон!</p>
+                        <p class="faq-answer">Наш "кино-диктатор", но иногда он снисходит до мнения народа. В день
+                            рождения твой выбор — закон!</p>
                     </div>
                 </div>
-                
+
                 <!-- Колонка 3 -->
                 <div class="faq-column">
                     <div class="faq-item">
@@ -439,22 +447,24 @@
                             <span class="faq-icon" aria-hidden="true">📢</span>
                             <h3>Где следить за анонсами?</h3>
                         </div>
-                        <p class="faq-answer">ВК, ТГ-бот и сайт. Все ссылки тут: <a href="#contacts" class="gradient-link">в разделе контактов</a>.</p>
+                        <p class="faq-answer">ВК, ТГ-бот и сайт. Все ссылки тут: <a href="#contacts"
+                                class="gradient-link">в разделе контактов</a>.</p>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Цитата под карточками -->
             <div class="about__quote fade-in delay-2">
                 <div class="quote-icon" aria-hidden="true">❝</div>
                 <p>"Киноклуб Одиссея - объективностью здесь и не пахнет! (с)"</p>
                 <div class="quote-author">— Неизвестный критик</div>
             </div>
-            
+
             <!-- Увеличенное изображение -->
             <div class="image-container-wrapper fade-in delay-3">
                 <div class="image-container">
-                    <img src="assets/images//image-container.jpg" alt="Участники киноклуба на встрече" class="main-image" loading="lazy">
+                    <img src="assets/images//image-container.jpg" alt="Участники киноклуба на встрече"
+                        class="main-image" loading="lazy">
                     <div class="film-strip" aria-hidden="true"></div>
                     <div class="projector-light" aria-hidden="true"></div>
                     <div class="cine-logo">Киноклуб "ОДИССЕЯ"</div>
@@ -463,63 +473,63 @@
             <p></p>
         </div>
     </section>
-    
-<!-- Топ фильмов -->
-<section id="top-films" class="movies">
-    <h2 class="section__title fade-in">Наши топы</h2>
-    
-    <!-- Кнопки управления -->
-    <div class="tops-controls fade-in delay-1">
-        <button class="toggle-tops-btn active" data-limit="3">Топ-3</button>
-        <button class="toggle-tops-btn" data-limit="10">Топ-10</button>
-    </div>
 
-    <div class="tops-grid">
-        <!-- Топ лучших фильмов -->
-        <div class="top-section fade-in delay-1">
-            <h3 class="top-title">🏆 Топ лучших фильмов</h3>
-            <div id="top-best-films" class="top-list">
-                <div class="loading-message">
-                    <div class="spinner" aria-hidden="true"></div>
-                    Загрузка лучших фильмов...
+    <!-- Топ фильмов -->
+    <section id="top-films" class="movies">
+        <h2 class="section__title fade-in">Наши топы</h2>
+
+        <!-- Кнопки управления -->
+        <div class="tops-controls fade-in delay-1">
+            <button class="toggle-tops-btn active" data-limit="3">Топ-3</button>
+            <button class="toggle-tops-btn" data-limit="10">Топ-10</button>
+        </div>
+
+        <div class="tops-grid">
+            <!-- Топ лучших фильмов -->
+            <div class="top-section fade-in delay-1">
+                <h3 class="top-title">🏆 Топ лучших фильмов</h3>
+                <div id="top-best-films" class="top-list">
+                    <div class="loading-message">
+                        <div class="spinner" aria-hidden="true"></div>
+                        Загрузка лучших фильмов...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Топ худших фильмов -->
+            <div class="top-section fade-in delay-2">
+                <h3 class="top-title">💩 Топ худших фильмов</h3>
+                <div id="top-worst-films" class="top-list">
+                    <div class="loading-message">
+                        <div class="spinner" aria-hidden="true"></div>
+                        Загрузка худших фильмов...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Популярные жанры -->
+            <div class="top-section fade-in delay-3">
+                <h3 class="top-title">🎭 Популярные жанры</h3>
+                <div id="top-genres" class="top-list">
+                    <div class="loading-message">
+                        <div class="spinner" aria-hidden="true"></div>
+                        Загрузка жанров...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Популярные режиссеры -->
+            <div class="top-section fade-in delay-4">
+                <h3 class="top-title">🎬 Популярные режиссеры</h3>
+                <div id="top-directors" class="top-list">
+                    <div class="loading-message">
+                        <div class="spinner" aria-hidden="true"></div>
+                        Загрузка режиссеров...
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Топ худших фильмов -->
-        <div class="top-section fade-in delay-2">
-            <h3 class="top-title">💩 Топ худших фильмов</h3>
-            <div id="top-worst-films" class="top-list">
-                <div class="loading-message">
-                    <div class="spinner" aria-hidden="true"></div>
-                    Загрузка худших фильмов...
-                </div>
-            </div>
-        </div>
-        
-        <!-- Популярные жанры -->
-        <div class="top-section fade-in delay-3">
-            <h3 class="top-title">🎭 Популярные жанры</h3>
-            <div id="top-genres" class="top-list">
-                <div class="loading-message">
-                    <div class="spinner" aria-hidden="true"></div>
-                    Загрузка жанров...
-                </div>
-            </div>
-        </div>
-        
-        <!-- Популярные режиссеры -->
-        <div class="top-section fade-in delay-4">
-            <h3 class="top-title">🎬 Популярные режиссеры</h3>
-            <div id="top-directors" class="top-list">
-                <div class="loading-message">
-                    <div class="spinner" aria-hidden="true"></div>
-                    Загрузка режиссеров...
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <!-- Контакты -->
     <section id="contacts" class="contacts">
@@ -534,13 +544,15 @@
             <div class="contact-card">
                 <div class="contact-card__icon" aria-hidden="true">✉️</div>
                 <h3 class="contact-card__title">Соцсети</h3>
-                <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="contact-card__link">Группа ВКонтакте</a>
+                <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer"
+                    class="contact-card__link">Группа ВКонтакте</a>
                 <p>Актуальные новости и анонсы</p>
             </div>
             <div class="contact-card">
                 <div class="contact-card__icon" aria-hidden="true">🤖</div>
                 <h3 class="contact-card__title">Телеграм</h3>
-                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" class="contact-card__link">@Odyssey_Cinema_Club_bot</a>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer"
+                    class="contact-card__link">@Odyssey_Cinema_Club_bot</a>
                 <p>Telegram-бот</p>
             </div>
         </div>
@@ -576,8 +588,10 @@
                 <a href="assets/pages/stanislav.html" class="footer__link">Автор сайта</a>
             </div>
             <div class="footer__social">
-                <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="social__link" aria-label="ВКонтакте">VK</a>
-                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" class="social__link" aria-label="Telegram">TG</a>
+                <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="social__link"
+                    aria-label="ВКонтакте">VK</a>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer"
+                    class="social__link" aria-label="Telegram">TG</a>
             </div>
             <p class="footer__copyright">© 2025 Киноклуб "ОДИССЕЯ".</p>
         </div>
@@ -589,4 +603,5 @@
         ↑
     </button>
 </body>
+
 </html>
