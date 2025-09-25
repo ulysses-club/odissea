@@ -1,6 +1,3 @@
-// assets/js/seasons.js
-// Сезонные эффекты для киноклуба Одиссея
-
 class SeasonalEffects {
     constructor() {
         this.container = null;
