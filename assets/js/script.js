@@ -406,7 +406,7 @@ async function loadNextMeeting() {
 }
 
 /**
- * Рендерит информацию о следующей встрече
+ * Рендерит информацию о следующей встрече с таймером
  * 
  * @param {object} meetingData - Данные о встрече
  * @returns {void}
@@ -453,6 +453,7 @@ function renderNextMeeting(meetingData) {
     // Генерируем ссылку на КиноПоиск
     const kinopoiskUrl = generateKinopoiskUrl(film, year);
 
+    // HTML с местом для таймера
     DOM.nextMeetingContainer.innerHTML = `
         <div class="next-meeting-card">
             <div class="next-meeting-poster">
@@ -472,11 +473,15 @@ function renderNextMeeting(meetingData) {
                     ${createMeetingDetail('🌍', 'Страна:', country)}
                     ${createMeetingDetail('📍', 'Место:', place)}
                 </div>
+                
+                <div id="meeting-countdown"></div>
+                
                 ${description ? `
                     <div class="next-meeting-description">
                         <p>${description}</p>
                     </div>
                 ` : ''}
+                
                 ${kinopoiskUrl ? `
                     <a href="${kinopoiskUrl}" 
                        target="_blank" 
@@ -489,6 +494,30 @@ function renderNextMeeting(meetingData) {
             </div>
         </div>
     `;
+
+    // Таймер после отрисовки основной информации (исправленная часть)
+    const countdownContainer = document.getElementById('meeting-countdown');
+    if (countdownContainer && date && time) {
+        try {
+            const timerElement = createCountdownTimer(meetingData);
+            if (timerElement) {
+                countdownContainer.appendChild(timerElement);
+                
+                // Запускаем таймер после добавления в DOM
+                setTimeout(() => {
+                    const meetingDateTime = parseMeetingDateTime(date, time);
+                    if (meetingDateTime && !isNaN(meetingDateTime.getTime())) {
+                        startCountdown(timerElement, meetingDateTime);
+                    }
+                }, 100);
+            }
+        } catch (error) {
+            console.error('Ошибка создания таймера:', error);
+            countdownContainer.innerHTML = `<div class="countdown-error"><p>Таймер временно недоступен</p></div>`;
+        }
+    } else if (countdownContainer) {
+        countdownContainer.innerHTML = `<div class="countdown-error"><p>Дата и время встречи не указаны</p></div>`;
+    }
 }
 
 /**
@@ -1782,6 +1811,177 @@ function loadYandexMaps() {
     };
 
     document.head.appendChild(script);
+}
+
+/**
+ * Создает и возвращает элемент таймера обратного отсчета до встречи
+ * 
+ * @param {object} meetingData - Данные о встрече
+ * @returns {HTMLElement} - Элемент таймера
+ */
+function createCountdownTimer(meetingData) {
+    if (!meetingData || !meetingData.date || !meetingData.time) {
+        return createErrorElement('Дата и время встречи не указаны');
+    }
+
+    try {
+        // Создаем контейнер таймера
+        const timerContainer = document.createElement('div');
+        timerContainer.className = 'countdown-timer';
+        timerContainer.setAttribute('role', 'timer');
+        timerContainer.setAttribute('aria-live', 'polite');
+
+        // Создаем HTML структуру таймера с начальными значениями
+        timerContainer.innerHTML = `
+            <div class="countdown-title">До встречи осталось:</div>
+            <div class="countdown-grid">
+                <div class="countdown-item">
+                    <div class="countdown-number" id="countdown-days">--</div>
+                    <div class="countdown-label">дней</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="countdown-hours">--</div>
+                    <div class="countdown-label">часов</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="countdown-minutes">--</div>
+                    <div class="countdown-label">минут</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="countdown-seconds">--</div>
+                    <div class="countdown-label">секунд</div>
+                </div>
+            </div>
+            <div class="countdown-completed" style="display: none;">
+                <span class="completed-icon">🎬</span>
+                <span>Встреча началась!</span>
+            </div>
+        `;
+
+        return timerContainer;
+
+    } catch (error) {
+        console.error('Ошибка создания таймера:', error);
+        return createErrorElement('Ошибка создания таймера');
+    }
+}
+
+/**
+ * Парсит дату и время встречи в объект Date
+ * 
+ * @param {string} dateStr - Строка даты в формате "ДД.ММ.ГГГГ"
+ * @param {string} timeStr - Строка времени в формате "ЧЧ:ММ"
+ * @returns {Date} - Объект Date
+ */
+function parseMeetingDateTime(dateStr, timeStr) {
+    const [day, month, year] = dateStr.split('.').map(Number);
+    const [hours, minutes] = timeStr.split(':').map(Number);
+
+    return new Date(year, month - 1, day, hours, minutes);
+}
+
+/**
+ * Запускает обратный отсчет
+ * 
+ * @param {HTMLElement} timerContainer - Контейнер таймера
+ * @param {Date} targetDate - Целевая дата и время
+ */
+function startCountdown(timerContainer, targetDate) {
+    let previousValues = {
+        days: -1,
+        hours: -1,
+        minutes: -1,
+        seconds: -1
+    };
+
+    function updateTimer() {
+        const now = new Date().getTime();
+        const distance = targetDate.getTime() - now;
+
+        // Если время истекло
+        if (distance < 0) {
+            showCompletedMessage(timerContainer);
+            return;
+        }
+
+        // Вычисляем единицы времени
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Обновляем отображение только если значения изменились
+        updateNumberIfChanged('days', days, previousValues.days, timerContainer);
+        updateNumberIfChanged('hours', hours, previousValues.hours, timerContainer);
+        updateNumberIfChanged('minutes', minutes, previousValues.minutes, timerContainer);
+        updateNumberIfChanged('seconds', seconds, previousValues.seconds, timerContainer);
+
+        // Сохраняем текущие значения
+        previousValues = { days, hours, minutes, seconds };
+
+        // Планируем следующее обновление
+        setTimeout(updateTimer, 1000);
+    }
+
+    // Запускаем первоначальное обновление
+    updateTimer();
+}
+
+/**
+ * Обновляет число в таймере если оно изменилось
+ * 
+ * @param {string} unit - Единица времени (days, hours, etc.)
+ * @param {number} newValue - Новое значение
+ * @param {number} oldValue - Старое значение
+ * @param {HTMLElement} container - Контейнер таймера
+ */
+function updateNumberIfChanged(unit, newValue, oldValue, container) {
+    if (newValue !== oldValue) {
+        const element = container.querySelector(`#countdown-${unit}`);
+        if (element) {
+            // Добавляем анимацию обновления
+            element.classList.remove('updated');
+            void element.offsetWidth; // Trigger reflow
+            element.textContent = String(newValue).padStart(2, '0');
+            element.classList.add('updated');
+        }
+    }
+}
+
+/**
+ * Показывает сообщение о завершении отсчета
+ * 
+ * @param {HTMLElement} timerContainer - Контейнер таймера
+ */
+function showCompletedMessage(timerContainer) {
+    const grid = timerContainer.querySelector('.countdown-grid');
+    const completedMessage = timerContainer.querySelector('.countdown-completed');
+
+    if (grid && completedMessage) {
+        grid.style.display = 'none';
+        completedMessage.style.display = 'flex';
+
+        // Обновляем ARIA-атрибуты
+        timerContainer.setAttribute('aria-label', 'Встреча началась');
+    }
+}
+
+/**
+ * Создает элемент с сообщением об ошибке
+ * 
+ * @param {string} message - Текст ошибки
+ * @returns {HTMLElement} - Элемент с ошибкой
+ */
+function createErrorElement(message) {
+    const errorElement = document.createElement('div');
+    errorElement.className = 'countdown-error';
+    errorElement.innerHTML = `
+        <div style="color: var(--accent); text-align: center; padding: var(--space-md);">
+            <span style="opacity: 0.7;">⏰</span>
+            <p style="margin: var(--space-sm) 0 0 0; font-size: var(--text-sm);">${message}</p>
+        </div>
+    `;
+    return errorElement;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
