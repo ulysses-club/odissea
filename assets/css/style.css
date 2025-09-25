@@ -1632,22 +1632,28 @@ img {
 
 .next-meeting-card {
     display: grid;
-    grid-template-columns: minmax(250px, 350px) 1fr;
+    grid-template-columns: 300px 1fr;
     gap: var(--space-lg);
+    align-items: center;
+    min-height: 400px;
+    width: 100%; /* Базовая ширина */
+    max-width: 1200px; /* Максимальная ширина */
+    margin: 0 auto; /* Центрирование */
 }
 
 .next-meeting-poster {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-md);
-    aspect-ratio: 2/3;
+    display: flex;
+    align-items: center; /* Центрирование по вертикали */
+    justify-content: center; /* Центрирование по горизонтали */
+    height: 100%; /* Занимает всю высоту карточки */
 }
 
 .next-meeting-poster img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+    height: auto;
+    max-height: 700px; /* Ограничение максимальной высоты */
+    object-fit: cover; /* Сохранение пропорций */
+    border-radius: var(--radius-md);
 }
 
 /* Стили для кнопки КиноПоиска на постере */
@@ -2183,7 +2189,7 @@ img {
 }
 
 .next-meeting__container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-lg);
@@ -2194,7 +2200,7 @@ img {
 
 .next-meeting-card {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 500px 1fr;
     gap: var(--space-lg);
 }
 
@@ -2214,7 +2220,7 @@ img {
     position: absolute;
     top: var(--space-md);
     left: var(--space-md);
-    background: #141672b0;
+    background: #141672e1;
     color: rgb(255, 255, 255);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-full);
