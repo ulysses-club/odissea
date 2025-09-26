@@ -395,6 +395,13 @@ async function loadNextMeeting() {
         if (data && typeof data === 'object') {
             STATE.nextMeeting = data;
             renderNextMeeting(data);
+
+            // Обновляем карту с новыми данными
+            if (typeof ymaps !== 'undefined') {
+                initYandexMap();
+            } else {
+                updateMapInfo(getMeetingAddress(data), getMeetingPlaceName(data));
+            }
         } else {
             throw new Error('Неверный формат данных о встрече');
         }
@@ -1713,7 +1720,7 @@ window.addEventListener('load', () => {
 });
 
 /**
- * Инициализирует Яндекс.Карту с меткой места встреч
+ * Инициализирует Яндекс.Карту с меткой места встреч на основе данных о встрече
  * 
  * @returns {void}
  */
@@ -1727,15 +1734,29 @@ function initYandexMap() {
     try {
         ymaps.ready(() => {
             try {
+                // Получаем данные о месте встречи
+                const address = getMeetingAddress(STATE.nextMeeting);
+                const placeName = getMeetingPlaceName(STATE.nextMeeting);
+
+                // Координаты по умолчанию (Севастополь)
+                let coordinates = [44.601145, 33.520966];
+
+                // Если есть конкретный адрес, можно попробовать геокодировать
+                // Пока используем координаты по умолчанию, но можно доработать
+
                 const map = new ymaps.Map('map', {
-                    center: [44.601145, 33.520966],
+                    center: coordinates,
                     zoom: 16,
                     controls: ['zoomControl', 'typeSelector', 'fullscreenControl']
                 });
 
-                const placemark = new ymaps.Placemark([44.601145, 33.520966], {
-                    hintContent: 'Кофейня "Том Сойер"',
-                    balloonContent: '<strong>Кофейня "Том Сойер"</strong><br>ул. Шмидта, 12, Севастополь<br><em>Место встреч киноклуба</em>'
+                const placemark = new ymaps.Placemark(coordinates, {
+                    hintContent: placeName,
+                    balloonContent: `
+                        <strong>${placeName}</strong><br>
+                        ${address}<br>
+                        <em>Место встреч киноклуба</em>
+                    `
                 }, {
                     iconLayout: 'default#image',
                     iconImageHref: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiM2YTExY2IiIGZpbGwtb3BhY2l0eT0iMC44IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyMCIgeT0iMjUiIGZpbGw9IiNmZmYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIj7QmtC+PC90ZXh0Pgo8L3N2Zz4=',
@@ -1744,6 +1765,9 @@ function initYandexMap() {
                 });
 
                 map.geoObjects.add(placemark);
+
+                // Обновляем информацию под картой
+                updateMapInfo(address, placeName);
 
                 const fallback = mapContainer.querySelector('.map-fallback');
                 if (fallback) fallback.style.display = 'none';
@@ -1760,6 +1784,30 @@ function initYandexMap() {
 }
 
 /**
+ * Обновляет информацию под картой на основе данных о встрече
+ * 
+ * @param {string} address - Адрес места встречи
+ * @param {string} placeName - Название места
+ * @returns {void}
+ */
+function updateMapInfo(address, placeName) {
+    const mapInfo = document.querySelector('.map-info');
+    if (!mapInfo) return;
+
+    mapInfo.innerHTML = `
+        <h3>${placeName}</h3>
+        <p>${address}</p>
+        ${placeName.includes('Том Сойер') ?
+            `<a href="https://vk.com/tomsoyerbartending" target="_blank" rel="noopener noreferrer" class="contact-card__link">Tom Soyer Bartending</a>` :
+            ''
+        }
+        <p>Собираемся каждую неделю в выходные</p>
+        <p>Точное время и дату узнавать тут:</p>
+        <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" class="contact-card__link">@Odyssey_Cinema_Club_bot</a>
+    `;
+}
+
+/**
  * Показывает fallback-контент при недоступности карты
  * 
  * @returns {void}
@@ -1770,6 +1818,10 @@ function showMapFallback() {
 
     let fallback = mapContainer.querySelector('.map-fallback');
 
+    // Получаем актуальные данные о месте
+    const address = getMeetingAddress(STATE.nextMeeting);
+    const placeName = getMeetingPlaceName(STATE.nextMeeting);
+
     if (!fallback) {
         fallback = document.createElement('div');
         fallback.className = 'map-fallback';
@@ -1778,19 +1830,34 @@ function showMapFallback() {
             <div>
                 <div style="font-size:3rem;margin-bottom:1rem;">🗺️</div>
                 <h3 style="margin-bottom:1rem;color:#6a11cb;">Карта временно недоступна</h3>
-                <p style="margin-bottom:0.5rem;"><strong>Адрес:</strong> ул. Шмидта, 12, Севастополь</p>
-                <p style="margin-bottom:1rem;"><strong>Место:</strong> Кофейня "Том Сойер"</p>
+                <p style="margin-bottom:0.5rem;"><strong>Место:</strong> ${placeName}</p>
+                <p style="margin-bottom:0.5rem;"><strong>Адрес:</strong> ${address}</p>
+                <p style="margin-bottom:1rem;"><em>Место встреч киноклуба</em></p>
                 <p style="font-size:0.9rem;opacity:0.8;">Мы встречаемся здесь каждую неделю!</p>
             </div>
         `;
         mapContainer.appendChild(fallback);
     } else {
+        // Обновляем существующий fallback
+        fallback.innerHTML = `
+            <div>
+                <div style="font-size:3rem;margin-bottom:1rem;">🗺️</div>
+                <h3 style="margin-bottom:1rem;color:#6a11cb;">Карта временно недоступна</h3>
+                <p style="margin-bottom:0.5rem;"><strong>Место:</strong> ${placeName}</p>
+                <p style="margin-bottom:0.5rem;"><strong>Адрес:</strong> ${address}</p>
+                <p style="margin-bottom:1rem;"><em>Место встреч киноклуба</em></p>
+                <p style="font-size:0.9rem;opacity:0.8;">Мы встречаемся здесь каждую неделю!</p>
+            </div>
+        `;
         fallback.style.display = 'flex';
     }
+
+    // Также обновляем информацию под картой
+    updateMapInfo(address, placeName);
 }
 
 /**
- * Загружает API Яндекс.Карт и инициализирует карту
+ * Загружает API Яндекс.Карт и инициализирует карту с учетом данных о встрече
  * 
  * @returns {void}
  */
@@ -1982,6 +2049,88 @@ function createErrorElement(message) {
         </div>
     `;
     return errorElement;
+}
+
+/**
+ * Извлекает адрес из данных о встрече или возвращает адрес по умолчанию
+ * 
+ * @param {object} meetingData - Данные о встрече
+ * @returns {string} - Адрес места встречи
+ */
+function getMeetingAddress(meetingData) {
+    if (meetingData && meetingData.place) {
+        return meetingData.place;
+    }
+
+    // Адрес по умолчанию
+    return "ул. Шмидта, 12, Севастополь";
+}
+
+/**
+ * Извлекает название места из данных о встрече
+ * 
+ * @param {object} meetingData - Данные о встрече
+ * @returns {string} - Название места
+ */
+function getMeetingPlaceName(meetingData) {
+    if (meetingData && meetingData.place) {
+        // Пытаемся извлечь название места из адреса (первая часть до запятой)
+        const placeParts = meetingData.place.split(',');
+        return placeParts[0].trim();
+    }
+
+    return "Кофейня \"Том Сойер\"";
+}
+
+/**
+ * Геокодирует адрес в координаты с использованием Яндекс.Геокодера
+ * 
+ * @param {string} address - Адрес для геокодирования
+ * @returns {Promise<number[]>} - Promise с массивом [широта, долгота]
+ */
+function geocodeAddress(address) {
+    return new Promise((resolve, reject) => {
+        if (typeof ymaps === 'undefined') {
+            reject(new Error('Yandex Maps API не загружен'));
+            return;
+        }
+
+        ymaps.geocode(address, {
+            results: 1
+        }).then(function (res) {
+            const firstGeoObject = res.geoObjects.get(0);
+            if (firstGeoObject) {
+                const coordinates = firstGeoObject.geometry.getCoordinates();
+                resolve(coordinates);
+            } else {
+                reject(new Error('Адрес не найден'));
+            }
+        }).catch(reject);
+    });
+}
+
+/**
+ * Получает координаты места встречи с fallback на координаты по умолчанию
+ * 
+ * @param {object} meetingData - Данные о встрече
+ * @returns {Promise<number[]>} - Promise с координатами [широта, долгота]
+ */
+async function getMeetingCoordinates(meetingData) {
+    const address = getMeetingAddress(meetingData);
+    
+    // Если адрес по умолчанию, используем заранее известные координаты
+    if (address === "ул. Шмидта, 12, Севастополь") {
+        return [44.601145, 33.520966]; // Кофейня "Том Сойер"
+    }
+
+    try {
+        const coordinates = await geocodeAddress(address);
+        console.log('Найдены координаты для адреса:', address, coordinates);
+        return coordinates;
+    } catch (error) {
+        console.warn('Не удалось геокодировать адрес, используем координаты по умолчанию:', error);
+        return [44.601145, 33.520966]; // Fallback координаты
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
