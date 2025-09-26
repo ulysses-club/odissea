@@ -1501,13 +1501,13 @@ img {
 /* Анимации для появления топов */
 @keyframes slideInRight {
     from {
+        transform: translateX(100px);
         opacity: 0;
-        transform: translateX(30px);
     }
 
     to {
-        opacity: 1;
         transform: translateX(0);
+        opacity: 1;
     }
 }
 
@@ -1636,23 +1636,31 @@ img {
     gap: var(--space-lg);
     align-items: center;
     min-height: 400px;
-    width: 100%; /* Базовая ширина */
-    max-width: 1200px; /* Максимальная ширина */
-    margin: 0 auto; /* Центрирование */
+    width: 100%;
+    /* Базовая ширина */
+    max-width: 1200px;
+    /* Максимальная ширина */
+    margin: 0 auto;
+    /* Центрирование */
 }
 
 .next-meeting-poster {
     display: flex;
-    align-items: center; /* Центрирование по вертикали */
-    justify-content: center; /* Центрирование по горизонтали */
-    height: 100%; /* Занимает всю высоту карточки */
+    align-items: center;
+    /* Центрирование по вертикали */
+    justify-content: center;
+    /* Центрирование по горизонтали */
+    height: 100%;
+    /* Занимает всю высоту карточки */
 }
 
 .next-meeting-poster img {
     width: 100%;
     height: auto;
-    max-height: 700px; /* Ограничение максимальной высоты */
-    object-fit: cover; /* Сохранение пропорций */
+    max-height: 700px;
+    /* Ограничение максимальной высоты */
+    object-fit: cover;
+    /* Сохранение пропорций */
     border-radius: var(--radius-md);
 }
 
@@ -1829,9 +1837,17 @@ img {
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 @keyframes slideInRight {
@@ -2407,6 +2423,7 @@ img {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -2614,17 +2631,106 @@ img {
     text-align: center;
 }
 
+.seasons-toggle-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 1001;
+    background: rgba(26, 26, 46, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-full);
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--light-dark);
+    box-shadow: var(--shadow-lg);
+    animation: slideInRight 0.5s ease-out;
+}
+
+.seasons-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    cursor: pointer;
+    font-size: var(--text-sm);
+    color: var(--light);
+}
+
+.seasons-toggle input {
+    display: none;
+}
+
+.slider {
+    position: relative;
+    width: 50px;
+    height: 24px;
+    background: var(--gray);
+    border-radius: 24px;
+    transition: var(--transition);
+}
+
+.slider:before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+    left: 2px;
+    transition: var(--transition);
+}
+
+.seasons-toggle input:checked+.slider {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+}
+
+.seasons-toggle input:checked+.slider:before {
+    transform: translateX(26px);
+}
+
+.toggle-label {
+    font-weight: 500;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .seasons-toggle-container {
+        top: 80px;
+        right: 10px;
+        padding: var(--space-xs) var(--space-sm);
+    }
+
+    .seasons-toggle {
+        font-size: var(--text-xs);
+    }
+
+    .slider {
+        width: 40px;
+        height: 20px;
+    }
+
+    .slider:before {
+        width: 16px;
+        height: 16px;
+        top: 2px;
+        left: 2px;
+    }
+
+    .seasons-toggle input:checked+.slider:before {
+        transform: translateX(20px);
+    }
+}
+
 /* Адаптивность для компактного вида */
 @media (max-width: 768px) {
     .next-meeting-card.compact {
         grid-template-columns: 1fr;
     }
-    
+
     .countdown-sidebar {
         order: -1;
         margin-bottom: var(--space-lg);
     }
-    
+
     .meeting-details-compact {
         grid-template-columns: 1fr;
     }
@@ -2634,7 +2740,7 @@ img {
     .countdown-sidebar .countdown-grid {
         grid-template-columns: repeat(4, 1fr);
     }
-    
+
     .countdown-sidebar .countdown-number {
         font-size: var(--text-lg);
         min-width: 40px;

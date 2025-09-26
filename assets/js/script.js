@@ -502,7 +502,7 @@ function renderNextMeeting(meetingData) {
             const timerElement = createCountdownTimer(meetingData);
             if (timerElement) {
                 countdownContainer.appendChild(timerElement);
-                
+
                 // Запускаем таймер после добавления в DOM
                 setTimeout(() => {
                     const meetingDateTime = parseMeetingDateTime(date, time);
