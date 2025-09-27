@@ -171,8 +171,8 @@ function initApp() {
     cacheDOM();
     initEventListeners();
     checkConnectivity();
-    loadInitialData();
-    loadNextMeeting();
+    // loadInitialData();
+    // loadNextMeeting();
     updateOnlineStatus();
     initScrollToTop();
     initTopsControls();
