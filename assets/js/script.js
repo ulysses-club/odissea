@@ -373,14 +373,21 @@ async function loadInitialData() {
             return;
         }
 
-        showLoading(DOM.filmsContainer);
-        showLoading(DOM.worksContainer);
+        // Показываем загрузку только для существующих контейнеров
+        if (DOM.filmsContainer) showLoading(DOM.filmsContainer);
+        if (DOM.worksContainer) showLoading(DOM.worksContainer);
         showLoadingForTops();
 
-        await Promise.all([loadFilmsData(), loadWorksData()]);
+        // Загружаем только необходимые данные
+        const loadPromises = [loadFilmsData()];
+        if (DOM.worksContainer) {
+            loadPromises.push(loadWorksData());
+        }
+        
+        await Promise.all(loadPromises);
     } catch (error) {
         console.error('Ошибка загрузки данных:', error);
-        showError(DOM.filmsContainer, error);
+        if (DOM.filmsContainer) showError(DOM.filmsContainer, error);
     }
 }
 
@@ -675,11 +682,17 @@ async function loadWorksData() {
     try {
         const data = await fetchDataWithFallback(CONFIG.dataSources.works);
         STATE.works = data;
-        renderWorks(data);
+        // Рендерим работы только если контейнер существует
+        if (DOM.worksContainer) {
+            renderWorks(data);
+        }
         saveToCache();
     } catch (error) {
         console.error('Ошибка загрузки работ:', error);
-        loadMockWorksData();
+        // Загружаем моковые данные только если контейнер существует
+        if (DOM.worksContainer) {
+            loadMockWorksData();
+        }
     }
 }
 
@@ -965,7 +978,10 @@ function renderWorks(works) {
  */
 function renderAllData() {
     renderFilms();
-    renderWorks(STATE.works);
+    // Рендерим работы только если контейнер существует
+    if (DOM.worksContainer) {
+        renderWorks(STATE.works);
+    }
 }
 
 /**
@@ -1676,7 +1692,7 @@ function showMockDataWarning(dataType) {
             warning.style.opacity = '0';
             setTimeout(() => warning.remove(), 500);
         }
-    }, 10000);
+    }, 5000);
 }
 
 /**
