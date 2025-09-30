@@ -256,7 +256,7 @@
 
                         <div class="software-item warning-note">
                             <h4>Важно</h4>
-                            <p>Убедитесь, что ваш телевизор подключен к интернету. После смены DNS стандартные
+                            <p>Убедитесь, что ваш телевизор подключен к интернету. После смена DNS стандартные
                                 приложения (например, Samsung Apps) могут временно перестать работать. Для возврата к
                                 стандартным настройкам установите автоматическое получение DNS.</p>
                         </div>
@@ -547,6 +547,9 @@
     <!-- Кнопка наверх -->
     <button id="scroll-to-top" class="load-more-btn" aria-label="Наверх" title="Наверх">↑</button>
 
+    <!-- Подключаем полноценный скрипт сезонных эффектов -->
+    <script src="../js/seasons.js"></script>
+    
     <!-- Упрощенный скрипт только для функциональности этой страницы -->
     <script>
         // Минимальный скрипт для работы мобильного меню и кнопки наверх
@@ -557,125 +560,7 @@
             // Инициализация кнопки наверх
             initScrollToTop();
 
-            // Инициализация сезонных эффектов
-            if (typeof window.seasonalEffects !== 'undefined') {
-
-                /**
-                 * Класс для управления сезонными визуальными эффектами на странице
-                 * 
-                 * @class
-                 */
-                window.seasonalEffects = new (class {
-                    constructor() {
-                        this.isEnabled = localStorage.getItem('seasonsEnabled') !== 'false';
-                        this.init();
-                    }
-                    init() {
-                        this.createContainer();
-                        this.initToggle();
-                        if (this.isEnabled) {
-                            this.createEffects();
-                        }
-                    }
-                    createContainer() {
-                        let container = document.querySelector('.seasons-container');
-                        if (!container) {
-                            container = document.createElement('div');
-                            container.className = 'seasons-container';
-                            document.body.appendChild(container);
-                        }
-                        this.container = container;
-                    }
-                    initToggle() {
-                        if (!document.getElementById('seasons-toggle')) {
-                            const toggleHTML = `
-                                <div class="seasons-toggle-container">
-                                    <label class="seasons-toggle">
-                                        <input type="checkbox" id="seasons-toggle" ${this.isEnabled ? 'checked' : ''}>
-                                        <span class="slider"></span>
-                                        <span class="toggle-label">Сезонные эффекты</span>
-                                    </label>
-                                </div>
-                            `;
-                            document.body.insertAdjacentHTML('beforeend', toggleHTML);
-
-                            document.getElementById('seasons-toggle').addEventListener('change', (e) => {
-                                this.setEnabled(e.target.checked);
-                            });
-                        }
-                    }
-                    setEnabled(enabled) {
-                        this.isEnabled = enabled;
-                        localStorage.setItem('seasonsEnabled', enabled);
-                        if (enabled) {
-                            this.createEffects();
-                        } else {
-                            this.cleanup();
-                        }
-                    }
-                    createEffects() {
-                        // Базовая реализация сезонных эффектов
-                        this.cleanup();
-                        if (!this.isEnabled) return;
-
-                        // Простые эффекты без сложной логики
-                        const season = this.getCurrentSeason();
-                        if (season === 'autumn') {
-                            this.createSimpleLeaves();
-                        } else if (season === 'winter') {
-                            this.createSimpleSnowflakes();
-                        }
-                    }
-
-                    /**
-                     * Получает текущий сезон на основе текущей даты
-                     * 
-                     * @returns {string} - Название сезона ('spring', 'summer', 'autumn', 'winter')
-                     */
-                    getCurrentSeason() {
-                        const month = new Date().getMonth() + 1;
-                        if (month >= 3 && month <= 5) return 'spring';
-                        if (month >= 6 && month <= 8) return 'summer';
-                        if (month >= 9 && month <= 11) return 'autumn';
-                        return 'winter';
-                    }
-
-                    /**
-                     * Создает простые анимации падающих листьев для осеннего сезона
-                     * 
-                     * @returns {void}
-                     */
-                    createSimpleLeaves() {
-                        for (let i = 0; i < 10; i++) {
-                            const leaf = document.createElement('div');
-                            leaf.className = 'season-element leaf';
-                            leaf.style.left = `${Math.random() * 100}vw`;
-                            leaf.style.animationDelay = `${Math.random() * 5}s`;
-                            this.container.appendChild(leaf);
-                        }
-                    }
-
-                    /**
-                     * Создает простые анимации падающих снежинок для зимнего сезона
-                     * 
-                     * @returns {void}
-                     */
-                    createSimpleSnowflakes() {
-                        for (let i = 0; i < 15; i++) {
-                            const snowflake = document.createElement('div');
-                            snowflake.className = 'season-element snowflake';
-                            snowflake.style.left = `${Math.random() * 100}vw`;
-                            snowflake.style.animationDelay = `${Math.random() * 10}s`;
-                            this.container.appendChild(snowflake);
-                        }
-                    }
-                    cleanup() {
-                        while (this.container.firstChild) {
-                            this.container.removeChild(this.container.firstChild);
-                        }
-                    }
-                })();
-            }
+            // Сезонные эффекты уже инициализируются в seasons.js автоматически
         });
 
         /**

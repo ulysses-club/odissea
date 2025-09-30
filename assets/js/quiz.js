@@ -1,4 +1,8 @@
 class Quiz {
+    /**
+     * Инициализирует новый экземпляр квиза
+     * @constructor
+     */
     constructor() {
         this.questions = [];
         this.currentQuestionIndex = 0;
@@ -13,11 +17,21 @@ class Quiz {
         this.init();
     }
 
+    /**
+     * Инициализирует квиз - загружает вопросы и привязывает события
+     * @async
+     * @returns {Promise<void>}
+     */
     async init() {
         await this.loadQuestions();
         this.bindEvents();
     }
 
+    /**
+     * Загружает вопросы из JSON файла или использует резервные вопросы
+     * @async
+     * @returns {Promise<void>}
+     */
     async loadQuestions() {
         try {
             const response = await fetch('../data/quiz-questions.json');
@@ -33,6 +47,10 @@ class Quiz {
         }
     }
 
+    /**
+     * Перемешивает вопросы в случайном порядке
+     * @returns {void}
+     */
     shuffleQuestions() {
         // Перемешиваем вопросы, но сохраняем порядок сложности
         for (let i = this.questions.length - 1; i > 0; i--) {
@@ -41,6 +59,10 @@ class Quiz {
         }
     }
 
+    /**
+     * Загружает резервные вопросы при ошибке загрузки основных
+     * @returns {void}
+     */
     loadFallbackQuestions() {
         // Резервные вопросы на случай проблем с загрузкой JSON
         this.questions = [
@@ -243,6 +265,10 @@ class Quiz {
         ];
     }
 
+    /**
+     * Привязывает обработчики событий к элементам интерфейса
+     * @returns {void}
+     */
     bindEvents() {
         // Кнопка начала квиза
         document.getElementById('start-quiz-btn').addEventListener('click', () => {
@@ -269,6 +295,10 @@ class Quiz {
         });
     }
 
+    /**
+     * Начинает новый квиз
+     * @returns {void}
+     */
     startQuiz() {
         this.quizStarted = true;
         this.currentQuestionIndex = 0;
@@ -284,6 +314,10 @@ class Quiz {
         this.showQuestion();
     }
 
+    /**
+     * Показывает текущий вопрос
+     * @returns {void}
+     */
     showQuestion() {
         const question = this.questions[this.currentQuestionIndex];
         const questionsContainer = document.getElementById('quiz-questions');
@@ -345,6 +379,10 @@ class Quiz {
         this.startTimer();
     }
 
+    /**
+     * Привязывает обработчики событий к элементам вопроса
+     * @returns {void}
+     */
     bindQuestionEvents() {
         const answerOptions = document.querySelectorAll('.answer-option');
         const nextBtn = document.getElementById('next-btn');
@@ -381,6 +419,10 @@ class Quiz {
         });
     }
 
+    /**
+     * Запускает таймер для текущего вопроса
+     * @returns {void}
+     */
     startTimer() {
         const question = this.questions[this.currentQuestionIndex];
         this.timeLeft = question.time;
@@ -402,12 +444,20 @@ class Quiz {
         }, 1000);
     }
 
+    /**
+     * Обрабатывает ситуацию, когда время на вопрос истекло
+     * @returns {void}
+     */
     handleTimeUp() {
         // Автоматически переходим к следующему вопросу
         this.userAnswers[this.currentQuestionIndex] = -1; // -1 означает, что время вышло
         this.handleAnswer();
     }
 
+    /**
+     * Использует подсказку для текущего вопроса
+     * @returns {void}
+     */
     useHint() {
         if (this.hintsUsed >= this.maxHints) return;
 
@@ -436,6 +486,10 @@ class Quiz {
             `💡 Подсказка (${this.maxHints - this.hintsUsed} осталось)`;
     }
 
+    /**
+     * Обрабатывает ответ пользователя на текущий вопрос
+     * @returns {void}
+     */
     handleAnswer() {
         clearInterval(this.timer);
 
@@ -489,6 +543,10 @@ class Quiz {
         };
     }
 
+    /**
+     * Завершает квиз и показывает результаты
+     * @returns {void}
+     */
     finishQuiz() {
         this.quizStarted = false;
 
@@ -502,6 +560,10 @@ class Quiz {
         this.saveToServer();
     }
 
+    /**
+     * Показывает результаты квиза
+     * @returns {void}
+     */
     showResults() {
         const resultsContainer = document.getElementById('quiz-results');
         const correctAnswers = this.userAnswers.filter((answer, index) =>
@@ -576,6 +638,10 @@ class Quiz {
         this.saveToLeaderboard();
     }
 
+    /**
+     * Показывает детальный разбор всех ответов
+     * @returns {void}
+     */
     showAnswersReview() {
         const resultsContainer = document.getElementById('quiz-results');
 
@@ -614,11 +680,20 @@ class Quiz {
         });
     }
 
+    /**
+     * Возвращает объяснение для вопроса по его ID
+     * @param {number} questionId - ID вопроса
+     * @returns {string} Объяснение ответа
+     */
     getQuestionExplanation(questionId) {
         const question = this.questions.find(q => q.id === questionId);
         return question?.explanation || "Этот вопрос был посвящен одному из фильмов, которые мы обсуждали в киноклубе.";
     }
 
+    /**
+     * Позволяет поделиться результатами квиза
+     * @returns {void}
+     */
     shareResults() {
         const correctAnswers = this.userAnswers.filter((answer, index) =>
             answer === this.questions[index].correctAnswer
@@ -640,6 +715,10 @@ class Quiz {
         }
     }
 
+    /**
+     * Сохраняет результат в таблицу лидеров localStorage
+     * @returns {void}
+     */
     saveToLeaderboard() {
         const leaderboard = JSON.parse(localStorage.getItem('odyssey_leaderboard') || '[]');
 
@@ -664,6 +743,10 @@ class Quiz {
         localStorage.setItem('odyssey_leaderboard', JSON.stringify(topLeaderboard));
     }
 
+    /**
+     * Показывает таблицу лидеров в модальном окне
+     * @returns {void}
+     */
     showLeaderboard() {
         const leaderboard = JSON.parse(localStorage.getItem('odyssey_leaderboard') || '[]');
 
@@ -763,7 +846,11 @@ class Quiz {
         });
     }
 
-    // Добавляем в класс Quiz новый метод для сохранения результатов
+    /**
+     * Сохраняет результаты квиза на сервер
+     * @async
+     * @returns {Promise<void>}
+     */
     async saveToServer() {
         const correctAnswers = this.userAnswers.filter((answer, index) =>
             answer === this.questions[index].correctAnswer
@@ -790,7 +877,12 @@ class Quiz {
         }
     }
 
-    // Метод для отправки результата на сервер
+    /**
+     * Отправляет результат на сервер через GET-запрос
+     * @async
+     * @param {Object} resultData - Данные результата для отправки
+     * @returns {Promise<void>}
+     */
     async sendResultToServer(resultData) {
         // Формируем параметры для GET-запросa
         const params = new URLSearchParams({
@@ -834,6 +926,11 @@ class Quiz {
         }
     }
 
+    /**
+     * Запрашивает имя игрока для таблицы лидеров
+     * @async
+     * @returns {Promise<string>} Имя игрока
+     */
     async requestPlayerName() {
         const savedName = localStorage.getItem('quizPlayerName');
         if (savedName) return savedName;
@@ -845,6 +942,12 @@ class Quiz {
         });
     }
 
+    /**
+     * Сохраняет результаты в GitHub (заглушка для будущей реализации)
+     * @async
+     * @param {Object} resultData - Данные результата
+     * @returns {Promise<void>}
+     */
     async saveToGitHub(resultData) {
         try {
             // Этот метод требует GitHub Token и более сложной настройки
