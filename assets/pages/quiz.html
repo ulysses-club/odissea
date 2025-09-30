@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Квиз "Odissea" | Киноклуб ОДИССЕЯ</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/quiz.css">
+    <meta name="description" content="Квиз Odissea - проверьте свои знания о кино! Увлекательная викторина от киноклуба Одиссея.">
+    <meta name="keywords" content="кино, квиз, викторина, тест, фильмы, Одиссея">
+</head>
+
+<body>
+    <div id="seasons-container"></div>
+
+    <!-- Шапка -->
+    <header class="header">
+        <a href="../../index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
+            <div class="logo__icon"></div>
+            ОДИССЕЯ
+        </a>
+        <nav class="nav" aria-label="Основная навигация">
+            <a href="../../index.html#about" class="nav__link">О киноклубе</a>
+            <a href="../../index.html#top-films" class="nav__link">Топы</a>
+            <a href="../../index.html#contacts" class="nav__link">Контакты</a>
+            <a href="../../index.html#film-archive" class="nav__link">Фильмы</a>
+            <a href="setup-guide.html" class="nav__link">Настройка устройств</a>
+            <a href="quiz.html" class="nav__link active">Квиз Odissea</a>
+        </nav>
+        <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">☰</button>
+    </header>
+
+    <!-- Герой секция -->
+    <section class="hero quiz-hero">
+        <div class="hero__content">
+            <h1 class="hero__title">Квиз Odissea</h1>
+            <p class="hero__subtitle">Проверь свои знания о кино!</p>
+            <div class="hero__cta">
+                <a href="#quiz-start" class="btn btn--primary">Начать квиз</a>
+                <a href="#quiz-rules" class="btn btn--outline">
+                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+                            fill="currentColor" />
+                    </svg>
+                    Правила
+                </a>
+            </div>
+        </div>
+        <div class="hero__image">
+            <img src="../images/quiz-hero.jpg" alt="Квиз Odissea - проверь свои знания о кино" class="hero__image-img"
+                width="600" height="400" loading="lazy">
+            <div class="film-strip-overlay"></div>
+        </div>
+    </section>
+
+    <!-- Правила квиза -->
+    <section id="quiz-rules" class="quiz-rules">
+        <div class="container">
+            <h2 class="section__title fade-in">Правила квиза</h2>
+            <div class="rules-content fade-in delay-1">
+                <div class="rules-grid">
+                    <div class="rule-card">
+                        <div class="rule-icon">⏱️</div>
+                        <h3>Время</h3>
+                        <p>На каждый вопрос дается ограниченное время. Думай быстро, но внимательно!</p>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-icon">🏆</div>
+                        <h3>Рейтинг</h3>
+                        <p>Зарабатывай очки за правильные ответы и попади в таблицу лидеров киноклуба</p>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-icon">💡</div>
+                        <h3>Подсказки</h3>
+                        <p>У тебя есть ограниченное количество подсказок. Используй их мудро!</p>
+                    </div>
+                </div>
+                <div class="rules-actions">
+                    <a href="#quiz-start" class="btn btn--primary">Начать квиз</a>
+                    <button class="btn btn--outline" id="view-leaders">Таблица лидеров</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Основная часть квиза -->
+    <section id="quiz-start" class="quiz-main">
+        <div class="container">
+            <div class="quiz-container fade-in">
+                <!-- Здесь будет динамическое содержимое квиза -->
+                <div class="quiz-welcome" id="quiz-welcome">
+                    <div class="welcome-content">
+                        <h2>Готовы проверить свои знания?</h2>
+                        <p>Квиз состоит из 15 вопросов о фильмах, которые мы обсуждали в киноклубе. 
+                           Постарайтесь ответить правильно на как можно больше вопросов!</p>
+                        <div class="quiz-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">15</span>
+                                <span class="stat-label">вопросов</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">3</span>
+                                <span class="stat-label">уровня сложности</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">2</span>
+                                <span class="stat-label">подсказки</span>
+                            </div>
+                        </div>
+                        <button class="btn btn--primary start-quiz-btn" id="start-quiz-btn">Начать квиз</button>
+                    </div>
+                </div>
+
+                <!-- Контейнер для вопросов (будет заполняться JS) -->
+                <div class="quiz-questions" id="quiz-questions" style="display: none;">
+                    <!-- Вопросы будут добавляться динамически -->
+                </div>
+
+                <!-- Результаты квиза -->
+                <div class="quiz-results" id="quiz-results" style="display: none;">
+                    <!-- Результаты будут добавляться динамически -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="footer__content">
+            <div class="footer__logo">ОДИССЕЯ</div>
+            <div class="footer__links">
+                <a href="../../index.html#about" class="footer__link">О нас</a>
+                <a href="../../index.html#top-films" class="footer__link">Топы</a>
+                <a href="../../index.html#film-archive" class="footer__link">Фильмы</a>
+                <a href="../../index.html#contacts" class="footer__link">Контакты</a>
+                <a href="stanislav.html" class="footer__link">Автор сайта</a>
+                <a href="setup-guide.html" class="footer__link">Настройка устройств</a>
+                <a href="quiz.html" class="footer__link active">Квиз Odissea</a>
+            </div>
+            <div class="footer__social">
+                <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="social__link"
+                    aria-label="ВКонтакте">VK</a>
+                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer"
+                    class="social__link" aria-label="Telegram">TG</a>
+            </div>
+            <p class="footer__copyright">© 2025 Киноклуб "ОДИССЕЯ".</p>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+    <script src="../js/seasons.js"></script>
+    <script src="../js/quiz.js"></script>
+    <button id="scroll-to-top" class="load-more-btn" aria-label="Наверх" title="Наверх">
+        ↑
+    </button>
+</body>
+
+</html>

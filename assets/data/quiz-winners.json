@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Алексей",
+    "score": 285,
+    "correctAnswers": 14,
+    "totalQuestions": 15,
+    "date": "2025-01-15T10:30:00.000Z",
+    "hintsUsed": 0
+  },
+  {
+    "name": "Мария",
+    "score": 270,
+    "correctAnswers": 13,
+    "totalQuestions": 15,
+    "date": "2025-01-14T18:45:00.000Z",
+    "hintsUsed": 1
+  },
+  {
+    "name": "Дмитрий",
+    "score": 255,
+    "correctAnswers": 12,
+    "totalQuestions": 15,
+    "date": "2025-01-13T16:20:00.000Z",
+    "hintsUsed": 2
+  }
+]
