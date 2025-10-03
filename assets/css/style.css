@@ -310,6 +310,8 @@ img {
 }
 
 .hero__image {
+    display: flex;
+    justify-content: flex-end;
     right: 5%;
     bottom: 10%;
     width: 40%;
@@ -332,6 +334,7 @@ img {
     height: auto;
     display: block;
     transition: var(--transition);
+    margin-left: auto;
 }
 
 .hero__image:hover .hero__image-img {
@@ -1968,9 +1971,14 @@ img {
         padding: var(--space-md) 3%;
     }
 
-    .hero {
-        padding: 0 3%;
-    }
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 80vh;
+    padding: var(--space-xxl) 0;
+    position: relative;
+}
 
     .hero__title {
         font-size: var(--text-xxxl);

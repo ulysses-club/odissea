@@ -556,8 +556,8 @@ class Quiz {
 
         this.showResults();
 
-        // Сохраняем результат на сервер
-        this.saveToServer();
+        // Сохраняем результат локально
+        this.saveToLocalStorage();
     }
 
     /**
@@ -738,13 +738,60 @@ class Quiz {
 
         // Сортируем по убыванию очков и оставляем топ-10
         leaderboard.sort((a, b) => b.score - a.score);
-        const topLeaderboard = leaderboard.slice(0, 10);
+        const topTen = leaderboard.slice(0, 10);
 
-        localStorage.setItem('odyssey_leaderboard', JSON.stringify(topLeaderboard));
+        localStorage.setItem('odyssey_leaderboard', JSON.stringify(topTen));
     }
 
     /**
-     * Показывает таблицу лидеров в модальном окне
+     * Сохраняет текущий прогресс в localStorage
+     * @returns {void}
+     */
+    saveToLocalStorage() {
+        const quizState = {
+            currentQuestionIndex: this.currentQuestionIndex,
+            score: this.score,
+            hintsUsed: this.hintsUsed,
+            userAnswers: this.userAnswers,
+            quizStarted: this.quizStarted,
+            timestamp: Date.now()
+        };
+
+        localStorage.setItem('odyssey_quiz_progress', JSON.stringify(quizState));
+    }
+
+    /**
+     * Загружает сохраненный прогресс из localStorage
+     * @returns {boolean} Успешность загрузки
+     */
+    loadFromLocalStorage() {
+        try {
+            const saved = localStorage.getItem('odyssey_quiz_progress');
+            if (!saved) return false;
+
+            const quizState = JSON.parse(saved);
+
+            // Проверяем, не устарели ли данные (больше 1 часа)
+            if (Date.now() - quizState.timestamp > 60 * 60 * 1000) {
+                localStorage.removeItem('odyssey_quiz_progress');
+                return false;
+            }
+
+            this.currentQuestionIndex = quizState.currentQuestionIndex;
+            this.score = quizState.score;
+            this.hintsUsed = quizState.hintsUsed;
+            this.userAnswers = quizState.userAnswers;
+            this.quizStarted = quizState.quizStarted;
+
+            return true;
+        } catch (error) {
+            console.error('Ошибка загрузки прогресса:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Показывает таблицу лидеров
      * @returns {void}
      */
     showLeaderboard() {
@@ -758,15 +805,24 @@ class Quiz {
         `;
 
         if (leaderboard.length === 0) {
-            leaderboardHTML += `<p class="no-results">Пока нет результатов. Будьте первым!</p>`;
+            leaderboardHTML += `
+                <div class="no-leaders">
+                    <p>Пока нет результатов. Будьте первым!</p>
+                </div>
+            `;
         } else {
             leaderboard.forEach((entry, index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+                const date = new Date(entry.date).toLocaleDateString('ru-RU');
+
                 leaderboardHTML += `
-                    <div class="leaderboard-item ${index < 3 ? 'top-' + (index + 1) : ''}">
-                        <div class="rank">${index + 1}</div>
-                        <div class="name">${entry.name}</div>
-                        <div class="score">${entry.score} очков</div>
-                        <div class="details">${entry.correctAnswers}/${entry.totalQuestions}</div>
+                    <div class="leaderboard-item ${index < 3 ? 'top-three' : ''}">
+                        <div class="leaderboard-rank">${medal}</div>
+                        <div class="leaderboard-name">${entry.name}</div>
+                        <div class="leaderboard-score">${entry.score} очков</div>
+                        <div class="leaderboard-details">
+                            ${entry.correctAnswers}/${entry.totalQuestions} • ${date}
+                        </div>
                     </div>
                 `;
             });
@@ -774,234 +830,38 @@ class Quiz {
 
         leaderboardHTML += `
                     </div>
-                    <button class="btn btn--primary" id="close-leaderboard">Закрыть</button>
+                    <div class="leaderboard-actions">
+                        <button class="btn btn--primary" id="close-leaderboard">Закрыть</button>
+                    </div>
                 </div>
             </div>
         `;
 
         // Создаем модальное окно
         const modal = document.createElement('div');
-        modal.id = 'leaderboard-modal';
+        modal.className = 'modal-overlay';
         modal.innerHTML = leaderboardHTML;
+
         document.body.appendChild(modal);
 
-        // Стили для модального окна
-        const style = document.createElement('style');
-        style.textContent = `
-            .leaderboard-modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 1000;
-            }
-            .leaderboard-content {
-                background: var(--dark);
-                padding: var(--space-xxl);
-                border-radius: var(--radius-lg);
-                max-width: 500px;
-                width: 90%;
-                max-height: 80vh;
-                overflow-y: auto;
-            }
-            .leaderboard-list {
-                margin: var(--space-xl) 0;
-            }
-            .leaderboard-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: var(--space-md);
-                margin-bottom: var(--space-sm);
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: var(--radius-md);
-            }
-            .leaderboard-item.top-1 { background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), transparent); }
-            .leaderboard-item.top-2 { background: linear-gradient(135deg, rgba(192, 192, 192, 0.2), transparent); }
-            .leaderboard-item.top-3 { background: linear-gradient(135deg, rgba(205, 127, 50, 0.2), transparent); }
-            .rank { font-weight: bold; width: 30px; }
-            .name { flex: 1; margin: 0 var(--space-md); }
-            .score { font-weight: bold; color: var(--secondary); }
-            .details { font-size: var(--text-sm); color: var(--gray); margin-left: var(--space-md); }
-            .no-results { text-align: center; color: var(--gray); padding: var(--space-xl); }
-        `;
-        document.head.appendChild(style);
-
+        // Обработчик закрытия
         document.getElementById('close-leaderboard').addEventListener('click', () => {
             document.body.removeChild(modal);
-            document.head.removeChild(style);
         });
 
-        // Закрытие по клику вне модального окна
+        // Закрытие по клику вне контента
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 document.body.removeChild(modal);
-                document.head.removeChild(style);
             }
         });
-    }
-
-    /**
-     * Сохраняет результаты квиза на сервер
-     * @async
-     * @returns {Promise<void>}
-     */
-    async saveToServer() {
-        const correctAnswers = this.userAnswers.filter((answer, index) =>
-            answer === this.questions[index].correctAnswer
-        ).length;
-
-        const resultData = {
-            name: localStorage.getItem('quizPlayerName') || 'Аноним',
-            score: this.score,
-            correctAnswers: correctAnswers,
-            totalQuestions: this.questions.length,
-            date: new Date().toISOString(),
-            hintsUsed: this.hintsUsed,
-            percentage: Math.round((correctAnswers / this.questions.length) * 100)
-        };
-
-        try {
-            // Сохраняем в localStorage (существующая логика)
-            this.saveToLeaderboard();
-
-            // Отправляем на сервер через GET-запрос
-            await this.sendResultToServer(resultData);
-        } catch (error) {
-            console.error('Ошибка сохранения результата:', error);
-        }
-    }
-
-    /**
-     * Отправляет результат на сервер через GET-запрос
-     * @async
-     * @param {Object} resultData - Данные результата для отправки
-     * @returns {Promise<void>}
-     */
-    async sendResultToServer(resultData) {
-        // Формируем параметры для GET-запросa
-        const params = new URLSearchParams({
-            name: encodeURIComponent(resultData.name),
-            score: resultData.score,
-            correctAnswers: resultData.correctAnswers,
-            totalQuestions: resultData.totalQuestions,
-            date: resultData.date,
-            hintsUsed: resultData.hintsUsed,
-            percentage: resultData.percentage,
-            source: 'quiz'
-        });
-
-        const baseUrl = window.location.origin.includes('github.io')
-            ? 'https://ulysses-club.github.io/odissea/'
-            : window.location.origin;
-
-        try {
-            // Пробуем отправить через специальный endpoint для сохранения результатов
-            const response = await fetch(`${baseUrl}api/save-result?${params}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                console.log('Результат успешно отправлен на сервер');
-            }
-        } catch (error) {
-            console.warn('Не удалось отправить результат на сервер:', error);
-
-            // Fallback: пробуем отправить через другой endpoint
-            try {
-                await fetch(`${baseUrl}data/quiz-winners.json?${params}`, {
-                    method: 'GET'
-                });
-            } catch (fallbackError) {
-                console.warn('Fallback отправка также не удалась:', fallbackError);
-            }
-        }
-    }
-
-    /**
-     * Запрашивает имя игрока для таблицы лидеров
-     * @async
-     * @returns {Promise<string>} Имя игрока
-     */
-    async requestPlayerName() {
-        const savedName = localStorage.getItem('quizPlayerName');
-        if (savedName) return savedName;
-
-        return new Promise((resolve) => {
-            const name = prompt('Введите ваше имя для таблицы лидеров:') || 'Аноним';
-            localStorage.setItem('quizPlayerName', name);
-            resolve(name);
-        });
-    }
-
-    /**
-     * Сохраняет результаты в GitHub (заглушка для будущей реализации)
-     * @async
-     * @param {Object} resultData - Данные результата
-     * @returns {Promise<void>}
-     */
-    async saveToGitHub(resultData) {
-        try {
-            // Этот метод требует GitHub Token и более сложной настройки
-            // Для простоты используем GET-параметры как основное решение
-            console.log('Результат для GitHub:', resultData);
-
-            // Можно добавить интеграцию с GitHub API здесь при необходимости
-        } catch (error) {
-            console.warn('GitHub сохранение недоступно:', error);
-        }
     }
 }
 
-// Инициализация квиза когда DOM загружен
-document.addEventListener('DOMContentLoaded', () => {
-    new Quiz();
+// Инициализация квиза при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    // Ждем загрузки всех скриптов
+    setTimeout(() => {
+        window.quiz = new Quiz();
+    }, 100);
 });
-
-// Добавляем CSS для review
-const reviewStyles = `
-    .answers-review {
-        margin: var(--space-xl) 0;
-    }
-    .review-item {
-        background: rgba(255, 255, 255, 0.05);
-        padding: var(--space-lg);
-        margin-bottom: var(--space-md);
-        border-radius: var(--radius-md);
-        border-left: 4px solid transparent;
-    }
-    .review-item.correct {
-        border-left-color: #4CAF50;
-    }
-    .review-item.incorrect {
-        border-left-color: var(--accent);
-    }
-    .review-item h4 {
-        margin-bottom: var(--space-md);
-        color: var(--light);
-    }
-    .review-item p {
-        margin-bottom: var(--space-sm);
-        color: var(--gray);
-    }
-    .explanation {
-        font-style: italic;
-        color: var(--primary-light) !important;
-        margin-top: var(--space-md);
-        padding: var(--space-md);
-        background: rgba(106, 17, 203, 0.1);
-        border-radius: var(--radius-sm);
-    }
-`;
-
-const styleSheet = document.createElement('style');
-styleSheet.textContent = reviewStyles;
-document.head.appendChild(styleSheet);
