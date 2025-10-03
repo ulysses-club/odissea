@@ -541,6 +541,16 @@ class Quiz {
                 this.finishQuiz();
             }
         };
+
+        const nextBtnClick = () => {
+            if (this.currentQuestionIndex < this.questions.length - 1) {
+                this.currentQuestionIndex++;
+                this.showQuestion();
+            } else {
+                this.finishQuiz();
+            }
+        };
+        nextBtn.addEventListener('click', nextBtnClick, { once: true });
     }
 
     /**
@@ -716,7 +726,7 @@ class Quiz {
     }
 
     /**
-     * Сохраняет результат в таблицу лидеров localStorage
+     * Сохраняет результат в таблицу лидеров localStorage с проверкой на дубликаты
      * @returns {void}
      */
     saveToLeaderboard() {
@@ -725,7 +735,11 @@ class Quiz {
         // Используем сохраненное имя или запрашиваем его
         const username = localStorage.getItem('quizPlayerName') || 'Аноним';
 
-        leaderboard.push({
+        // Создаем уникальный идентификатор для этой попытки
+        const attemptId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+
+        const newEntry = {
+            id: attemptId, // Добавляем уникальный ID
             name: username,
             score: this.score,
             correctAnswers: this.userAnswers.filter((answer, index) =>
@@ -734,13 +748,68 @@ class Quiz {
             totalQuestions: this.questions.length,
             date: new Date().toISOString(),
             hintsUsed: this.hintsUsed
+        };
+
+        // Проверяем, нет ли уже такой же записи (по имени, очкам и дате)
+        const isDuplicate = leaderboard.some(entry =>
+            entry.name === newEntry.name &&
+            entry.score === newEntry.score &&
+            Math.abs(new Date(entry.date) - new Date(newEntry.date)) < 60000 // 1 минута
+        );
+
+        if (!isDuplicate) {
+            leaderboard.push(newEntry);
+
+            // Сортируем по убыванию очков и оставляем топ-10
+            leaderboard.sort((a, b) => {
+                // Сначала по очкам, потом по дате (новые выше при одинаковых очках)
+                if (b.score !== a.score) {
+                    return b.score - a.score;
+                }
+                return new Date(b.date) - new Date(a.date);
+            });
+
+            // Удаляем дубликаты по ID и оставляем только топ-10
+            const uniqueLeaderboard = [];
+            const seenIds = new Set();
+
+            for (const entry of leaderboard) {
+                if (!seenIds.has(entry.id) && uniqueLeaderboard.length < 10) {
+                    seenIds.add(entry.id);
+                    uniqueLeaderboard.push(entry);
+                }
+            }
+
+            localStorage.setItem('odyssey_leaderboard', JSON.stringify(uniqueLeaderboard));
+        }
+    }
+
+    /**
+     * Очищает таблицу лидеров от дубликатов
+     * @returns {void}
+     */
+    cleanupLeaderboard() {
+        const leaderboard = JSON.parse(localStorage.getItem('odyssey_leaderboard') || '[]');
+
+        const uniqueEntries = [];
+        const seenKeys = new Set();
+
+        leaderboard.forEach(entry => {
+            // Создаем уникальный ключ для проверки дубликатов
+            const key = `${entry.name}_${entry.score}_${entry.correctAnswers}_${entry.hintsUsed}`;
+
+            if (!seenKeys.has(key)) {
+                seenKeys.add(key);
+                uniqueEntries.push(entry);
+            }
         });
 
-        // Сортируем по убыванию очков и оставляем топ-10
-        leaderboard.sort((a, b) => b.score - a.score);
-        const topTen = leaderboard.slice(0, 10);
+        // Сортируем и ограничиваем топ-10
+        uniqueEntries.sort((a, b) => b.score - a.score);
+        const topTen = uniqueEntries.slice(0, 10);
 
         localStorage.setItem('odyssey_leaderboard', JSON.stringify(topTen));
+        return topTen;
     }
 
     /**
@@ -795,47 +864,56 @@ class Quiz {
      * @returns {void}
      */
     showLeaderboard() {
-        const leaderboard = JSON.parse(localStorage.getItem('odyssey_leaderboard') || '[]');
+        // Очищаем дубликаты перед показом
+        const cleanedLeaderboard = this.cleanupLeaderboard();
 
         let leaderboardHTML = `
-            <div class="leaderboard-modal">
-                <div class="leaderboard-content">
-                    <h2>🏆 Таблица лидеров</h2>
-                    <div class="leaderboard-list">
-        `;
-
-        if (leaderboard.length === 0) {
-            leaderboardHTML += `
-                <div class="no-leaders">
-                    <p>Пока нет результатов. Будьте первым!</p>
+        <div class="leaderboard-modal">
+            <div class="leaderboard-content">
+                <h2>🏆 Таблица лидеров</h2>
+                <div class="leaderboard-actions-top">
+                    <button class="btn btn--outline" id="clear-leaderboard">Очистить таблицу</button>
                 </div>
-            `;
+                <div class="leaderboard-list">
+    `;
+
+        if (cleanedLeaderboard.length === 0) {
+            leaderboardHTML += `
+            <div class="no-leaders">
+                <p>Пока нет результатов. Будьте первым!</p>
+            </div>
+        `;
         } else {
-            leaderboard.forEach((entry, index) => {
+            cleanedLeaderboard.forEach((entry, index) => {
                 const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
                 const date = new Date(entry.date).toLocaleDateString('ru-RU');
+                const time = new Date(entry.date).toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
 
                 leaderboardHTML += `
-                    <div class="leaderboard-item ${index < 3 ? 'top-three' : ''}">
-                        <div class="leaderboard-rank">${medal}</div>
-                        <div class="leaderboard-name">${entry.name}</div>
-                        <div class="leaderboard-score">${entry.score} очков</div>
-                        <div class="leaderboard-details">
-                            ${entry.correctAnswers}/${entry.totalQuestions} • ${date}
-                        </div>
+                <div class="leaderboard-item ${index < 3 ? 'top-three' : ''}">
+                    <div class="leaderboard-rank">${medal}</div>
+                    <div class="leaderboard-name">${entry.name}</div>
+                    <div class="leaderboard-score">${entry.score} очков</div>
+                    <div class="leaderboard-details">
+                        ${entry.correctAnswers}/${entry.totalQuestions} • ${date} ${time}
+                        ${entry.hintsUsed > 0 ? ` • ${entry.hintsUsed}💡` : ''}
                     </div>
-                `;
+                </div>
+            `;
             });
         }
 
         leaderboardHTML += `
-                    </div>
-                    <div class="leaderboard-actions">
-                        <button class="btn btn--primary" id="close-leaderboard">Закрыть</button>
-                    </div>
+                </div>
+                <div class="leaderboard-actions">
+                    <button class="btn btn--primary" id="close-leaderboard">Закрыть</button>
                 </div>
             </div>
-        `;
+        </div>
+    `;
 
         // Создаем модальное окно
         const modal = document.createElement('div');
@@ -849,6 +927,16 @@ class Quiz {
             document.body.removeChild(modal);
         });
 
+        // Обработчик очистки таблицы
+        document.getElementById('clear-leaderboard').addEventListener('click', () => {
+            if (confirm('Вы уверены, что хотите очистить всю таблицу лидеров?')) {
+                localStorage.removeItem('odyssey_leaderboard');
+                document.body.removeChild(modal);
+                // Показываем обновленную пустую таблицу
+                setTimeout(() => this.showLeaderboard(), 300);
+            }
+        });
+
         // Закрытие по клику вне контента
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
@@ -859,7 +947,7 @@ class Quiz {
 }
 
 // Инициализация квиза при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Ждем загрузки всех скриптов
     setTimeout(() => {
         window.quiz = new Quiz();

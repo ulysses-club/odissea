@@ -13,7 +13,7 @@ class SeasonalEffects {
         this.elements = [];
         this.isEnabled = true;
         this.toggleElement = null;
-        this.init();
+        setTimeout(() => this.init(), 100);
     }
 
     /**

@@ -382,8 +382,10 @@ async function loadInitialData() {
         const loadPromises = [loadFilmsData()];
         if (DOM.worksContainer) {
             loadPromises.push(loadWorksData());
+        } else {
+            loadPromises.push(Promise.resolve());
         }
-        
+
         await Promise.all(loadPromises);
     } catch (error) {
         console.error('Ошибка загрузки данных:', error);
@@ -519,9 +521,14 @@ function renderNextMeeting(meetingData) {
 
                 // Запускаем таймер после добавления в DOM
                 setTimeout(() => {
-                    const meetingDateTime = parseMeetingDateTime(date, time);
-                    if (meetingDateTime && !isNaN(meetingDateTime.getTime())) {
-                        startCountdown(timerElement, meetingDateTime);
+                    try {
+                        const meetingDateTime = parseMeetingDateTime(date, time);
+                        if (meetingDateTime && !isNaN(meetingDateTime.getTime())) {
+                            startCountdown(timerElement, meetingDateTime);
+                        }
+                    } catch (error) {
+                        console.error('Ошибка запуска таймера:', error);
+                        timerElement.innerHTML = '<div class="countdown-error"><p>Ошибка таймера</p></div>';
                     }
                 }, 100);
             }
@@ -2133,7 +2140,7 @@ function geocodeAddress(address) {
  */
 async function getMeetingCoordinates(meetingData) {
     const address = getMeetingAddress(meetingData);
-    
+
     // Если адрес по умолчанию, используем заранее известные координаты
     if (address === "ул. Шмидта, 12, Севастополь") {
         return [44.601145, 33.520966]; // Кофейня "Том Сойер"
