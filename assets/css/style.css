@@ -2699,6 +2699,117 @@ img {
     font-weight: 500;
 }
 
+/* Выпадающие меню */
+.nav-dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.dropdown-toggle svg {
+    transition: var(--transition);
+}
+
+.nav-dropdown:hover .dropdown-toggle svg {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--light-dark);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) 0;
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--transition);
+    z-index: 1000;
+    box-shadow: var(--shadow-lg);
+}
+
+.nav-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: var(--space-sm) var(--space-lg);
+    color: var(--light);
+    text-decoration: none;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--accent);
+    color: var(--accent);
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .nav-dropdown {
+        width: 100%;
+    }
+
+    .dropdown-toggle {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .dropdown-menu {
+        position: static;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        padding-left: var(--space-lg);
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        display: none;
+    }
+
+    .nav.active .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: var(--space-sm) var(--space-md);
+        border-left: none;
+        border-bottom: 1px solid var(--light-dark);
+    }
+}
+
+/* Маленькая DEMO метка */
+.demo-badge {
+    font-size: 0.6em;
+    color: #ff6b6b;
+    font-weight: bold;
+    margin-left: 4px;
+    vertical-align: super;
+}
+
+/* Еще более компактный вариант */
+.demo-tiny {
+    font-size: 0.5em;
+    color: #ff6b6b;
+    font-weight: bold;
+    margin-left: 2px;
+    vertical-align: super;
+}
+
 /* Адаптивность для мобильных */
 @media (max-width: 768px) {
     .seasons-toggle-container {

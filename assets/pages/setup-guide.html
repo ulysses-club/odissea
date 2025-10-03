@@ -23,12 +23,41 @@
             ОДИССЕЯ
         </a>
         <nav class="nav" aria-label="Основная навигация">
-            <a href="../../index.html#about" class="nav__link">О киноклубе</a>
-            <a href="../../index.html#top-films" class="nav__link">Топы</a>
-            <a href="../../index.html#contacts" class="nav__link">Контакты</a>
-            <a href="../../index.html#film-archive" class="nav__link">Фильмы</a>
-            <a href="setup-guide.html" class="nav__link active">Настройка устройств</a>
-            <a href="quiz.html" class="nav__link">Квиз Odissea</a>
+            <!-- Главная -->
+            <div class="nav-dropdown">
+                <a href="../../index.html" class="nav__link dropdown-toggle">
+                    Главная
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                        <path d="M3 4.5L6 7.5L9 4.5H3Z" />
+                    </svg>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="../../index.html#about" class="dropdown-item">О киноклубе</a>
+                    <a href="../../index.html#top-films" class="dropdown-item">Топы</a>
+                    <a href="../../index.html#contacts" class="dropdown-item">Контакты</a>
+                    <a href="../../index.html#film-archive" class="dropdown-item">Фильмы</a>
+                </div>
+            </div>
+
+            <!-- Настройка устройств -->
+            <div class="nav-dropdown">
+                <a href="setup-guide.html" class="nav__link dropdown-toggle active">
+                    Настройка устройств
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                        <path d="M3 4.5L6 7.5L9 4.5H3Z" />
+                    </svg>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="setup-guide.html#tv-setup" class="dropdown-item">Телевизоры</a>
+                    <a href="setup-guide.html#pc-setup" class="dropdown-item">Компьютеры</a>
+                    <a href="setup-guide.html#phone-setup" class="dropdown-item">Телефоны</a>
+                </div>
+            </div>
+
+            <!-- Квиз Odissea -->
+            <a href="quiz.html" class="nav__link">
+                Квиз Odissea<sup class="demo-badge">DEMO</sup>
+            </a>
         </nav>
         <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">☰</button>
     </header>
