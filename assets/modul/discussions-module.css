@@ -1,0 +1,291 @@
+/* Стили для секции истории обсуждений */
+.film-archive {
+    padding: var(--space-xxl) 5%;
+    background: rgba(10, 10, 20, 0.5);
+    position: relative;
+}
+
+.film-archive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+    opacity: 0.3;
+    z-index: -1;
+}
+
+/* Сетка для фильмов */
+.film-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+/* Карточка фильма */
+.film-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+    position: relative;
+}
+
+.film-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+}
+
+.film-card-image {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+}
+
+.film-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.film-card:hover .film-thumbnail {
+    transform: scale(1.05);
+}
+
+.film-rating {
+    position: absolute;
+    bottom: var(--space-md);
+    right: var(--space-md);
+    background: var(--dark-light);
+    backdrop-filter: blur(5px);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-weight: bold;
+}
+
+.rating-stars {
+    color: #ffd700;
+}
+
+.rating-number {
+    color: var(--light);
+}
+
+.film-info {
+    padding: var(--space-lg);
+}
+
+.discussion-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--gray);
+}
+
+.film-card h3 {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-sm);
+    color: var(--light);
+}
+
+.film-meta {
+    margin: var(--space-xs) 0;
+    font-size: var(--text-sm);
+    color: #827fa7;
+}
+
+.meta-label {
+    font-weight: 600;
+    color: #b18686;
+}
+
+.film-description {
+    margin-top: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--light);
+    opacity: 0.8;
+    line-height: 1.5;
+}
+
+/* Кнопка "Показать еще" */
+.load-more-btn {
+    display: block;
+    margin: var(--space-xl) auto 0;
+    padding: var(--space-sm) var(--space-xl);
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: var(--light);
+    border: none;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-primary);
+}
+
+.load-more-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(106, 17, 203, 0.6);
+}
+
+.load-more-btn:disabled {
+    background: var(--gray);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Стили для кнопки КиноПоиска на постере */
+.poster-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+    pointer-events: none;
+}
+
+.film-card:hover .poster-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.kinopoisk-poster-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #3d13af, #155877);
+    color: white !important;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    transform: translateY(20px);
+    opacity: 0;
+}
+
+.film-card:hover .kinopoisk-poster-button {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.kinopoisk-poster-button:hover {
+    background: linear-gradient(135deg, #6200ff, #0084ff);
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(160, 160, 160, 0.8);
+}
+
+/* Анимации */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.film-card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Состояния загрузки и ошибок */
+.loading-message, .no-data {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--gray);
+    font-size: var(--text-lg);
+    grid-column: 1 / -1;
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gray);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: var(--space-sm);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Адаптивность для кнопки */
+@media (max-width: 480px) {
+    .load-more-btn {
+        width: 100%;
+        max-width: 300px;
+        padding: var(--space-md) var(--space-lg);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .film-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: var(--space-lg);
+    }
+
+    .film-card-image {
+        height: 300px;
+    }
+
+    .discussion-header {
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    /* Мобильная версия кнопки КиноПоиска */
+    .poster-overlay {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .kinopoisk-poster-button {
+        transform: translateY(0);
+        opacity: 1;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .film-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .film-card-image {
+        height: 250px;
+    }
+
+    .kinopoisk-poster-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .load-more-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}

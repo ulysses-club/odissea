@@ -37,7 +37,6 @@ const CONFIG = {
         nextMeetingContainer: '#next-meeting-container',
         topBestFilms: '#top-best-films',
         topWorstFilms: '#top-worst-films',
-        topGenres: '#top-genres',
         topDirectors: '#top-directors',
         loadMoreBtn: '#load-more-films',
         scrollToTopBtn: '#scroll-to-top'
@@ -95,7 +94,6 @@ const DOM = {
     nextMeetingContainer: null,
     topBestFilms: null,
     topWorstFilms: null,
-    topGenres: null,
     topDirectors: null,
     loadMoreBtn: null,
     scrollToTopBtn: null
@@ -167,15 +165,18 @@ function initMobileMenu() {
  * @returns {void}
  */
 function initApp() {
+    console.log('Инициализация приложения...');
+    
+    // Инициализация базовых обработчиков событий
     initMobileMenu();
-    cacheDOM();
-    initEventListeners();
-    checkConnectivity();
-    loadInitialData();
-    loadNextMeeting();
-    updateOnlineStatus();
+    initSmoothScroll();
+    initAnimations();
+    
+    // Инициализация модулей
+    initSeasonEffects();
     initScrollToTop();
-    initTopsControls();
+    
+    console.log('Приложение инициализировано');
 }
 
 /**
@@ -190,7 +191,6 @@ function cacheDOM() {
     DOM.nextMeetingContainer = document.querySelector(selectors.nextMeetingContainer);
     DOM.topBestFilms = document.querySelector(selectors.topBestFilms);
     DOM.topWorstFilms = document.querySelector(selectors.topWorstFilms);
-    DOM.topGenres = document.querySelector(selectors.topGenres);
     DOM.topDirectors = document.querySelector(selectors.topDirectors);
     DOM.scrollToTopBtn = document.querySelector(selectors.scrollToTopBtn);
 
@@ -291,34 +291,6 @@ function cleanupEventListeners() {
 }
 
 /**
- * Инициализирует обработчики событий приложения
- * 
- * @returns {void}
- */
-function initEventListeners() {
-    // Удаляем старые обработчики если есть
-    cleanupEventListeners();
-
-    EVENT_HANDLERS.online = updateOnlineStatus;
-    EVENT_HANDLERS.offline = updateOnlineStatus;
-
-    window.addEventListener('online', EVENT_HANDLERS.online);
-    window.addEventListener('offline', EVENT_HANDLERS.offline);
-
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('retry-button')) {
-            loadInitialData();
-            loadNextMeeting();
-        }
-    });
-
-    if (DOM.loadMoreBtn) DOM.loadMoreBtn.addEventListener('click', loadMoreFilms);
-
-    // Добавляем очистку при размонтировании
-    window.addEventListener('beforeunload', cleanupEventListeners);
-}
-
-/**
  * Проверяет статус подключения к интернету
  * 
  * @returns {void}
@@ -354,43 +326,6 @@ function showOfflineMessage() {
     offlineMessage.className = 'offline-message';
     offlineMessage.innerHTML = `<p>${CONFIG.messages.offline}</p><button class="retry-button">${CONFIG.messages.retry}</button>`;
     document.body.prepend(offlineMessage);
-}
-
-/**
- * Загружает начальные данные приложения (фильмы и работы)
- * 
- * @returns {Promise<void>}
- */
-async function loadInitialData() {
-    try {
-        const cachedFilms = tryLoadFromCache(CONFIG.dataSources.films);
-        const cachedWorks = tryLoadFromCache(CONFIG.dataSources.works);
-
-        if (cachedFilms && cachedWorks && isCacheValid()) {
-            STATE.films = cachedFilms;
-            STATE.works = cachedWorks;
-            loadFromCache();
-            return;
-        }
-
-        // Показываем загрузку только для существующих контейнеров
-        if (DOM.filmsContainer) showLoading(DOM.filmsContainer);
-        if (DOM.worksContainer) showLoading(DOM.worksContainer);
-        showLoadingForTops();
-
-        // Загружаем только необходимые данные
-        const loadPromises = [loadFilmsData()];
-        if (DOM.worksContainer) {
-            loadPromises.push(loadWorksData());
-        } else {
-            loadPromises.push(Promise.resolve());
-        }
-
-        await Promise.all(loadPromises);
-    } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
-        if (DOM.filmsContainer) showError(DOM.filmsContainer, error);
-    }
 }
 
 /**
@@ -564,66 +499,6 @@ function showNextMeetingError() {
 }
 
 /**
- * Показывает индикатор загрузки для топ-списков
- * 
- * @returns {void}
- */
-function showLoadingForTops() {
-    const loadingHTML = `<div class="loading-message"><div class="spinner" aria-hidden="true"></div><p>${CONFIG.messages.loading}</p></div>`;
-    [DOM.topBestFilms, DOM.topWorstFilms, DOM.topGenres, DOM.topDirectors].forEach(container => {
-        if (container) container.innerHTML = loadingHTML;
-    });
-}
-
-/**
- * Загружает данные из кэша и рендерит их
- * 
- * @returns {void}
- */
-function loadFromCache() {
-    const { cache } = STATE;
-    if (cache.films) STATE.films = cache.films;
-    if (cache.works) STATE.works = cache.works;
-    if (cache.nextMeeting) STATE.nextMeeting = cache.nextMeeting;
-    if (cache.tops) {
-        renderTopsFromCache();
-        initTopsControls();
-        return;
-    }
-
-    sortFilmsByDate();
-    resetPagination();
-    renderAllData();
-    analyzeDataAndCreateTops();
-}
-
-/**
- * Сортирует фильмы по дате в порядке убывания
- * 
- * @returns {void}
- */
-function sortFilmsByDate() {
-    STATE.sortedFilms = [...STATE.films].sort((a, b) => {
-        const dateA = parseDate(a['Дата']);
-        const dateB = parseDate(b['Дата']);
-        return dateB - dateA;
-    });
-}
-
-/**
- * Сбрасывает состояние пагинации
- * 
- * @returns {void}
- */
-function resetPagination() {
-    STATE.pagination = {
-        currentPage: 1,
-        totalFilms: STATE.sortedFilms.length,
-        hasMore: STATE.sortedFilms.length > CONFIG.defaults.filmsPerPage
-    };
-}
-
-/**
  * Проверяет валидность кэша на основе TTL
  * 
  * @returns {boolean} - true если кэш валиден
@@ -656,27 +531,6 @@ function saveToCache() {
         localStorage.setItem('cinemaClubLastUpdated', STATE.lastUpdated.toString());
     } catch (e) {
         console.error('Ошибка сохранения в localStorage:', e);
-    }
-}
-
-/**
- * Загружает данные о фильмах
- * 
- * @returns {Promise<void>}
- */
-async function loadFilmsData() {
-    try {
-        const data = await fetchDataWithFallback(CONFIG.dataSources.films);
-        STATE.films = data;
-        sortFilmsByDate();
-        resetPagination();
-        renderFilms();
-        analyzeDataAndCreateTops();
-        saveToCache();
-    } catch (error) {
-        console.error('Ошибка загрузки фильмов:', error);
-        tryLoadFromLocalStorage();
-        if (!STATE.films.length) loadMockFilmsData();
     }
 }
 
@@ -766,185 +620,6 @@ function tryLoadFromCache(sourceConfig) {
 }
 
 /**
- * Пытается загрузить данные из localStorage
- * 
- * @returns {void}
- */
-function tryLoadFromLocalStorage() {
-    try {
-        const cache = localStorage.getItem('cinemaClubCache');
-        const lastUpdated = localStorage.getItem('cinemaClubLastUpdated');
-
-        if (cache && lastUpdated) {
-            STATE.cache = JSON.parse(cache);
-            STATE.lastUpdated = parseInt(lastUpdated);
-            if (isCacheValid()) loadFromCache();
-        }
-    } catch (e) {
-        console.error('Ошибка загрузки из кэша:', e);
-    }
-}
-
-/**
- * Загружает следующую порцию фильмов для пагинации
- * 
- * @returns {void}
- */
-function loadMoreFilms() {
-    if (!STATE.pagination.hasMore) return;
-    STATE.pagination.currentPage += 1;
-    renderFilms();
-}
-
-/**
- * Рендерит список фильмов с учетом пагинации
- * 
- * @returns {void}
- */
-function renderFilms() {
-    if (!DOM.filmsContainer || !STATE.sortedFilms) {
-        console.warn('Контейнер фильмов или данные не доступны');
-        return;
-    }
-
-    if (!STATE.sortedFilms.length) {
-        DOM.filmsContainer.innerHTML = `<p class="no-data">${CONFIG.messages.noFilms}</p>`;
-        if (DOM.loadMoreBtn) DOM.loadMoreBtn.style.display = 'none';
-        return;
-    }
-
-    const filmsToShow = Math.min(
-        CONFIG.defaults.filmsPerPage * STATE.pagination.currentPage,
-        STATE.sortedFilms.length
-    );
-
-    const paginatedFilms = STATE.sortedFilms.slice(0, filmsToShow);
-    STATE.pagination.hasMore = STATE.sortedFilms.length > filmsToShow;
-
-    updateLoadMoreButton();
-
-    const filmsHTML = paginatedFilms.map(film =>
-        createFilmCard(film, { showFullInfo: true })
-    ).join('');
-
-    DOM.filmsContainer.innerHTML = filmsHTML;
-}
-
-/**
- * Создает HTML-карточку фильма
- * 
- * @param {object} film - Данные фильма
- * @param {object} options - Опции отображения
- * @param {boolean} options.showDiscussionNumber - Показывать номер обсуждения
- * @param {boolean} options.showDate - Показывать дату
- * @param {boolean} options.isTopItem - Является ли элементом топа
- * @param {boolean} options.showFullInfo - Показывать полную информацию
- * @returns {string} - HTML-строка карточки фильма
- */
-function createFilmCard(film, options = {}) {
-    const {
-        showDiscussionNumber = true,
-        showDate = true,
-        isTopItem = false,
-        showFullInfo = true
-    } = options;
-
-    const { defaults } = CONFIG;
-    const rating = parseFloat(film['Оценка']) || 0;
-    const formattedRating = rating.toFixed(defaults.ratingPrecision);
-    const filmName = film['Фильм'] || 'Неизвестный фильм';
-    const filmYear = film['Год'] || '';
-    const discussionNumber = film['Номер обсуждения'] || 'N/A';
-
-    const kinopoiskUrl = generateKinopoiskUrl(filmName, filmYear);
-
-    const baseHTML = `
-    <article class="film-card ${isTopItem ? 'top-item' : ''}" role="article" 
-             aria-labelledby="film-${discussionNumber}-title">
-        <div class="film-card-image">
-            <img src="${film['Постер URL'] || defaults.poster}" 
-                 alt="Постер: ${filmName} (${filmYear})" 
-                 class="film-thumbnail"
-                 loading="lazy"
-                 onerror="this.src='${defaults.poster}'">
-            <div class="film-rating" aria-label="Рейтинг: ${formattedRating}">
-                ${createRatingStars(rating)}
-                <span class="rating-number">${formattedRating}</span>
-            </div>
-            
-            ${kinopoiskUrl ? `
-            <div class="poster-overlay">
-                <a href="${kinopoiskUrl}" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   class="kinopoisk-poster-button"
-                   aria-label="Информация о фильме ${filmName} на КиноПоиске">
-                   🎬 ${isTopItem ? 'КиноПоиск' : 'Информация о фильме'}
-                </a>
-            </div>
-            ` : ''}
-        </div>
-        <div class="film-info">
-            ${showDiscussionNumber ? `
-            <div class="discussion-header">
-                <span class="discussion-number">Обсуждение #${discussionNumber}</span>
-                ${showDate ? `<span class="discussion-date">${formatDate(film['Дата'])}</span>` : ''}
-            </div>
-            ` : ''}
-            
-            <h3 id="film-${discussionNumber}-title">
-                ${filmName} ${filmYear ? `(${filmYear})` : ''}
-            </h3>
-            
-            ${showFullInfo ? `
-            ${createFilmMeta('Режиссер:', film['Режиссер'])}
-            ${createFilmMeta('Жанр:', film['Жанр'])}
-            ${createFilmMeta('Страна:', film['Страна'])}
-            ${createFilmMeta('Участников:', film['Участников'])}
-            ${film['Описание'] ? `<p class="film-description">${film['Описание']}</p>` : ''}
-            ` : ''}
-        </div>
-    </article>
-    `;
-
-    return isTopItem ? baseHTML.replace('film-card', 'top-film-card') : baseHTML;
-}
-
-/**
- * Создает HTML-элемент мета-информации фильма
- * 
- * @param {string} label - Подпись мета-информации
- * @param {string} value - Значение мета-информации
- * @returns {string} - HTML-строка элемента
- */
-function createFilmMeta(label, value) {
-    return value ? `<p class="film-meta"><span class="meta-label">${label}</span> ${value}</p>` : '';
-}
-
-/**
- * Обновляет состояние кнопки "Загрузить еще"
- * 
- * @returns {void}
- */
-function updateLoadMoreButton() {
-    if (!DOM.loadMoreBtn) return;
-
-    if (STATE.pagination.hasMore) {
-        DOM.loadMoreBtn.style.display = 'block';
-        DOM.loadMoreBtn.textContent = CONFIG.messages.loadMore;
-        DOM.loadMoreBtn.removeAttribute('disabled');
-    } else if (STATE.pagination.currentPage > 1) {
-        DOM.loadMoreBtn.textContent = CONFIG.messages.allFilmsLoaded;
-        DOM.loadMoreBtn.setAttribute('disabled', 'true');
-        setTimeout(() => {
-            DOM.loadMoreBtn.style.display = 'none';
-        }, 3000);
-    } else {
-        DOM.loadMoreBtn.style.display = 'none';
-    }
-}
-
-/**
  * Рендерит список работ участников
  * 
  * @param {Array} works - Массив работ
@@ -976,19 +651,6 @@ function renderWorks(works) {
             </div>
         </article>
     `).join('');
-}
-
-/**
- * Рендерит все данные приложения
- * 
- * @returns {void}
- */
-function renderAllData() {
-    renderFilms();
-    // Рендерим работы только если контейнер существует
-    if (DOM.worksContainer) {
-        renderWorks(STATE.works);
-    }
 }
 
 /**
@@ -1115,150 +777,6 @@ function scrollToTop() {
 }
 
 /**
- * Анализирует данные и создает топ-списки
- * 
- * @returns {void}
- */
-function analyzeDataAndCreateTops() {
-    if (!STATE.films.length) {
-        showNoDataForTops();
-        return;
-    }
-
-    createTopFilms('best');
-    createTopFilms('worst');
-    createTopGenres();
-    createTopDirectors();
-    renderTops();
-    initTopsControls();
-}
-
-/**
- * Покажает сообщение об отсутствии данных для топ-списков
- * 
- * @returns {void}
- */
-function showNoDataForTops() {
-    const noDataHTML = `<p class="no-data">${CONFIG.messages.noTopData}</p>`;
-    [DOM.topBestFilms, DOM.topWorstFilms, DOM.topGenres, DOM.topDirectors].forEach(container => {
-        if (container) container.innerHTML = noDataHTML;
-    });
-}
-
-/**
- * Создает топ-список фильмов (лучшие/худшие)
- * 
- * @param {string} type - Тип топа ('best' или 'worst')
- * @returns {void}
- */
-function createTopFilms(type) {
-    const container = type === 'best' ? DOM.topBestFilms : DOM.topWorstFilms;
-    if (!container) return;
-
-    const topFilms = getTopFilms(type);
-
-    if (topFilms.length < 3) {
-        container.innerHTML = `<p class="no-data">${CONFIG.messages.noTopData}</p>`;
-        return;
-    }
-
-    container.innerHTML = topFilms.map((film, index) => {
-        const posterUrl = film['Постер URL'] || CONFIG.defaults.poster;
-        const rating = parseFloat(film['Оценка']);
-        const filmName = film['Фильм'] || 'Неизвестный фильм';
-        const filmYear = film['Год'] || '';
-        const kinopoiskUrl = generateKinopoiskUrl(filmName, filmYear);
-
-        return `
-        <div class="top-item">
-            <div class="top-rank">${index + 1}</div>
-            <div class="top-poster">
-                <img src="${posterUrl}" 
-                     alt="${filmName}" 
-                     loading="lazy"
-                     onerror="this.src='${CONFIG.defaults.poster}'">
-                ${kinopoiskUrl ? `
-                <div class="poster-overlay">
-                    <a href="${kinopoiskUrl}" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       class="kinopoisk-poster-button"
-                       aria-label="Информация о фильме на КиноПоиске">
-                       🎬 КиноПоиск
-                    </a>
-                </div>
-                ` : ''}
-            </div>
-            <div class="top-info">
-                <div class="top-film-title">${filmName} ${filmYear ? `(${filmYear})` : ''}</div>
-                <div class="top-film-meta">
-                    <span class="top-director">${film['Режиссер'] || 'Неизвестен'}</span>
-                    <span class="top-rating">
-                        <span class="rating-stars">${createRatingStars(rating)}</span>
-                        ${rating.toFixed(1)}
-                    </span>
-                </div>
-            </div>
-        </div>
-        `;
-    }).join('');
-}
-
-/**
- * Создает топ-список жанров
- * 
- * @returns {void}
- */
-function createTopGenres() {
-    if (!DOM.topGenres) return;
-    const topGenres = getTopGenres();
-
-    if (!topGenres.length) {
-        DOM.topGenres.innerHTML = `<p class="no-data">${CONFIG.messages.noTopData}</p>`;
-        return;
-    }
-
-    DOM.topGenres.innerHTML = topGenres.map(({ genre, count }, index) => `
-        <div class="top-item">
-            <div class="top-rank">${index + 1}</div>
-            <div class="top-info">
-                <div class="top-film-title">${capitalizeFirstLetter(genre)}</div>
-                <div class="top-film-meta">
-                    <span class="rating-badge">${count} ${getRussianWordForm(count, 'фильм', 'фильма', 'фильмов')}</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-/**
- * Создает топ-список режиссеров
- * 
- * @returns {void}
- */
-function createTopDirectors() {
-    if (!DOM.topDirectors) return;
-    const topDirectors = getTopDirectors();
-
-    if (!topDirectors.length) {
-        DOM.topDirectors.innerHTML = `<p class="no-data">${CONFIG.messages.noTopData}</p>`;
-        return;
-    }
-
-    DOM.topDirectors.innerHTML = topDirectors.map(({ director, count }, index) => `
-        <div class="top-item">
-            <div class="top-rank">${index + 1}</div>
-            <div class="top-info">
-                <div class="top-film-title">${capitalizeFirstLetter(director)}</div>
-                <div class="top-film-meta">
-                    <span class="rating-badge">${count} ${getRussianWordForm(count, 'фильм', 'фильма', 'фильмов')}</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-/**
  * Возвращает правильную форму слова для русского языка
  * 
  * @param {number} number - Число для склонения
@@ -1303,70 +821,6 @@ function capitalizeFirstLetter(string) {
             return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         })
         .join('');
-}
-
-/**
- * Возвращает топ-N фильмов по рейтингу
- * 
- * @param {string} type - Тип топа ('best' или 'worst')
- * @returns {Array} - Массив топ-фильмов
- */
-function getTopFilms(type) {
-    const ratedFilms = STATE.films.filter(film => {
-        const rating = parseFloat(film['Оценка']);
-        return !isNaN(rating) && rating > 0;
-    });
-
-    return [...ratedFilms].sort((a, b) => {
-        const ratingA = parseFloat(a['Оценка']);
-        const ratingB = parseFloat(b['Оценка']);
-        return type === 'best' ? ratingB - ratingA : ratingA - ratingB;
-    }).slice(0, CONFIG.defaults.topLimit);
-}
-
-/**
- * Возвращает топ-N жанров по количеству фильмов
- * 
- * @returns {Array} - Массив объектов {genre, count}
- */
-function getTopGenres() {
-    const genreCount = {};
-
-    STATE.films.forEach(film => {
-        const genre = film['Жанр'];
-        if (genre) {
-            genre.split(',').map(g => g.trim().toLowerCase()).filter(g => g).forEach(normalizedGenre => {
-                genreCount[normalizedGenre] = (genreCount[normalizedGenre] || 0) + 1;
-            });
-        }
-    });
-
-    return Object.entries(genreCount)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, CONFIG.defaults.topLimit)
-        .map(([genre, count]) => ({ genre, count }));
-}
-
-/**
- * Возвращает топ-N режиссеров по количеству фильмов
- * 
- * @returns {Array} - Массив объектов {director, count}
- */
-function getTopDirectors() {
-    const directorCount = {};
-
-    STATE.films.forEach(film => {
-        const director = film['Режиссер'];
-        if (director) {
-            const normalizedDirector = capitalizeFirstLetter(director.trim().toLowerCase());
-            if (normalizedDirector) directorCount[normalizedDirector] = (directorCount[normalizedDirector] || 0) + 1;
-        }
-    });
-
-    return Object.entries(directorCount)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, CONFIG.defaults.topLimit)
-        .map(([director, count]) => ({ director, count }));
 }
 
 /**
@@ -1435,48 +889,6 @@ function createTopItem(item, index, type, isCompact = false) {
 }
 
 /**
- * Рендерит все топ-списки
- * 
- * @returns {void}
- */
-function renderTops() {
-    if (!STATE.films.length) return;
-
-    const bestFilms = getTopFilms('best');
-    const worstFilms = getTopFilms('worst');
-    const topGenres = getTopGenres();
-    const topDirectors = getTopDirectors();
-
-    // Рендерим лучшие фильмы
-    if (DOM.topBestFilms && bestFilms.length) {
-        DOM.topBestFilms.innerHTML = bestFilms.map((film, index) =>
-            createTopItem(film, index, 'film', STATE.topsView.limit === 3)
-        ).join('');
-    }
-
-    // Рендерим худшие фильмы
-    if (DOM.topWorstFilms && worstFilms.length) {
-        DOM.topWorstFilms.innerHTML = worstFilms.map((film, index) =>
-            createTopItem(film, index, 'film', STATE.topsView.limit === 3)
-        ).join('');
-    }
-
-    // Рендерим жанры
-    if (DOM.topGenres && topGenres.length) {
-        DOM.topGenres.innerHTML = topGenres.map((genre, index) =>
-            createTopItem(genre, index, 'genre', STATE.topsView.limit === 3)
-        ).join('');
-    }
-
-    // Рендерим режиссеров
-    if (DOM.topDirectors && topDirectors.length) {
-        DOM.topDirectors.innerHTML = topDirectors.map((director, index) =>
-            createTopItem(director, index, 'director', STATE.topsView.limit === 3)
-        ).join('');
-    }
-}
-
-/**
  * Переключает лимит отображения топ-списков
  * 
  * @param {number} limit - Новый лимит отображения
@@ -1509,149 +921,6 @@ function initTopsControls() {
             toggleTopsLimit(limit);
         });
     });
-}
-
-/**
- * Рендерит топ-списки из кэша
- * 
- * @returns {void}
- */
-function renderTopsFromCache() {
-    if (!STATE.cache.tops) return;
-    const { tops } = STATE.cache;
-
-    // Рендерим лучшие фильмы
-    if (DOM.topBestFilms && tops.best) {
-        DOM.topBestFilms.innerHTML = tops.best.map((film, index) =>
-            createTopItem(film, index, 'film', STATE.topsView.limit === 3)
-        ).join('');
-    }
-
-    // Рендерим худшие фильмы
-    if (DOM.topWorstFilms && tops.worst) {
-        DOM.topWorstFilms.innerHTML = tops.worst.map((film, index) =>
-            createTopItem(film, index, 'film', STATE.topsView.limit === 3)
-        ).join('');
-    }
-
-    // Рендерим жанры
-    if (DOM.topGenres && tops.genres) {
-        DOM.topGenres.innerHTML = tops.genres.map((genre, index) =>
-            createTopItem(genre, index, 'genre', STATE.topsView.limit === 3)
-        ).join('');
-    }
-
-    // Рендерим режиссеров
-    if (DOM.topDirectors && tops.directors) {
-        DOM.topDirectors.innerHTML = tops.directors.map((director, index) =>
-            createTopItem(director, index, 'director', STATE.topsView.limit === 3)
-        ).join('');
-    }
-
-    initTopsControls();
-}
-
-/**
- * Загружает демонстрационные данные о фильмах
- * 
- * @returns {void}
- */
-function loadMockFilmsData() {
-    const mockFilms = [
-        {
-            "Фильм": "Начало", "Режиссер": "Кристофер Нолан", "Жанр": "Фантастика, Триллер",
-            "Страна": "США, Великобритания", "Год": "2010", "Оценка": "8.7",
-            "Номер обсуждения": "1", "Дата": "01.01.2023", "Постер URL": "assets/images/default-poster.jpg",
-            "Описание": "Проникая в сны других людей, Дом Кобб должен выполнить задание, которое станет возможностью искупить его прошлые прегрешения.",
-            "Участников": "7"
-        },
-        {
-            "Фильм": "Паразиты", "Режиссер": "Пон Джун Хо", "Жанр": "Драма, Комедия",
-            "Страна": "Южная Корея", "Год": "2019", "Оценка": "8.6",
-            "Номер обсуждения": "2", "Дата": "08.01.2023", "Постер URL": "assets/images/default-poster.jpg",
-            "Описание": "Бедная корейская семья внедряется в жизнь богатого дома, что приводит к неожиданным последствиям.",
-            "Участников": "6"
-        },
-        {
-            "Фильм": "Криминальное чтиво", "Режиссер": "Квентин Тарантино", "Жанр": "Криминал, Драма",
-            "Страна": "США", "Год": "1994", "Оценка": "8.9",
-            "Номер обсуждения": "3", "Дата": "15.01.2023", "Постер URL": "assets/images/default-poster.jpg",
-            "Описание": "Несколько взаимосвязанных историй из жизни бандитов и мелких преступников.",
-            "Участников": "8"
-        },
-        {
-            "Фильм": "Я шагаю по Москве",
-            "Режиссер": "Георгий Данелия",
-            "Жанр": "Мелодрама, Комедия",
-            "Страна": "",
-            "Год": "1963",
-            "Оценка": "8.80",
-            "Номер обсуждения": "250",
-            "Дата": "27.07.2025",
-            "Постер URL": "https://sun9-28.userapi.com/s/v1/ig2/avMk0VPo2hy47jkANqXzuBbfSTX-IWBnaRdnbjmZ0-kdRoINPxmXKcQT-P-Gb8Lmjxem02G2Ci6aM1BSkAOujeHO.jpg?quality=95&as=32x41,48x62,72x93,108x139,160x206,240x310,360x465,480x619,540x697,640x826,720x929,1080x1394,1249x1612&from=bu&cs=1249x0",
-            "Описание": "",
-            "Участников": ""
-        },
-        {
-            "Фильм": "All Eyez on Me/2pac: Легенда",
-            "Режиссер": "Бенни Бум",
-            "Жанр": "Биография, Музыка, Драма",
-            "Страна": "",
-            "Год": "2017",
-            "Оценка": "6.00",
-            "Номер обсуждения": "249",
-            "Дата": "20.07.2025",
-            "Постер URL": "https://sun9-81.userapi.com/s/v1/ig2/28GRwIEEU_mGAaYKwrNTQ3AxL0P7rLfWwW4TqvoLYhmQ2_8M9M9T0BN6WyAN3anIoxtGd6d8WbeHf4tpRyB1-ycG.jpg?quality=95&as=32x46,48x69,72x103,108x154,160x229,240x343,360x514,480x686,540x771,640x914,720x1029,1080x1543,1280x1829,1440x2057,1792x2560&from=bu&cs=1792x0",
-            "Описание": "",
-            "Участников": ""
-        },
-        {
-            "Фильм": "Amores perros/Сука-любовь",
-            "Режиссер": "Алехандро Гонсалес Иньярриту",
-            "Жанр": "Триллер, Драма, Криминал",
-            "Страна": "",
-            "Год": "2000",
-            "Оценка": "7.10",
-            "Номер обсуждения": "248",
-            "Дата": "13.07.2025",
-            "Постер URL": "https://sun9-77.userapi.com/s/v1/ig2/Q91kMgxR5t6YrRGSs3bx2uFJjj98U4Gl0JYTY-DWHmJe7gKzIQLw842yglmdJlLcqyWlE_TmHxDCwB8ER5HZPW5G.jpg?quality=95&as=32x44,48x66,72x99,108x148,160x219,240x329,360x494,480x658,540x741,640x878,720x988,729x1000&from=bu&cs=729x0",
-            "Описание": "",
-            "Участников": ""
-        }
-    ];
-
-    STATE.films = mockFilms;
-    sortFilmsByDate();
-    resetPagination();
-    renderFilms();
-    analyzeDataAndCreateTops();
-
-    showMockDataWarning('фильмов');
-}
-
-/**
- * Загружает демонстрационные данные о работах
- * 
- * @returns {void}
- */
-function loadMockWorksData() {
-    const mockWorks = [
-        {
-            "Название": "Экспериментальное видео 'Рассвет'", "Год": "2023", "Тип": "Короткометражный фильм",
-            "Ссылка на видео": "#", "URL постера": "assets/images/default-poster.jpg",
-            "Описание": "Пример творческой работы участников киноклуба"
-        },
-        {
-            "Название": "Документальный этюд", "Год": "2023", "Тип": "Документальный фильм",
-            "Ссылка на видео": "#", "URL постера": "assets/images/default-poster.jpg",
-            "Описание": "Исследование городской среды через призму кинокамеры"
-        }
-    ];
-
-    STATE.works = mockWorks;
-    renderWorks(mockWorks);
-
-    showMockDataWarning('работ');
 }
 
 /**

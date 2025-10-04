@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Киноклуб "ОДИССЕЯ"</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/seasons.css">
     <link rel="stylesheet" href="../modul/navigation.css">
     <link rel="stylesheet" href="../modul/hero-section.css">
     <link rel="stylesheet" href="../modul/footer-module.css">
     <link rel="stylesheet" href="../modul/seasons-effects.css">
     <link rel="stylesheet" href="../modul/scroll-to-top.css">
+    <link rel="stylesheet" href="../modul/tops-module.css">
+    <link rel="stylesheet" href="../modul/discussions-module.css">
     <meta name="description"
         content="Киноклуб Одиссея - место для настоящих ценителей кино. Обсуждения фильмов, топ-рейтинги и архив встреч.">
     <meta name="keywords" content="кино, киноклуб, фильмы, обсуждение, рейтинги, Одиссея">
@@ -152,61 +153,61 @@
     </section>
 
     <!-- Топ фильмов -->
-    <section id="top-films" class="movies">
-        <h2 class="section__title fade-in">Наши топы</h2>
+ <section id="top-films" class="movies">
+    <h2 class="section__title fade-in">Наши топы</h2>
 
-        <!-- Кнопки управления -->
-        <div class="tops-controls fade-in delay-1">
-            <button class="toggle-tops-btn active" data-limit="3">Топ-3</button>
-            <button class="toggle-tops-btn" data-limit="10">Топ-10</button>
-        </div>
+    <!-- Кнопки управления -->
+    <div class="tops-controls fade-in delay-1">
+        <button class="toggle-tops-btn active" data-limit="3" aria-pressed="true">Топ-3</button>
+        <button class="toggle-tops-btn" data-limit="10" aria-pressed="false">Топ-10</button>
+    </div>
 
-        <div class="tops-grid">
-            <!-- Топ лучших фильмов -->
-            <div class="top-section fade-in delay-1">
-                <h3 class="top-title">🏆 Топ лучших фильмов</h3>
-                <div id="top-best-films" class="top-list">
-                    <div class="loading-message">
-                        <div class="spinner" aria-hidden="true"></div>
-                        Загрузка лучших фильмов...
-                    </div>
-                </div>
-            </div>
-
-            <!-- Топ худших фильмов -->
-            <div class="top-section fade-in delay-2">
-                <h3 class="top-title">💩 Топ худших фильмов</h3>
-                <div id="top-worst-films" class="top-list">
-                    <div class="loading-message">
-                        <div class="spinner" aria-hidden="true"></div>
-                        Загрузка худших фильмов...
-                    </div>
-                </div>
-            </div>
-
-            <!-- Популярные жанры -->
-            <div class="top-section fade-in delay-3">
-                <h3 class="top-title">🎭 Популярные жанры</h3>
-                <div id="top-genres" class="top-list">
-                    <div class="loading-message">
-                        <div class="spinner" aria-hidden="true"></div>
-                        Загрузка жанров...
-                    </div>
-                </div>
-            </div>
-
-            <!-- Популярные режиссеры -->
-            <div class="top-section fade-in delay-4">
-                <h3 class="top-title">🎬 Популярные режиссеры</h3>
-                <div id="top-directors" class="top-list">
-                    <div class="loading-message">
-                        <div class="spinner" aria-hidden="true"></div>
-                        Загрузка режиссеров...
-                    </div>
+    <div class="tops-grid">
+        <!-- Топ лучших фильмов -->
+        <div class="top-section fade-in delay-1">
+            <h3 class="top-title">🏆 Топ лучших фильмов</h3>
+            <div id="top-best-films" class="top-list" aria-live="polite">
+                <div class="loading-message">
+                    <div class="spinner" aria-hidden="true"></div>
+                    Загрузка лучших фильмов...
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- Топ худших фильмов -->
+        <div class="top-section fade-in delay-2">
+            <h3 class="top-title">💩 Топ худших фильмов</h3>
+            <div id="top-worst-films" class="top-list" aria-live="polite">
+                <div class="loading-message">
+                    <div class="spinner" aria-hidden="true"></div>
+                    Загрузка худших фильмов...
+                </div>
+            </div>
+        </div>
+
+        <!-- Популярные жанры -->
+        <div class="top-section fade-in delay-3">
+            <h3 class="top-title">🎭 Популярные жанры</h3>
+            <div id="top-genres" class="top-list" aria-live="polite">
+                <div class="loading-message">
+                    <div class="spinner" aria-hidden="true"></div>
+                    Загрузка жанров...
+                </div>
+            </div>
+        </div>
+
+        <!-- Популярные режиссеры -->
+        <div class="top-section fade-in delay-4">
+            <h3 class="top-title">🎬 Популярные режиссеры</h3>
+            <div id="top-directors" class="top-list" aria-live="polite">
+                <div class="loading-message">
+                    <div class="spinner" aria-hidden="true"></div>
+                    Загрузка режиссеров...
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- Контакты -->
     <section id="contacts" class="contacts">
@@ -235,34 +236,29 @@
         </div>
     </section>
 
-    <!-- Секция архива фильмов -->
-    <section id="film-archive" class="film-archive">
-        <h2 class="section__title fade-in">Архив наших работ</h2>
-        <div id="works-container" class="video-posters-grid fade-in delay-1" aria-live="polite">
-            <div class="loading-message">
-                <div class="spinner" aria-hidden="true"></div>
-                Загрузка архива работ...
-            </div>
-        </div>
-        <h2 class="section__title fade-in delay-2">История обсуждений</h2>
-        <div id="films-container" class="film-grid fade-in delay-3" aria-live="polite">
-            <div class="loading-message">
-                <div class="spinner" aria-hidden="true"></div>
-                Загрузка списка фильмов...
-            </div>
-        </div>
-    </section>
+<!-- Секция архива фильмов -->
+<section id="film-archive" class="film-archive">
+    <h2 class="section__title fade-in">Архив наших работ</h2>
+    <div id="works-container" class="video-posters-grid fade-in delay-1" aria-live="polite">
+        <!-- Работы будут здесь -->
+    </div>
+    <h2 class="section__title fade-in delay-2">История обсуждений</h2>
+    <div id="films-container" class="film-grid fade-in delay-3" aria-live="polite">
+        <!-- Фильмы будут здесь -->
+    </div>
+</section>
 
     <!-- Футер -->
     <div id="footer-container"></div>
 
     <script src="../js/script.js"></script>
-    <script src="../js/seasons.js"></script>
     <script src="../modul/navigation.js"></script>
     <script src="../modul/hero-section.js"></script>
     <script src="../modul/footer-module.js"></script>
     <script src="../modul/seasons-effects.js"></script>
     <script src="../modul/scroll-to-top.js"></script>
+    <script src="../modul/tops-module.js"></script>
+    <script src="../modul/discussions-module.js"></script>
 </body>
 
 </html>
