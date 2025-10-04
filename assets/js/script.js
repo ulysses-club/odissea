@@ -1,26 +1,5 @@
 // Конфигурация приложения
 const CONFIG = {
-    dataSources: {
-        films: {
-            url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/films.json',
-            type: 'json',
-            fallback: '../data/films.json',
-            useProxy: true
-        },
-        works: {
-            url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/works.json',
-            type: 'json',
-            fallback: '../data/works.json',
-            useProxy: true
-        },
-        nextMeeting: {
-            url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/next-meeting.json',
-            type: 'json',
-            fallback: '../data/next-meeting.json',
-            useProxy: true
-        }
-    },
-
     defaults: {
         poster: '../images/default-poster.jpg',
         ratingPrecision: 1,
@@ -98,12 +77,6 @@ const DOM = {
     loadMoreBtn: null,
     scrollToTopBtn: null
 };
-
-const PROXIES = [
-    'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?',
-    'https://cors-anywhere.herokuapp.com/'
-];
 
 // Хранилище для обработчиков событий
 const EVENT_HANDLERS = {
@@ -188,7 +161,6 @@ function cacheDOM() {
     const { selectors } = CONFIG;
     DOM.filmsContainer = document.querySelector(selectors.filmsContainer);
     DOM.worksContainer = document.querySelector(selectors.worksContainer);
-    DOM.nextMeetingContainer = document.querySelector(selectors.nextMeetingContainer);
     DOM.topBestFilms = document.querySelector(selectors.topBestFilms);
     DOM.topWorstFilms = document.querySelector(selectors.topWorstFilms);
     DOM.topDirectors = document.querySelector(selectors.topDirectors);
@@ -204,67 +176,6 @@ function cacheDOM() {
 
         const filmArchiveSection = document.querySelector('#film-archive');
         if (filmArchiveSection) filmArchiveSection.appendChild(DOM.loadMoreBtn);
-    }
-}
-
-/**
- * Выполняет запрос к данным через CORS-прокси с fallback-механизмом
- * 
- * @param {string} url - URL для запроса
- * @param {string} fallbackUrl - Резервный URL
- * @param {number} timeout - Таймаут запроса в миллисекундах
- * @returns {Promise<object>} - Данные в формате JSON
- * @throws {Error} - Если все источники данных недоступны
- */
-async function fetchWithCorsProxy(url, fallbackUrl, timeout = 10000) {
-    if (!url || !fallbackUrl) {
-        throw new Error('Не указаны URL для запроса');
-    }
-
-    for (const proxy of PROXIES) {
-        try {
-            const proxyUrl = proxy === PROXIES[2] ? `${proxy}${url}` : `${proxy}${encodeURIComponent(url)}`;
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-            const response = await fetch(proxyUrl, {
-                signal: controller.signal,
-                headers: { 'Accept': 'application/json' }
-            });
-
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data;
-
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                console.warn(`Proxy ${proxy} timeout`);
-            } else {
-                console.warn(`Proxy ${proxy} не сработал:`, error.message);
-            }
-            continue;
-        }
-    }
-
-    // Пробуем локальный fallback
-    try {
-        const response = await fetch(fallbackUrl, {
-            headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Local HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (localError) {
-        console.error('Локальный fallback тоже не сработал:', localError);
-        throw new Error('Все источники данных недоступны');
     }
 }
 
@@ -329,176 +240,6 @@ function showOfflineMessage() {
 }
 
 /**
- * Загружает информацию о следующей встрече киноклуба
- * 
- * @returns {Promise<void>}
- */
-async function loadNextMeeting() {
-    try {
-        const data = await fetchDataWithFallback(CONFIG.dataSources.nextMeeting);
-        if (data && typeof data === 'object') {
-            STATE.nextMeeting = data;
-            renderNextMeeting(data);
-
-            // Обновляем карту с новыми данными
-            if (typeof ymaps !== 'undefined') {
-                initYandexMap();
-            } else {
-                updateMapInfo(getMeetingAddress(data), getMeetingPlaceName(data));
-            }
-        } else {
-            throw new Error('Неверный формат данных о встрече');
-        }
-    } catch (error) {
-        console.error('Ошибка загрузки информации о встрече:', error);
-        showNextMeetingError();
-        loadMockNextMeetingData();
-    }
-}
-
-/**
- * Рендерит информацию о следующей встрече с таймером
- * 
- * @param {object} meetingData - Данные о встрече
- * @returns {void}
- */
-function renderNextMeeting(meetingData) {
-    if (!DOM.nextMeetingContainer || !meetingData || typeof meetingData !== 'object') {
-        DOM.nextMeetingContainer.innerHTML = `<div class="no-data"><p>${CONFIG.messages.noMeeting}</p><p>Следите за обновлениями в наших соцсетях</p></div>`;
-        return;
-    }
-
-    const { defaults, messages } = CONFIG;
-    const { date, time, place, film, director, genre, country, year, poster, discussionNumber, description, requirements } = meetingData;
-
-    // Проверяем, актуальна ли дата встречи
-    try {
-        const meetingDate = parseDate(date || '');
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        if (meetingDate < today) {
-            DOM.nextMeetingContainer.innerHTML = `
-                <div class="next-meeting-card">
-                    <div class="next-meeting-info">
-                        <div class="next-meeting-header">
-                            <h3 class="next-meeting-title">Следующая встреча</h3>
-                        </div>
-                        <div class="next-meeting-description">
-                            <p>Информация о следующей встрече будет анонсирована позже.</p>
-                            <p>Следите за обновлениями в наших соцсетях:</p>
-                            <div style="margin-top: 1rem;">
-                                <a href="https://vk.com/club199046020" target="_blank" class="btn btn--primary" style="margin-right: 0.5rem;">ВКонтакте</a>
-                                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" class="btn btn--outline">Telegram</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return;
-        }
-    } catch (dateError) {
-        console.warn('Ошибка парсинга даты:', dateError);
-    }
-
-    // Генерируем ссылку на КиноПоиск
-    const kinopoiskUrl = generateKinopoiskUrl(film, year);
-
-    // HTML с местом для таймера
-    DOM.nextMeetingContainer.innerHTML = `
-        <div class="next-meeting-card">
-            <div class="next-meeting-poster">
-                <img src="${poster || defaults.poster}" alt="Постер: ${film || 'Фильм'} (${year || 'Год'})" loading="lazy" onerror="this.src='${defaults.poster}'">
-                <div class="next-meeting-badge">Обсуждение #${discussionNumber || 'N/A'}</div>
-            </div>
-            <div class="next-meeting-info">
-                <div class="next-meeting-header">
-                    <h3 class="next-meeting-title">${film || 'Фильм'} (${year || 'Год'})</h3>
-                    <div class="next-meeting-meta">
-                        <span class="next-meeting-datetime">📅 ${date || 'Дата не указана'} 🕒 ${time || 'Время не указано'}</span>
-                    </div>
-                </div>
-                <div class="next-meeting-details">
-                    ${createMeetingDetail('🎬', 'Режиссер:', director)}
-                    ${createMeetingDetail('🎭', 'Жанр:', genre)}
-                    ${createMeetingDetail('🌍', 'Страна:', country)}
-                    ${createMeetingDetail('📍', 'Место:', place)}
-                </div>
-                
-                <div id="meeting-countdown"></div>
-                
-                ${description ? `
-                    <div class="next-meeting-description">
-                        <p>${description}</p>
-                    </div>
-                ` : ''}
-                
-                ${kinopoiskUrl ? `
-                    <a href="${kinopoiskUrl}" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       class="next-meeting-kinopoisk-btn">
-                       🎬 Информация о фильме на КиноПоиске
-                    </a>
-                ` : ''}
-                ${requirements ? `<div class="next-meeting-requirements"><p>⚠️ <strong>Важно:</strong> ${requirements}</p></div>` : ''}
-            </div>
-        </div>
-    `;
-
-    // Таймер после отрисовки основной информации (исправленная часть)
-    const countdownContainer = document.getElementById('meeting-countdown');
-    if (countdownContainer && date && time) {
-        try {
-            const timerElement = createCountdownTimer(meetingData);
-            if (timerElement) {
-                countdownContainer.appendChild(timerElement);
-
-                // Запускаем таймер после добавления в DOM
-                setTimeout(() => {
-                    try {
-                        const meetingDateTime = parseMeetingDateTime(date, time);
-                        if (meetingDateTime && !isNaN(meetingDateTime.getTime())) {
-                            startCountdown(timerElement, meetingDateTime);
-                        }
-                    } catch (error) {
-                        console.error('Ошибка запуска таймера:', error);
-                        timerElement.innerHTML = '<div class="countdown-error"><p>Ошибка таймера</p></div>';
-                    }
-                }, 100);
-            }
-        } catch (error) {
-            console.error('Ошибка создания таймера:', error);
-            countdownContainer.innerHTML = `<div class="countdown-error"><p>Таймер временно недоступен</p></div>`;
-        }
-    } else if (countdownContainer) {
-        countdownContainer.innerHTML = `<div class="countdown-error"><p>Дата и время встречи не указаны</p></div>`;
-    }
-}
-
-/**
- * Создает HTML-элемент детали информации о встрече
- * 
- * @param {string} icon - Иконка элемента
- * @param {string} label - Подпись элемента
- * @param {string} value - Значение элемента
- * @returns {string} - HTML-строка элемента
- */
-function createMeetingDetail(icon, label, value) {
-    return value ? `<div class="next-meeting-detail"><span class="detail-icon">${icon}</span><span><strong>${label}</strong> ${value}</span></div>` : '';
-}
-
-/**
- * Показывает сообщение об ошибке загрузки информации о встрече
- * 
- * @returns {void}
- */
-function showNextMeetingError() {
-    if (!DOM.nextMeetingContainer) return;
-    DOM.nextMeetingContainer.innerHTML = `<div class="error-message"><p>Не удалось загрузить информацию о встрече</p><button class="retry-button" onclick="loadNextMeeting()">${CONFIG.messages.retry}</button></div>`;
-}
-
-/**
  * Проверяет валидность кэша на основе TTL
  * 
  * @returns {boolean} - true если кэш валиден
@@ -516,7 +257,6 @@ function saveToCache() {
     STATE.cache = {
         films: STATE.films,
         works: STATE.works,
-        nextMeeting: STATE.nextMeeting,
         tops: {
             best: getTopFilms('best'),
             worst: getTopFilms('worst'),
@@ -531,29 +271,6 @@ function saveToCache() {
         localStorage.setItem('cinemaClubLastUpdated', STATE.lastUpdated.toString());
     } catch (e) {
         console.error('Ошибка сохранения в localStorage:', e);
-    }
-}
-
-/**
- * Загружает данные о работах участников
- * 
- * @returns {Promise<void>}
- */
-async function loadWorksData() {
-    try {
-        const data = await fetchDataWithFallback(CONFIG.dataSources.works);
-        STATE.works = data;
-        // Рендерим работы только если контейнер существует
-        if (DOM.worksContainer) {
-            renderWorks(data);
-        }
-        saveToCache();
-    } catch (error) {
-        console.error('Ошибка загрузки работ:', error);
-        // Загружаем моковые данные только если контейнер существует
-        if (DOM.worksContainer) {
-            loadMockWorksData();
-        }
     }
 }
 
@@ -924,27 +641,6 @@ function initTopsControls() {
 }
 
 /**
- * Загружает демонстрационные данные о следующей встрече
- * 
- * @returns {void}
- */
-function loadMockNextMeetingData() {
-    const mockMeeting = {
-        "date": "31.08.2025", "time": "15:00", "place": "Кофейня \"Том Сойер\", ул. Шмидта, 12",
-        "film": "Sommaren med Monika/Лето с Моникой", "director": "Ингмар Бергман",
-        "genre": "Драма, Мелодрама", "country": "Швеция", "year": "1953",
-        "poster": "assets/images/default-poster.jpg", "discussionNumber": "255",
-        "description": "Молодые влюбленные пытаются сбежать от скучной реальности, но их идиллическое лето заканчивается суровым столкновением с действительностью.",
-        "requirements": "Рекомендуем посмотреть фильм заранее"
-    };
-
-    STATE.nextMeeting = mockMeeting;
-    renderNextMeeting(mockMeeting);
-
-    showMockDataWarning('информации о встрече');
-}
-
-/**
  * Показывает предупреждение о загрузке демонстрационных данных
  * 
  * @param {string} dataType - Тип данных для отображения в сообщении
@@ -992,24 +688,6 @@ function generateKinopoiskUrl(filmName, filmYear) {
 
     return `https://www.kinopoisk.ru/index.php?kp_query=${encodedQuery}`;
 }
-
-// Загрузка кэша из localStorage при загрузке страницы
-window.addEventListener('load', () => {
-    try {
-        const cache = localStorage.getItem('cinemaClubCache');
-        const lastUpdated = localStorage.getItem('cinemaClubLastUpdated');
-
-        if (cache && lastUpdated) {
-            STATE.cache = JSON.parse(cache);
-            STATE.lastUpdated = parseInt(lastUpdated);
-
-            if (isCacheValid() && STATE.cache.tops) renderTopsFromCache();
-            if (isCacheValid() && STATE.cache.nextMeeting) renderNextMeeting(STATE.cache.nextMeeting);
-        }
-    } catch (e) {
-        console.error('Ошибка загрузки кэша:', e);
-    }
-});
 
 /**
  * Инициализирует Яндекс.Карту с меткой места встреч на основе данных о встрече
@@ -1173,159 +851,6 @@ function loadYandexMaps() {
 }
 
 /**
- * Создает и возвращает элемент таймера обратного отсчета до встречи
- * 
- * @param {object} meetingData - Данные о встрече
- * @returns {HTMLElement} - Элемент таймера
- */
-function createCountdownTimer(meetingData) {
-    if (!meetingData || !meetingData.date || !meetingData.time) {
-        return createErrorElement('Дата и время встречи не указаны');
-    }
-
-    try {
-        // Создаем контейнер таймера
-        const timerContainer = document.createElement('div');
-        timerContainer.className = 'countdown-timer';
-        timerContainer.setAttribute('role', 'timer');
-        timerContainer.setAttribute('aria-live', 'polite');
-
-        // Создаем HTML структуру таймера с начальными значениями
-        timerContainer.innerHTML = `
-            <div class="countdown-title">До встречи осталось:</div>
-            <div class="countdown-grid">
-                <div class="countdown-item">
-                    <div class="countdown-number" id="countdown-days">--</div>
-                    <div class="countdown-label">дней</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="countdown-hours">--</div>
-                    <div class="countdown-label">часов</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="countdown-minutes">--</div>
-                    <div class="countdown-label">минут</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="countdown-seconds">--</div>
-                    <div class="countdown-label">секунд</div>
-                </div>
-            </div>
-            <div class="countdown-completed" style="display: none;">
-                <span class="completed-icon">🎬</span>
-                <span>Встреча началась!</span>
-            </div>
-        `;
-
-        return timerContainer;
-
-    } catch (error) {
-        console.error('Ошибка создания таймера:', error);
-        return createErrorElement('Ошибка создания таймера');
-    }
-}
-
-/**
- * Парсит дату и время встречи в объект Date
- * 
- * @param {string} dateStr - Строка даты в формате "ДД.ММ.ГГГГ"
- * @param {string} timeStr - Строка времени в формате "ЧЧ:ММ"
- * @returns {Date} - Объект Date
- */
-function parseMeetingDateTime(dateStr, timeStr) {
-    const [day, month, year] = dateStr.split('.').map(Number);
-    const [hours, minutes] = timeStr.split(':').map(Number);
-
-    return new Date(year, month - 1, day, hours, minutes);
-}
-
-/**
- * Запускает обратный отсчет
- * 
- * @param {HTMLElement} timerContainer - Контейнер таймера
- * @param {Date} targetDate - Целевая дата и время
- */
-function startCountdown(timerContainer, targetDate) {
-    let previousValues = {
-        days: -1,
-        hours: -1,
-        minutes: -1,
-        seconds: -1
-    };
-
-    function updateTimer() {
-        const now = new Date().getTime();
-        const distance = targetDate.getTime() - now;
-
-        // Если время истекло
-        if (distance < 0) {
-            showCompletedMessage(timerContainer);
-            return;
-        }
-
-        // Вычисляем единицы времени
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        // Обновляем отображение только если значения изменились
-        updateNumberIfChanged('days', days, previousValues.days, timerContainer);
-        updateNumberIfChanged('hours', hours, previousValues.hours, timerContainer);
-        updateNumberIfChanged('minutes', minutes, previousValues.minutes, timerContainer);
-        updateNumberIfChanged('seconds', seconds, previousValues.seconds, timerContainer);
-
-        // Сохраняем текущие значения
-        previousValues = { days, hours, minutes, seconds };
-
-        // Планируем следующее обновление
-        setTimeout(updateTimer, 1000);
-    }
-
-    // Запускаем первоначальное обновление
-    updateTimer();
-}
-
-/**
- * Обновляет число в таймере если оно изменилось
- * 
- * @param {string} unit - Единица времени (days, hours, etc.)
- * @param {number} newValue - Новое значение
- * @param {number} oldValue - Старое значение
- * @param {HTMLElement} container - Контейнер таймера
- */
-function updateNumberIfChanged(unit, newValue, oldValue, container) {
-    if (newValue !== oldValue) {
-        const element = container.querySelector(`#countdown-${unit}`);
-        if (element) {
-            // Добавляем анимацию обновления
-            element.classList.remove('updated');
-            void element.offsetWidth; // Trigger reflow
-            element.textContent = String(newValue).padStart(2, '0');
-            element.classList.add('updated');
-        }
-    }
-}
-
-/**
- * Показывает сообщение о завершении отсчета
- * 
- * @param {HTMLElement} timerContainer - Контейнер таймера
- */
-function showCompletedMessage(timerContainer) {
-    const grid = timerContainer.querySelector('.countdown-grid');
-    const completedMessage = timerContainer.querySelector('.countdown-completed');
-
-    if (grid && completedMessage) {
-        grid.style.display = 'none';
-        completedMessage.style.display = 'flex';
-
-        // Обновляем ARIA-атрибуты
-        timerContainer.setAttribute('aria-label', 'Встреча началась');
-    }
-}
-
-/**
  * Создает элемент с сообщением об ошибке
  * 
  * @param {string} message - Текст ошибки
@@ -1341,21 +866,6 @@ function createErrorElement(message) {
         </div>
     `;
     return errorElement;
-}
-
-/**
- * Извлекает адрес из данных о встрече или возвращает адрес по умолчанию
- * 
- * @param {object} meetingData - Данные о встрече
- * @returns {string} - Адрес места встречи
- */
-function getMeetingAddress(meetingData) {
-    if (meetingData && meetingData.place) {
-        return meetingData.place;
-    }
-
-    // Адрес по умолчанию
-    return "ул. Шмидта, 12, Севастополь";
 }
 
 /**
