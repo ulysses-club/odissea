@@ -90,7 +90,7 @@
             </div>
         </div>
         <div class="hero__image">
-            <img src="../images/games/crocodile-hero.png" alt="Игра в Крокодил - веселая командная игра"
+            <img src="../images/crocodile-hero.jpg" alt="Игра в Крокодил - веселая командная игра"
                 class="hero__image-img" width="600" height="400" loading="lazy"
                 onerror="this.src='../images/default-poster.jpg'">
         </div>
@@ -339,68 +339,6 @@
     <!-- Подключаем скрипты -->
     <script src="../js/seasons.js"></script>
     <script src="../js/crocodile-game.js"></script>
-
-    <script>
-        // Обработка загрузки hero изображения
-        document.addEventListener('DOMContentLoaded', function () {
-            const heroImage = document.querySelector('.hero__image-img');
-            if (heroImage) {
-                heroImage.onerror = function() {
-                    this.src = '../images/default-poster.jpg';
-                };
-            }
-
-            // Инициализация игры после загрузки
-            setTimeout(() => {
-                if (typeof initCrocodileGame === 'function') {
-                    initCrocodileGame();
-                }
-            }, 100);
-        });
-
-        // Обработчик для кнопки "Наверх"
-        document.addEventListener('DOMContentLoaded', function() {
-            const scrollBtn = document.getElementById('scroll-to-top');
-            if (scrollBtn) {
-                scrollBtn.addEventListener('click', function() {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-            }
-        });
-    </script>
-
-    <script>
-        // Обработка загрузки hero изображения
-        document.addEventListener('DOMContentLoaded', function () {
-            const mainImage = document.getElementById('hero-image-main');
-            const fallbackImage = document.getElementById('hero-image-fallback');
-            const placeholder = document.getElementById('hero-placeholder');
-
-            function showHeroPlaceholder() {
-                placeholder.style.display = 'block';
-                mainImage.style.display = 'none';
-                fallbackImage.style.display = 'none';
-            }
-
-            window.showHeroPlaceholder = showHeroPlaceholder;
-
-            // Пытаемся загрузить основное изображение
-            mainImage.onload = function () {
-                mainImage.style.display = 'block';
-                placeholder.style.display = 'none';
-                fallbackImage.style.display = 'none';
-            };
-
-            mainImage.onerror = function () {
-                // Если основное не загрузилось, пробуем fallback
-                fallbackImage.style.display = 'block';
-                mainImage.style.display = 'none';
-            };
-
-            // Показываем основное изображение
-            mainImage.style.display = 'block';
-        });
-    </script>
 
 </body>
 

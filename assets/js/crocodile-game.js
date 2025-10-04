@@ -24,7 +24,10 @@ class CrocodileGame {
         this.wordsGuessed = 0;
         this.totalWords = 0;
 
-        this.initializeElements();
+        if (!this.initializeElements()) {
+            return; // Прерываем инициализацию если элементы не найдены
+        }
+
         this.loadWords();
         this.setupEventListeners();
     }
@@ -36,28 +39,45 @@ class CrocodileGame {
     initializeElements() {
         // Кнопки тематики
         this.themeButtons = document.querySelectorAll('.theme-btn');
-        
+
         // Элементы управления игрой
         this.startBtn = document.getElementById('start-game');
         this.nextBtn = document.getElementById('next-word');
         this.resetBtn = document.getElementById('reset-game');
-        
+
         // Элементы таймера
         this.startTimerBtn = document.getElementById('start-timer');
         this.stopTimerBtn = document.getElementById('stop-timer');
         this.timerDisplay = document.getElementById('timer');
         this.timerCircle = document.querySelector('.timer-circle');
-        
+
         // Элементы отображения
         this.wordCategory = document.querySelector('.word-category');
         this.theWord = document.querySelector('.the-word');
         this.wordHint = document.querySelector('.word-hint');
-        
+
         // Статистика
         this.wordsLeft = document.getElementById('words-left');
         this.wordsGuessedElement = document.getElementById('words-guessed');
         this.totalWordsElement = document.getElementById('total-words');
         this.usedWordsList = document.getElementById('used-words');
+
+        // Проверка что все необходимые элементы найдены
+        const requiredElements = [
+            this.startBtn, this.nextBtn, this.resetBtn,
+            this.startTimerBtn, this.stopTimerBtn, this.timerDisplay,
+            this.wordCategory, this.theWord, this.wordHint,
+            this.wordsLeft, this.wordsGuessedElement, this.totalWordsElement
+        ];
+
+        const missingElements = requiredElements.filter(el => !el);
+        if (missingElements.length > 0) {
+            console.error('Не найдены необходимые элементы:', missingElements);
+            this.showError('Ошибка инициализации игры. Обновите страницу.');
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -68,7 +88,7 @@ class CrocodileGame {
     async loadWords() {
         try {
             console.log('Загрузка слов для игры...');
-            
+
             // Используем встроенные слова как fallback
             const fallbackWords = {
                 movies: [
@@ -119,7 +139,7 @@ class CrocodileGame {
             }
 
             this.initializeGame();
-            
+
         } catch (error) {
             console.error('Ошибка при загрузке слов:', error);
             this.showError('Не удалось загрузить слова для игры. Пожалуйста, обновите страницу.');
@@ -148,11 +168,11 @@ class CrocodileGame {
                 btn.classList.add('active');
                 this.currentTheme = btn.dataset.theme;
                 console.log('Выбрана тематика:', this.currentTheme);
-                
-                // Если игра уже начата, перезапускаем с новой тематикой
+
+                // Если игра уже начата, сбрасываем но НЕ начинаем автоматически
                 if (this.isGameStarted) {
                     this.resetGame();
-                    this.startGame();
+                    // Пользователь сам нажмет "Играть!" когда будет готов
                 }
             });
         });
@@ -203,16 +223,16 @@ class CrocodileGame {
         this.isGameStarted = true;
         this.usedWords = [];
         this.wordsGuessed = 0;
-        
+
         this.prepareWordList();
         this.updateStats();
         this.updateUsedWordsList();
-        
+
         this.startBtn.disabled = true;
         this.nextBtn.disabled = false;
-        
+
         this.nextWord();
-        
+
         console.log('Игра начата! Доступно слов:', this.availableWords.length);
     }
 
@@ -222,7 +242,7 @@ class CrocodileGame {
      */
     prepareWordList() {
         this.availableWords = [];
-        
+
         if (this.currentTheme === 'all') {
             // Собираем слова из всех категорий
             Object.values(this.words).forEach(category => {
@@ -232,7 +252,7 @@ class CrocodileGame {
             // Берем слова только из выбранной категории
             this.availableWords = [...(this.words[this.currentTheme] || [])];
         }
-        
+
         // Перемешиваем слова
         this.shuffleArray(this.availableWords);
         this.totalWords = this.availableWords.length;
@@ -249,6 +269,14 @@ class CrocodileGame {
         }
 
         const wordData = this.availableWords.pop();
+
+        // Дополнительная проверка на случай undefined
+        if (!wordData) {
+            console.warn('Получен undefined вместо слова, пропускаем');
+            this.nextWord();
+            return;
+        }
+
         this.usedWords.push(wordData);
         this.wordsGuessed++;
 
@@ -271,7 +299,8 @@ class CrocodileGame {
         // Определяем категорию для отображения
         let category = 'Разное';
         Object.entries(this.words).forEach(([cat, words]) => {
-            if (words.includes(wordData)) {
+            // Ищем по значению word, а не по объекту
+            if (words.some(w => w.word === wordData.word)) {
                 category = this.getCategoryName(cat);
             }
         });
@@ -339,7 +368,7 @@ class CrocodileGame {
             clearInterval(this.timer);
             this.timer = null;
         }
-        
+
         this.timerCircle.classList.remove('running', 'warning');
         this.startTimerBtn.disabled = false;
         this.stopTimerBtn.disabled = true;
@@ -355,21 +384,21 @@ class CrocodileGame {
         this.usedWords = [];
         this.wordsGuessed = 0;
         this.timeLeft = 60;
-        
+
         this.timerDisplay.textContent = this.timeLeft;
         this.wordCategory.textContent = 'Тематика';
         this.theWord.textContent = 'Нажми "Играть!" чтобы начать';
         this.wordHint.textContent = 'Здесь появится подсказка';
-        
+
         this.startBtn.disabled = false;
         this.nextBtn.disabled = true;
         this.startTimerBtn.disabled = false;
         this.stopTimerBtn.disabled = true;
-        
+
         this.timerCircle.classList.remove('running', 'warning');
         this.updateStats();
         this.updateUsedWordsList();
-        
+
         console.log('Игра сброшена');
     }
 
@@ -380,14 +409,14 @@ class CrocodileGame {
     endGame() {
         this.stopTimer();
         this.isGameStarted = false;
-        
+
         this.wordCategory.textContent = 'Игра завершена!';
         this.theWord.textContent = '🎉 Поздравляем!';
         this.wordHint.textContent = `Вы показали ${this.wordsGuessed} слов`;
-        
+
         this.startBtn.disabled = false;
         this.nextBtn.disabled = true;
-        
+
         console.log('Игра завершена. Все слова показаны.');
     }
 
@@ -397,7 +426,7 @@ class CrocodileGame {
      */
     updateStats() {
         const wordsLeft = this.isGameStarted ? this.availableWords.length : 0;
-        
+
         this.wordsLeft.textContent = wordsLeft;
         this.wordsGuessedElement.textContent = this.wordsGuessed;
         this.totalWordsElement.textContent = this.isGameStarted ? this.totalWords : 0;
@@ -417,7 +446,7 @@ class CrocodileGame {
 
         this.usedWordsList.innerHTML = this.usedWords
             .slice(-10) // Показываем только последние 10 слов
-            .map(wordData => 
+            .map(wordData =>
                 `<div class="used-word" title="${wordData.hint}">${wordData.word}</div>`
             )
             .join('');
@@ -457,12 +486,37 @@ class CrocodileGame {
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         `;
         errorDiv.textContent = message;
-        
+
         document.body.appendChild(errorDiv);
-        
+
         setTimeout(() => {
             errorDiv.remove();
         }, 5000);
+    }
+
+    /**
+ * Возвращает общее количество слов для текущей тематики
+ * @returns {number} - Количество слов
+ * @private
+ */
+    getTotalWordsCount() {
+        if (this.currentTheme === 'all') {
+            return Object.values(this.words).reduce((sum, category) => sum + category.length, 0);
+        }
+        return this.words[this.currentTheme]?.length || 0;
+    }
+
+    /**
+     * Обновляет статистику игры на экране
+     * @private
+     */
+    updateStats() {
+        const wordsLeft = this.isGameStarted ? this.availableWords.length : this.getTotalWordsCount();
+        const totalWords = this.isGameStarted ? this.totalWords : this.getTotalWordsCount();
+
+        this.wordsLeft.textContent = wordsLeft;
+        this.wordsGuessedElement.textContent = this.wordsGuessed;
+        this.totalWordsElement.textContent = totalWords;
     }
 }
 
