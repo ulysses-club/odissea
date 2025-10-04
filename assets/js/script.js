@@ -4,25 +4,25 @@ const CONFIG = {
         films: {
             url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/films.json',
             type: 'json',
-            fallback: 'assets/data/films.json',
+            fallback: '../data/films.json',
             useProxy: true
         },
         works: {
             url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/works.json',
             type: 'json',
-            fallback: 'assets/data/works.json',
+            fallback: '../data/works.json',
             useProxy: true
         },
         nextMeeting: {
             url: 'https://raw.githubusercontent.com/ulysses-club/odissea/main/assets/data/next-meeting.json',
             type: 'json',
-            fallback: 'assets/data/next-meeting.json',
+            fallback: '../data/next-meeting.json',
             useProxy: true
         }
     },
 
     defaults: {
-        poster: 'assets/images/default-poster.jpg',
+        poster: '../images/default-poster.jpg',
         ratingPrecision: 1,
         maxRating: 10,
         cacheTTL: 3600000,

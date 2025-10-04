@@ -1,7 +1,10 @@
+@import url('../modul/navigation.css');
+
+
 :root {
     /* Цветовая палитра */
     --primary: #6a11cb;
-    --primary-light: rgba(106, 17, 203, 0.2);
+    --primary-light: rgba(168, 168, 168, 0.2);
     --secondary: #2575fc;
     --secondary-light: rgba(37, 117, 252, 0.2);
     --accent: #ff4d4d;

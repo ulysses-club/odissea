@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Киноклуб "ОДИССЕЯ"</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/seasons.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/seasons.css">
+    <link rel="stylesheet" href="../modul/navigation.css">
     <meta name="description"
         content="Киноклуб Одиссея - место для настоящих ценителей кино. Обсуждения фильмов, топ-рейтинги и архив встреч.">
     <meta name="keywords" content="кино, киноклуб, фильмы, обсуждение, рейтинги, Одиссея">
@@ -17,57 +18,14 @@
 
     <!-- Шапка -->
     <header class="header">
-        <a href="../../index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
+        <a href="index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
             <div class="logo__icon"></div>
             ОДИССЕЯ
         </a>
-        <nav class="nav" aria-label="Основная навигация">
-            <!-- Главная -->
-            <div class="nav-dropdown">
-                <a href="../../index.html" class="nav__link dropdown-toggle active">
-                    Главная
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                        <path d="M3 4.5L6 7.5L9 4.5H3Z" />
-                    </svg>
-                </a>
-                <div class="dropdown-menu">
-                    <a href="../../index.html#about" class="dropdown-item">О киноклубе</a>
-                    <a href="../../index.html#top-films" class="dropdown-item">Топы</a>
-                    <a href="../../index.html#contacts" class="dropdown-item">Контакты</a>
-                    <a href="../../index.html#film-archive" class="dropdown-item">Фильмы</a>
-                </div>
-            </div>
 
-            <!-- Настройка устройств -->
-            <div class="nav-dropdown">
-                <a href="assets/pages/setup-guide.html" class="nav__link dropdown-toggle">
-                    Настройка устройств
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                        <path d="M3 4.5L6 7.5L9 4.5H3Z" />
-                    </svg>
-                </a>
-                <div class="dropdown-menu">
-                    <a href="assets/pages/setup-guide.html#tv-setup" class="dropdown-item">Телевизоры</a>
-                    <a href="assets/pages/setup-guide.html#pc-setup" class="dropdown-item">Компьютеры</a>
-                    <a href="assets/pages/setup-guide.html#phone-setup" class="dropdown-item">Телефоны</a>
-                </div>
-            </div>
+        <!-- Контейнер для навигации -->
+        <div class="nav-container"></div>
 
-            <!-- Игры -->
-            <div class="nav-dropdown">
-                <a href="" class="nav__link dropdown-toggle active">
-                    Игры
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                        <path d="M3 4.5L6 7.5L9 4.5H3Z" />
-                    </svg>
-                </a>
-                <div class="dropdown-menu">
-                    <a href="assets/pages/quiz.html" class="dropdown-item">Квиз Odissea<sup class="demo-badge">DEMO</sup></a>
-                    <a href="assets/pages/Interactive-game.html" class="dropdown-item">Интерактивная игра</a>
-                    <a href="assets/pages/crocodile-game.html" class="dropdown-item">Крокодил<sup class="demo-tiny">NEW</sup></a>
-                </div>
-            </div>
-        </nav>
         <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">☰</button>
     </header>
 
@@ -89,7 +47,7 @@
             </div>
         </div>
         <div class="hero__image">
-            <img src="assets/images/logo-group-vk.jpg" alt="Участники киноклуба на встрече" class="hero__image-img"
+            <img src="../images/logo-group-vk.jpg" alt="Участники киноклуба на встрече" class="hero__image-img"
                 width="600" height="400" loading="lazy">
         </div>
     </section>
@@ -200,7 +158,7 @@
             <!-- Увеличенное изображение -->
             <div class="image-container-wrapper fade-in delay-3">
                 <div class="image-container">
-                    <img src="assets/images//image-container.jpg" alt="Участники киноклуба на встрече"
+                    <img src="../images/image-container.jpg" alt="Участники киноклуба на встрече"
                         class="main-image" loading="lazy">
                     <div class="film-strip" aria-hidden="true"></div>
                     <div class="projector-light" aria-hidden="true"></div>
@@ -322,7 +280,7 @@
                 <a href="#top-films" class="footer__link">Топы</a>
                 <a href="#film-archive" class="footer__link">Фильмы</a>
                 <a href="#contacts" class="footer__link">Контакты</a>
-                <a href="assets/pages/stanislav.html" class="footer__link">Автор сайта</a>
+                <a href="../pages/stanislav.html" class="footer__link">Автор сайта</a>
             </div>
             <div class="footer__social">
                 <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="social__link"
@@ -334,8 +292,9 @@
         </div>
     </footer>
 
-    <script src="assets/js/script.js"></script>
-    <script src="assets/js/seasons.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/seasons.js"></script>
+    <script src="../modul/navigation.js"></script>
     <button id="scroll-to-top" class="load-more-btn" aria-label="Наверх" title="Наверх">
         ↑
     </button>

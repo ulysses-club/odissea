@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/seasons.css">
     <link rel="stylesheet" href="../css/setup-guide.css">
+    <link rel="stylesheet" href="../modul/navigation.css">
     <meta name="description"
         content="Инструкции по настройке телевизоров, компьютеров и телефонов для оптимального просмотра фильмов">
     <meta name="keywords" content="настройка, телевизор, компьютер, телефон, просмотр фильмов, калибровка">
@@ -18,57 +19,14 @@
 
     <!-- Шапка -->
     <header class="header">
-        <a href="../../index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
+        <a href="index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
             <div class="logo__icon"></div>
             ОДИССЕЯ
         </a>
-        <nav class="nav" aria-label="Основная навигация">
-            <!-- Главная -->
-            <div class="nav-dropdown">
-                <a href="../../index.html" class="nav__link dropdown-toggle">
-                    Главная
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                        <path d="M3 4.5L6 7.5L9 4.5H3Z" />
-                    </svg>
-                </a>
-                <div class="dropdown-menu">
-                    <a href="../../index.html#about" class="dropdown-item">О киноклубе</a>
-                    <a href="../../index.html#top-films" class="dropdown-item">Топы</a>
-                    <a href="../../index.html#contacts" class="dropdown-item">Контакты</a>
-                    <a href="../../index.html#film-archive" class="dropdown-item">Фильмы</a>
-                </div>
-            </div>
 
-            <!-- Настройка устройств -->
-            <div class="nav-dropdown">
-                <a href="setup-guide.html" class="nav__link dropdown-toggle active">
-                    Настройка устройств
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                        <path d="M3 4.5L6 7.5L9 4.5H3Z" />
-                    </svg>
-                </a>
-                <div class="dropdown-menu">
-                    <a href="setup-guide.html#tv-setup" class="dropdown-item">Телевизоры</a>
-                    <a href="setup-guide.html#pc-setup" class="dropdown-item">Компьютеры</a>
-                    <a href="setup-guide.html#phone-setup" class="dropdown-item">Телефоны</a>
-                </div>
-            </div>
+        <!-- Контейнер для навигации -->
+        <div class="nav-container"></div>
 
-            <!-- Игры -->
-            <div class="nav-dropdown">
-                <a href="" class="nav__link dropdown-toggle active">
-                    Игры
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                        <path d="M3 4.5L6 7.5L9 4.5H3Z" />
-                    </svg>
-                </a>
-                <div class="dropdown-menu">
-                    <a href="quiz.html" class="dropdown-item">Квиз Odissea<sup class="demo-badge">DEMO</sup></a>
-                    <a href="Interactive-game.html" class="dropdown-item">Интерактивная игра</a>
-                    <a href="crocodile-game.html" class="dropdown-item">Крокодил<sup class="demo-tiny">NEW</sup></a>
-                </div>
-            </div>
-        </nav>
         <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">☰</button>
     </header>
 
@@ -1100,7 +1058,7 @@
 
     <!-- Кнопка возврата -->
     <div class="odyssey-home-button">
-        <a href="../../index.html" class="odyssey-btn">← Вернуться на главную</a>
+        <a href="index.html" class="odyssey-btn">← Вернуться на главную</a>
     </div>
 
     <!-- Футер -->
@@ -1108,10 +1066,10 @@
         <div class="footer__content">
             <div class="footer__logo">ОДИССЕЯ</div>
             <div class="footer__links">
-                <a href="../../index.html#about" class="footer__link">О нас</a>
-                <a href="../../index.html#top-films" class="footer__link">Топы</a>
-                <a href="../../index.html#film-archive" class="footer__link">Фильмы</a>
-                <a href="../../index.html#contacts" class="footer__link">Контакты</a>
+                <a href="index.html#about" class="footer__link">О нас</a>
+                <a href="index.html#top-films" class="footer__link">Топы</a>
+                <a href="index.html#film-archive" class="footer__link">Фильмы</a>
+                <a href="index.html#contacts" class="footer__link">Контакты</a>
                 <a href="stanislav.html" class="footer__link">Автор сайта</a>
             </div>
             <div class="footer__social">
@@ -1129,6 +1087,7 @@
 
     <!-- Подключаем полноценный скрипт сезонных эффектов -->
     <script src="../js/seasons.js"></script>
+    <script src="../modul/navigation.js"></script>
 
     <!-- Упрощенный скрипт только для функциональности этой страницы -->
     <script>
