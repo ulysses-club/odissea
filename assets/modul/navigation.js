@@ -116,7 +116,23 @@ class NavigationModule {
         if (!container) return console.error('Navigation container not found:', containerSelector);
 
         container.innerHTML = this.generateNavigation(currentPage);
+        this.createMobileOverlay();
         this.attachEventListeners();
+    }
+
+    /**
+     * Создает оверлей для мобильного меню
+     */
+    createMobileOverlay() {
+        if (document.querySelector('.nav-overlay')) return;
+
+        const overlay = document.createElement('div');
+        overlay.className = 'nav-overlay';
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener('click', () => {
+            this.closeMobileMenu();
+        });
     }
 
     /**
@@ -148,7 +164,6 @@ class NavigationModule {
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.nav-container')) {
                 this.closeAllDropdowns();
-                this.isMobileMenuOpen && this.closeMobileMenu();
             }
         });
 
@@ -261,9 +276,10 @@ class NavigationModule {
         const btn = document.querySelector('.mobile-menu-btn');
         if (!btn) return;
 
-        const newBtn = btn.cloneNode(true);
-        btn.replaceWith(newBtn);
-        newBtn.addEventListener('click', (e) => (e.stopPropagation(), this.toggleMobileMenu()));
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleMobileMenu();
+        });
     }
 
     /**
@@ -273,6 +289,8 @@ class NavigationModule {
     toggleMobileMenu() {
         const nav = document.querySelector('.nav');
         const btn = document.querySelector('.mobile-menu-btn');
+        const overlay = document.querySelector('.nav-overlay');
+
         if (!nav || !btn) return;
 
         this.isMobileMenuOpen = !this.isMobileMenuOpen;
@@ -280,6 +298,7 @@ class NavigationModule {
         if (this.isMobileMenuOpen) {
             nav.classList.add('mobile-open');
             btn.innerHTML = '✕';
+            overlay.classList.add('active');
             document.body.classList.add('menu-open');
         } else {
             this.closeMobileMenu();
@@ -293,13 +312,15 @@ class NavigationModule {
     closeMobileMenu() {
         const nav = document.querySelector('.nav');
         const btn = document.querySelector('.mobile-menu-btn');
-        nav && btn && (
-            nav.classList.remove('mobile-open'),
-            btn.innerHTML = '☰',
-            document.body.classList.remove('menu-open'),
-            this.isMobileMenuOpen = false,
-            this.closeAllDropdowns()
-        );
+        const overlay = document.querySelector('.nav-overlay');
+
+        if (nav) nav.classList.remove('mobile-open');
+        if (btn) btn.innerHTML = '☰';
+        if (overlay) overlay.classList.remove('active');
+
+        document.body.classList.remove('menu-open');
+        this.isMobileMenuOpen = false;
+        this.closeAllDropdowns();
     }
 
     /**

@@ -123,18 +123,17 @@
 
     .nav {
         position: fixed;
-        top: 70px;
+        top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
+        width: 100%;
+        height: 100vh;
         background: var(--dark);
         flex-direction: column;
-        padding: var(--space-xl);
-        border-top: 1px solid var(--light-dark);
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 80px var(--space-xl) var(--space-xl);
         transform: translateX(-100%);
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
+        transition: transform 0.3s ease;
         z-index: 999;
         overflow-y: auto;
         gap: 0;
@@ -142,8 +141,6 @@
 
     .nav.mobile-open {
         transform: translateX(0);
-        opacity: 1;
-        visibility: visible;
     }
 
     .nav-dropdown {
@@ -160,36 +157,29 @@
         justify-content: space-between;
         padding: var(--space-lg) var(--space-md);
         font-size: var(--text-lg);
+        border-radius: 0;
+        background: none !important;
     }
 
     .dropdown-menu {
         position: static;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        display: none;
+        min-width: auto;
         opacity: 1;
         visibility: visible;
         transform: none;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        padding: 0 0 0 var(--space-lg);
-        display: none;
-        min-width: auto;
     }
 
     .nav-dropdown.open .dropdown-menu {
         display: block;
     }
 
-    .nav-dropdown:hover .dropdown-menu {
-        display: none;
-    }
-
-    .nav-dropdown.open .dropdown-toggle {
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--primary-light);
-    }
-
     .dropdown-item {
-        padding: var(--space-md);
+        padding: var(--space-md) var(--space-lg);
         font-size: var(--text-md);
         border-radius: 0;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -199,8 +189,20 @@
         border-bottom: none;
     }
 
-    .dropdown-item:hover {
-        background: rgba(106, 17, 203, 0.1);
+    /* Оверлей для мобильного меню */
+    .nav-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 998;
+    }
+
+    .nav-overlay.active {
+        display: block;
     }
 
     /* Запрещаем скролл body когда меню открыто */
@@ -211,8 +213,7 @@
 
 @media (max-width: 480px) {
     .nav {
-        top: 60px;
-        padding: var(--space-lg);
+        padding: 70px var(--space-lg) var(--space-lg);
     }
 
     .dropdown-toggle {
