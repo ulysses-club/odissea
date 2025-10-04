@@ -8,7 +8,9 @@
       {
         "ignore": [
           "backdrop-filter",
-          "-webkit-overflow-scrolling"
+          "-webkit-overflow-scrolling",
+          "min-height: auto",
+          "user-select"
         ]
       }
     ],

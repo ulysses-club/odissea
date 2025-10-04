@@ -10,14 +10,14 @@
     <link rel="stylesheet" href="../css/crocodile-game.css">
     <link rel="stylesheet" href="../modul/navigation.css">
     <link rel="stylesheet" href="../modul/hero-section.css">
+    <link rel="stylesheet" href="../modul/footer-module.css">
+    <link rel="stylesheet" href="../modul/seasons-effects.css">
     <meta name="description"
         content="Игра в Крокодила - веселая командная игра для вечеринок. Показывай, рисуй или объясняй слова без слов!">
     <meta name="keywords" content="крокодил, игра, слова, команды, вечеринка, киноклуб">
 </head>
 
 <body>
-    <div id="seasons-container"></div>
-
     <!-- Шапка -->
     <header class="header">
         <a href="index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
@@ -32,7 +32,7 @@
     </header>
 
     <!-- Герой секция -->
-<div class="hero-container"></div>
+    <div class="hero-container"></div>
 
     <!-- Правила игры -->
     <section id="rules" class="about">
@@ -251,34 +251,19 @@
         </div>
     </section>
 
-    <!-- Футер -->
-    <footer class="footer">
-        <div class="footer__content">
-            <div class="footer__logo">КРОКОДИЛ</div>
-            <div class="footer__links">
-                <a href="#rules" class="footer__link">Правила</a>
-                <a href="#game-start" class="footer__link">Играть</a>
-                <a href="#about" class="footer__link">Советы</a>
-                <a href="index.html" class="footer__link">Главная</a>
-            </div>
-            <div class="footer__social">
-                <a href="https://vk.com/club199046020" target="_blank" rel="noopener noreferrer" class="social__link"
-                    aria-label="ВКонтакте">VK</a>
-                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer"
-                    class="social__link" aria-label="Telegram">TG</a>
-            </div>
-            <p class="footer__copyright">© 2025 Киноклуб "ОДИССЕЯ" | Игра "Крокодил"</p>
-        </div>
-    </footer>
-
     <!-- Кнопка наверх -->
     <button id="scroll-to-top" class="load-more-btn" aria-label="Наверх" title="Наверх">↑</button>
+
+    <!-- Футер -->
+    <div id="footer-container"></div>
 
     <!-- Подключаем скрипты -->
     <script src="../js/seasons.js"></script>
     <script src="../js/crocodile-game.js"></script>
     <script src="../modul/navigation.js"></script>
     <script src="../modul/hero-section.js"></script>
+    <script src="../modul/footer-module.js"></script>
+    <script src="../modul/seasons-effects.js"></script>
 </body>
 
 </html>

@@ -1504,19 +1504,6 @@ img {
     }
 }
 
-/* Анимации для появления топов */
-@keyframes slideInRight {
-    from {
-        transform: translateX(100px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
 .top-item {
     animation: slideInRight 0.5s ease forwards;
 }
@@ -2642,20 +2629,6 @@ img {
     text-align: center;
 }
 
-.seasons-toggle-container {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    z-index: 10;
-    background: rgba(26, 26, 46, 0.9);
-    backdrop-filter: blur(10px);
-    border-radius: var(--radius-full);
-    padding: var(--space-sm) var(--space-md);
-    border: 1px solid var(--light-dark);
-    box-shadow: var(--shadow-lg);
-    animation: slideInRight 0.5s ease-out;
-}
-
 .seasons-toggle {
     display: flex;
     align-items: center;
@@ -2663,43 +2636,6 @@ img {
     cursor: pointer;
     font-size: var(--text-sm);
     color: var(--light);
-}
-
-.seasons-toggle input {
-    display: none;
-}
-
-.slider {
-    position: relative;
-    width: 50px;
-    height: 24px;
-    background: var(--gray);
-    border-radius: 24px;
-    transition: var(--transition);
-}
-
-.slider:before {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: white;
-    top: 2px;
-    left: 2px;
-    transition: var(--transition);
-}
-
-.seasons-toggle input:checked+.slider {
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-}
-
-.seasons-toggle input:checked+.slider:before {
-    transform: translateX(26px);
-}
-
-.toggle-label {
-    font-weight: 500;
 }
 
 /* Выпадающие меню */
@@ -2760,41 +2696,6 @@ img {
     color: var(--accent);
 }
 
-/* Адаптивность для мобильных */
-@media (max-width: 768px) {
-    .nav-dropdown {
-        width: 100%;
-    }
-
-    .dropdown-toggle {
-        justify-content: space-between;
-        width: 100%;
-    }
-
-    .dropdown-menu {
-        position: static;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        padding: 0;
-        padding-left: var(--space-lg);
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-        display: none;
-    }
-
-    .nav.active .dropdown-menu {
-        display: block;
-    }
-
-    .dropdown-item {
-        padding: var(--space-sm) var(--space-md);
-        border-left: none;
-        border-bottom: 1px solid var(--light-dark);
-    }
-}
-
 /* Маленькая DEMO метка */
 .demo-badge {
     font-size: 0.6em;
@@ -2811,35 +2712,6 @@ img {
     font-weight: bold;
     margin-left: 2px;
     vertical-align: super;
-}
-
-/* Адаптивность для мобильных */
-@media (max-width: 768px) {
-    .seasons-toggle-container {
-        top: 80px;
-        right: 10px;
-        padding: var(--space-xs) var(--space-sm);
-    }
-
-    .seasons-toggle {
-        font-size: var(--text-xs);
-    }
-
-    .slider {
-        width: 40px;
-        height: 20px;
-    }
-
-    .slider:before {
-        width: 16px;
-        height: 16px;
-        top: 2px;
-        left: 2px;
-    }
-
-    .seasons-toggle input:checked+.slider:before {
-        transform: translateX(20px);
-    }
 }
 
 /* Адаптивность для компактного вида */
