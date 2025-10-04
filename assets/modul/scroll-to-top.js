@@ -2,6 +2,7 @@ class ScrollToTop {
     constructor() {
         this.button = null;
         this.scrollThreshold = 300;
+        this.isVisible = false;
         this.init();
     }
 
@@ -27,9 +28,9 @@ class ScrollToTop {
             this.scrollToTop();
         });
 
-        // Отслеживание скролла
+        // Отслеживание скролла с троттлингом
         window.addEventListener('scroll', () => {
-            this.checkScrollPosition();
+            this.throttle(this.checkScrollPosition.bind(this), 100)();
         });
 
         // Плавный скролл для якорей
@@ -42,11 +43,27 @@ class ScrollToTop {
         });
     }
 
+    // Функция троттлинга для оптимизации
+    throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        }
+    }
+
     checkScrollPosition() {
-        if (window.pageYOffset > this.scrollThreshold) {
-            this.button.classList.add('visible');
-        } else {
-            this.button.classList.remove('visible');
+        const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollPosition > this.scrollThreshold && !this.isVisible) {
+            this.show();
+        } else if (scrollPosition <= this.scrollThreshold && this.isVisible) {
+            this.hide();
         }
     }
 
@@ -68,37 +85,41 @@ class ScrollToTop {
         const duration = 800;
         let start = null;
 
-        function animation(currentTime) {
+        const animation = (currentTime) => {
             if (start === null) start = currentTime;
             const timeElapsed = currentTime - start;
-            const run = ease(timeElapsed, startPosition, distance, duration);
+            const run = this.easeInOutQuad(timeElapsed, startPosition, distance, duration);
             window.scrollTo(0, run);
-            if (timeElapsed < duration) requestAnimationFrame(animation);
-        }
-
-        function ease(t, b, c, d) {
-            t /= d / 2;
-            if (t < 1) return c / 2 * t * t + b;
-            t--;
-            return -c / 2 * (t * (t - 2) - 1) + b;
-        }
+            if (timeElapsed < duration) {
+                requestAnimationFrame(animation);
+            }
+        };
 
         requestAnimationFrame(animation);
     }
 
-    // Публичный метод для ручного показа/скрытия
+    // Функция плавности easing
+    easeInOutQuad(t, b, c, d) {
+        t /= d / 2;
+        if (t < 1) return c / 2 * t * t + b;
+        t--;
+        return -c / 2 * (t * (t - 2) - 1) + b;
+    }
+
     show() {
         this.button.classList.add('visible');
+        this.isVisible = true;
     }
 
     hide() {
         this.button.classList.remove('visible');
+        this.isVisible = false;
     }
 
-    // Публичный метод для обновления позиции
-    updatePosition(bottom = null, right = null) {
-        if (bottom) this.button.style.bottom = bottom;
-        if (right) this.button.style.right = right;
+    // Публичный метод для обновления порога видимости
+    setThreshold(threshold) {
+        this.scrollThreshold = threshold;
+        this.checkScrollPosition();
     }
 }
 
