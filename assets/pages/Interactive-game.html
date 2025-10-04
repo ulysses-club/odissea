@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/seasons.css">
     <link rel="stylesheet" href="../modul/navigation.css">
+    <link rel="stylesheet" href="../modul/hero-section.css">
     <meta name="description"
         content="Киноквест Odissea - интерактивный городской квест для любителей кино. Находи коды, отвечай на вопросы, становись легендой!">
     <meta name="keywords" content="киноквест, геоквест, Одиссея, киноклуб, игра, локации, коды">
@@ -30,27 +31,7 @@
     </header>
 
     <!-- Герой секция -->
-    <section class="hero">
-        <div class="hero__content">
-            <h1 class="hero__title">Киноквест "ODISSEA"</h1>
-            <p class="hero__subtitle">Нелинейный геоквест по городу!</p>
-            <div class="hero__cta">
-                <a href="#to-game" class="btn btn--primary">Играть</a>
-                <a href="#how-to-play" class="btn btn--outline">
-                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                        <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
-                            fill="currentColor" />
-                    </svg>
-                    Как играть
-                </a>
-            </div>
-        </div>
-        <div class="hero__image">
-            <img src="../images/1755564775.jpg" alt="Участники киноквеста на локации" class="hero__image-img"
-                width="600" height="400" loading="lazy" onerror="this.src='../images/default-poster.jpg'">
-        </div>
-    </section>
+    <div class="hero-container"></div>
 
     <!-- О квесте -->
     <section id="about-quest" class="about">
@@ -355,6 +336,7 @@
 
     <script src="../js/seasons.js"></script>
     <script src="../modul/navigation.js"></script>
+    <script src="../modul/hero-section.js"></script>
 
     <script>
         // Полностью отключаем загрузку данных для этой страницы

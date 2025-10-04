@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/seasons.css">
     <link rel="stylesheet" href="../modul/navigation.css">
+    <link rel="stylesheet" href="../modul/hero-section.css">
     <meta name="description"
         content="Киноклуб Одиссея - место для настоящих ценителей кино. Обсуждения фильмов, топ-рейтинги и архив встреч.">
     <meta name="keywords" content="кино, киноклуб, фильмы, обсуждение, рейтинги, Одиссея">
@@ -30,27 +31,7 @@
     </header>
 
     <!-- Герой секция -->
-    <section class="hero">
-        <div class="hero__content">
-            <h1 class="hero__title">Киноклуб "ОДИССЕЯ"</h1>
-            <p class="hero__subtitle">Есть о чем поговорить!</p>
-            <div class="hero__cta">
-                <a href="#top-films" class="btn btn--primary">Смотреть наши топы</a>
-                <a href="#about" class="btn btn--outline">
-                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                        <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
-                            fill="currentColor" />
-                    </svg>
-                    О нас
-                </a>
-            </div>
-        </div>
-        <div class="hero__image">
-            <img src="../images/logo-group-vk.jpg" alt="Участники киноклуба на встрече" class="hero__image-img"
-                width="600" height="400" loading="lazy">
-        </div>
-    </section>
+    <div class="hero-container"></div>
 
     <!-- Предстоящая встреча -->
     <section id="next-meeting" class="next-meeting">
@@ -158,8 +139,8 @@
             <!-- Увеличенное изображение -->
             <div class="image-container-wrapper fade-in delay-3">
                 <div class="image-container">
-                    <img src="../images/image-container.jpg" alt="Участники киноклуба на встрече"
-                        class="main-image" loading="lazy">
+                    <img src="../images/image-container.jpg" alt="Участники киноклуба на встрече" class="main-image"
+                        loading="lazy">
                     <div class="film-strip" aria-hidden="true"></div>
                     <div class="projector-light" aria-hidden="true"></div>
                     <div class="cine-logo">Киноклуб "ОДИССЕЯ"</div>
@@ -295,6 +276,7 @@
     <script src="../js/script.js"></script>
     <script src="../js/seasons.js"></script>
     <script src="../modul/navigation.js"></script>
+    <script src="../modul/hero-section.js"></script>
     <button id="scroll-to-top" class="load-more-btn" aria-label="Наверх" title="Наверх">
         ↑
     </button>
