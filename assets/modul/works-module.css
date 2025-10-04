@@ -1,0 +1,166 @@
+/* Стили для секции архива работ */
+.video-posters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xxl);
+}
+
+/* Карточка видео работы */
+.film-poster {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+    position: relative;
+}
+
+.film-poster:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+}
+
+.video-link {
+    position: relative;
+    display: block;
+    height: 300px;
+    overflow: hidden;
+}
+
+.poster-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.film-poster:hover .poster-image {
+    transform: scale(1.05);
+}
+
+.play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+    pointer-events: none;
+}
+
+.film-poster:hover .play-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.play-button {
+    font-size: var(--text-xxxl);
+    color: white;
+    margin-bottom: var(--space-md);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.watch-text {
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.work-info {
+    padding: var(--space-lg);
+}
+
+.work-info h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-sm);
+    color: var(--light);
+}
+
+.work-description {
+    font-size: var(--text-sm);
+    color: var(--gray);
+    line-height: 1.5;
+}
+
+/* Состояния загрузки и ошибок */
+.works-loading-message, .works-no-data {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--gray);
+    font-size: var(--text-lg);
+    grid-column: 1 / -1;
+}
+
+.works-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gray);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: var(--space-sm);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Анимации */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.film-poster {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .video-posters-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: var(--space-lg);
+    }
+
+    .video-link {
+        height: 250px;
+    }
+
+    /* Мобильная версия overlay */
+    .play-overlay {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.6);
+    }
+}
+
+@media (max-width: 480px) {
+    .video-posters-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .video-link {
+        height: 200px;
+    }
+
+    .work-info {
+        padding: var(--space-md);
+    }
+
+    .work-info h3 {
+        font-size: var(--text-md);
+    }
+}
