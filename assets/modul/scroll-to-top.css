@@ -32,8 +32,8 @@
 /* Адаптивность */
 @media (max-width: 768px) {
     .scroll-to-top {
-        bottom: var(--space-lg);
-        right: var(--space-lg);
+        bottom: var(--scroll-space-lg);
+        right: var(--scroll-space-lg);
         width: 45px;
         height: 45px;
         font-size: var(--text-xl);
@@ -42,8 +42,8 @@
 
 @media (max-width: 480px) {
     .scroll-to-top {
-        bottom: var(--space-md);
-        right: var(--space-md);
+        bottom: var(--scroll-space-md);
+        right: var(--scroll-space-md);
         width: 40px;
         height: 40px;
     }

@@ -312,6 +312,7 @@
                 🎮 Начать квест в Telegram-боте
             </a>
         </div>
+        <dev>. </dev>
     </section>
 
     <!-- Футер -->
@@ -323,80 +324,6 @@
     <script src="../modul/footer-module.js"></script>
     <script src="../modul/seasons-effects.js"></script>
     <script src="../modul/scroll-to-top.js"></script>
-    <script>
-        // Полностью отключаем загрузку данных для этой страницы
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('Interactive-game.html: Отключена загрузка данных фильмов');
-
-            // Инициализация мобильного меню
-            initMobileMenu();
-
-            // Инициализация кнопки наверх
-            initScrollToTop();
-
-            // Сезонные эффекты уже инициализируются в seasons.js автоматически
-        });
-
-        /**
-         * Инициализирует мобильное меню с обработчиками открытия/закрытия
-         */
-        function initMobileMenu() {
-            const menuBtn = document.querySelector('.mobile-menu-btn');
-            const nav = document.querySelector('.nav');
-            const body = document.body;
-
-            if (!menuBtn || !nav) return;
-
-            // Создаем оверлей
-            const overlay = document.createElement('div');
-            overlay.className = 'nav-overlay';
-            document.body.appendChild(overlay);
-
-            menuBtn.addEventListener('click', function () {
-                nav.classList.toggle('active');
-                overlay.classList.toggle('active');
-                menuBtn.setAttribute('aria-expanded',
-                    nav.classList.contains('active') ? 'true' : 'false'
-                );
-                body.classList.toggle('no-scroll');
-            });
-
-            overlay.addEventListener('click', function () {
-                nav.classList.remove('active');
-                overlay.classList.remove('active');
-                menuBtn.setAttribute('aria-expanded', 'false');
-                body.classList.remove('no-scroll');
-            });
-
-            // Закрытие меню при клике на ссылку
-            const navLinks = nav.querySelectorAll('.nav__link');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function () {
-                    nav.classList.remove('active');
-                    overlay.classList.remove('active');
-                    menuBtn.setAttribute('aria-expanded', 'false');
-                    body.classList.remove('no-scroll');
-                });
-            });
-        }
-
-        /**
-         * Инициализирует кнопку прокрутки наверх страницы
-         */
-        function initScrollToTop() {
-            const scrollBtn = document.getElementById('scroll-to-top');
-            if (!scrollBtn) return;
-
-            window.addEventListener('scroll', function () {
-                scrollBtn.classList.toggle('visible', window.pageYOffset > 300);
-            });
-
-            scrollBtn.addEventListener('click', function () {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
-    </script>
-
 </body>
 
 </html>
