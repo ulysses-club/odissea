@@ -65,6 +65,7 @@ let scrollTimeout = null;
 
 /**
  * Инициализирует мобильное меню с оверлеем и обработчиками событий
+ * Создает оверлей для мобильного меню и настраивает взаимодействие
  */
 function initMobileMenu() {
     const menuBtn = document.querySelector('.mobile-menu-btn');
@@ -108,24 +109,26 @@ function initMobileMenu() {
 
 /**
  * Основная функция инициализации приложения
+ * Запускает все необходимые модули и настройки приложения
  */
 function initApp() {
     console.log('Инициализация приложения...');
-    
+
     // Инициализация базовых обработчиков событий
     initMobileMenu();
     initSmoothScroll();
     initAnimations();
-    
+
     // Инициализация модулей
     initSeasonEffects();
     initScrollToTop();
-    
+
     console.log('Приложение инициализировано');
 }
 
 /**
  * Кэширует DOM-элементы для последующего использования
+ * Находит и сохраняет основные DOM элементы в глобальном объекте DOM
  */
 function cacheDOM() {
     const { selectors } = CONFIG;
@@ -151,6 +154,7 @@ function cacheDOM() {
 
 /**
  * Очищает все зарегистрированные обработчики событий
+ * Удаляет все глобальные обработчики событий для предотвращения утечек памяти
  */
 function cleanupEventListeners() {
     if (EVENT_HANDLERS.online) {
@@ -171,6 +175,7 @@ function cleanupEventListeners() {
 
 /**
  * Проверяет статус подключения к интернету
+ * Обновляет состояние онлайн/офлайн и показывает сообщение при необходимости
  */
 function checkConnectivity() {
     STATE.isOnline = navigator.onLine;
@@ -179,6 +184,7 @@ function checkConnectivity() {
 
 /**
  * Обновляет отображение статуса онлайн/офлайн
+ * Создает временное уведомление о статусе подключения
  */
 function updateOnlineStatus() {
     STATE.isOnline = navigator.onLine;
@@ -193,6 +199,7 @@ function updateOnlineStatus() {
 
 /**
  * Показывает сообщение об офлайн-режиме
+ * Создает баннер с информацией об отсутствии подключения и кнопкой повтора
  */
 function showOfflineMessage() {
     const offlineMessage = document.createElement('div');
@@ -203,6 +210,9 @@ function showOfflineMessage() {
 
 /**
  * Показывает индикатор загрузки в контейнере
+ * Отображает спиннер и сообщение о загрузке в указанном контейнере
+ * 
+ * @param {HTMLElement} container - Контейнер для отображения индикатора загрузки
  */
 function showLoading(container) {
     if (!container) return;
@@ -212,6 +222,11 @@ function showLoading(container) {
 
 /**
  * Показывает сообщение об ошибке в контейнере
+ * Отображает сообщение об ошибке с возможностью повтора действия
+ * 
+ * @param {HTMLElement} container - Контейнер для отображения ошибки
+ * @param {Error} error - Объект ошибки
+ * @param {Function|null} retryFunction - Функция для повтора действия (опционально)
  */
 function showError(container, error, retryFunction = null) {
     if (!container) return;
@@ -223,6 +238,10 @@ function showError(container, error, retryFunction = null) {
 
 /**
  * Создает HTML-представление звезд рейтинга
+ * Генерирует визуальное отображение рейтинга в виде звезд
+ * 
+ * @param {number|string} rating - Числовой рейтинг
+ * @returns {string} - HTML строка со звездами рейтинга
  */
 function createRatingStars(rating) {
     const num = parseFloat(rating) || 0;
@@ -235,6 +254,10 @@ function createRatingStars(rating) {
 
 /**
  * Форматирует дату в строку формата "дд.мм.гггг"
+ * Преобразует строку даты в единообразный формат
+ * 
+ * @param {string} dateString - Строка с датой
+ * @returns {string} - Отформатированная дата или исходная строка при ошибке
  */
 function formatDate(dateString) {
     if (!dateString) return 'дата не указана';
@@ -245,6 +268,11 @@ function formatDate(dateString) {
 
 /**
  * Парсит строку даты в объект Date
+ * Поддерживает различные форматы дат, включая "дд.мм.гггг"
+ * 
+ * @param {string} dateString - Строка с датой для парсинга
+ * @returns {Date} - Объект Date
+ * @throws {Error} - Если формат даты не распознан
  */
 function parseDate(dateString) {
     if (!dateString) return new Date(0);
@@ -268,6 +296,7 @@ function parseDate(dateString) {
 
 /**
  * Инициализирует функциональность кнопки прокрутки вверх
+ * Настраивает отображение и поведение кнопки "Наверх"
  */
 function initScrollToTop() {
     if (!DOM.scrollToTopBtn) return;
@@ -278,6 +307,7 @@ function initScrollToTop() {
 
 /**
  * Обрабатывает событие прокрутки страницы
+ * Управляет видимостью кнопки "Наверх" с дебаунсингом
  */
 function handleScroll() {
     if (!DOM.scrollToTopBtn) return;
@@ -295,6 +325,7 @@ function handleScroll() {
 
 /**
  * Плавно прокручивает страницу к началу
+ * Выполняет анимированную прокрутку к верху страницы
  */
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -302,6 +333,13 @@ function scrollToTop() {
 
 /**
  * Возвращает правильную форму слова для русского языка
+ * Выбирает соответствующую форму слова в зависимости от числа
+ * 
+ * @param {number} number - Число для определения формы
+ * @param {string} one - Форма для 1
+ * @param {string} two - Форма для 2-4
+ * @param {string} five - Форма для 5-20
+ * @returns {string} - Правильная форма слова
  */
 function getRussianWordForm(number, one, two, five) {
     const n = Math.abs(number) % 100;
@@ -315,6 +353,10 @@ function getRussianWordForm(number, one, two, five) {
 
 /**
  * Капитализирует первую букву строки с учетом специальных случаев
+ * Обрабатывает специальные префиксы типа Mc, Mac, O' и т.д.
+ * 
+ * @param {string} string - Исходная строка
+ * @returns {string} - Строка с правильной капитализацией
  */
 function capitalizeFirstLetter(string) {
     if (!string) return '';
@@ -340,15 +382,16 @@ function capitalizeFirstLetter(string) {
 
 /**
  * Инициализирует плавную прокрутку для якорных ссылок
+ * Настраивает плавную прокрутку при клике на ссылки с якорями
  */
 function initSmoothScroll() {
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         const target = e.target.closest('a[href^="#"]');
         if (target && target.getAttribute('href') !== '#') {
             e.preventDefault();
             const targetId = target.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
-            
+
             if (targetElement) {
                 targetElement.scrollIntoView({
                     behavior: 'smooth',
@@ -361,6 +404,7 @@ function initSmoothScroll() {
 
 /**
  * Инициализирует анимации появления элементов при скролле
+ * Настраивает Intersection Observer для анимированного появления элементов
  */
 function initAnimations() {
     const observerOptions = {
@@ -384,6 +428,7 @@ function initAnimations() {
 
 /**
  * Инициализирует сезонные эффекты (заглушка - реализация в отдельном модуле)
+ * Заглушка для модуля сезонных эффектов
  */
 function initSeasonEffects() {
     // Реализация в seasons-effects.js

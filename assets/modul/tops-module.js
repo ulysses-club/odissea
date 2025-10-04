@@ -2,6 +2,10 @@
  * Модуль для управления секцией "Наши топы"
  */
 class TopsModule {
+    /**
+     * Конструктор класса TopsModule
+     * Инициализирует конфигурацию, состояние и запускает модуль топ-списков
+     */
     constructor() {
         this.config = {
             dataSources: {
@@ -44,6 +48,7 @@ class TopsModule {
 
     /**
      * Инициализация модуля
+     * Кэширует DOM элементы, инициализирует обработчики событий, загружает и анализирует данные
      */
     async init() {
         this.cacheDOM();
@@ -55,6 +60,7 @@ class TopsModule {
 
     /**
      * Кэширование DOM элементов
+     * Находит и сохраняет ссылки на DOM элементы по селекторам из конфигурации
      */
     cacheDOM() {
         this.elements = {};
@@ -65,6 +71,7 @@ class TopsModule {
 
     /**
      * Инициализация обработчиков событий
+     * Назначает обработчики для элементов управления топ-списками
      */
     initEventListeners() {
         if (this.elements.topsControls) {
@@ -79,19 +86,20 @@ class TopsModule {
 
     /**
      * Загрузка данных из JSON
+     * Загружает данные о фильмах из JSON файла с обработкой ошибок
      */
     async loadData() {
         try {
             this.showLoadingState();
-            
+
             const response = await fetch(this.config.dataSources.films);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             this.state.films = Array.isArray(data) ? data : [];
-            
+
         } catch (error) {
             console.error('Ошибка загрузки данных:', error);
             this.showErrorState();
@@ -101,6 +109,7 @@ class TopsModule {
 
     /**
      * Показать состояние загрузки
+     * Отображает индикаторы загрузки во всех контейнерах топ-списков
      */
     showLoadingState() {
         const containers = [
@@ -109,7 +118,7 @@ class TopsModule {
             this.elements.topGenres,
             this.elements.topDirectors
         ];
-        
+
         containers.forEach(container => {
             if (container) {
                 container.innerHTML = `
@@ -124,6 +133,7 @@ class TopsModule {
 
     /**
      * Показать состояние ошибки
+     * Отображает сообщения об ошибке во всех контейнерах топ-списков
      */
     showErrorState() {
         const containers = [
@@ -132,7 +142,7 @@ class TopsModule {
             this.elements.topGenres,
             this.elements.topDirectors
         ];
-        
+
         containers.forEach(container => {
             if (container) {
                 container.innerHTML = `<p class="no-data">${this.config.messages.error}</p>`;
@@ -142,6 +152,9 @@ class TopsModule {
 
     /**
      * Обработка клика по кнопке переключения
+     * Обрабатывает клики по кнопкам переключения лимита отображения
+     * 
+     * @param {HTMLElement} button - Нажатая кнопка переключения
      */
     handleToggleClick(button) {
         const limit = parseInt(button.dataset.limit);
@@ -150,6 +163,9 @@ class TopsModule {
 
     /**
      * Переключение лимита отображения
+     * Изменяет количество отображаемых элементов в топ-списках
+     * 
+     * @param {number} limit - Новый лимит отображения
      */
     toggleTopsLimit(limit) {
         this.state.limit = limit;
@@ -166,6 +182,7 @@ class TopsModule {
 
     /**
      * Анализ данных для формирования топов
+     * Анализирует загруженные данные и формирует топ-списки
      */
     analyzeData() {
         if (!this.state.films || this.state.films.length === 0) {
@@ -181,6 +198,10 @@ class TopsModule {
 
     /**
      * Получение топ-N фильмов по рейтингу
+     * Сортирует фильмы по рейтингу и возвращает лучшие или худшие
+     * 
+     * @param {string} type - Тип топа ('best' для лучших, 'worst' для худших)
+     * @returns {Array} - Отсортированный массив фильмов
      */
     getTopFilms(type) {
         const ratedFilms = this.state.films.filter(film => {
@@ -201,6 +222,9 @@ class TopsModule {
 
     /**
      * Получение топ-N жанров
+     * Анализирует частоту встречаемости жанров в фильмах
+     * 
+     * @returns {Array} - Массив объектов с жанрами и их количеством
      */
     getTopGenres() {
         const genreCount = {};
@@ -222,6 +246,9 @@ class TopsModule {
 
     /**
      * Получение топ-N режиссеров
+     * Анализирует частоту встречаемости режиссеров в фильмах
+     * 
+     * @returns {Array} - Массив объектов с режиссерами и их количеством
      */
     getTopDirectors() {
         const directorCount = {};
@@ -244,6 +271,7 @@ class TopsModule {
 
     /**
      * Рендеринг всех топ-списков
+     * Отображает все четыре типа топ-списков с текущим лимитом
      */
     renderTops() {
         this.renderTopFilms('best');
@@ -254,6 +282,9 @@ class TopsModule {
 
     /**
      * Рендеринг топ-фильмов
+     * Отображает список лучших или худших фильмов
+     * 
+     * @param {string} type - Тип топа ('best' или 'worst')
      */
     renderTopFilms(type) {
         const container = type === 'best' ? this.elements.topBestFilms : this.elements.topWorstFilms;
@@ -266,13 +297,14 @@ class TopsModule {
             return;
         }
 
-        container.innerHTML = films.slice(0, this.state.limit).map((film, index) => 
+        container.innerHTML = films.slice(0, this.state.limit).map((film, index) =>
             this.createFilmTopItem(film, index, type)
         ).join('');
     }
 
     /**
      * Рендеринг топ-жанров
+     * Отображает список самых популярных жанров
      */
     renderTopGenres() {
         if (!this.elements.topGenres) return;
@@ -283,13 +315,14 @@ class TopsModule {
             return;
         }
 
-        this.elements.topGenres.innerHTML = genres.map((genre, index) => 
+        this.elements.topGenres.innerHTML = genres.map((genre, index) =>
             this.createGenreTopItem(genre, index)
         ).join('');
     }
 
     /**
      * Рендеринг топ-режиссеров
+     * Отображает список самых частых режиссеров
      */
     renderTopDirectors() {
         if (!this.elements.topDirectors) return;
@@ -300,13 +333,19 @@ class TopsModule {
             return;
         }
 
-        this.elements.topDirectors.innerHTML = directors.map((director, index) => 
+        this.elements.topDirectors.innerHTML = directors.map((director, index) =>
             this.createDirectorTopItem(director, index)
         ).join('');
     }
 
     /**
      * Создание элемента топ-фильма
+     * Генерирует HTML для элемента в списке топ-фильмов
+     * 
+     * @param {Object} film - Объект с данными о фильме
+     * @param {number} index - Позиция в рейтинге
+     * @param {string} type - Тип топа ('best' или 'worst')
+     * @returns {string} - HTML строка элемента
      */
     createFilmTopItem(film, index, type) {
         const posterUrl = film['Постер URL'] || film['Постер'] || '../images/default-poster.jpg';
@@ -352,6 +391,11 @@ class TopsModule {
 
     /**
      * Создание элемента топ-жанра
+     * Генерирует HTML для элемента в списке топ-жанров
+     * 
+     * @param {Object} genreItem - Объект с данными о жанре
+     * @param {number} index - Позиция в рейтинге
+     * @returns {string} - HTML строка элемента
      */
     createGenreTopItem(genreItem, index) {
         return `
@@ -369,6 +413,11 @@ class TopsModule {
 
     /**
      * Создание элемента топ-режиссера
+     * Генерирует HTML для элемента в списке топ-режиссеров
+     * 
+     * @param {Object} directorItem - Объект с данными о режиссере
+     * @param {number} index - Позиция в рейтинге
+     * @returns {string} - HTML строка элемента
      */
     createDirectorTopItem(directorItem, index) {
         return `
@@ -385,16 +434,27 @@ class TopsModule {
     }
 
     /**
-     * Вспомогательные методы
+     * Парсинг рейтинга
+     * Преобразует рейтинг из различных форматов в число от 0 до 10
+     * 
+     * @param {string|number} rating - Рейтинг в строковом или числовом формате
+     * @returns {number} - Числовой рейтинг от 0 до 10
      */
     parseRating(rating) {
         if (!rating && rating !== 0) return 0;
         if (typeof rating === 'number') return rating;
-        
+
         const num = parseFloat(rating.toString().replace(',', '.'));
         return isNaN(num) ? 0 : Math.min(Math.max(num, 0), 10);
     }
 
+    /**
+     * Создание звезд рейтинга
+     * Генерирует HTML для визуального отображения рейтинга в виде звезд
+     * 
+     * @param {number} rating - Числовой рейтинг от 0 до 10
+     * @returns {string} - HTML строка со звездами рейтинга
+     */
     createRatingStars(rating) {
         const num = parseFloat(rating) || 0;
         const clamped = Math.min(Math.max(num, 0), 10);
@@ -404,6 +464,13 @@ class TopsModule {
         return `${'★'.repeat(full)}${half ? '⯨' : ''}${'☆'.repeat(empty)}`;
     }
 
+    /**
+     * Капитализация первой буквы
+     * Преобразует строку к формату с заглавной первой буквой
+     * 
+     * @param {string} string - Исходная строка
+     * @returns {string} - Строка с заглавной первой буквой
+     */
     capitalizeFirstLetter(string) {
         if (!string) return '';
         return string.split(/([\s\-']+)/)
@@ -419,6 +486,16 @@ class TopsModule {
             .join('');
     }
 
+    /**
+     * Получение правильной формы слова для русского языка
+     * Выбирает правильную форму слова в зависимости от числа
+     * 
+     * @param {number} number - Число для определения формы
+     * @param {string} one - Форма для 1
+     * @param {string} two - Форма для 2-4
+     * @param {string} five - Форма для 5-20
+     * @returns {string} - Правильная форма слова
+     */
     getRussianWordForm(number, one, two, five) {
         const n = Math.abs(number) % 100;
         if (n >= 5 && n <= 20) return five;
@@ -429,6 +506,14 @@ class TopsModule {
         }
     }
 
+    /**
+     * Генерация URL для КиноПоиска
+     * Создает ссылку для поиска информации о фильме на КиноПоиске
+     * 
+     * @param {string} filmName - Название фильма
+     * @param {string} filmYear - Год выпуска фильма
+     * @returns {string|null} - URL для поиска на КиноПоиске или null при ошибке
+     */
     generateKinopoiskUrl(filmName, filmYear) {
         if (!filmName) return null;
         const cleanName = filmName
@@ -440,6 +525,13 @@ class TopsModule {
         return `https://www.kinopoisk.ru/index.php?kp_query=${encodedQuery}`;
     }
 
+    /**
+     * Экранирование HTML
+     * Заменяет специальные символы HTML на их безопасные эквиваленты
+     * 
+     * @param {string} unsafe - Исходная небезопасная строка
+     * @returns {string} - Безопасная экранированная строка
+     */
     escapeHtml(unsafe) {
         if (!unsafe) return '';
         return unsafe
@@ -451,7 +543,10 @@ class TopsModule {
     }
 }
 
-// Инициализация модуля
+/**
+ * Функция инициализации модуля топ-списков
+ * Создает экземпляр TopsModule при наличии соответствующей секции
+ */
 function initTopsModule() {
     if (document.querySelector('#top-films')) {
         new TopsModule();

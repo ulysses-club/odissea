@@ -2,6 +2,10 @@
  * Модуль для управления секцией "Архив наших работ"
  */
 class WorksModule {
+    /**
+     * Конструктор класса WorksModule
+     * Инициализирует конфигурацию, состояние и запускает модуль архива работ
+     */
     constructor() {
         this.config = {
             dataSources: {
@@ -29,6 +33,7 @@ class WorksModule {
 
     /**
      * Инициализация модуля
+     * Кэширует DOM элементы, загружает данные и рендерит работы
      */
     async init() {
         console.log('Инициализация WorksModule...');
@@ -39,6 +44,7 @@ class WorksModule {
 
     /**
      * Кэширование DOM элементов
+     * Находит и сохраняет ссылки на DOM элементы по селекторам из конфигурации
      */
     cacheDOM() {
         this.elements = {};
@@ -51,23 +57,24 @@ class WorksModule {
 
     /**
      * Загрузка данных из JSON
+     * Загружает данные работ из JSON файла, обрабатывает ошибки и загружает демо-данные при необходимости
      */
     async loadData() {
         try {
             this.showLoadingState();
             console.log('Начинаем загрузку данных работ...');
-            
+
             const data = await this.fetchLocalData();
             console.log('Получены данные работ:', data);
-            
+
             this.state.works = Array.isArray(data) ? data : [];
             console.log(`Загружено работ: ${this.state.works.length}`);
-            
+
         } catch (error) {
             console.error('Ошибка загрузки данных работ:', error);
             this.showErrorState();
             this.state.works = [];
-            
+
             // Пробуем загрузить демо-данные
             try {
                 console.log('Пробуем загрузить демо-данные работ...');
@@ -82,36 +89,39 @@ class WorksModule {
 
     /**
      * Загрузка данных локально
+     * Выполняет fetch-запрос к локальному JSON файлу с резервными путями
+     * 
+     * @returns {Promise<Array>} - Промис с массивом данных о работах
      */
     async fetchLocalData() {
         try {
             console.log('Пробуем загрузить локальные данные работ...');
             const response = await fetch(this.config.dataSources.works);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('Локальные данные работ загружены:', data);
             return data;
-            
+
         } catch (error) {
             console.error('Ошибка загрузки локальных данных работ:', error);
-            
+
             // Пробуем альтернативный путь
             try {
                 console.log('Пробуем альтернативный путь для работ...');
                 const altResponse = await fetch('./data/works.json');
-                
+
                 if (!altResponse.ok) {
                     throw new Error(`Alternative HTTP error! status: ${altResponse.status}`);
                 }
-                
+
                 const altData = await altResponse.json();
                 console.log('Альтернативные данные работ загружены:', altData);
                 return altData;
-                
+
             } catch (altError) {
                 console.error('Ошибка загрузки альтернативных данных работ:', altError);
                 throw new Error('Все источники данных работ недоступны');
@@ -121,6 +131,9 @@ class WorksModule {
 
     /**
      * Загрузка демонстрационных данных
+     * Создает макет данных для демонстрации при недоступности основных источников
+     * 
+     * @returns {Array} - Массив демо-данных работ
      */
     loadMockWorksData() {
         console.log('Загрузка демо-данных работ');
@@ -138,6 +151,7 @@ class WorksModule {
 
     /**
      * Показать состояние загрузки
+     * Отображает индикатор загрузки в контейнере работ
      */
     showLoadingState() {
         if (this.elements.worksContainer) {
@@ -152,6 +166,7 @@ class WorksModule {
 
     /**
      * Показать состояние ошибки
+     * Отображает сообщение об ошибке в контейнере работ
      */
     showErrorState() {
         if (this.elements.worksContainer) {
@@ -163,6 +178,7 @@ class WorksModule {
 
     /**
      * Рендеринг работ
+     * Отображает все работы в контейнере или сообщение об отсутствии данных
      */
     renderWorks() {
         if (!this.elements.worksContainer) {
@@ -176,7 +192,7 @@ class WorksModule {
             return;
         }
 
-        const worksHTML = this.state.works.map(work => 
+        const worksHTML = this.state.works.map(work =>
             this.createWorkCard(work)
         ).join('');
 
@@ -186,6 +202,10 @@ class WorksModule {
 
     /**
      * Создание карточки работы
+     * Генерирует HTML разметку для карточки отдельной работы
+     * 
+     * @param {Object} work - Объект с данными о работе
+     * @returns {string} - HTML строка карточки работы
      */
     createWorkCard(work) {
         const workName = work['Название'] || 'Неизвестная работа';
@@ -225,7 +245,11 @@ class WorksModule {
     }
 
     /**
-     * Вспомогательные методы
+     * Экранирование HTML
+     * Заменяет специальные символы HTML на их безопасные эквиваленты
+     * 
+     * @param {string} unsafe - Исходная небезопасная строка
+     * @returns {string} - Безопасная экранированная строка
      */
     escapeHtml(unsafe) {
         if (unsafe === null || unsafe === undefined) return '';
@@ -241,7 +265,10 @@ class WorksModule {
     }
 }
 
-// Инициализация модуля
+/**
+ * Функция инициализации модуля архива работ
+ * Создает экземпляр WorksModule при наличии соответствующей секции
+ */
 function initWorksModule() {
     console.log('Проверяем наличие секции works-container...');
     if (document.querySelector('#works-container')) {

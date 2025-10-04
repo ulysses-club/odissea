@@ -2,6 +2,10 @@
  * Модуль футера для киноклуба Одиссея
  */
 class FooterModule {
+    /**
+     * Конструктор класса FooterModule
+     * Инициализирует данные футера для разных страниц
+     */
     constructor() {
         this.footerData = {
             // Данные для разных страниц
@@ -16,15 +20,15 @@ class FooterModule {
                         { text: 'Автор сайта', href: '../pages/stanislav.html' }
                     ],
                     social: [
-                        { 
-                            text: 'VK', 
-                            href: 'https://vk.com/club199046020', 
-                            ariaLabel: 'ВКонтакте' 
+                        {
+                            text: 'VK',
+                            href: 'https://vk.com/club199046020',
+                            ariaLabel: 'ВКонтакте'
                         },
-                        { 
-                            text: 'TG', 
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot', 
-                            ariaLabel: 'Telegram' 
+                        {
+                            text: 'TG',
+                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
+                            ariaLabel: 'Telegram'
                         }
                     ],
                     copyright: '© 2025 Киноклуб "ОДИССЕЯ"'
@@ -38,15 +42,15 @@ class FooterModule {
                         { text: 'Главная', href: 'index.html' }
                     ],
                     social: [
-                        { 
-                            text: 'VK', 
-                            href: 'https://vk.com/club199046020', 
-                            ariaLabel: 'ВКонтакте' 
+                        {
+                            text: 'VK',
+                            href: 'https://vk.com/club199046020',
+                            ariaLabel: 'ВКонтакте'
                         },
-                        { 
-                            text: 'TG', 
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot', 
-                            ariaLabel: 'Telegram' 
+                        {
+                            text: 'TG',
+                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
+                            ariaLabel: 'Telegram'
                         }
                     ],
                     copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Игра "Крокодил"'
@@ -60,15 +64,15 @@ class FooterModule {
                         { text: 'Главная', href: 'index.html' }
                     ],
                     social: [
-                        { 
-                            text: 'VK', 
-                            href: 'https://vk.com/club199046020', 
-                            ariaLabel: 'ВКонтакте' 
+                        {
+                            text: 'VK',
+                            href: 'https://vk.com/club199046020',
+                            ariaLabel: 'ВКонтакте'
                         },
-                        { 
-                            text: 'TG', 
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot', 
-                            ariaLabel: 'Telegram' 
+                        {
+                            text: 'TG',
+                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
+                            ariaLabel: 'Telegram'
                         }
                     ],
                     copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Киноквест'
@@ -82,15 +86,15 @@ class FooterModule {
                         { text: 'Главная', href: 'index.html' }
                     ],
                     social: [
-                        { 
-                            text: 'VK', 
-                            href: 'https://vk.com/club199046020', 
-                            ariaLabel: 'ВКонтакте' 
+                        {
+                            text: 'VK',
+                            href: 'https://vk.com/club199046020',
+                            ariaLabel: 'ВКонтакте'
                         },
-                        { 
-                            text: 'TG', 
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot', 
-                            ariaLabel: 'Telegram' 
+                        {
+                            text: 'TG',
+                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
+                            ariaLabel: 'Telegram'
                         }
                     ],
                     copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Квиз'
@@ -106,15 +110,15 @@ class FooterModule {
                         { text: 'Главная', href: 'index.html' }
                     ],
                     social: [
-                        { 
-                            text: 'VK', 
-                            href: 'https://vk.com/club199046020', 
-                            ariaLabel: 'ВКонтакте' 
+                        {
+                            text: 'VK',
+                            href: 'https://vk.com/club199046020',
+                            ariaLabel: 'ВКонтакте'
                         },
-                        { 
-                            text: 'TG', 
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot', 
-                            ariaLabel: 'Telegram' 
+                        {
+                            text: 'TG',
+                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
+                            ariaLabel: 'Telegram'
                         }
                     ],
                     copyright: '© 2025 Киноклуб "ОДИССЕЯ"'
@@ -125,10 +129,14 @@ class FooterModule {
 
     /**
      * Генерирует HTML для футера
+     * Создает полную HTML разметку футера на основе данных страницы
+     * 
+     * @param {string} pageKey - Ключ страницы для выбора соответствующих данных
+     * @returns {string} - HTML строка футера
      */
     generateFooter(pageKey = 'index') {
         const data = this.footerData.pages[pageKey] || this.footerData.pages['default'];
-        
+
         return `
             <footer class="footer">
                 <div class="footer__content">
@@ -147,6 +155,13 @@ class FooterModule {
 
     /**
      * Генерирует HTML для ссылки
+     * Создает HTML разметку для навигационной ссылки футера
+     * 
+     * @param {Object} link - Объект с данными ссылки
+     * @param {string} link.text - Текст ссылки
+     * @param {string} link.href - URL ссылки
+     * @param {boolean} link.active - Флаг активной ссылки
+     * @returns {string} - HTML строка ссылки
      */
     generateLink(link) {
         const activeClass = link.active ? 'active' : '';
@@ -159,6 +174,13 @@ class FooterModule {
 
     /**
      * Генерирует HTML для социальной ссылки
+     * Создает HTML разметку для ссылки на социальные сети
+     * 
+     * @param {Object} social - Объект с данными социальной ссылки
+     * @param {string} social.text - Текст ссылки
+     * @param {string} social.href - URL социальной сети
+     * @param {string} social.ariaLabel - ARIA-лейбл для доступности
+     * @returns {string} - HTML строка социальной ссылки
      */
     generateSocialLink(social) {
         return `
@@ -174,6 +196,11 @@ class FooterModule {
 
     /**
      * Инициализирует футер на странице
+     * Вставляет футер в указанный контейнер и настраивает функциональность
+     * 
+     * @param {string} containerSelector - CSS селектор контейнера для вставки футера
+     * @param {string} pageKey - Ключ страницы для выбора данных
+     * @param {string} insertMethod - Метод вставки ('append' или 'prepend')
      */
     init(containerSelector = 'body', pageKey = '', insertMethod = 'append') {
         const container = document.querySelector(containerSelector);
@@ -184,27 +211,30 @@ class FooterModule {
 
         const actualPageKey = pageKey || this.detectPage();
         const footerHTML = this.generateFooter(actualPageKey);
-        
+
         // Вставляем футер в конец контейнера
         if (insertMethod === 'prepend') {
             container.insertAdjacentHTML('afterbegin', footerHTML);
         } else {
             container.insertAdjacentHTML('beforeend', footerHTML);
         }
-        
+
         // Добавляем обработчики для плавной прокрутки
         this.attachSmoothScroll();
-        
+
         // Добавляем обработчики для активных ссылок
         this.updateActiveLinks();
     }
 
     /**
      * Определяет текущую страницу
+     * Анализирует URL для определения типа страницы и выбора соответствующих данных
+     * 
+     * @returns {string} - Ключ страницы для данных футера
      */
     detectPage() {
         const path = window.location.pathname;
-        
+
         if (path.includes('index.html') || path.endsWith('/') || path.includes('/kinoclub-odisseya/')) {
             return 'index';
         } else if (path.includes('crocodile-game.html')) {
@@ -222,6 +252,7 @@ class FooterModule {
 
     /**
      * Добавляет обработчики для плавной прокрутки
+     * Настраивает плавную прокрутку для якорных ссылок футера
      */
     attachSmoothScroll() {
         document.addEventListener('click', (e) => {
@@ -230,7 +261,7 @@ class FooterModule {
                 e.preventDefault();
                 const targetId = link.getAttribute('href').substring(1);
                 const targetElement = document.getElementById(targetId);
-                
+
                 if (targetElement) {
                     targetElement.scrollIntoView({
                         behavior: 'smooth',
@@ -243,11 +274,12 @@ class FooterModule {
 
     /**
      * Обновляет активные ссылки на основе текущего положения прокрутки
+     * Использует Intersection Observer для отслеживания видимых секций
      */
     updateActiveLinks() {
         const sections = document.querySelectorAll('section[id]');
         const footerLinks = document.querySelectorAll('.footer__link[href^="#"]');
-        
+
         if (sections.length === 0 || footerLinks.length === 0) return;
 
         const observerOptions = {
@@ -271,7 +303,11 @@ class FooterModule {
     }
 
     /**
-     * Обновляет данные футера (для динамического изменения)
+     * Обновляет данные футера
+     * Позволяет динамически изменять данные футера для конкретной страницы
+     * 
+     * @param {string} pageKey - Ключ страницы для обновления
+     * @param {Object} newData - Новые данные для страницы
      */
     updateFooterData(pageKey, newData) {
         if (this.footerData.pages[pageKey]) {
@@ -281,6 +317,10 @@ class FooterModule {
 
     /**
      * Добавляет новую страницу в данные
+     * Регистрирует данные футера для новой страницы
+     * 
+     * @param {string} pageKey - Ключ новой страницы
+     * @param {Object} pageData - Данные футера для страницы
      */
     addPage(pageKey, pageData) {
         this.footerData.pages[pageKey] = pageData;
@@ -288,6 +328,7 @@ class FooterModule {
 
     /**
      * Удаляет футер со страницы
+     * Удаляет элемент футера из DOM
      */
     remove() {
         const footer = document.querySelector('.footer');
@@ -299,6 +340,11 @@ class FooterModule {
 
 /**
  * Функция инициализации футера
+ * Создает экземпляр FooterModule и инициализирует футер на странице
+ * 
+ * @param {string} containerSelector - CSS селектор контейнера для вставки футера
+ * @param {string} pageKey - Ключ страницы для выбора данных
+ * @param {string} insertMethod - Метод вставки ('append' или 'prepend')
  */
 function initFooter(containerSelector = 'body', pageKey = '', insertMethod = 'append') {
     try {

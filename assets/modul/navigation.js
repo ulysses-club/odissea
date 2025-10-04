@@ -2,6 +2,10 @@
  * Модуль навигации для киноклуба Одиссея
  */
 class NavigationModule {
+    /**
+     * Конструктор класса NavigationModule
+     * Инициализирует данные навигации и состояние меню
+     */
     constructor() {
         this.navData = {
             items: [
@@ -41,6 +45,13 @@ class NavigationModule {
         this.currentOpenDropdown = null;
     }
 
+    /**
+     * Генерирует HTML для навигации
+     * Создает полную HTML разметку навигационного меню
+     * 
+     * @param {string} currentPage - Текущая страница для определения активного пункта
+     * @returns {string} - HTML строка навигационного меню
+     */
     generateNavigation(currentPage = '') {
         return `
             <nav class="nav" aria-label="Основная навигация">
@@ -49,6 +60,15 @@ class NavigationModule {
         `;
     }
 
+    /**
+     * Генерирует HTML для пункта навигации
+     * Создает HTML разметку для отдельного пункта меню с выпадающим списком
+     * 
+     * @param {Object} item - Объект с данными пункта меню
+     * @param {string} currentPage - Текущая страница
+     * @param {number} index - Индекс пункта меню
+     * @returns {string} - HTML строка пункта меню
+     */
     generateNavItem(item, currentPage, index) {
         const isActive = this.isItemActive(currentPage, index);
         return `
@@ -71,11 +91,26 @@ class NavigationModule {
         `;
     }
 
+    /**
+     * Проверяет активность пункта меню
+     * Определяет, является ли пункт меню активным для текущей страницы
+     * 
+     * @param {string} currentPage - Текущая страница
+     * @param {number} index - Индекс пункта меню
+     * @returns {boolean} - true если пункт активен, иначе false
+     */
     isItemActive(currentPage, index) {
         const pageMap = { 'index': 0, 'setup-guide': 1, 'games': 2 };
         return pageMap[currentPage] === index;
     }
 
+    /**
+     * Инициализирует навигацию на странице
+     * Вставляет навигацию в указанный контейнер и настраивает обработчики событий
+     * 
+     * @param {string} containerSelector - CSS селектор контейнера для навигации
+     * @param {string} currentPage - Текущая страница
+     */
     init(containerSelector, currentPage = '') {
         const container = document.querySelector(containerSelector);
         if (!container) return console.error('Navigation container not found:', containerSelector);
@@ -84,6 +119,10 @@ class NavigationModule {
         this.attachEventListeners();
     }
 
+    /**
+     * Прикрепляет обработчики событий
+     * Назначает обработчики для десктопных и мобильных взаимодействий
+     */
     attachEventListeners() {
         // Десктопные обработчики
         document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
@@ -124,6 +163,12 @@ class NavigationModule {
         this.attachMobileMenuListener();
     }
 
+    /**
+     * Обрабатывает наведение на выпадающее меню (десктоп)
+     * Открывает выпадающее меню при наведении курсора
+     * 
+     * @param {HTMLElement} dropdown - Элемент выпадающего меню
+     */
     handleDropdownEnter(dropdown) {
         if (window.innerWidth <= 768) return;
 
@@ -132,6 +177,13 @@ class NavigationModule {
         this.openDropdown(dropdown);
     }
 
+    /**
+     * Обрабатывает уход курсора с выпадающего меню (десктоп)
+     * Закрывает выпадающее меню с задержкой при уходе курсора
+     * 
+     * @param {HTMLElement} dropdown - Элемент выпадающего меню
+     * @param {Event} e - Событие mouseleave
+     */
     handleDropdownLeave(dropdown, e) {
         if (window.innerWidth <= 768) return;
         if (e.relatedTarget && dropdown.contains(e.relatedTarget)) return;
@@ -139,6 +191,12 @@ class NavigationModule {
         this.scheduleDropdownClose(dropdown);
     }
 
+    /**
+     * Обрабатывает клик по выпадающему меню (мобильные)
+     * Переключает состояние выпадающего меню на мобильных устройствах
+     * 
+     * @param {HTMLElement} dropdown - Элемент выпадающего меню
+     */
     handleMobileDropdownClick(dropdown) {
         document.querySelectorAll('.nav-dropdown').forEach(d => {
             if (d !== dropdown) d.classList.remove('open');
@@ -146,17 +204,35 @@ class NavigationModule {
         dropdown.classList.toggle('open');
     }
 
+    /**
+     * Открывает выпадающее меню
+     * Добавляет класс open к выпадающему меню
+     * 
+     * @param {HTMLElement} dropdown - Элемент выпадающего меню
+     */
     openDropdown(dropdown) {
         dropdown.classList.add('open');
         this.currentOpenDropdown = dropdown;
     }
 
+    /**
+     * Закрывает выпадающее меню
+     * Удаляет класс open у выпадающего меню
+     * 
+     * @param {HTMLElement} dropdown - Элемент выпадающего меню
+     */
     closeDropdown(dropdown) {
         dropdown.classList.remove('open');
         this.currentOpenDropdown === dropdown && (this.currentOpenDropdown = null);
         this.cancelDropdownClose(dropdown);
     }
 
+    /**
+     * Запланировать закрытие выпадающего меню
+     * Устанавливает таймаут для закрытия меню через 2 секунды
+     * 
+     * @param {HTMLElement} dropdown - Элемент выпадающего меню
+     */
     scheduleDropdownClose(dropdown) {
         this.cancelDropdownClose(dropdown);
         const timeoutId = setTimeout(() => {
@@ -166,11 +242,21 @@ class NavigationModule {
         this.hoverTimeouts.set(dropdown, timeoutId);
     }
 
+    /**
+     * Отменить запланированное закрытие выпадающего меню
+     * Отменяет таймаут закрытия меню
+     * 
+     * @param {HTMLElement} dropdown - Элемент выпадающего меню
+     */
     cancelDropdownClose(dropdown) {
         const timeoutId = this.hoverTimeouts.get(dropdown);
         timeoutId && (clearTimeout(timeoutId), this.hoverTimeouts.delete(dropdown));
     }
 
+    /**
+     * Прикрепляет обработчик мобильного меню
+     * Назначает обработчик клика для кнопки мобильного меню
+     */
     attachMobileMenuListener() {
         const btn = document.querySelector('.mobile-menu-btn');
         if (!btn) return;
@@ -180,6 +266,10 @@ class NavigationModule {
         newBtn.addEventListener('click', (e) => (e.stopPropagation(), this.toggleMobileMenu()));
     }
 
+    /**
+     * Переключает состояние мобильного меню
+     * Открывает или закрывает мобильное меню
+     */
     toggleMobileMenu() {
         const nav = document.querySelector('.nav');
         const btn = document.querySelector('.mobile-menu-btn');
@@ -196,6 +286,10 @@ class NavigationModule {
         }
     }
 
+    /**
+     * Закрывает мобильное меню
+     * Сбрасывает состояние мобильного меню в закрытое положение
+     */
     closeMobileMenu() {
         const nav = document.querySelector('.nav');
         const btn = document.querySelector('.mobile-menu-btn');
@@ -208,12 +302,20 @@ class NavigationModule {
         );
     }
 
+    /**
+     * Закрывает все выпадающие меню
+     * Сбрасывает состояние всех открытых выпадающих меню
+     */
     closeAllDropdowns() {
         document.querySelectorAll('.nav-dropdown').forEach(dropdown => this.closeDropdown(dropdown));
         this.hoverTimeouts.clear();
         this.currentOpenDropdown = null;
     }
 
+    /**
+     * Обрабатывает изменение размера окна
+     * Адаптирует поведение меню при изменении размера экрана
+     */
     handleResize() {
         if (window.innerWidth > 768 && this.isMobileMenuOpen) {
             this.closeMobileMenu();
@@ -223,7 +325,12 @@ class NavigationModule {
     }
 }
 
-// Инициализация навигации
+/**
+ * Функция инициализации навигации
+ * Создает экземпляр NavigationModule и инициализирует навигацию
+ * 
+ * @param {string} currentPage - Текущая страница
+ */
 function initNavigation(currentPage = '') {
     try {
         new NavigationModule().init('.nav-container', currentPage);
@@ -232,7 +339,12 @@ function initNavigation(currentPage = '') {
     }
 }
 
-// Автоматическая инициализация
+/**
+ * Определяет текущую страницу
+ * Анализирует URL для определения типа текущей страницы
+ * 
+ * @returns {string} - Ключ текущей страницы
+ */
 const getCurrentPage = () => {
     const path = window.location.pathname;
     if (path.includes('index.html') || path.endsWith('/') || path.includes('/kinoclub-odisseya/')) return 'index';

@@ -2,6 +2,10 @@
  * Модуль герой-секции для киноклуба Одиссея
  */
 class HeroSectionModule {
+    /**
+     * Конструктор класса HeroSectionModule
+     * Инициализирует данные герой-секции для разных страниц
+     */
     constructor() {
         this.heroData = {
             // Данные для разных страниц
@@ -108,10 +112,14 @@ class HeroSectionModule {
 
     /**
      * Генерирует HTML для герой-секции
+     * Создает полную HTML разметку герой-секции на основе данных страницы
+     * 
+     * @param {string} pageKey - Ключ страницы для выбора соответствующих данных
+     * @returns {string} - HTML строка герой-секции
      */
     generateHeroSection(pageKey = 'index') {
         const data = this.heroData.pages[pageKey] || this.heroData.pages['default'];
-        
+
         return `
             <section class="hero ${pageKey !== 'index' ? pageKey + '-hero' : ''}">
                 <div class="hero__content">
@@ -136,10 +144,18 @@ class HeroSectionModule {
 
     /**
      * Генерирует HTML для кнопки
+     * Создает HTML разметку для кнопки призыва к действию
+     * 
+     * @param {Object} button - Объект с данными кнопки
+     * @param {string} button.text - Текст кнопки
+     * @param {string} button.href - URL ссылки кнопки
+     * @param {string} button.type - Тип кнопки ('primary' или 'outline')
+     * @param {boolean} button.icon - Флаг отображения иконки
+     * @returns {string} - HTML строка кнопки
      */
     generateButton(button) {
         const btnClass = button.type === 'primary' ? 'btn btn--primary' : 'btn btn--outline';
-        
+
         const iconSvg = button.icon ? `
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                 <path
@@ -158,6 +174,10 @@ class HeroSectionModule {
 
     /**
      * Инициализирует герой-секцию на странице
+     * Вставляет герой-секцию в указанный контейнер и настраивает функциональность
+     * 
+     * @param {string} containerSelector - CSS селектор контейнера для вставки герой-секции
+     * @param {string} pageKey - Ключ страницы для выбора данных
      */
     init(containerSelector = '.hero-container', pageKey = '') {
         const container = document.querySelector(containerSelector);
@@ -168,17 +188,20 @@ class HeroSectionModule {
 
         const actualPageKey = pageKey || this.detectPage();
         container.innerHTML = this.generateHeroSection(actualPageKey);
-        
+
         // Добавляем обработчики для плавной прокрутки
         this.attachSmoothScroll();
     }
 
     /**
      * Определяет текущую страницу
+     * Анализирует URL для определения типа страницы и выбора соответствующих данных
+     * 
+     * @returns {string} - Ключ страницы для данных герой-секции
      */
     detectPage() {
         const path = window.location.pathname;
-        
+
         if (path.includes('index.html') || path.endsWith('/') || path.includes('/kinoclub-odisseya/')) {
             return 'index';
         } else if (path.includes('crocodile-game.html')) {
@@ -196,6 +219,7 @@ class HeroSectionModule {
 
     /**
      * Добавляет обработчики для плавной прокрутки
+     * Настраивает плавную прокрутку для якорных ссылок в герой-секции
      */
     attachSmoothScroll() {
         document.addEventListener('click', (e) => {
@@ -204,7 +228,7 @@ class HeroSectionModule {
                 e.preventDefault();
                 const targetId = link.getAttribute('href').substring(1);
                 const targetElement = document.getElementById(targetId);
-                
+
                 if (targetElement) {
                     targetElement.scrollIntoView({
                         behavior: 'smooth',
@@ -216,7 +240,11 @@ class HeroSectionModule {
     }
 
     /**
-     * Обновляет данные герой-секции (для динамического изменения)
+     * Обновляет данные герой-секции
+     * Позволяет динамически изменять данные герой-секции для конкретной страницы
+     * 
+     * @param {string} pageKey - Ключ страницы для обновления
+     * @param {Object} newData - Новые данные для страницы
      */
     updateHeroData(pageKey, newData) {
         if (this.heroData.pages[pageKey]) {
@@ -226,6 +254,10 @@ class HeroSectionModule {
 
     /**
      * Добавляет новую страницу в данные
+     * Регистрирует данные герой-секции для новой страницы
+     * 
+     * @param {string} pageKey - Ключ новой страницы
+     * @param {Object} pageData - Данные герой-секции для страницы
      */
     addPage(pageKey, pageData) {
         this.heroData.pages[pageKey] = pageData;
@@ -234,6 +266,10 @@ class HeroSectionModule {
 
 /**
  * Функция инициализации герой-секции
+ * Создает экземпляр HeroSectionModule и инициализирует герой-секцию на странице
+ * 
+ * @param {string} containerSelector - CSS селектор контейнера для вставки герой-секции
+ * @param {string} pageKey - Ключ страницы для выбора данных
  */
 function initHeroSection(containerSelector = '.hero-container', pageKey = '') {
     try {

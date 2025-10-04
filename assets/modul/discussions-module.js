@@ -2,6 +2,10 @@
  * Модуль для управления секцией "История обсуждений"
  */
 class DiscussionsModule {
+    /**
+     * Конструктор класса DiscussionsModule
+     * Инициализирует конфигурацию, состояние и запускает модуль
+     */
     constructor() {
         this.config = {
             dataSources: {
@@ -39,6 +43,7 @@ class DiscussionsModule {
 
     /**
      * Инициализация модуля
+     * Кэширует DOM элементы, инициализирует обработчики событий, загружает данные и рендерит фильмы
      */
     async init() {
         console.log('Инициализация DiscussionsModule...');
@@ -50,6 +55,7 @@ class DiscussionsModule {
 
     /**
      * Кэширование DOM элементов
+     * Находит и сохраняет ссылки на DOM элементы по селекторам из конфигурации
      */
     cacheDOM() {
         this.elements = {};
@@ -76,6 +82,7 @@ class DiscussionsModule {
 
     /**
      * Инициализация обработчиков событий
+     * Назначает обработчики событий для элементов управления
      */
     initEventListeners() {
         if (this.elements.loadMoreBtn) {
@@ -85,26 +92,27 @@ class DiscussionsModule {
 
     /**
      * Загрузка данных из JSON
+     * Загружает данные фильмов, обрабатывает ошибки и загружает демо-данные при необходимости
      */
     async loadData() {
         try {
             this.showLoadingState();
             console.log('Начинаем загрузку данных...');
-            
+
             const data = await this.fetchLocalData();
             console.log('Получены данные:', data);
-            
+
             this.state.films = Array.isArray(data) ? data : [];
             console.log(`Загружено фильмов: ${this.state.films.length}`);
-            
+
             this.sortFilmsByDate();
             this.resetPagination();
-            
+
         } catch (error) {
             console.error('Ошибка загрузки данных:', error);
             this.showErrorState();
             this.state.films = [];
-            
+
             // Пробуем загрузить демо-данные
             try {
                 console.log('Пробуем загрузить демо-данные...');
@@ -121,36 +129,39 @@ class DiscussionsModule {
 
     /**
      * Загрузка данных локально
+     * Выполняет fetch-запрос к локальному JSON файлу с резервными путями
+     * 
+     * @returns {Promise<Array>} - Промис с массивом данных о фильмах
      */
     async fetchLocalData() {
         try {
             console.log('Пробуем загрузить локальные данные...');
             const response = await fetch(this.config.dataSources.films);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('Локальные данные загружены:', data);
             return data;
-            
+
         } catch (error) {
             console.error('Ошибка загрузки локальных данных:', error);
-            
+
             // Пробуем альтернативный путь
             try {
                 console.log('Пробуем альтернативный путь...');
                 const altResponse = await fetch('./data/films.json');
-                
+
                 if (!altResponse.ok) {
                     throw new Error(`Alternative HTTP error! status: ${altResponse.status}`);
                 }
-                
+
                 const altData = await altResponse.json();
                 console.log('Альтернативные данные загружены:', altData);
                 return altData;
-                
+
             } catch (altError) {
                 console.error('Ошибка загрузки альтернативных данных:', altError);
                 throw new Error('Все источники данных недоступны');
@@ -160,6 +171,9 @@ class DiscussionsModule {
 
     /**
      * Загрузка демонстрационных данных
+     * Создает макет данных для демонстрации при недоступности основных источников
+     * 
+     * @returns {Array} - Массив демо-данных фильмов
      */
     loadMockFilmsData() {
         console.log('Загрузка демо-данных фильмов');
@@ -182,6 +196,7 @@ class DiscussionsModule {
 
     /**
      * Сортировка фильмов по дате
+     * Сортирует фильмы по дате обсуждения в порядке убывания (сначала новые)
      */
     sortFilmsByDate() {
         this.state.sortedFilms = [...this.state.films].sort((a, b) => {
@@ -194,6 +209,7 @@ class DiscussionsModule {
 
     /**
      * Сброс пагинации
+     * Сбрасывает состояние пагинации к начальным значениям
      */
     resetPagination() {
         this.state.pagination = {
@@ -206,6 +222,7 @@ class DiscussionsModule {
 
     /**
      * Показать состояние загрузки
+     * Отображает индикатор загрузки в контейнере фильмов
      */
     showLoadingState() {
         if (this.elements.filmsContainer) {
@@ -220,6 +237,7 @@ class DiscussionsModule {
 
     /**
      * Показать состояние ошибки
+     * Отображает сообщение об ошибке в контейнере фильмов
      */
     showErrorState() {
         if (this.elements.filmsContainer) {
@@ -231,10 +249,11 @@ class DiscussionsModule {
 
     /**
      * Загрузка дополнительных фильмов
+     * Увеличивает текущую страницу пагинации и рендерит дополнительные фильмы
      */
     loadMoreFilms() {
         if (!this.state.pagination.hasMore) return;
-        
+
         this.state.pagination.currentPage += 1;
         console.log('Загружаем еще фильмов, страница:', this.state.pagination.currentPage);
         this.renderFilms();
@@ -242,6 +261,7 @@ class DiscussionsModule {
 
     /**
      * Рендеринг фильмов
+     * Отображает фильмы в контейнере с учетом текущей пагинации
      */
     renderFilms() {
         if (!this.elements.filmsContainer) {
@@ -266,7 +286,7 @@ class DiscussionsModule {
 
         this.updateLoadMoreButton();
 
-        const filmsHTML = paginatedFilms.map(film => 
+        const filmsHTML = paginatedFilms.map(film =>
             this.createFilmCard(film)
         ).join('');
 
@@ -276,6 +296,10 @@ class DiscussionsModule {
 
     /**
      * Создание карточки фильма
+     * Генерирует HTML разметку для карточки отдельного фильма
+     * 
+     * @param {Object} film - Объект с данными о фильме
+     * @returns {string} - HTML строка карточки фильма
      */
     createFilmCard(film) {
         const rating = this.parseRating(film['Оценка']);
@@ -332,6 +356,11 @@ class DiscussionsModule {
 
     /**
      * Создание мета-информации фильма
+     * Генерирует HTML для отдельной мета-информации фильма
+     * 
+     * @param {string} label - Подпись мета-информации
+     * @param {string} value - Значение мета-информации
+     * @returns {string} - HTML строка мета-информации или пустая строка
      */
     createFilmMeta(label, value) {
         if (value === null || value === undefined || value === '') return '';
@@ -340,6 +369,7 @@ class DiscussionsModule {
 
     /**
      * Обновление кнопки "Загрузить еще"
+     * Обновляет состояние и видимость кнопки пагинации на основе текущего состояния
      */
     updateLoadMoreButton() {
         if (!this.elements.loadMoreBtn) return;
@@ -360,7 +390,11 @@ class DiscussionsModule {
     }
 
     /**
-     * Вспомогательные методы
+     * Парсинг даты из строки
+     * Преобразует строку даты в формате DD.MM.YYYY в объект Date
+     * 
+     * @param {string} dateString - Строка с датой в формате DD.MM.YYYY
+     * @returns {Date} - Объект Date или нулевая дата при ошибке
      */
     parseDate(dateString) {
         if (!dateString) return new Date(0);
@@ -376,13 +410,27 @@ class DiscussionsModule {
         return isNaN(result.getTime()) ? new Date(0) : result;
     }
 
+    /**
+     * Форматирование даты
+     * Преобразует строку даты в единообразный формат DD.MM.YYYY
+     * 
+     * @param {string} dateString - Строка с датой
+     * @returns {string} - Отформатированная дата или исходная строка при ошибке
+     */
     formatDate(dateString) {
         if (!dateString) return 'дата не указана';
         const date = this.parseDate(dateString);
-        return isNaN(date.getTime()) ? dateString : 
+        return isNaN(date.getTime()) ? dateString :
             `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
     }
 
+    /**
+     * Парсинг рейтинга
+     * Преобразует рейтинг из различных форматов в число от 0 до 10
+     * 
+     * @param {string|number} rating - Рейтинг в строковом или числовом формате
+     * @returns {number} - Числовой рейтинг от 0 до 10
+     */
     parseRating(rating) {
         if (!rating && rating !== 0) return 0;
         if (typeof rating === 'number') return rating;
@@ -390,6 +438,13 @@ class DiscussionsModule {
         return isNaN(num) ? 0 : Math.min(Math.max(num, 0), 10);
     }
 
+    /**
+     * Создание звезд рейтинга
+     * Генерирует HTML для визуального отображения рейтинга в виде звезд
+     * 
+     * @param {number} rating - Числовой рейтинг от 0 до 10
+     * @returns {string} - HTML строка со звездами рейтинга
+     */
     createRatingStars(rating) {
         const num = this.parseRating(rating);
         const clamped = Math.min(Math.max(num, 0), 10);
@@ -399,6 +454,14 @@ class DiscussionsModule {
         return `<span class="rating-stars" aria-hidden="true">${'★'.repeat(full)}${half ? '⯨' : ''}${'☆'.repeat(empty)}</span>`;
     }
 
+    /**
+     * Генерация URL для КиноПоиска
+     * Создает ссылку для поиска информации о фильме на КиноПоиске
+     * 
+     * @param {string} filmName - Название фильма
+     * @param {string} filmYear - Год выпуска фильма
+     * @returns {string|null} - URL для поиска на КиноПоиске или null при ошибке
+     */
     generateKinopoiskUrl(filmName, filmYear) {
         if (!filmName) return null;
         const cleanName = filmName
@@ -410,6 +473,13 @@ class DiscussionsModule {
         return `https://www.kinopoisk.ru/index.php?kp_query=${encodedQuery}`;
     }
 
+    /**
+     * Экранирование HTML
+     * Заменяет специальные символы HTML на их безопасные эквиваленты
+     * 
+     * @param {string} unsafe - Исходная небезопасная строка
+     * @returns {string} - Безопасная экранированная строка
+     */
     escapeHtml(unsafe) {
         if (unsafe === null || unsafe === undefined) return '';
         if (typeof unsafe !== 'string') {
@@ -424,7 +494,10 @@ class DiscussionsModule {
     }
 }
 
-// Инициализация модуля
+/**
+ * Инициализация модуля обсуждений
+ * Проверяет наличие секции film-archive и инициализирует модуль
+ */
 function initDiscussionsModule() {
     console.log('Проверяем наличие секции film-archive...');
     if (document.querySelector('#film-archive')) {

@@ -2,6 +2,10 @@
  * Модуль для управления секцией "Ближайшая встреча"
  */
 class NextMeetingModule {
+    /**
+     * Конструктор класса NextMeetingModule
+     * Инициализирует конфигурацию, состояние и запускает модуль
+     */
     constructor() {
         this.config = {
             dataSources: {
@@ -30,6 +34,7 @@ class NextMeetingModule {
 
     /**
      * Инициализация модуля
+     * Кэширует DOM элементы и загружает данные о следующей встрече
      */
     async init() {
         console.log('Инициализация NextMeetingModule...');
@@ -39,6 +44,7 @@ class NextMeetingModule {
 
     /**
      * Кэширование DOM элементов
+     * Находит и сохраняет ссылки на DOM элементы по селекторам из конфигурации
      */
     cacheDOM() {
         this.elements = {};
@@ -51,26 +57,27 @@ class NextMeetingModule {
 
     /**
      * Загрузка данных о следующей встрече
+     * Загружает данные из JSON файла, обрабатывает ошибки и загружает демо-данные при необходимости
      */
     async loadData() {
         try {
             this.showLoadingState();
             console.log('Начинаем загрузку данных о встрече...');
-            
+
             const data = await this.fetchLocalData();
             console.log('Получены данные о встрече:', data);
-            
+
             if (data && typeof data === 'object') {
                 this.state.nextMeeting = data;
                 this.renderNextMeeting(data);
             } else {
                 throw new Error('Неверный формат данных о встрече');
             }
-            
+
         } catch (error) {
             console.error('Ошибка загрузки данных о встрече:', error);
             this.showErrorState();
-            
+
             // Пробуем загрузить демо-данные
             try {
                 console.log('Пробуем загрузить демо-данные о встрече...');
@@ -86,36 +93,39 @@ class NextMeetingModule {
 
     /**
      * Загрузка данных локально
+     * Выполняет fetch-запрос к локальному JSON файлу с резервными путями
+     * 
+     * @returns {Promise<Object>} - Промис с данными о встрече
      */
     async fetchLocalData() {
         try {
             console.log('Пробуем загрузить локальные данные о встрече...');
             const response = await fetch(this.config.dataSources.nextMeeting);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('Локальные данные о встрече загружены:', data);
             return data;
-            
+
         } catch (error) {
             console.error('Ошибка загрузки локальных данных о встрече:', error);
-            
+
             // Пробуем альтернативный путь
             try {
                 console.log('Пробуем альтернативный путь для данных о встрече...');
                 const altResponse = await fetch('./data/next-meeting.json');
-                
+
                 if (!altResponse.ok) {
                     throw new Error(`Alternative HTTP error! status: ${altResponse.status}`);
                 }
-                
+
                 const altData = await altResponse.json();
                 console.log('Альтернативные данные о встрече загружены:', altData);
                 return altData;
-                
+
             } catch (altError) {
                 console.error('Ошибка загрузки альтернативных данных о встрече:', altError);
                 throw new Error('Все источники данных о встрече недоступны');
@@ -125,27 +135,31 @@ class NextMeetingModule {
 
     /**
      * Загрузка демонстрационных данных о встрече
+     * Создает макет данных для демонстрации при недоступности основных источников
+     * 
+     * @returns {Object} - Объект с демо-данными о встрече
      */
     loadMockMeetingData() {
         console.log('Загрузка демо-данных о встрече');
         return {
-            "date": "05.10.2025",
+            "date": "Скоро",
             "time": "15:00",
             "place": "Кофейня \"Том Сойер\", ул. Шмидта, 12",
-            "film": "Suna no onna/Женщина в песках",
-            "director": "Хироси Тэсигахара",
-            "genre": "Триллер, Драма",
-            "country": "Япония",
-            "year": 1964,
+            "film": "Еще не выбран",
+            "director": "Нет данных",
+            "genre": "Нет данных",
+            "country": "Нет данных",
+            "year": 2025,
             "poster": "https://sun9-62.vkuserphoto.ru/s/v1/ig2/Tq9FLNYDLD2Q7VKcS3H2RCyw4oqjepBQQhke4dPsRy3wRhhIrF1vs_Xw0HcUjCVscVZozsvOl8_qK8jcxqWbI8e_.jpg?quality=95&as=32x40,48x60,72x89,108x134,160x199,240x298,360x447,480x596,540x671,640x795,720x894,1080x1342,1280x1590,1288x1600&from=bu&cs=1288x0",
-            "discussionNumber": 260,
-            "description": "Инженер, отправившийся в экспедицию для изучения насекомых, оказывается в ловушке в песчаной яме вместе с загадочной женщиной.",
-            "requirements": "Рекомендуем посмотреть фильм заранее"
+            "discussionNumber": 1,
+            "description": "Нет данных",
+            "requirements": "Нет данных"
         };
     }
 
     /**
      * Показать состояние загрузки
+     * Отображает индикатор загрузки в контейнере встречи
      */
     showLoadingState() {
         if (this.elements.nextMeetingContainer) {
@@ -160,6 +174,7 @@ class NextMeetingModule {
 
     /**
      * Показать состояние ошибки
+     * Отображает сообщение об ошибке в контейнере встречи
      */
     showErrorState() {
         if (this.elements.nextMeetingContainer) {
@@ -174,6 +189,9 @@ class NextMeetingModule {
 
     /**
      * Рендеринг информации о следующей встрече
+     * Отображает информацию о встрече с проверкой актуальности даты
+     * 
+     * @param {Object} meetingData - Данные о встрече
      */
     renderNextMeeting(meetingData) {
         if (!this.elements.nextMeetingContainer || !meetingData || typeof meetingData !== 'object') {
@@ -265,6 +283,12 @@ class NextMeetingModule {
 
     /**
      * Создание HTML-элемента детали информации о встрече
+     * Генерирует HTML для отдельной детали информации о встрече
+     * 
+     * @param {string} icon - Иконка элемента
+     * @param {string} label - Подпись элемента
+     * @param {string} value - Значение элемента
+     * @returns {string} - HTML-строка элемента или пустая строка
      */
     createMeetingDetail(icon, label, value) {
         return value ? `<div class="next-meeting-detail"><span class="detail-icon">${icon}</span><span><strong>${label}</strong> ${this.escapeHtml(value)}</span></div>` : '';
@@ -272,6 +296,10 @@ class NextMeetingModule {
 
     /**
      * Инициализация таймера обратного отсчета
+     * Настраивает таймер обратного отсчета до даты встречи
+     * 
+     * @param {string} dateStr - Строка с датой в формате DD.MM.YYYY
+     * @param {string} timeStr - Строка с временем в формате HH:MM
      */
     initCountdown(dateStr, timeStr) {
         if (!dateStr || !timeStr) {
@@ -300,6 +328,11 @@ class NextMeetingModule {
 
     /**
      * Парсит дату и время встречи в объект Date
+     * Преобразует строки даты и времени в объект Date
+     * 
+     * @param {string} dateStr - Строка с датой в формате DD.MM.YYYY
+     * @param {string} timeStr - Строка с временем в формате HH:MM
+     * @returns {Date} - Объект Date с датой и временем встречи
      */
     parseMeetingDateTime(dateStr, timeStr) {
         const [day, month, year] = dateStr.split('.').map(Number);
@@ -310,6 +343,9 @@ class NextMeetingModule {
 
     /**
      * Запускает обратный отсчет
+     * Запускает интервал обновления таймера обратного отсчета
+     * 
+     * @param {Date} targetDate - Целевая дата и время встречи
      */
     startCountdown(targetDate) {
         // Очищаем предыдущий интервал
@@ -390,6 +426,11 @@ class NextMeetingModule {
 
     /**
      * Обновляет число в таймере если оно изменилось
+     * Оптимизирует обновление DOM только при изменении значений
+     * 
+     * @param {string} unit - Единица времени (days, hours, minutes, seconds)
+     * @param {number} newValue - Новое значение
+     * @param {number} oldValue - Предыдущее значение
      */
     updateNumberIfChanged(unit, newValue, oldValue) {
         if (newValue !== oldValue) {
@@ -406,6 +447,7 @@ class NextMeetingModule {
 
     /**
      * Показывает сообщение о завершении отсчета
+     * Отображает сообщение когда время до встречи истекло
      */
     showCompletedMessage() {
         const countdownContainer = document.getElementById('meeting-countdown');
@@ -421,7 +463,11 @@ class NextMeetingModule {
     }
 
     /**
-     * Вспомогательные методы
+     * Парсинг даты из строки
+     * Преобразует строку даты в формате DD.MM.YYYY в объект Date
+     * 
+     * @param {string} dateString - Строка с датой в формате DD.MM.YYYY
+     * @returns {Date} - Объект Date или нулевая дата при ошибке
      */
     parseDate(dateString) {
         if (!dateString) return new Date(0);
@@ -437,6 +483,14 @@ class NextMeetingModule {
         return isNaN(result.getTime()) ? new Date(0) : result;
     }
 
+    /**
+     * Генерация URL для КиноПоиска
+     * Создает ссылку для поиска информации о фильме на КиноПоиске
+     * 
+     * @param {string} filmName - Название фильма
+     * @param {string} filmYear - Год выпуска фильма
+     * @returns {string|null} - URL для поиска на КиноПоиске или null при ошибке
+     */
     generateKinopoiskUrl(filmName, filmYear) {
         if (!filmName) return null;
         const cleanName = filmName
@@ -448,6 +502,13 @@ class NextMeetingModule {
         return `https://www.kinopoisk.ru/index.php?kp_query=${encodedQuery}`;
     }
 
+    /**
+     * Экранирование HTML
+     * Заменяет специальные символы HTML на их безопасные эквиваленты
+     * 
+     * @param {string} unsafe - Исходная небезопасная строка
+     * @returns {string} - Безопасная экранированная строка
+     */
     escapeHtml(unsafe) {
         if (unsafe === null || unsafe === undefined) return '';
         if (typeof unsafe !== 'string') {
@@ -463,6 +524,7 @@ class NextMeetingModule {
 
     /**
      * Очистка ресурсов
+     * Останавливает таймер и очищает состояние модуля
      */
     destroy() {
         if (this.state.countdownInterval) {
@@ -472,7 +534,10 @@ class NextMeetingModule {
     }
 }
 
-// Инициализация модуля
+/**
+ * Функция инициализации модуля следующей встречи
+ * Создает экземпляр NextMeetingModule при наличии соответствующей секции
+ */
 function initNextMeetingModule() {
     console.log('Проверяем наличие секции next-meeting...');
     if (document.querySelector('#next-meeting')) {

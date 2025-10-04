@@ -2,6 +2,10 @@
  * Независимый модуль для секции "Где мы собираемся"
  */
 class MapModule {
+    /**
+     * Конструктор класса MapModule
+     * Инициализирует конфигурацию, состояние и запускает модуль карты
+     */
     constructor() {
         this.config = {
             selectors: {
@@ -39,20 +43,21 @@ class MapModule {
 
     /**
      * Инициализация модуля
+     * Кэширует DOM элементы, проверяет видимость и загружает Яндекс.Карты
      */
     async init() {
         console.log('Инициализация MapModule...');
-        
+
         try {
             this.cacheDOM();
-            
+
             // Проверяем, виден ли элемент карты
             if (!this.isMapElementVisible()) {
                 console.log('Элемент карты не виден, откладываем инициализацию');
                 this.setupIntersectionObserver();
                 return;
             }
-            
+
             await this.loadYandexMaps();
         } catch (error) {
             console.error('Ошибка инициализации MapModule:', error);
@@ -62,6 +67,7 @@ class MapModule {
 
     /**
      * Кэширование DOM элементов
+     * Находит и сохраняет ссылки на DOM элементы карты
      */
     cacheDOM() {
         this.elements = {
@@ -78,24 +84,28 @@ class MapModule {
 
     /**
      * Проверка видимости элемента карты
+     * Определяет, виден ли элемент карты в области просмотра
+     * 
+     * @returns {boolean} - true если элемент видим, иначе false
      */
     isMapElementVisible() {
         if (!this.elements.mapElement) return false;
-        
+
         const rect = this.elements.mapElement.getBoundingClientRect();
         const isVisible = (
-            rect.width > 0 && 
-            rect.height > 0 && 
-            rect.top < window.innerHeight && 
+            rect.width > 0 &&
+            rect.height > 0 &&
+            rect.top < window.innerHeight &&
             rect.bottom > 0
         );
-        
+
         console.log('Элемент карты видим:', isVisible, 'размеры:', rect.width, 'x', rect.height);
         return isVisible;
     }
 
     /**
      * Настройка Intersection Observer для ленивой загрузки
+     * Откладывает загрузку карты до момента её появления в области просмотра
      */
     setupIntersectionObserver() {
         if (!this.elements.mapElement) return;
@@ -121,6 +131,9 @@ class MapModule {
 
     /**
      * Загрузка API Яндекс.Карт
+     * Динамически загружает API Яндекс.Карт с обработкой ошибок и таймаутами
+     * 
+     * @returns {Promise} - Промис, разрешающийся при успешной загрузке API
      */
     loadYandexMaps() {
         return new Promise((resolve, reject) => {
@@ -187,6 +200,7 @@ class MapModule {
 
     /**
      * Инициализация Яндекс.Карты
+     * Создает экземпляр карты, добавляет метку и настраивает элементы управления
      */
     initYandexMap() {
         if (this.state.isInitialized) return;
@@ -202,7 +216,7 @@ class MapModule {
                     }
 
                     console.log('Создание карты в элементе:', this.elements.mapElement);
-                    
+
                     const map = new ymaps.Map(this.elements.mapElement, {
                         center: this.config.coordinates.default,
                         zoom: 16,
@@ -247,6 +261,9 @@ class MapModule {
 
     /**
      * Генерация иконки для метки
+     * Создает SVG иконку в формате base64 для метки на карте
+     * 
+     * @returns {string} - Data URL с SVG иконкой
      */
     generatePlacemarkIcon() {
         return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiM2YTExY2IiIGZpbGwtb3BhY2l0eT0iMC44IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyMCIgeT0iMjUiIGZpbGw9IiNmZmYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIj7QmtC+PC90ZXh0Pgo8L3N2Zz4=';
@@ -254,6 +271,7 @@ class MapModule {
 
     /**
      * Обновление информации на карте
+     * Обновляет текстовую информацию о месте встречи рядом с картой
      */
     updateMapInfo() {
         const infoElement = this.elements.container.querySelector('.map-info');
@@ -275,6 +293,7 @@ class MapModule {
 
     /**
      * Показать fallback-контент
+     * Отображает запасной контент при недоступности Яндекс.Карт
      */
     showFallback() {
         if (this.state.fallbackDisplayed) return;
@@ -289,7 +308,7 @@ class MapModule {
         }
 
         let fallback = mapElement.querySelector('.map-module-fallback');
-        
+
         if (!fallback) {
             fallback = document.createElement('div');
             fallback.className = 'map-module-fallback';
@@ -306,6 +325,7 @@ class MapModule {
 
     /**
      * Скрыть fallback-контент
+     * Скрывает запасной контент при успешной загрузке карты
      */
     hideFallback() {
         const fallback = this.elements.mapElement?.querySelector('.map-module-fallback');
@@ -317,6 +337,9 @@ class MapModule {
 
     /**
      * Генерация HTML для fallback
+     * Создает HTML разметку для отображения когда карта недоступна
+     * 
+     * @returns {string} - HTML строка fallback-контента
      */
     generateFallbackHTML() {
         return `
@@ -333,6 +356,14 @@ class MapModule {
 
     /**
      * Обновление данных о месте встречи
+     * Изменяет информацию о месте встречи на карте и в интерфейсе
+     * 
+     * @param {Object} newPlaceInfo - Новые данные о месте встречи
+     * @param {string} newPlaceInfo.name - Название места
+     * @param {string} newPlaceInfo.address - Адрес места
+     * @param {string} newPlaceInfo.description - Описание места
+     * @param {string} newPlaceInfo.vkLink - Ссылка на VK
+     * @param {string} newPlaceInfo.tgBot - Ссылка на Telegram бота
      */
     updateMeetingPlace(newPlaceInfo) {
         if (newPlaceInfo.name) this.config.placeInfo.name = newPlaceInfo.name;
@@ -357,6 +388,7 @@ class MapModule {
 
     /**
      * Очистка ресурсов
+     * Уничтожает экземпляр карты и сбрасывает состояние модуля
      */
     destroy() {
         if (this.state.map) {
@@ -371,12 +403,15 @@ class MapModule {
     }
 }
 
-// Автоматическая инициализация с задержкой
+/**
+ * Функция инициализации модуля карты
+ * Создает экземпляр MapModule с задержкой для стабилизации DOM
+ */
 function initMapModule() {
     const mapContainer = document.querySelector('.map-section');
     if (mapContainer) {
         console.log('Найден контейнер карты, инициализация MapModule...');
-        
+
         // Небольшая задержка для стабилизации DOM
         setTimeout(() => {
             window.mapModule = new MapModule();

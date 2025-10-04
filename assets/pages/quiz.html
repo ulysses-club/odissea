@@ -35,60 +35,89 @@
     <div class="hero-container"></div>
 
     <!-- Правила квиза -->
-    <section id="quiz-rules" class="quiz-rules">
-        <div class="container">
-            <h2 class="section__title fade-in">Правила квиза</h2>
-            <div class="rules-content fade-in delay-1">
-                <div class="rules-grid">
-                    <div class="rule-card">
-                        <div class="rule-icon">⏱️</div>
-                        <h3>Время</h3>
-                        <p>На каждый вопрос дается ограниченное время. Думай быстро, но внимательно!</p>
-                    </div>
-                    <div class="rule-card">
-                        <div class="rule-icon">🏆</div>
-                        <h3>Рейтинг</h3>
-                        <p>Зарабатывай очки за правильные ответы и попади в таблицу лидеров киноклуба</p>
-                    </div>
-                    <div class="rule-card">
-                        <div class="rule-icon">💡</div>
-                        <h3>Подсказки</h3>
-                        <p>У тебя есть ограниченное количество подсказок. Используй их мудро!</p>
+    <section id="quiz-rules" class="about">
+        <h2 class="section__title fade-in">Правила квиза</h2>
+        <div class="about__content">
+            <div class="faq-grid fade-in delay-1">
+                <!-- Колонка 1 -->
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="faq-icon" aria-hidden="true">⏱️</span>
+                            <h3>Время</h3>
+                        </div>
+                        <p class="faq-answer">На каждый вопрос дается ограниченное время. Думай быстро, но внимательно!</p>
                     </div>
                 </div>
-                <div class="rules-actions">
-                    <a href="#quiz-start" class="btn btn--primary">Начать квиз</a>
-                    <button class="btn btn--outline" id="view-leaders">Таблица лидеров</button>
+
+                <!-- Колонка 2 -->
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="faq-icon" aria-hidden="true">🏆</span>
+                            <h3>Рейтинг</h3>
+                        </div>
+                        <p class="faq-answer">Зарабатывай очки за правильные ответы и попади в таблицу лидеров киноклуба</p>
+                    </div>
                 </div>
+
+                <!-- Колонка 3 -->
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="faq-icon" aria-hidden="true">💡</span>
+                            <h3>Подсказки</h3>
+                        </div>
+                        <p class="faq-answer">У тебя есть ограниченное количество подсказок. Используй их мудро!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rules-actions text-center fade-in delay-2">
+                <a href="#quiz-start" class="btn btn--primary" style="margin-right: var(--space-md);">Начать квиз</a>
+                <button class="btn btn--outline" id="view-leaders">Таблица лидеров</button>
             </div>
         </div>
     </section>
 
     <!-- Основная часть квиза -->
-    <section id="quiz-start" class="quiz-main">
-        <div class="container">
+    <section id="quiz-start" class="about">
+        <div class="about__content">
             <div class="quiz-container fade-in">
                 <!-- Здесь будет динамическое содержимое квиза -->
                 <div class="quiz-welcome" id="quiz-welcome">
-                    <div class="welcome-content">
-                        <h2>Готовы проверить свои знания?</h2>
-                        <p>Квиз состоит из 15 вопросов о фильмах, которые мы обсуждали в киноклубе.
-                            Постарайтесь ответить правильно на как можно больше вопросов!</p>
-                        <div class="quiz-stats">
-                            <div class="stat-item">
-                                <span class="stat-number">15</span>
-                                <span class="stat-label">вопросов</span>
+                    <div class="welcome-content text-center">
+                        <h2 class="section__title">Готовы проверить свои знания?</h2>
+                        <p class="faq-answer" style="max-width: 600px; margin: 0 auto var(--space-xl);">
+                            Квиз состоит из 15 вопросов о фильмах, которые мы обсуждали в киноклубе.
+                            Постарайтесь ответить правильно на как можно больше вопросов!
+                        </p>
+                        
+                        <div class="faq-grid" style="margin-bottom: var(--space-xl);">
+                            <div class="faq-column">
+                                <div class="faq-item text-center">
+                                    <div class="stat-number" style="font-size: var(--text-xxxl); color: var(--secondary); margin-bottom: var(--space-sm);">15</div>
+                                    <div class="stat-label" style="font-weight: 600;">вопросов</div>
+                                </div>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-number">3</span>
-                                <span class="stat-label">уровня сложности</span>
+                            <div class="faq-column">
+                                <div class="faq-item text-center">
+                                    <div class="stat-number" style="font-size: var(--text-xxxl); color: var(--secondary); margin-bottom: var(--space-sm);">3</div>
+                                    <div class="stat-label" style="font-weight: 600;">уровня сложности</div>
+                                </div>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-number">2</span>
-                                <span class="stat-label">подсказки</span>
+                            <div class="faq-column">
+                                <div class="faq-item text-center">
+                                    <div class="stat-number" style="font-size: var(--text-xxxl); color: var(--secondary); margin-bottom: var(--space-sm);">2</div>
+                                    <div class="stat-label" style="font-weight: 600;">подсказки</div>
+                                </div>
                             </div>
                         </div>
-                        <button class="btn btn--primary start-quiz-btn" id="start-quiz-btn">Начать квиз</button>
+                        
+                        <button class="btn btn--primary start-quiz-btn" id="start-quiz-btn" 
+                                style="font-size: var(--text-lg); padding: var(--space-lg) var(--space-xl);">
+                            Начать квиз
+                        </button>
                     </div>
                 </div>
 
