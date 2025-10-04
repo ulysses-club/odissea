@@ -582,57 +582,6 @@ img {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Фильмы */
-.movies {
-    padding: var(--space-xxl) 5%;
-}
-
-.movies__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--space-xl);
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.movie-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    transition: var(--transition);
-    box-shadow: var(--shadow-md);
-    position: relative;
-}
-
-.movie-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-xl);
-}
-
-.movie-card__image {
-    width: 100%;
-    height: 350px;
-    object-fit: cover;
-    display: block;
-}
-
-.movie-card__content {
-    padding: var(--space-lg);
-}
-
-.movie-card__title {
-    font-size: var(--text-xl);
-    margin-bottom: var(--space-sm);
-}
-
-.movie-card__meta {
-    display: flex;
-    justify-content: space-between;
-    color: var(--gray);
-    font-size: var(--text-sm);
-    margin-bottom: var(--space-md);
-}
-
 .loading-message {
     color: var(--gray);
     font-style: italic;
@@ -1022,18 +971,6 @@ img {
     }
 }
 
-@keyframes zoomIn {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
 /* Мета информация */
 .film-meta {
     margin: var(--space-xs) 0;
@@ -1161,10 +1098,6 @@ img {
         font-size: var(--text-xxxl);
     }
 
-    .movie-card__image {
-        height: 250px;
-    }
-
     .video-posters-grid,
     .film-grid {
         grid-template-columns: 1fr;
@@ -1199,11 +1132,6 @@ img {
 }
 
 /* Вспомогательные классы */
-
-.no-scroll {
-    overflow: hidden;
-}
-
 .text-center {
     text-align: center;
 }
@@ -1326,23 +1254,6 @@ img {
 
 .map-info .contact-card__link:hover::before {
     transform: translateX(3px);
-}
-
-/* Анимация для карты */
-@keyframes mapFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.map-container {
-    animation: mapFadeIn 1s ease forwards;
 }
 
 /* Адаптивность карты */
@@ -1502,90 +1413,6 @@ img {
 }
 
 /* Стили для предупреждений и сообщений */
-.mock-warning {
-    background: linear-gradient(135deg, var(--accent), #ff6b6b);
-    color: white;
-    padding: var(--space-md);
-    text-align: center;
-    margin: var(--space-md) 5%;
-    border-radius: var(--radius-md);
-    animation: pulse 2s infinite;
-    box-shadow: var(--shadow-md);
-}
-
-.network-status {
-    position: fixed;
-    top: 80px;
-    right: var(--space-md);
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-full);
-    font-size: var(--text-xs);
-    font-weight: bold;
-    z-index: 2000;
-    animation: slideInRight 0.3s ease;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.network-status.online {
-    background: rgba(76, 175, 80, 0.9);
-    color: white;
-}
-
-.network-status.offline {
-    background: rgba(244, 67, 54, 0.9);
-    color: white;
-}
-
-.offline-message {
-    background: var(--accent);
-    color: white;
-    padding: var(--space-md);
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-md);
-    flex-wrap: wrap;
-}
-
-.retry-button {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-full);
-    cursor: pointer;
-    font-weight: bold;
-    transition: var(--transition);
-}
-
-.retry-button:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
-}
-
-.no-data {
-    text-align: center;
-    color: var(--gray);
-    padding: var(--space-xl);
-    font-style: italic;
-    grid-column: 1 / -1;
-}
-
-.error-message {
-    text-align: center;
-    color: var(--accent);
-    padding: var(--space-xl);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-md);
-}
-
 .loading {
     display: flex;
     flex-direction: column;
@@ -1831,25 +1658,6 @@ img {
 @keyframes spin {
     to {
         transform: rotate(360deg);
-    }
-}
-
-/* Адаптивность для сообщений */
-@media (max-width: 768px) {
-    .offline-message {
-        flex-direction: column;
-        gap: var(--space-sm);
-        padding: var(--space-sm);
-    }
-
-    .network-status {
-        top: 70px;
-        right: var(--space-sm);
-    }
-
-    .mock-warning {
-        margin: var(--space-sm);
-        padding: var(--space-sm);
     }
 }
 
