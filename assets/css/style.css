@@ -40,6 +40,7 @@
     --space-md: 1rem;
     --space-lg: 1.5rem;
     --space-xl: 2rem;
+    --scroll-space-xl: 6rem;
     --space-xxl: 3rem;
 
     /* Типография */
@@ -1067,36 +1068,6 @@ img {
     background: var(--gray);
     cursor: not-allowed;
     opacity: 0.7;
-}
-
-/* Кнопка "Наверх" */
-#scroll-to-top {
-    position: fixed;
-    bottom: var(--space-xl);
-    right: var(--space-xl);
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--text-xxl);
-    z-index: 999;
-    opacity: 0;
-    transition: var(--transition);
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    color: var(--light);
-    border: none;
-    cursor: pointer;
-}
-
-#scroll-to-top.visible {
-    display: flex;
-    opacity: 1;
-}
-
-#scroll-to-top:hover {
-    transform: translateY(-5px) scale(1.1);
 }
 
 /* Адаптивность */
