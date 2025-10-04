@@ -36,10 +36,10 @@ class FooterModule {
                 'crocodile-game': {
                     logo: 'КРОКОДИЛ',
                     links: [
-                        { text: 'Правила', href: '#rules', active: true },
+                        { text: 'Правила', href: '#rules', active: true},
                         { text: 'Играть', href: '#game-start' },
-                        { text: 'Советы', href: '#about' },
-                        { text: 'Главная', href: 'index.html' }
+                        { text: 'Главная', href: 'index.html' },
+                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
                     ],
                     social: [
                         {
@@ -59,9 +59,9 @@ class FooterModule {
                     logo: 'ODISSEA',
                     links: [
                         { text: 'Как играть', href: '#how-to-play', active: true },
-                        { text: 'Играть', href: '#to-game' },
                         { text: 'Правила', href: '#rules' },
-                        { text: 'Главная', href: 'index.html' }
+                        { text: 'Главная', href: 'index.html' },
+                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
                     ],
                     social: [
                         {
@@ -81,9 +81,8 @@ class FooterModule {
                     logo: 'ODISSEA QUIZ',
                     links: [
                         { text: 'Правила', href: '#quiz-rules', active: true },
-                        { text: 'Начать квиз', href: '#quiz-start' },
-                        { text: 'Результаты', href: '#quiz-results' },
-                        { text: 'Главная', href: 'index.html' }
+                        { text: 'Главная', href: 'index.html' },
+                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
                     ],
                     social: [
                         {
@@ -103,11 +102,12 @@ class FooterModule {
                 'default': {
                     logo: 'ОДИССЕЯ',
                     links: [
-                        { text: 'О нас', href: '#about' },
-                        { text: 'Топы', href: '#top-films' },
-                        { text: 'Фильмы', href: '#film-archive' },
-                        { text: 'Контакты', href: '#contacts' },
-                        { text: 'Главная', href: 'index.html' }
+                        { text: 'О нас', href: 'index.html#about' },
+                        { text: 'Топы', href: 'index.html#top-films' },
+                        { text: 'Фильмы', href: 'index.html#film-archive' },
+                        { text: 'Контакты', href: 'index.html#contacts' },
+                        { text: 'Главная', href: 'index.html' },
+                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
                     ],
                     social: [
                         {

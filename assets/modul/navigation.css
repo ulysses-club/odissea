@@ -31,8 +31,8 @@
 
 .dropdown-toggle:hover,
 .dropdown-toggle.active {
-    background: rgba(129, 78, 78, 0.1);
-    color: var(--primary-light);
+    background: rgba(106, 0, 245, 0.171);
+    color: var(#f8f9fa);
 }
 
 .dropdown-toggle svg {

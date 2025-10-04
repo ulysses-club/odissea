@@ -49,8 +49,8 @@ class HeroSectionModule {
                     ]
                 },
                 'Interactive-game': {
-                    title: 'Киноквест "ODISSEA"',
-                    subtitle: 'Нелинейный геоквест по городу!',
+                    title: 'Киноквест "Odissea"',
+                    subtitle: 'Нелинейный, интерактивный геоквест по городу!',
                     image: '../images/1755564775.jpg',
                     imageAlt: 'Участники киноквеста на локации',
                     buttons: [
@@ -68,7 +68,7 @@ class HeroSectionModule {
                     ]
                 },
                 'quiz': {
-                    title: 'Квиз Odissea',
+                    title: 'Квиз "Odissea"',
                     subtitle: 'Проверь свои знания о кино!',
                     image: '../images/quiz-hero.jpg',
                     imageAlt: 'Квиз Odissea - проверь свои знания о кино',
@@ -88,23 +88,11 @@ class HeroSectionModule {
                 },
                 // Дефолтные данные для других страниц
                 'default': {
-                    title: 'Киноклуб "ОДИССЕЯ"',
-                    subtitle: 'Место для настоящих ценителей кино',
-                    image: '../images/default-hero.jpg',
+                    title: 'Киноклуб "Odissea"',
+                    subtitle: 'Как настроить устройство для комфортного просмотра',
+                    image: '../images/setup/device-setup.png',
                     imageAlt: 'Киноклуб Одиссея',
-                    buttons: [
-                        {
-                            text: 'Узнать больше',
-                            href: '#about',
-                            type: 'primary'
-                        },
-                        {
-                            text: 'Контакты',
-                            href: '#contacts',
-                            type: 'outline',
-                            icon: true
-                        }
-                    ]
+                    buttons: []
                 }
             }
         };
