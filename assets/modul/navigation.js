@@ -34,7 +34,8 @@ class NavigationModule {
                     dropdown: [
                         { title: "Квиз Odissea", href: "quiz.html", badge: "DEMO" },
                         { title: "Интерактивная игра", href: "Interactive-game.html" },
-                        { title: "Крокодил", href: "crocodile-game.html", badge: "NEW" }
+                        { title: "Крокодил", href: "crocodile-game.html", badge: "NEW" },
+                        { title: "Рандомайзер", href: "randomizer.html", badge: "NEW" }
                     ]
                 }
             ]
@@ -100,7 +101,12 @@ class NavigationModule {
      * @returns {boolean} - true если пункт активен, иначе false
      */
     isItemActive(currentPage, index) {
-        const pageMap = { 'index': 0, 'setup-guide': 1, 'games': 2 };
+        const pageMap = {
+            'index': 0,
+            'setup-guide': 1,
+            'games': 2,
+            'randomizer': 2
+        };
         return pageMap[currentPage] === index;
     }
 
@@ -370,7 +376,7 @@ const getCurrentPage = () => {
     const path = window.location.pathname;
     if (path.includes('index.html') || path.endsWith('/') || path.includes('/kinoclub-odisseya/')) return 'index';
     if (path.includes('setup-guide.html')) return 'setup-guide';
-    if (path.includes('quiz.html') || path.includes('Interactive-game.html') || path.includes('crocodile-game.html')) return 'games';
+    if (path.includes('quiz.html') || path.includes('Interactive-game.html') || path.includes('crocodile-game.html') || path.includes('randomizer.html')) return 'games';
     return '';
 };
 

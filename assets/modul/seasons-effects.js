@@ -123,6 +123,8 @@ class SeasonsEffectsModule {
             return 'crocodile';
         } else if (path.includes('Interactive-game.html')) {
             return 'interactive';
+        } else if (path.includes('randomizer.html')) {
+            return 'randomizer';
         } else {
             return 'other';
         }
@@ -142,6 +144,7 @@ class SeasonsEffectsModule {
             'quiz': 0.7,
             'crocodile': 0.4,
             'interactive': 0.3,
+            'randomizer': 0.5,
             'other': 0.8
         };
 

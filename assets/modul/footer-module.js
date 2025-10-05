@@ -98,6 +98,27 @@ class FooterModule {
                     ],
                     copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Квиз'
                 },
+                'randomizer': {
+                    logo: 'РАНДОМАЙЗЕР',
+                    links: [
+                        { text: 'Числа', href: '#numbers-mode', active: true },
+                        { text: 'Главная', href: 'index.html' },
+                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
+                    ],
+                    social: [
+                        {
+                            text: 'VK',
+                            href: 'https://vk.com/club199046020',
+                            ariaLabel: 'ВКонтакте'
+                        },
+                        {
+                            text: 'TG',
+                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
+                            ariaLabel: 'Telegram'
+                        }
+                    ],
+                    copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Рандомайзер'
+                },
                 // Дефолтные данные для других страниц
                 'default': {
                     logo: 'ОДИССЕЯ',
@@ -243,6 +264,8 @@ class FooterModule {
             return 'Interactive-game';
         } else if (path.includes('quiz.html')) {
             return 'quiz';
+        } else if (path.includes('randomizer.html')) {
+            return 'randomizer';
         } else if (path.includes('stanislav.html')) {
             return 'default';
         } else {

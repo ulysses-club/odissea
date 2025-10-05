@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Рандомайзер | Киноклуб "ОДИССЕЯ"</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/randomizer.css">
+    <link rel="stylesheet" href="../modul/navigation.css">
+    <link rel="stylesheet" href="../modul/hero-section.css">
+    <link rel="stylesheet" href="../modul/footer-module.css">
+    <link rel="stylesheet" href="../modul/seasons-effects.css">
+    <link rel="stylesheet" href="../modul/scroll-to-top.css">
+    <meta name="description"
+        content="Рандомайзер для выбора случайных чисел и имен. Идеально для жеребьевки и случайных выборов!">
+    <meta name="keywords" content="рандомайзер, случайный выбор, жеребьевка, числа, имена, киноклуб">
+</head>
+
+<body>
+    <!-- Шапка -->
+    <header class="header">
+        <a href="../index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
+            <div class="logo__icon"></div>
+            ОДИССЕЯ
+        </a>
+
+        <!-- Контейнер для навигации -->
+        <div class="nav-container"></div>
+
+        <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">☰</button>
+    </header>
+
+    <!-- Герой секция -->
+    <div class="hero-container"></div>
+
+    <!-- Основной контент -->
+    <main class="randomizer-main">
+        <section class="randomizer-intro">
+            <div class="container">
+                <h2 class="section__title fade-in">Рандомайзер</h2>
+                <p class="intro-text fade-in delay-1">Выберите режим работы рандомайзера для случайного выбора чисел или
+                    имен</p>
+
+                <!-- Переключатель режимов -->
+                <div class="mode-switcher fade-in delay-2">
+                    <button class="mode-btn active" data-mode="numbers">
+                        <span class="mode-icon">🎲</span>
+                        Случайное число
+                    </button>
+                    <button class="mode-btn" data-mode="names">
+                        <span class="mode-icon">👥</span>
+                        Случайное имя
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Режим чисел -->
+        <section id="numbers-mode" class="randomizer-mode active">
+            <div class="container">
+                <h3 class="mode-title fade-in">Генератор случайных чисел</h3>
+
+                <div class="input-section fade-in delay-1">
+                    <div class="input-group">
+                        <label for="min-number">Минимальное число:</label>
+                        <input type="number" id="min-number" value="1" min="0" max="9999">
+                    </div>
+                    <div class="input-group">
+                        <label for="max-number">Максимальное число:</label>
+                        <input type="number" id="max-number" value="100" min="1" max="10000">
+                    </div>
+                </div>
+
+                <div class="action-section fade-in delay-2">
+                    <button id="generate-number" class="btn btn--primary generate-btn">
+                        <span class="btn-icon">🎯</span>
+                        Сгенерировать число
+                    </button>
+                    <button id="generate-multiple" class="btn btn--outline generate-btn">
+                        <span class="btn-icon">🔢</span>
+                        Несколько чисел
+                    </button>
+                </div>
+
+                <!-- Результаты -->
+                <div class="results-section fade-in delay-3">
+                    <div class="result-display">
+                        <div class="result-label">Результат:</div>
+                        <div id="number-result" class="result-value">—</div>
+                    </div>
+
+                    <div id="multiple-results" class="multiple-results">
+                        <div class="results-label">Последние результаты:</div>
+                        <div id="results-list" class="results-list"></div>
+                    </div>
+                </div>
+
+                <!-- История -->
+                <div class="history-section fade-in delay-4">
+                    <h4>История генераций</h4>
+                    <div id="number-history" class="history-list">
+                        <div class="empty-history">Результаты появятся здесь</div>
+                    </div>
+                    <button id="clear-number-history" class="btn btn--outline clear-btn">
+                        <span class="btn-icon">🗑️</span>
+                        Очистить историю
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Режим имен -->
+        <section id="names-mode" class="randomizer-mode">
+            <div class="container">
+                <h3 class="mode-title fade-in">Генератор случайных имен</h3>
+
+                <div class="input-section fade-in delay-1">
+                    <div class="input-group full-width">
+                        <label for="names-input">Введите имена через запятую:</label>
+                        <textarea id="names-input" placeholder="Например: Анна, Борис, Виктория, Григорий..."
+                            rows="4"></textarea>
+                        <div class="input-hint">Разделяйте имена запятыми. Можно вводить списки участников, команд и
+                            т.д.</div>
+                    </div>
+                </div>
+
+                <div class="input-section fade-in delay-2">
+                    <div class="input-group">
+                        <label for="winners-count">Количество победителей:</label>
+                        <input type="number" id="winners-count" value="1" min="1" max="20">
+                    </div>
+                    <div class="input-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="unique-winners">
+                            <span class="checkmark"></span>
+                            Уникальные победители
+                        </label>
+                    </div>
+                </div>
+
+                <div class="action-section fade-in delay-3">
+                    <button id="generate-name" class="btn btn--primary generate-btn">
+                        <span class="btn-icon">🎉</span>
+                        Выбрать победителя
+                    </button>
+                    <button id="shuffle-names" class="btn btn--outline generate-btn">
+                        <span class="btn-icon">🔀</span>
+                        Перемешать список
+                    </button>
+                </div>
+
+                <!-- Результаты -->
+                <div class="results-section fade-in delay-4">
+                    <div class="result-display">
+                        <div class="result-label">Победитель(и):</div>
+                        <div id="name-result" class="result-value">—</div>
+                    </div>
+
+                    <div class="names-list-section">
+                        <h4>Текущий список имен</h4>
+                        <div id="names-list" class="names-list">
+                            <div class="empty-names">Список имен пуст</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- История имен -->
+                <div class="history-section fade-in delay-5">
+                    <h4>История выборов</h4>
+                    <div id="name-history" class="history-list">
+                        <div class="empty-history">Результаты появятся здесь</div>
+                    </div>
+                    <button id="clear-name-history" class="btn btn--outline clear-btn">
+                        <span class="btn-icon">🗑️</span>
+                        Очистить историю
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Советы -->
+        <section id="randomizer-tips" class="randomizer-tips">
+            <div class="container">
+                <h2 class="section__title fade-in">Советы по использованию</h2>
+
+                <div class="tips-grid fade-in delay-1">
+                    <div class="tip-card">
+                        <div class="tip-icon">🎲</div>
+                        <h3>Для чисел</h3>
+                        <ul>
+                            <li>Используйте для жеребьевки номеров</li>
+                            <li>Идеально для розыгрыша призов</li>
+                            <li>Подходит для случайного выбора страниц</li>
+                            <li>Можно использовать в настольных играх</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-card">
+                        <div class="tip-icon">👑</div>
+                        <h3>Для имен</h3>
+                        <ul>
+                            <li>Выбирайте ведущего встречи</li>
+                            <li>Распределяйте роли в играх</li>
+                            <li>Определяйте порядок выступлений</li>
+                            <li>Используйте для жеребьевки команд</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-card">
+                        <div class="tip-icon">⚡</div>
+                        <h3>Экспресс-методы</h3>
+                        <ul>
+                            <li>Сохраняйте часто используемые списки</li>
+                            <li>Используйте историю для повторных выборов</li>
+                            <li>Настройте диапазоны под свои нужды</li>
+                            <li>Экспортируйте результаты при необходимости</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Цитата -->
+                <div class="about__quote fade-in delay-2">
+                    <div class="quote-icon" aria-hidden="true">❝</div>
+                    <p>"Случайность - это не беспорядок, а высшая форма организации!"</p>
+                    <div class="quote-author">— Философ-рандомайзер</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Футер -->
+    <div id="footer-container"></div>
+
+    <!-- Кнопка прокрутки наверх -->
+    <button class="scroll-to-top" aria-label="Наверх">↑</button>
+
+    <!-- Подключаем скрипты -->
+    <script src="../js/randomizer.js"></script>
+    <script src="../modul/navigation.js"></script>
+    <script src="../modul/hero-section.js"></script>
+    <script src="../modul/footer-module.js"></script>
+    <script src="../modul/seasons-effects.js"></script>
+    <script src="../modul/scroll-to-top.js"></script>
+</body>
+
+</html>

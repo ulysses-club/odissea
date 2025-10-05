@@ -86,6 +86,25 @@ class HeroSectionModule {
                         }
                     ]
                 },
+                'randomizer': {
+                    title: 'Рандомайзер',
+                    subtitle: 'Случайные числа и имена для жеребьевки!',
+                    image: '../images/randomizer-hero.jpg',
+                    imageAlt: 'Рандомайзер - инструмент для случайного выбора',
+                    buttons: [
+                        {
+                            text: 'Начать рандом',
+                            href: '#numbers-mode',
+                            type: 'primary'
+                        },
+                        {
+                            text: 'Как использовать',
+                            href: '#randomizer-tips',
+                            type: 'outline',
+                            icon: true
+                        }
+                    ]
+                },
                 // Дефолтные данные для других страниц
                 'default': {
                     title: 'Киноклуб "Odissea"',
@@ -198,6 +217,8 @@ class HeroSectionModule {
             return 'Interactive-game';
         } else if (path.includes('quiz.html')) {
             return 'quiz';
+        } else if (path.includes('randomizer.html')) {
+            return 'randomizer';
         } else if (path.includes('setup-guide.html')) {
             return 'setup-guide';
         } else {
