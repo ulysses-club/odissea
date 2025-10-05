@@ -13,7 +13,7 @@ class HeroSectionModule {
                 'index': {
                     title: 'Киноклуб "ОДИССЕЯ"',
                     subtitle: 'Есть о чем поговорить!',
-                    image: '../images/logo-group-vk.jpg',
+                    image: '../images/logo-group.jpg',
                     imageAlt: 'Участники киноклуба на встрече',
                     buttons: [
                         {
@@ -51,7 +51,7 @@ class HeroSectionModule {
                 'Interactive-game': {
                     title: 'Киноквест "Odissea"',
                     subtitle: 'Нелинейный, интерактивный геоквест по городу!',
-                    image: '../images/1755564775.jpg',
+                    image: '../images/Interactive-game.jpg',
                     imageAlt: 'Участники киноквеста на локации',
                     buttons: [
                         {
