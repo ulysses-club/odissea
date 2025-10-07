@@ -310,48 +310,47 @@ class DiscussionsModule {
         const kinopoiskUrl = this.generateKinopoiskUrl(filmName, filmYear);
 
         return `
-        <article class="film-card" role="article" aria-labelledby="film-${discussionNumber}-title">
-            <div class="film-card-image">
-                <img src="${film['Постер URL'] || this.config.defaults.poster}" 
-                     alt="Постер: ${filmName} (${filmYear})" 
-                     class="film-thumbnail"
-                     loading="lazy"
-                     onerror="this.src='${this.config.defaults.poster}'">
-                <div class="film-rating" aria-label="Рейтинг: ${formattedRating}">
-                    ${this.createRatingStars(rating)}
-                    <span class="rating-number">${formattedRating}</span>
-                </div>
-                
-                ${kinopoiskUrl ? `
-                <div class="poster-overlay">
-                    <a href="${kinopoiskUrl}" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       class="kinopoisk-poster-button"
-                       aria-label="Информация о фильме ${filmName} на КиноПоиске">
-                       🎬 Информация о фильме
-                    </a>
-                </div>
-                ` : ''}
+    <article class="film-card" role="article" aria-labelledby="film-${discussionNumber}-title">
+        <div class="film-card-image">
+            <img src="${film['Постер URL'] || this.config.defaults.poster}" 
+                 alt="Постер: ${filmName} (${filmYear})" 
+                 class="film-thumbnail"
+                 loading="lazy"
+                 onerror="this.src='${this.config.defaults.poster}'">
+            <div class="film-rating" aria-label="Рейтинг: ${formattedRating}">
+                ${this.createRatingStars(rating)}
+                <span class="rating-number">${formattedRating}</span>
             </div>
-            <div class="film-info">
-                <div class="discussion-header">
-                    <span class="discussion-number">Обсуждение #${discussionNumber}</span>
-                    <span class="discussion-date">${this.formatDate(film['Дата'])}</span>
-                </div>
-                
-                <h3 id="film-${discussionNumber}-title">
-                    ${this.escapeHtml(filmName)} ${filmYear ? `(${this.escapeHtml(filmYear)})` : ''}
-                </h3>
-                
-                ${this.createFilmMeta('Режиссер:', film['Режиссер'])}
-                ${this.createFilmMeta('Жанр:', film['Жанр'])}
-                ${this.createFilmMeta('Страна:', film['Страна'])}
-                ${this.createFilmMeta('Участников:', film['Участников'])}
-                ${film['Описание'] ? `<p class="film-description">${this.escapeHtml(film['Описание'])}</p>` : ''}
+        </div>
+        
+        ${kinopoiskUrl ? `
+        <a href="${kinopoiskUrl}" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           class="film-kinopoisk-button"
+           aria-label="Информация о фильме ${filmName} на КиноПоиске">
+           🎬 Информация о фильме
+        </a>
+        ` : ''}
+        
+        <div class="film-info">
+            <div class="discussion-header">
+                <span class="discussion-number">Обсуждение #${discussionNumber}</span>
+                <span class="discussion-date">${this.formatDate(film['Дата'])}</span>
             </div>
-        </article>
-        `;
+            
+            <h3 id="film-${discussionNumber}-title">
+                ${this.escapeHtml(filmName)} ${filmYear ? `(${this.escapeHtml(filmYear)})` : ''}
+            </h3>
+            
+            ${this.createFilmMeta('Режиссер:', film['Режиссер'])}
+            ${this.createFilmMeta('Жанр:', film['Жанр'])}
+            ${this.createFilmMeta('Страна:', film['Страна'])}
+            ${this.createFilmMeta('Участников:', film['Участников'])}
+            ${film['Описание'] ? `<p class="film-description">${this.escapeHtml(film['Описание'])}</p>` : ''}
+        </div>
+    </article>
+    `;
     }
 
     /**

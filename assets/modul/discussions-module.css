@@ -5,6 +5,25 @@
     position: relative;
 }
 
+.film-kinopoisk-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: var(--space-md) var(--space-lg);
+    background: linear-gradient(135deg, var(--primary-kp), var(--secondary-kp));
+    color: var(--light) !important;
+    text-decoration: none;
+    border: none;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
 .film-archive::before {
     content: '';
     position: absolute;
@@ -33,6 +52,8 @@
     transition: var(--transition);
     box-shadow: var(--shadow-md);
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .film-card:hover {
@@ -40,17 +61,19 @@
     box-shadow: var(--shadow-xl);
 }
 
+/* АДАПТИВНЫЙ КОНТЕЙНЕР ДЛЯ ПОСТЕРА */
 .film-card-image {
     position: relative;
     width: 100%;
-    height: 350px;
+    height: auto; /* Высота становится адаптивной */
     overflow: hidden;
+    aspect-ratio: 2/3; /* Сохраняем пропорции постера (2:3) */
 }
 
 .film-thumbnail {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: 100%; /* Занимает всю высоту контейнера */
+    object-fit: cover; /* Обеспечивает правильное отображение */
     transition: var(--transition);
 }
 
@@ -60,7 +83,7 @@
 
 .film-rating {
     position: absolute;
-    bottom: var(--space-md);
+    top: var(--space-md);
     right: var(--space-md);
     background: var(--dark-light);
     backdrop-filter: blur(5px);
@@ -70,6 +93,7 @@
     align-items: center;
     gap: var(--space-sm);
     font-weight: bold;
+    z-index: 2;
 }
 
 .rating-stars {
@@ -82,6 +106,9 @@
 
 .film-info {
     padding: var(--space-lg);
+    flex-grow: 1; /* Занимает оставшееся пространство */
+    display: flex;
+    flex-direction: column;
 }
 
 .discussion-header {
@@ -96,12 +123,14 @@
     font-size: var(--text-xl);
     margin-bottom: var(--space-sm);
     color: var(--light);
+    flex-grow: 0; /* Не растягивается */
 }
 
 .film-meta {
     margin: var(--space-xs) 0;
     font-size: var(--text-sm);
     color: #827fa7;
+    flex-grow: 0; /* Не растягивается */
 }
 
 .meta-label {
@@ -115,6 +144,7 @@
     color: var(--light);
     opacity: 0.8;
     line-height: 1.5;
+    flex-grow: 1; /* Описание занимает оставшееся пространство */
 }
 
 /* Кнопка "Показать еще" */
@@ -233,10 +263,18 @@
 
 /* Адаптивность для кнопки */
 @media (max-width: 480px) {
+    .film-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .film-kinopoisk-button {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.75rem;
+    }
+
     .load-more-btn {
         width: 100%;
         max-width: 300px;
-        padding: var(--space-md) var(--space-lg);
     }
 }
 
@@ -247,45 +285,42 @@
         gap: var(--space-lg);
     }
 
-    .film-card-image {
-        height: 300px;
-    }
-
     .discussion-header {
         flex-direction: column;
         gap: var(--space-xs);
     }
 
-    /* Мобильная версия кнопки КиноПоиска */
-    .poster-overlay {
-        opacity: 1;
-        background: rgba(0, 0, 0, 0.6);
-    }
-
-    .kinopoisk-poster-button {
-        transform: translateY(0);
-        opacity: 1;
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
+    .film-kinopoisk-button {
+        padding: var(--space-sm) var(--space-md);
+        font-size: var(--text-xs);
     }
 }
 
 @media (max-width: 480px) {
-    .film-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .film-card-image {
-        height: 250px;
-    }
-
-    .kinopoisk-poster-button {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
-    }
-
     .load-more-btn {
         width: 100%;
         max-width: 300px;
+        padding: var(--space-md) var(--space-lg);
+    }
+    
+    .film-kinopoisk-button {
+        padding: var(--space-sm) var(--space-md);
+        font-size: var(--text-xs);
+    }
+}
+
+/* Поддержка для браузеров, которые не поддерживают aspect-ratio */
+@supports not (aspect-ratio: 2/3) {
+    .film-card-image {
+        height: 0;
+        padding-bottom: 150%; /* 3:2 = 150% (высота/ширина * 100%) */
+    }
+    
+    .film-thumbnail {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
     }
 }
