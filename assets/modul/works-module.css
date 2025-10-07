@@ -1,57 +1,88 @@
-/* Стили для секции архива работ */
+/* Стили для секции архива работ*/
 .video-posters-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: var(--space-xl);
     margin-bottom: var(--space-xxl);
+    padding: var(--space-lg);
 }
 
-/* Карточка видео работы */
+/* Карточка видео работы*/
 .film-poster {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    transition: var(--transition);
-    box-shadow: var(--shadow-md);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.film-poster::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    z-index: 2;
 }
 
 .film-poster:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-xl);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow:
+        0 12px 24px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+.film-poster:hover::before {
+    transform: scaleX(1);
+}
+
+/* Контейнер для видео */
 .video-link {
     position: relative;
     display: block;
-    height: 300px;
+    height: 280px;
     overflow: hidden;
+    background: var(--dark);
 }
 
 .poster-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: var(--transition);
+    transition: all 0.5s ease;
+    filter: brightness(0.9);
 }
 
 .film-poster:hover .poster-image {
-    transform: scale(1.05);
+    transform: scale(1.03);
+    filter: brightness(0.95);
 }
 
+/* Оверлей с кнопкой воспроизведения*/
 .play-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg,
+            rgba(100, 15, 179, 0.2) 0%,
+            rgba(30, 82, 170, 0.15) 50%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: var(--transition);
+    transition: all 0.4s ease;
     pointer-events: none;
 }
 
@@ -61,95 +92,215 @@
 }
 
 .play-button {
-    font-size: var(--text-xxxl);
+    font-size: var(--text-xxxxl);
     color: white;
     margin-bottom: var(--space-md);
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    transform: scale(0.8);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.film-poster:hover .play-button {
+    transform: scale(1.2);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .watch-text {
     color: white;
-    font-weight: bold;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    font-size: var(--text-lg);
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+/* Информация о работе*/
 .work-info {
-    padding: var(--space-lg);
+    padding: var(--space-xl);
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0.02) 0%,
+            rgba(255, 255, 255, 0.05) 100%);
 }
 
 .work-info h3 {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-sm);
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-md);
     color: var(--light);
+    background: linear-gradient(135deg, var(--light) 0%, #e0e0e0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    line-height: 1.3;
 }
 
 .work-description {
     font-size: var(--text-sm);
     color: var(--gray);
-    line-height: 1.5;
+    line-height: 1.6;
+    margin-bottom: var(--space-sm);
+    opacity: 0.9;
 }
 
-/* Состояния загрузки и ошибок */
-.works-loading-message, .works-no-data {
+/* Бейдж типа работы */
+.work-type {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--space-md);
+    box-shadow: 0 2px 8px rgba(106, 17, 203, 0.3);
+}
+
+/* Год выпуска */
+.work-year {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.work-year::before {
+    content: '📅';
+    font-size: var(--text-sm);
+}
+
+/* Состояния загрузки и ошибок*/
+.works-loading-message,
+.works-no-data {
     text-align: center;
-    padding: var(--space-xl);
+    padding: var(--space-xxl);
     color: var(--gray);
     font-size: var(--text-lg);
     grid-column: 1 / -1;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .works-spinner {
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--gray);
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(106, 17, 203, 0.3);
     border-radius: 50%;
-    border-top-color: transparent;
+    border-top-color: var(--primary);
     animation: spin 1s ease-in-out infinite;
     margin-right: var(--space-sm);
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+    box-shadow: 0 0 10px rgba(106, 17, 203, 0.3);
 }
 
 /* Анимации */
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px) scale(0.95);
     }
+
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    50% {
+        box-shadow:
+            0 8px 32px rgba(106, 17, 203, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
 }
 
 .film-poster {
-    animation: fadeInUp 0.5s ease forwards;
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.film-poster.loading {
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* Эффект блика при наведении */
+.film-poster::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent);
+    transition: left 0.6s ease;
+    z-index: 1;
+}
+
+.film-poster:hover::after {
+    left: 100%;
 }
 
 /* Адаптивность */
+@media (max-width: 1200px) {
+    .video-posters-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: var(--space-lg);
+    }
+}
+
 @media (max-width: 768px) {
     .video-posters-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: var(--space-lg);
+        padding: var(--space-md);
     }
 
     .video-link {
-        height: 250px;
+        height: 240px;
     }
 
     /* Мобильная версия overlay */
     .play-overlay {
         opacity: 1;
-        background: rgba(0, 0, 0, 0.6);
+        background: linear-gradient(135deg,
+                rgba(107, 17, 203, 0.123) 0%,
+                rgba(37, 116, 252, 0.082) 100%);
+    }
+
+    .work-info {
+        padding: var(--space-lg);
+    }
+
+    .work-info h3 {
+        font-size: var(--text-lg);
     }
 }
 
 @media (max-width: 480px) {
     .video-posters-grid {
         grid-template-columns: 1fr;
+        gap: var(--space-md);
+        padding: var(--space-sm);
     }
 
     .video-link {
@@ -162,5 +313,64 @@
 
     .work-info h3 {
         font-size: var(--text-md);
+    }
+
+    .play-button {
+        font-size: var(--text-xxxl);
+    }
+
+    .watch-text {
+        font-size: var(--text-md);
+        padding: var(--space-xs) var(--space-sm);
+    }
+}
+
+/* Темная тема улучшений */
+@media (prefers-color-scheme: dark) {
+    .film-poster {
+        background: linear-gradient(145deg, rgba(30, 30, 46, 0.8), rgba(20, 20, 36, 0.6));
+    }
+
+    .work-info {
+        background: linear-gradient(to bottom,
+                rgba(255, 255, 255, 0.02) 0%,
+                rgba(255, 255, 255, 0.03) 100%);
+    }
+}
+
+/* Анимация появления карточек с задержкой */
+.film-poster:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.film-poster:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.film-poster:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.film-poster:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.film-poster:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.film-poster:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+/* Эффект параллакса для карточек */
+@media (min-width: 768px) {
+    .video-posters-grid {
+        perspective: 1000px;
+    }
+
+    .film-poster {
+        transform-style: preserve-3d;
+        transform: translateZ(0);
     }
 }

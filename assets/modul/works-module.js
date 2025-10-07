@@ -215,33 +215,34 @@ class WorksModule {
         const hasVideo = videoUrl && videoUrl !== '#';
 
         return `
-        <article class="film-poster" role="article" aria-labelledby="work-${this.escapeHtml(workName)}-title">
-            <a href="${videoUrl}" 
-               ${hasVideo ? 'target="_blank" rel="noopener noreferrer"' : ''} 
-               class="video-link" 
-               aria-label="${workType}: ${this.escapeHtml(workName)} (${workYear})"
-               ${!hasVideo ? 'style="pointer-events: none; cursor: default;"' : ''}>
-               
-                <img src="${work['URL постера'] || this.config.defaults.poster}" 
-                     alt="${workType}: ${this.escapeHtml(workName)} (${workYear})" 
-                     class="poster-image" 
-                     loading="lazy"
-                     onerror="this.src='${this.config.defaults.poster}'">
-                     
-                <div class="play-overlay">
-                    <div class="play-button" aria-hidden="true">▶</div>
-                    <p class="watch-text">${this.config.messages.watchVideo}</p>
-                </div>
-            </a>
-            <div class="work-info">
-                <h3 id="work-${this.escapeHtml(workName)}-title">
-                    ${this.escapeHtml(workName)} ${workYear ? `(${this.escapeHtml(workYear)})` : ''}
-                </h3>
-                ${work['Описание'] ? `<p class="work-description">${this.escapeHtml(work['Описание'])}</p>` : ''}
-                ${workType ? `<p class="work-description"><strong>Тип:</strong> ${this.escapeHtml(workType)}</p>` : ''}
+    <article class="film-poster" role="article" aria-labelledby="work-${this.escapeHtml(workName)}-title">
+        <a href="${videoUrl}" 
+           ${hasVideo ? 'target="_blank" rel="noopener noreferrer"' : ''} 
+           class="video-link" 
+           aria-label="${workType}: ${this.escapeHtml(workName)} (${workYear})"
+           ${!hasVideo ? 'style="pointer-events: none; cursor: default;"' : ''}>
+           
+            <img src="${work['URL постера'] || this.config.defaults.poster}" 
+                 alt="${workType}: ${this.escapeHtml(workName)} (${workYear})" 
+                 class="poster-image" 
+                 loading="lazy"
+                 onerror="this.src='${this.config.defaults.poster}'">
+                 
+            <div class="play-overlay">
+                <div class="play-button" aria-hidden="true">▶</div>
+                <p class="watch-text">${this.config.messages.watchVideo}</p>
             </div>
-        </article>
-        `;
+        </a>
+        <div class="work-info">
+        ${workYear ? `<p class="work-year">${this.escapeHtml(workYear)}</p>` : ''}
+            ${workType ? `<span class="work-type">${this.escapeHtml(workType)}</span>` : ''}
+            <h3 id="work-${this.escapeHtml(workName)}-title">
+                ${this.escapeHtml(workName)}
+            </h3>
+            ${work['Описание'] ? `<p class="work-description">${this.escapeHtml(work['Описание'])}</p>` : ''}
+        </div>
+    </article>
+    `;
     }
 
     /**
