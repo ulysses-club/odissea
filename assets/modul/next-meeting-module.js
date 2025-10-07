@@ -150,10 +150,10 @@ class NextMeetingModule {
             "genre": "Нет данных",
             "country": "Нет данных",
             "year": 2025,
-            "poster": "https://sun9-62.vkuserphoto.ru/s/v1/ig2/Tq9FLNYDLD2Q7VKcS3H2RCyw4oqjepBQQhke4dPsRy3wRhhIrF1vs_Xw0HcUjCVscVZozsvOl8_qK8jcxqWbI8e_.jpg?quality=95&as=32x40,48x60,72x89,108x134,160x199,240x298,360x447,480x596,540x671,640x795,720x894,1080x1342,1280x1590,1288x1600&from=bu&cs=1288x0",
+            "poster": "../images/default-poster.jpg",
             "discussionNumber": 1,
-            "description": "Нет данных",
-            "requirements": "Нет данных"
+            "cast": "Нет данных",
+            "requirements": "Рекомендуем посмотреть фильм заранее"
         };
     }
 
@@ -200,7 +200,7 @@ class NextMeetingModule {
         }
 
         const { defaults, messages } = this.config;
-        const { date, time, place, film, director, genre, country, year, poster, discussionNumber, description, requirements } = meetingData;
+        const { date, time, place, film, director, genre, country, year, poster, discussionNumber, cast, requirements } = meetingData;
 
         // Проверяем, актуальна ли дата встречи
         try {
@@ -254,15 +254,10 @@ class NextMeetingModule {
                         ${this.createMeetingDetail('🎭', 'Жанр:', genre)}
                         ${this.createMeetingDetail('🌍', 'Страна:', country)}
                         ${this.createMeetingDetail('📍', 'Место:', place)}
+                        ${this.createMeetingDetail('👥', 'В главных ролях:', cast)}
                     </div>
                     
                     <div id="meeting-countdown"></div>
-                    
-                    ${description ? `
-                        <div class="next-meeting-description">
-                            <p>${this.escapeHtml(description)}</p>
-                        </div>
-                    ` : ''}
                     
                     ${kinopoiskUrl ? `
                         <a href="${kinopoiskUrl}" 
@@ -291,7 +286,14 @@ class NextMeetingModule {
      * @returns {string} - HTML-строка элемента или пустая строка
      */
     createMeetingDetail(icon, label, value) {
-        return value ? `<div class="next-meeting-detail"><span class="detail-icon">${icon}</span><span><strong>${label}</strong> ${this.escapeHtml(value)}</span></div>` : '';
+        // Проверяем, что значение не пустое и не равно старому полю description
+        if (value && value !== 'Нет данных' && !value.includes('description')) {
+            return `<div class="next-meeting-detail">
+            <span class="detail-icon">${icon}</span>
+            <span><strong>${label}</strong> ${this.escapeHtml(value)}</span>
+        </div>`;
+        }
+        return '';
     }
 
     /**

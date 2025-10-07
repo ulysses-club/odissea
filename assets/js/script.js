@@ -64,6 +64,21 @@ const EVENT_HANDLERS = {
 let scrollTimeout = null;
 
 /**
+ * Загружает данные о следующей встрече
+ */
+async function loadNextMeetingData() {
+    try {
+        const response = await fetch(CONFIG.dataSources.nextMeeting);
+        if (!response.ok) throw new Error('Ошибка загрузки данных о встрече');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Ошибка загрузки данных о встрече:', error);
+        return null;
+    }
+}
+
+/**
  * Инициализирует мобильное меню с оверлеем и обработчиками событий
  * Создает оверлей для мобильного меню и настраивает взаимодействие
  */
