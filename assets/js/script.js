@@ -137,6 +137,9 @@ function initApp() {
     // Инициализация модулей
     initSeasonEffects();
     initScrollToTop();
+    
+    // Инициализация модуля погоды
+    initWeatherModule();
 
     console.log('Приложение инициализировано');
 }
