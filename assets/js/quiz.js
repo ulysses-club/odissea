@@ -303,7 +303,7 @@ class Quiz {
 
     getRoundDescription(round) {
         const descriptions = {
-            1: "Фото-тур: Определите фильм по кадру",
+            1: "Фото-тур: Определите фильм по кадру. Черно Белые фильмы + 1 цветной",
             2: "Фото-тур: Узнайте актера и фильм",
             3: "Тур с выбором: 4 варианта ответа",
             4: "Фото-тур: Iconic кадры кино",
@@ -366,13 +366,6 @@ class Quiz {
                     ${this.renderQuestionContent(question)}
                 </div>
 
-                <div class="quiz-instruction">
-                    <div class="instruction-badge">
-                        📝 Записывайте ответ на бумаге!
-                    </div>
-                    <p>Вопрос сменится автоматически через <strong id="time-remaining">${question.time}</strong> секунд</p>
-                </div>
-
                 <div class="quiz-navigation">
                     <div class="nav-buttons">
                         <button class="btn btn--outline nav-btn prev-btn" id="prev-btn" ${this.currentQuestionIndex === 0 ? 'disabled' : ''}>
@@ -419,12 +412,7 @@ class Quiz {
                     <div class="answer-hint">Запишите ответы на все 5 вопросов последовательно</div>
                 `;
             default: // open
-                return `
-                    <div class="open-answer-instruction">
-                        <div class="writing-icon">✍️</div>
-                        <p>Запишите ваш ответ на бланке для ответов</p>
-                    </div>
-                `;
+                return ``;
         }
     }
 

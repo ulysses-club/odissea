@@ -206,7 +206,7 @@
 
 .question-image {
     width: 100%;
-    max-width: 400px;
+    max-width: 1400px;
     margin: 0 auto var(--space-lg);
     border-radius: var(--radius-md);
     overflow: hidden;
