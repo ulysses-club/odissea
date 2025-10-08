@@ -68,21 +68,15 @@ class HeroSectionModule {
                     ]
                 },
                 'quiz': {
-                    title: 'Квиз "Odissea"',
+                    title: 'Квиз Odissea',
                     subtitle: 'Проверь свои знания о кино!',
                     image: '../images/quiz-hero.jpg',
                     imageAlt: 'Квиз Odissea - проверь свои знания о кино',
                     buttons: [
                         {
                             text: 'Начать квиз',
-                            href: '#quiz-start',
-                            type: 'primary'
-                        },
-                        {
-                            text: 'Правила',
                             href: '#quiz-rules',
-                            type: 'outline',
-                            icon: true
+                            type: 'primary'
                         }
                     ]
                 },

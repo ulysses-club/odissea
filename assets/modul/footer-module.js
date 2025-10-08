@@ -78,7 +78,7 @@ class FooterModule {
                     copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Киноквест'
                 },
                 'quiz': {
-                    logo: 'ODISSEA QUIZ',
+                    logo: 'Квиз Odissea',
                     links: [
                         { text: 'Правила', href: '#quiz-rules', active: true },
                         { text: 'Главная', href: 'index.html' },
