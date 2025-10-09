@@ -35,18 +35,8 @@ class NavigationModule {
                         { title: "Квиз Odissea", href: "quiz.html", badge: "DEMO" },
                         { title: "Интерактивная игра", href: "Interactive-game.html" },
                         { title: "Крокодил", href: "crocodile-game.html", badge: "NEW" },
-                        { title: "Рандомайзер", href: "randomizer.html", badge: "NEW" }
-                    ]
-                },
-                {
-                    title: "Игры",
-                    href: "crocodile-game.html",
-                    dropdown: [
+                        { title: "Рандомайзер", href: "randomizer.html", badge: "NEW" },
                         { title: "Тайный Санта", href: "santa-game.html", badge: "NEW" },
-                        { title: "Квиз Odissea", href: "quiz.html", badge: "DEMO" },
-                        { title: "Интерактивная игра", href: "Interactive-game.html" },
-                        { title: "Крокодил", href: "crocodile-game.html" },
-                        { title: "Рандомайзер", href: "randomizer.html" }
                     ]
                 }
             ]
