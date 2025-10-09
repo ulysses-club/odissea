@@ -1,0 +1,68 @@
+{
+  "YOI7IC": {
+    "code": "YOI7IC",
+    "name": "Geek",
+    "adminChatId": 1147849296,
+    "participants": {
+      "1147849296": {
+        "chatId": 1147849296,
+        "name": "Stanislav",
+        "address": "Трактор",
+        "wishes": "Трактор",
+        "joinedAt": "2025-10-09T08:42:23.971Z"
+      },
+      "7644957461": {
+        "chatId": 7644957461,
+        "name": "Стас",
+        "address": "Кукла барби",
+        "wishes": "Кукла барби",
+        "joinedAt": "2025-10-09T08:41:19.504Z",
+        "updatedAt": "2025-10-09T08:42:05.867Z"
+      }
+    },
+    "createdAt": "2025-10-09T08:41:09.539Z",
+    "isActive": true,
+    "drawCompleted": true,
+    "drawResults": [
+      {
+        "giver": {
+          "chatId": 1147849296,
+          "name": "Stanislav",
+          "address": "Трактор",
+          "wishes": "Трактор",
+          "joinedAt": "2025-10-09T08:42:23.971Z",
+          "roomCode": "YOI7IC"
+        },
+        "receiver": {
+          "chatId": 7644957461,
+          "name": "Стас",
+          "address": "Кукла барби",
+          "wishes": "Кукла барби",
+          "joinedAt": "2025-10-09T08:41:19.504Z",
+          "updatedAt": "2025-10-09T08:42:05.867Z",
+          "roomCode": "YOI7IC"
+        }
+      },
+      {
+        "giver": {
+          "chatId": 7644957461,
+          "name": "Стас",
+          "address": "Кукла барби",
+          "wishes": "Кукла барби",
+          "joinedAt": "2025-10-09T08:41:19.504Z",
+          "updatedAt": "2025-10-09T08:42:05.867Z",
+          "roomCode": "YOI7IC"
+        },
+        "receiver": {
+          "chatId": 1147849296,
+          "name": "Stanislav",
+          "address": "Трактор",
+          "wishes": "Трактор",
+          "joinedAt": "2025-10-09T08:42:23.971Z",
+          "roomCode": "YOI7IC"
+        }
+      }
+    ],
+    "drawAt": "2025-10-09T08:43:37.304Z"
+  }
+}

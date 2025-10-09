@@ -37,6 +37,17 @@ class NavigationModule {
                         { title: "Крокодил", href: "crocodile-game.html", badge: "NEW" },
                         { title: "Рандомайзер", href: "randomizer.html", badge: "NEW" }
                     ]
+                },
+                {
+                    title: "Игры",
+                    href: "crocodile-game.html",
+                    dropdown: [
+                        { title: "Тайный Санта", href: "santa-game.html", badge: "NEW" },
+                        { title: "Квиз Odissea", href: "quiz.html", badge: "DEMO" },
+                        { title: "Интерактивная игра", href: "Interactive-game.html" },
+                        { title: "Крокодил", href: "crocodile-game.html" },
+                        { title: "Рандомайзер", href: "randomizer.html" }
+                    ]
                 }
             ]
         };
@@ -105,6 +116,7 @@ class NavigationModule {
             'index': 0,
             'setup-guide': 1,
             'games': 2,
+            'santa-game': 2,
             'randomizer': 2
         };
         return pageMap[currentPage] === index;

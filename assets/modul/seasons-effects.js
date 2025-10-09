@@ -471,6 +471,67 @@ class SeasonsEffectsModule {
             this.createEffects();
         }
     }
+
+    // В класс SeasonsEffectsModule добавляем метод для новогодних эффектов
+    initSantaEffects() {
+        if (!document.querySelector('.santa-auth')) return;
+
+        // Снегопад
+        this.createSnowfall();
+
+        // Мигающие огоньки
+        this.createTwinklingLights();
+
+        // Анимация подарков
+        this.createGiftAnimations();
+    }
+
+    createSnowfall() {
+        const snowContainer = document.createElement('div');
+        snowContainer.className = 'snowfall';
+        snowContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9998;
+        overflow: hidden;
+    `;
+
+        for (let i = 0; i < 50; i++) {
+            const snowflake = document.createElement('div');
+            snowflake.innerHTML = '❄';
+            snowflake.style.cssText = `
+            position: absolute;
+            top: -20px;
+            color: white;
+            font-size: ${Math.random() * 10 + 10}px;
+            opacity: ${Math.random() * 0.5 + 0.3};
+            animation: snowfall ${Math.random() * 5 + 5}s linear infinite;
+            animation-delay: ${Math.random() * 5}s;
+            left: ${Math.random() * 100}%;
+        `;
+            snowContainer.appendChild(snowflake);
+        }
+
+        document.body.appendChild(snowContainer);
+
+        // Стили для анимации снегопада
+        const style = document.createElement('style');
+        style.textContent = `
+        @keyframes snowfall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+    `;
+        document.head.appendChild(style);
+    }
 }
 
 /**

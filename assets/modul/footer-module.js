@@ -36,7 +36,7 @@ class FooterModule {
                 'crocodile-game': {
                     logo: 'КРОКОДИЛ',
                     links: [
-                        { text: 'Правила', href: '#rules', active: true},
+                        { text: 'Правила', href: '#rules', active: true },
                         { text: 'Играть', href: '#game-start' },
                         { text: 'Главная', href: 'index.html' },
                         { text: 'Автор сайта', href: '../pages/stanislav.html' }
@@ -118,6 +118,28 @@ class FooterModule {
                         }
                     ],
                     copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Рандомайзер'
+                },
+                'santa-game': {
+                    logo: '🎅 ТАЙНЫЙ САНТА',
+                    links: [
+                        { text: 'Узнать Санту', href: '#auth', active: true },
+                        { text: 'Правила', href: '#rules' },
+                        { text: 'Главная', href: 'index.html' },
+                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
+                    ],
+                    social: [
+                        {
+                            text: 'VK',
+                            href: 'https://vk.com/club199046020',
+                            ariaLabel: 'ВКонтакте'
+                        },
+                        {
+                            text: 'TG',
+                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
+                            ariaLabel: 'Telegram'
+                        }
+                    ],
+                    copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Тайный Санта'
                 },
                 // Дефолтные данные для других страниц
                 'default': {
@@ -266,8 +288,10 @@ class FooterModule {
             return 'quiz';
         } else if (path.includes('randomizer.html')) {
             return 'randomizer';
+        } else if (path.includes('santa-game.html')) {
+            return 'santa-game';
         } else if (path.includes('stanislav.html')) {
-            return 'default';
+            return 'stanislav';
         } else {
             return 'default';
         }

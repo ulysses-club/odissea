@@ -99,6 +99,25 @@ class HeroSectionModule {
                         }
                     ]
                 },
+                'santa-game': {
+                    title: '🎅 Тайный Санта',
+                    subtitle: 'Волшебный обмен подарками в киноклубе Одиссея',
+                    image: '../images/santa-hero.jpg',
+                    imageAlt: 'Тайный Санта - волшебный обмен подарками',
+                    buttons: [
+                        {
+                            text: 'Узнать своего Санту',
+                            href: '#auth',
+                            type: 'primary'
+                        },
+                        {
+                            text: 'Правила игры',
+                            href: '#rules',
+                            type: 'outline',
+                            icon: true
+                        }
+                    ]
+                },
                 // Дефолтные данные для других страниц
                 'default': {
                     title: 'Киноклуб "Odissea"',
@@ -215,6 +234,8 @@ class HeroSectionModule {
             return 'randomizer';
         } else if (path.includes('setup-guide.html')) {
             return 'setup-guide';
+        } else if (path.includes('santa-game.html')) {
+            return 'santa-game';
         } else {
             return 'default';
         }
