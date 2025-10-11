@@ -1,77 +1,71 @@
 {
-  "YOI7IC": {
-    "code": "YOI7IC",
+  "YBEWWX": {
+    "code": "YBEWWX",
     "name": "Geek",
     "adminChatId": 1147849296,
     "participants": {
       "1147849296": {
         "chatId": 1147849296,
-        "name": "Stanislav",
-        "address": "Трактор",
-        "wishes": "Трактор",
-        "joinedAt": "2025-10-09T08:42:23.971Z"
+        "name": "Настя",
+        "address": "Подушка",
+        "wishes": "Подушка",
+        "joinedAt": "2025-10-11T11:09:33.075Z",
+        "updatedAt": "2025-10-11T11:11:15.870Z"
       },
       "7644957461": {
         "chatId": 7644957461,
         "name": "Стас",
-        "address": "Кукла барби",
-        "wishes": "Кукла барби",
-        "joinedAt": "2025-10-09T08:41:19.504Z",
-        "updatedAt": "2025-10-09T08:42:05.867Z"
+        "address": "Книга",
+        "wishes": "Книга",
+        "joinedAt": "2025-10-11T11:10:09.999Z",
+        "updatedAt": "2025-10-11T11:11:36.869Z"
       }
     },
-    "createdAt": "2025-10-09T08:41:09.539Z",
+    "createdAt": "2025-10-11T11:09:24.701Z",
     "isActive": true,
     "drawCompleted": true,
     "drawResults": [
       {
         "giver": {
           "chatId": 1147849296,
-          "name": "Stanislav",
-          "address": "Трактор",
-          "wishes": "Трактор",
-          "joinedAt": "2025-10-09T08:42:23.971Z",
-          "roomCode": "YOI7IC"
+          "name": "Настя",
+          "address": "Подушка",
+          "wishes": "Подушка",
+          "joinedAt": "2025-10-11T11:09:33.075Z",
+          "updatedAt": "2025-10-11T11:11:15.870Z",
+          "roomCode": "YBEWWX"
         },
         "receiver": {
           "chatId": 7644957461,
           "name": "Стас",
-          "address": "Кукла барби",
-          "wishes": "Кукла барби",
-          "joinedAt": "2025-10-09T08:41:19.504Z",
-          "updatedAt": "2025-10-09T08:42:05.867Z",
-          "roomCode": "YOI7IC"
+          "address": "Книга",
+          "wishes": "Книга",
+          "joinedAt": "2025-10-11T11:10:09.999Z",
+          "updatedAt": "2025-10-11T11:11:36.869Z",
+          "roomCode": "YBEWWX"
         }
       },
       {
         "giver": {
           "chatId": 7644957461,
           "name": "Стас",
-          "address": "Кукла барби",
-          "wishes": "Кукла барби",
-          "joinedAt": "2025-10-09T08:41:19.504Z",
-          "updatedAt": "2025-10-09T08:42:05.867Z",
-          "roomCode": "YOI7IC"
+          "address": "Книга",
+          "wishes": "Книга",
+          "joinedAt": "2025-10-11T11:10:09.999Z",
+          "updatedAt": "2025-10-11T11:11:36.869Z",
+          "roomCode": "YBEWWX"
         },
         "receiver": {
           "chatId": 1147849296,
-          "name": "Stanislav",
-          "address": "Трактор",
-          "wishes": "Трактор",
-          "joinedAt": "2025-10-09T08:42:23.971Z",
-          "roomCode": "YOI7IC"
+          "name": "Настя",
+          "address": "Подушка",
+          "wishes": "Подушка",
+          "joinedAt": "2025-10-11T11:09:33.075Z",
+          "updatedAt": "2025-10-11T11:11:15.870Z",
+          "roomCode": "YBEWWX"
         }
       }
     ],
-    "drawAt": "2025-10-09T08:43:37.304Z"
-  },
-  "ZHE2MS": {
-    "code": "ZHE2MS",
-    "name": "Geek",
-    "adminChatId": 1147849296,
-    "participants": {},
-    "createdAt": "2025-10-11T10:43:29.592Z",
-    "isActive": true,
-    "drawCompleted": false
+    "drawAt": "2025-10-11T11:12:01.896Z"
   }
 }
