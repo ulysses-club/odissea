@@ -64,5 +64,14 @@
       }
     ],
     "drawAt": "2025-10-09T08:43:37.304Z"
+  },
+  "ZHE2MS": {
+    "code": "ZHE2MS",
+    "name": "Geek",
+    "adminChatId": 1147849296,
+    "participants": {},
+    "createdAt": "2025-10-11T10:43:29.592Z",
+    "isActive": true,
+    "drawCompleted": false
   }
 }
