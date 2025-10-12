@@ -5,12 +5,12 @@ class VKSyncModule {
     constructor() {
         this.config = {
             vk: {
-                accessToken: '',
+                accessToken: 'vk1.a.oEkiefTspAQeHMzHWmVpjbv8X7K3tNjm3wgd1Id_2b9UVFLSm1Nzr5aoxo-thkeZ245sBhbBr2wuiRgecayEre6T5-l2Z-HConP970llDH5YXy_Vf2W_62Sllbd3EHkCWsPHqle_pGNEa8B6olU0HgqjmmHbdpJ0UshdbW3rdFUtjNzNmAgWBNfHgH6G2wT94tQ0u8mkeKsgDIjllcl5fw',
                 groupId: -232406584,
                 apiVersion: '5.131'
             },
             github: {
-                token: '',
+                token: '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',
                 owner: 'ulysses-club',
                 repo: 'odissea',
                 path: 'assets/data/next-meeting.json'
@@ -173,12 +173,12 @@ class VKSyncModule {
             let day = match[1].padStart(2, '0');
             let month = match[2].padStart(2, '0');
             let year = match[3];
-            
+
             // Если год двухзначный, добавляем 20
             if (year.length === 2) {
                 year = '20' + year;
             }
-            
+
             return `${day}.${month}.${year}`;
         }
         return dateString;
@@ -186,12 +186,12 @@ class VKSyncModule {
 
     validateMeetingData(data) {
         const required = ['film', 'date'];
-        const missing = required.filter(field => 
-            !data[field] || 
-            data[field].includes('не указан') || 
+        const missing = required.filter(field =>
+            !data[field] ||
+            data[field].includes('не указан') ||
             data[field].includes('не выбран')
         );
-        
+
         if (missing.length > 0) {
             console.warn('Отсутствуют обязательные поля:', missing);
             return false;
@@ -308,12 +308,12 @@ class VKSyncModule {
                 this.state.lastSyncTime = new Date();
                 this.updateSyncStatus('success', 'Синхронизация завершена');
                 console.log('Синхронизация завершена успешно!');
-                
+
                 // Обновляем отображение на странице
                 if (window.nextMeetingModule) {
                     window.nextMeetingModule.updateMeetingData(meetingData);
                 }
-                
+
                 return true;
             }
 
