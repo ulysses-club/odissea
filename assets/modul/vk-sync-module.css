@@ -115,3 +115,87 @@
         min-width: auto;
     }
 }
+
+/* Стили для панели синхронизации ВК */
+.vk-sync-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    max-width: 300px;
+}
+
+.vk-sync-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.vk-sync-icon {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.vk-sync-status {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-indicator.ready { background: #4CAF50; }
+.status-indicator.syncing { background: #FFC107; animation: pulse 1s infinite; }
+.status-indicator.success { background: #4CAF50; }
+.status-indicator.warning { background: #FF9800; }
+.status-indicator.error { background: #f44336; }
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.vk-sync-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.vk-sync-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    flex: 1;
+}
+
+.vk-sync-btn:hover {
+    background: #2980b9;
+}
+
+.vk-sync-info {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.vk-sync-last-update {
+    margin-top: 5px;
+    font-style: italic;
+}

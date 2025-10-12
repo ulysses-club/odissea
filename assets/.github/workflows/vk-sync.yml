@@ -15,11 +15,14 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
+        cache: 'npm'
         
     - name: Install dependencies
       run: |
@@ -31,12 +34,29 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         VK_GROUP_ID: ${{ secrets.VK_GROUP_ID }}
       run: |
+        echo "Starting VK sync..."
         node scripts/vk-sync.js
         
+        if [ $? -eq 0 ]; then
+          echo "✅ Sync completed successfully"
+        else
+          echo "❌ Sync failed"
+          exit 1
+        fi
+        
     - name: Commit and push if changed
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add assets/data/next-meeting.json
-        git diff --staged --quiet || git commit -m "Auto-update: Sync next meeting from VK"
-        git push
+        
+        # Проверяем есть ли изменения
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Auto-update: Sync next meeting from VK [skip ci]"
+          git push
+          echo "Changes committed and pushed"
+        fi

@@ -20,7 +20,8 @@ class VKSyncModule {
         this.state = {
             lastProcessedPostId: null,
             isSyncing: false,
-            isConfigured: false
+            isConfigured: false,
+            lastSyncTime: null
         };
     }
 
@@ -39,9 +40,11 @@ class VKSyncModule {
 
         if (this.state.isConfigured) {
             console.log('VK Sync Module: Конфигурация загружена');
+            this.updateSyncStatus('ready', 'Готов к работе');
             this.startAutoSync(60);
         } else {
             console.warn('VK Sync Module: Токены не настроены. Используется локальный режим.');
+            this.updateSyncStatus('warning', 'Токены не настроены');
         }
     }
 
@@ -74,6 +77,7 @@ class VKSyncModule {
             return data.response?.items?.[0] || null;
         } catch (error) {
             console.error('Ошибка получения поста из ВК:', error);
+            this.updateSyncStatus('error', 'Ошибка ВК API');
             return null;
         }
     }
@@ -99,26 +103,49 @@ class VKSyncModule {
 
         if (!postText) return data;
 
-        // Парсинг различных форматов данных
+        console.log('Парсим пост ВК:', postText.substring(0, 200) + '...');
+
+        // Улучшенные паттерны для парсинга
         const patterns = {
-            date: /дата[:\s]*([^\n\r]+)/i,
-            time: /время[:\s]*([^\n\r]+)/i,
-            place: /место[:\s]*([^\n\r]+)/i,
-            film: /фильм[:\s]*([^\n\r]+)/i,
-            director: /режисс[ёе]р[:\s]*([^\n\r]+)/i,
-            genre: /жанр[:\s]*([^\n\r]+)/i,
-            country: /страна[:\s]*([^\n\r]+)/i,
+            date: /дата[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            time: /время[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            place: /место[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            film: /фильм[:\s]*([^\n\r]+?)(?=\n|$)|["«]([^"»]+)["»]/i,
+            director: /режисс[ёе]р[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            genre: /жанр[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            country: /страна[:\s]*([^\n\r]+?)(?=\n|$)/i,
             year: /год[:\s]*(\d{4})/i,
-            cast: /в ролях[:\s]*([^\n\r]+)/i,
-            requirements: /рекомендации[:\s]*([^\n\r]+)/i
+            cast: /в ролях[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            requirements: /рекомендации[:\s]*([^\n\r]+?)(?=\n|$)/i
         };
 
         Object.keys(patterns).forEach(key => {
             const match = postText.match(patterns[key]);
-            if (match && match[1]) {
-                data[key] = match[1].trim();
+            if (match) {
+                // Для фильма может быть два варианта - с кавычками или без
+                if (key === 'film' && match[2]) {
+                    data[key] = match[2].trim();
+                } else if (match[1]) {
+                    data[key] = match[1].trim();
+                }
             }
         });
+
+        // Дополнительный парсинг для даты в разных форматах
+        if (data.date === "Дата встречи не указана") {
+            const dateMatch = postText.match(/(\d{1,2}[\.\/]\d{1,2}[\.\/]\d{2,4})/);
+            if (dateMatch) {
+                data.date = this.formatDate(dateMatch[1]);
+            }
+        }
+
+        // Дополнительный парсинг времени
+        if (data.time === "Время не указано") {
+            const timeMatch = postText.match(/(\d{1,2}:\d{2})/);
+            if (timeMatch) {
+                data.time = timeMatch[1];
+            }
+        }
 
         // Извлечение номера обсуждения
         const discussionMatch = postText.match(/обсуждение\s*#?(\d+)/i);
@@ -127,12 +154,49 @@ class VKSyncModule {
         }
 
         // Извлечение постера (ссылка на изображение)
-        const posterMatch = postText.match(/(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif))/i);
+        const posterMatch = postText.match(/(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp))/i);
         if (posterMatch) {
             data.poster = posterMatch[1];
         }
 
+        // Валидация данных
+        this.validateMeetingData(data);
+
+        console.log('Результат парсинга:', data);
         return data;
+    }
+
+    formatDate(dateString) {
+        // Приводим дату к формату DD.MM.YYYY
+        const match = dateString.match(/(\d{1,2})[\.\/](\d{1,2})[\.\/](\d{2,4})/);
+        if (match) {
+            let day = match[1].padStart(2, '0');
+            let month = match[2].padStart(2, '0');
+            let year = match[3];
+            
+            // Если год двухзначный, добавляем 20
+            if (year.length === 2) {
+                year = '20' + year;
+            }
+            
+            return `${day}.${month}.${year}`;
+        }
+        return dateString;
+    }
+
+    validateMeetingData(data) {
+        const required = ['film', 'date'];
+        const missing = required.filter(field => 
+            !data[field] || 
+            data[field].includes('не указан') || 
+            data[field].includes('не выбран')
+        );
+        
+        if (missing.length > 0) {
+            console.warn('Отсутствуют обязательные поля:', missing);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -146,7 +210,8 @@ class VKSyncModule {
             const getResponse = await fetch(getUrl, {
                 headers: {
                     'Authorization': `token ${this.config.github.token}`,
-                    'User-Agent': 'VK-Sync-Module'
+                    'User-Agent': 'VK-Sync-Module',
+                    'Accept': 'application/vnd.github.v3+json'
                 }
             });
 
@@ -155,6 +220,8 @@ class VKSyncModule {
             if (getResponse.ok) {
                 const fileData = await getResponse.json();
                 currentSha = fileData.sha;
+            } else if (getResponse.status !== 404) {
+                throw new Error(`GitHub API error: ${getResponse.status}`);
             }
 
             // Подготавливаем данные для обновления
@@ -172,13 +239,15 @@ class VKSyncModule {
                 headers: {
                     'Authorization': `token ${this.config.github.token}`,
                     'User-Agent': 'VK-Sync-Module',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
                 },
                 body: JSON.stringify(updateData)
             });
 
             if (!updateResponse.ok) {
-                throw new Error(`GitHub API error: ${updateResponse.status}`);
+                const errorData = await updateResponse.json();
+                throw new Error(`GitHub API error: ${updateResponse.status} - ${errorData.message}`);
             }
 
             console.log('Файл успешно обновлен на GitHub');
@@ -186,6 +255,7 @@ class VKSyncModule {
 
         } catch (error) {
             console.error('Ошибка обновления файла на GitHub:', error);
+            this.updateSyncStatus('error', 'Ошибка GitHub API');
             return false;
         }
     }
@@ -200,6 +270,7 @@ class VKSyncModule {
         }
 
         this.state.isSyncing = true;
+        this.updateSyncStatus('syncing', 'Синхронизация...');
 
         try {
             console.log('Начинаем синхронизацию ВК -> GitHub...');
@@ -208,16 +279,22 @@ class VKSyncModule {
             const post = await this.getLatestVKPost();
             if (!post) {
                 console.log('Посты не найдены');
+                this.updateSyncStatus('warning', 'Посты не найдены');
                 return false;
             }
 
             // Проверяем, не обрабатывали ли мы уже этот пост
             if (this.state.lastProcessedPostId === post.id) {
                 console.log('Пост уже обработан ранее');
+                this.updateSyncStatus('ready', 'Данные актуальны');
                 return false;
             }
 
-            console.log('Найден пост:', post.text.substring(0, 100) + '...');
+            console.log('Найден пост:', {
+                id: post.id,
+                date: new Date(post.date * 1000).toISOString(),
+                text: post.text.substring(0, 100) + '...'
+            });
 
             // Парсим данные из поста
             const meetingData = this.parsePostData(post.text);
@@ -228,7 +305,15 @@ class VKSyncModule {
 
             if (success) {
                 this.state.lastProcessedPostId = post.id;
+                this.state.lastSyncTime = new Date();
+                this.updateSyncStatus('success', 'Синхронизация завершена');
                 console.log('Синхронизация завершена успешно!');
+                
+                // Обновляем отображение на странице
+                if (window.nextMeetingModule) {
+                    window.nextMeetingModule.updateMeetingData(meetingData);
+                }
+                
                 return true;
             }
 
@@ -236,9 +321,28 @@ class VKSyncModule {
 
         } catch (error) {
             console.error('Ошибка синхронизации:', error);
+            this.updateSyncStatus('error', 'Ошибка синхронизации');
             return false;
         } finally {
             this.state.isSyncing = false;
+        }
+    }
+
+    /**
+     * Обновление статуса в панели синхронизации
+     */
+    updateSyncStatus(status, message) {
+        const statusElement = document.getElementById('sync-status');
+        const statusTextElement = document.getElementById('sync-status-text');
+        const lastSyncElement = document.getElementById('last-sync-time');
+
+        if (statusElement && statusTextElement) {
+            statusElement.className = `status-indicator ${status}`;
+            statusTextElement.textContent = message;
+        }
+
+        if (lastSyncElement && this.state.lastSyncTime) {
+            lastSyncElement.textContent = `Последняя синхронизация: ${this.state.lastSyncTime.toLocaleString()}`;
         }
     }
 
@@ -249,7 +353,7 @@ class VKSyncModule {
         console.log(`Запуск автосинхронизации каждые ${intervalMinutes} минут`);
 
         // Первая синхронизация сразу
-        this.syncVKToGitHub();
+        setTimeout(() => this.syncVKToGitHub(), 2000);
 
         // Периодическая синхронизация
         setInterval(() => {
@@ -269,6 +373,12 @@ function initVKSyncModule() {
 
         console.log('Инициализация модуля синхронизации ВК...');
         window.vkSyncModule = new VKSyncModule();
+
+        // Показываем панель синхронизации в разработке
+        const syncPanel = document.getElementById('vk-sync-panel');
+        if (syncPanel && window.DEV_CONFIG) {
+            syncPanel.style.display = 'block';
+        }
 
         // Запускаем автосинхронизацию (каждые 60 минут)
         window.vkSyncModule.startAutoSync(60);

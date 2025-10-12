@@ -37,7 +37,6 @@ class VKSyncAction {
     }
 
     parsePostData(postText) {
-        // Та же логика парсинга что и в основном модуле
         const data = {
             date: "Дата встречи не указана",
             time: "Время не указано",
@@ -55,26 +54,102 @@ class VKSyncAction {
 
         if (!postText) return data;
 
+        console.log('Парсим пост:', postText.substring(0, 200) + '...');
+
+        // Улучшенные паттерны для парсинга
         const patterns = {
-            date: /дата[:\s]*([^\n\r]+)/i,
-            time: /время[:\s]*([^\n\r]+)/i,
-            place: /место[:\s]*([^\n\r]+)/i,
-            film: /фильм[:\s]*([^\n\r]+)/i,
-            director: /режисс[ёе]р[:\s]*([^\n\r]+)/i,
-            genre: /жанр[:\s]*([^\n\r]+)/i,
-            country: /страна[:\s]*([^\n\r]+)/i,
+            date: /дата[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            time: /время[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            place: /место[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            film: /фильм[:\s]*([^\n\r]+?)(?=\n|$)|["«]([^"»]+)["»]/i,
+            director: /режисс[ёе]р[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            genre: /жанр[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            country: /страна[:\s]*([^\n\r]+?)(?=\n|$)/i,
             year: /год[:\s]*(\d{4})/i,
-            cast: /в ролях[:\s]*([^\n\r]+)/i
+            cast: /в ролях[:\s]*([^\n\r]+?)(?=\n|$)/i,
+            requirements: /рекомендации[:\s]*([^\n\r]+?)(?=\n|$)/i
         };
 
         Object.keys(patterns).forEach(key => {
             const match = postText.match(patterns[key]);
-            if (match && match[1]) {
-                data[key] = match[1].trim();
+            if (match) {
+                // Для фильма может быть два варианта - с кавычками или без
+                if (key === 'film' && match[2]) {
+                    data[key] = match[2].trim();
+                } else if (match[1]) {
+                    data[key] = match[1].trim();
+                }
             }
         });
 
+        // Дополнительный парсинг для даты в разных форматах
+        if (data.date === "Дата встречи не указана") {
+            const dateMatch = postText.match(/(\d{1,2}[\.\/]\d{1,2}[\.\/]\d{2,4})/);
+            if (dateMatch) {
+                data.date = this.formatDate(dateMatch[1]);
+            }
+        }
+
+        // Дополнительный парсинг времени
+        if (data.time === "Время не указано") {
+            const timeMatch = postText.match(/(\d{1,2}:\d{2})/);
+            if (timeMatch) {
+                data.time = timeMatch[1];
+            }
+        }
+
+        // Извлечение номера обсуждения
+        const discussionMatch = postText.match(/обсуждение\s*#?(\d+)/i);
+        if (discussionMatch) {
+            data.discussionNumber = discussionMatch[1];
+        }
+
+        // Извлечение постера (ссылка на изображение)
+        const posterMatch = postText.match(/(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp))/i);
+        if (posterMatch) {
+            data.poster = posterMatch[1];
+        }
+
+        // Валидация обязательных полей
+        if (!this.validateMeetingData(data)) {
+            console.warn('В данных отсутствуют обязательные поля');
+        }
+
+        console.log('Результат парсинга:', data);
         return data;
+    }
+
+    formatDate(dateString) {
+        // Приводим дату к формату DD.MM.YYYY
+        const match = dateString.match(/(\d{1,2})[\.\/](\d{1,2})[\.\/](\d{2,4})/);
+        if (match) {
+            let day = match[1].padStart(2, '0');
+            let month = match[2].padStart(2, '0');
+            let year = match[3];
+
+            // Если год двухзначный, добавляем 20
+            if (year.length === 2) {
+                year = '20' + year;
+            }
+
+            return `${day}.${month}.${year}`;
+        }
+        return dateString;
+    }
+
+    validateMeetingData(data) {
+        const required = ['film', 'date'];
+        const missing = required.filter(field =>
+            !data[field] ||
+            data[field].includes('не указан') ||
+            data[field].includes('не выбран')
+        );
+
+        if (missing.length > 0) {
+            console.warn('Отсутствуют обязательные поля:', missing);
+            return false;
+        }
+        return true;
     }
 
     async sync() {
@@ -87,8 +162,23 @@ class VKSyncAction {
                 return false;
             }
 
+            console.log('Found post:', {
+                id: post.id,
+                date: new Date(post.date * 1000).toISOString(),
+                text: post.text.substring(0, 100) + '...'
+            });
+
             const meetingData = this.parsePostData(post.text);
             console.log('Parsed meeting data:', meetingData);
+
+            // Проверяем, есть ли существенные изменения
+            if (fs.existsSync(this.config.dataPath)) {
+                const existingData = JSON.parse(fs.readFileSync(this.config.dataPath, 'utf8'));
+                if (JSON.stringify(existingData) === JSON.stringify(meetingData)) {
+                    console.log('No changes detected, skipping update');
+                    return true;
+                }
+            }
 
             // Сохраняем в файл
             fs.writeFileSync(
