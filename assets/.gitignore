@@ -1,0 +1,6 @@
+# Конфигурационные файлы с секретами
+config/dev-config.js
+config/local-config.js
+*.env
+.env.local
+.env.development

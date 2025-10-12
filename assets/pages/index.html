@@ -274,6 +274,31 @@
     <script src="../modul/next-meeting-module.js"></script>
     <script src="../modul/map-module.js"></script>
     <script src="../modul/weather-module.js"></script>
+    <script src="../modul/vk-sync-module.js"></script>
+
+    <!-- Панель синхронизации ВК (только для разработки) -->
+    <div id="vk-sync-panel" class="vk-sync-panel" style="display: none;">
+        <div class="vk-sync-header">
+            <span class="vk-sync-icon">🔄</span>
+            <span class="vk-sync-title">Синхронизация ВК</span>
+        </div>
+        <div class="vk-sync-status">
+            <span class="status-indicator" id="sync-status"></span>
+            <span id="sync-status-text">Готов к работе</span>
+        </div>
+        <div class="vk-sync-controls">
+            <button class="vk-sync-btn" id="manual-sync-btn" onclick="window.vkSyncModule.syncVKToGitHub()">
+                Синхронизировать
+            </button>
+            <button class="vk-sync-btn" onclick="document.getElementById('vk-sync-panel').style.display = 'none'">
+                Скрыть
+            </button>
+        </div>
+        <div class="vk-sync-info">
+            <div>Автосинхронизация: каждые 60 минут</div>
+            <div class="vk-sync-last-update" id="last-sync-time">Последняя синхронизация: никогда</div>
+        </div>
+    </div>
 </body>
 
 </html>

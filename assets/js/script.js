@@ -453,6 +453,54 @@ function initSeasonEffects() {
     console.log('Сезонные эффекты инициализируются в отдельном модуле');
 }
 
+/**
+ * Инициализация модуля синхронизации ВК
+ */
+function initVKSyncModule() {
+    const isMainPage = window.location.pathname.includes('index.html') || 
+                      window.location.pathname === '/' || 
+                      window.location.pathname.endsWith('pages/');
+    
+    if (isMainPage) {
+        console.log('Инициализация модуля синхронизации ВК...');
+        
+        const script = document.createElement('script');
+        script.src = '../modul/vk-sync-module.js';
+        script.onload = function() {
+            // Безопасная инициализация без токенов в коде
+            if (window.vkSyncModule && window.DEV_CONFIG) {
+                window.vkSyncModule.init(
+                    window.DEV_CONFIG.vk.accessToken,
+                    window.DEV_CONFIG.github.token
+                );
+            } else {
+                console.warn('VK Sync: Токены не настроены для локальной разработки');
+            }
+        };
+        document.head.appendChild(script);
+    }
+}
+
+// Добавляем вызов в основную функцию инициализации
+function initApp() {
+    console.log('Инициализация приложения...');
+
+    // Инициализация базовых обработчиков событий
+    initMobileMenu();
+    initSmoothScroll();
+    initAnimations();
+
+    // Инициализация модулей
+    initSeasonEffects();
+    initScrollToTop();
+    initVKSyncModule(); // ← ДОБАВЛЕНО!
+    
+    // Инициализация модуля погоды
+    initWeatherModule();
+
+    console.log('Приложение инициализировано');
+}
+
 // Стили для уведомлений и состояний
 const style = document.createElement('style');
 style.textContent = `

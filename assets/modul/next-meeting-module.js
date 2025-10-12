@@ -3,6 +3,27 @@
  */
 class NextMeetingModule {
     /**
+     * Принудительное обновление данных о встрече
+     */
+    async forceRefresh() {
+        console.log('Принудительное обновление данных о встрече...');
+        await this.loadData();
+    }
+
+    /**
+     * Обновление данных о встрече из внешнего источника
+     */
+    updateMeetingData(newData) {
+        if (newData && typeof newData === 'object') {
+            console.log('Обновление данных о встрече из внешнего источника:', newData);
+            this.state.nextMeeting = newData;
+            this.renderNextMeeting(newData);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Конструктор класса NextMeetingModule
      * Инициализирует конфигурацию, состояние и запускает модуль
      */
