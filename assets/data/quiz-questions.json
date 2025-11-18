@@ -31,124 +31,124 @@
     {
       "round": 1,
       "type": "open",
-      "question": "Назовите фильм и режиссера по этому кадру",
+      "question": "Мультфильмы. Назовите полнометражный фильм/мультфильм, в котором робот влюбляется в машину, что способна его убить.",
       "image": "../images/quiz/round1-1.jpg",
-      "correctAnswer": "2001: Космическая одиссея, Стэнли Кубрик",
+      "correctAnswer": "ВАЛЛ·И / WALL·E (реж. Эндрю Стэнтон)",
       "time": 60
     },
     {
       "round": 1,
       "type": "open",
-      "question": "Определите фильм по указанной сцене",
+      "question": "Фильмы. Узнайте фильм по кадру: рыцари, несущиеся в бой, безуспешно стучат кокосами.",
       "image": "../images/quiz/round1-2.jpg",
-      "correctAnswer": "Гражданин Кейн, Орсон Уэллс",
+      "correctAnswer": "Монти Пайтон и Священный Грааль / Monty Python and the Holy Grail (реж. Терри Гиллиам и Терри Джонс)",
       "time": 60
     },
     {
       "round": 1,
       "type": "open",
-      "question": "Какой фильм представлен на изображении?",
+      "question": "Фильмы. Какой фильм, состоящий из шести переплетающихся историй из разных эпох, представлен на изображении?",
       "image": "../images/quiz/round1-3.jpg",
-      "correctAnswer": "Семь самураев, Акира Куросава",
+      "correctAnswer": "Облачный атлас / Cloud Atlas (реж. Том Тыквер, Лана и Лилли Вачовски)",
       "time": 60
     },
     {
       "round": 1,
       "type": "open",
-      "question": "Узнайте фильм по этому кадру",
+      "question": "Фильмы. Определите фильм по кадру: главный герой в замешательстве смотрит на две разноцветные пилюли.",
       "image": "../images/quiz/round1-4.jpg",
-      "correctAnswer": "Расёмон, Акира Куросава",
+      "correctAnswer": "Красная таблетка / The Red Pill (реж. Касси Джей)",
       "time": 60
     },
     {
       "round": 1,
       "type": "open",
-      "question": "Назовите фильм и режиссера",
+      "question": "Фильмы. Узнайте фильм по характерному кадру: жители средневековой деревни, окруженной лесом, полным чудовищ.",
       "image": "../images/quiz/round1-5.jpg",
-      "correctAnswer": "Похитители велосипедов, Витторио Де Сика",
+      "correctAnswer": "Таинственный лес / The Village (реж. М. Найт Шьямалан)",
       "time": 60
     },
     {
       "round": 1,
       "type": "open",
-      "question": "Определите фильм по визуальному стилю",
+      "question": "Фильмы. Назовите фильм по визуальному ряду: ночной Париж, джазовый саундтрек и женщина в лифте.",
       "image": "../images/quiz/round1-6.jpg",
-      "correctAnswer": "Токийская повесть, Ясудзиро Одзу",
+      "correctAnswer": "Лифт на эшафот / Ascenseur pour l'échafaud (реж. Луи Маль)",
       "time": 60
     },
     {
       "round": 1,
       "type": "open",
-      "question": "Какой фильм изображен на фото?",
+      "question": "Фильмы. Какой фильм, рассказывающий о 121-летнем ветеране Дикого Запада, изображен на фото?",
       "image": "../images/quiz/round1-7.jpg",
-      "correctAnswer": "Четыреста ударов, Франсуа Трюффо",
+      "correctAnswer": "Маленький Большой Человек / Little Big Man (реж. Артур Пенн)",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "Какой актер изображен и в каком фильме?",
+      "question": "",
       "image": "../images/quiz/round2-1.jpg",
-      "correctAnswer": "Джон Малкович, Быть Джоном Малковичем",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "Узнайте актера и фильм по кадру",
+      "question": "",
       "image": "../images/quiz/round2-2.jpg",
-      "correctAnswer": "Николас Кейдж, Адаптация",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "Кто этот актер и какой фильм?",
+      "question": "",
       "image": "../images/quiz/round2-3.jpg",
-      "correctAnswer": "Колин Фаррелл, Лобстер",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "Определите актера и его роль",
+      "question": "",
       "image": "../images/quiz/round2-4.jpg",
-      "correctAnswer": "Хоакин Феникс, Она",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "Узнайте актера по характерной роли",
+      "question": "",
       "image": "../images/quiz/round2-5.jpg",
-      "correctAnswer": "Виджи Мортенсен, Капитан Фантастик",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "Какой актер и в каком фильме?",
+      "question": "",
       "image": "../images/quiz/round2-6.jpg",
-      "correctAnswer": "Адам Драйвер, Брачная история",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "Определите актера и фильм",
+      "question": "",
       "image": "../images/quiz/round2-7.jpg",
-      "correctAnswer": "Роман Григорьев, Петровы в гриппе",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 3,
       "type": "multiple",
-      "question": "Кто режиссер фильма 'Вечное сияние чистого разума'?",
+      "question": "Кто является режиссером фильма «Облачный атлас»?",
       "answers": [
-        "Мишель Гондри",
-        "Дэвид Финчер",
-        "Квентин Тарантино",
-        "Кристофер Нолан"
+        "Том Тыквер",
+        "Лана и Лилли Вачовски",
+        "Эндрю Стэнтон",
+        "Дэвид Линч"
       ],
       "correctAnswer": 0,
       "time": 60
@@ -156,12 +156,12 @@
     {
       "round": 3,
       "type": "multiple",
-      "question": "Какой фильм получил Оскар за лучший фильм в 2021 году?",
+      "question": "Режиссером какого из перечисленных фильмов является Дэвид Финчер?",
       "answers": [
-        "Земля кочевников",
-        "Отец",
-        "Манк",
-        "Суд чикаго"
+        "«Исчезнувшая»",
+        "«Горбатая гора»",
+        "«Оставленные»",
+        "«Идиократия»"
       ],
       "correctAnswer": 0,
       "time": 60
@@ -169,51 +169,12 @@
     {
       "round": 3,
       "type": "multiple",
-      "question": "Кто снял трилогию 'Властелин Колец'?",
+      "question": "Какой фильм снял режиссер Жан-Пьер и Люк Дарденн?",
       "answers": [
-        "Стивен Спилберг",
-        "Питер Джексон",
-        "Джеймс Кэмерон",
-        "Ридли Скотт"
-      ],
-      "correctAnswer": 1,
-      "time": 60
-    },
-    {
-      "round": 3,
-      "type": "multiple",
-      "question": "Какой фильм снял Андрей Тарковский?",
-      "answers": [
-        "Комиссар",
-        "Дерсу Узала",
-        "Солярис",
-        "Андрей Рублев"
-      ],
-      "correctAnswer": 2,
-      "time": 60
-    },
-    {
-      "round": 3,
-      "type": "multiple",
-      "question": "В каком году вышел фильм 'Заводной апельсин'?",
-      "answers": [
-        "1969",
-        "1975",
-        "1973",
-        "1971"
-      ],
-      "correctAnswer": 3,
-      "time": 60
-    },
-    {
-      "round": 3,
-      "type": "multiple",
-      "question": "Какой фильм является самым кассовым в истории?",
-      "answers": [
-        "Аватар",
-        "Мстители: Финал",
-        "Титаник",
-        "Звездные войны: Пробуждение силы"
+        "«Розетта»",
+        "«Паприка»",
+        "«Лифт на эшафот»",
+        "«Дыра»"
       ],
       "correctAnswer": 0,
       "time": 60
@@ -221,182 +182,221 @@
     {
       "round": 3,
       "type": "multiple",
-      "question": "Кто режиссер фильма 'Лабиринт Фавна'?",
+      "question": "Какой из этих фильмов является работой российского режиссера Бориса Хлебникова?",
       "answers": [
-        "Педро Альмодовар",
-        "Гильермо дель Торо",
-        "Алехандро Гонсалес Иньярриту",
-        "Альфонсо Куарон"
+        "«Аритмия»",
+        "«Листопад»",
+        "«Жмурки»",
+        "«Сердце мира»"
       ],
-      "correctAnswer": 1,
+      "correctAnswer": 0,
+      "time": 60
+    },
+    {
+      "round": 3,
+      "type": "multiple",
+      "question": "Фильм «Огни рампы» — это классическая работа:",
+      "answers": [
+        "Чарли Чаплина",
+        "Федерико Феллини",
+        "Ингмара Бергмана",
+        "Акиры Куросавы"
+      ],
+      "correctAnswer": 0,
+      "time": 60
+    },
+    {
+      "round": 3,
+      "type": "multiple",
+      "question": "Картина «Тайна в его глазах» получила «Оскар» как лучший фильм на иностранном языке. Из какой она страны?",
+      "answers": [
+        "Аргентина",
+        "Испания",
+        "Мексика",
+        "Чили"
+      ],
+      "correctAnswer": 0,
+      "time": 60
+    },
+    {
+      "round": 3,
+      "type": "multiple",
+      "question": "Фильм «Женщина в песках» — это выдающееся произведение:",
+      "answers": [
+        "Японского кинематографа",
+        "Итальянского неореализма",
+        "Французской новой волны",
+        "Американского независимого кино"
+      ],
+      "correctAnswer": 0,
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "Определите фильм по iconic кадру",
+      "question": "",
       "image": "../images/quiz/round4-1.jpg",
-      "correctAnswer": "Олдбой, Пак Чхан-ук",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "Узнайте фильм по культовой сцене",
+      "question": "",
       "image": "../images/quiz/round4-2.jpg",
-      "correctAnswer": "Фарго, Джоэл Коэн",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "Какой фильм представлен на изображении?",
+      "question": "",
       "image": "../images/quiz/round4-3.jpg",
-      "correctAnswer": "Драйв, Николас Виндинг Рефн",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "Определите фильм по визуальному ряду",
+      "question": "",
       "image": "../images/quiz/round4-4.jpg",
-      "correctAnswer": "Маяк, Роберт Эггерс",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "Назовите фильм по этому кадру",
+      "question": "",
       "image": "../images/quiz/round4-5.jpg",
-      "correctAnswer": "Из машины, Алекс Гарленд",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "Узнайте фильм по характерной сцене",
+      "question": "",
       "image": "../images/quiz/round4-6.jpg",
-      "correctAnswer": "Беги, Лола, беги, Том Тыквер",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "Какой фильм изображен?",
+      "question": "",
       "image": "../images/quiz/round4-7.jpg",
-      "correctAnswer": "Голова-ластик, Дэвид Линч",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 5,
       "type": "open",
-      "question": "Назовите режиссера и фильм по кадру",
+      "question": "Режиссеры. Назовите режиссера и фильм по кадру: сцена в стиле «мета-арт», где герои покидают запасной выход музея.",
       "image": "../images/quiz/round5-1.jpg",
-      "correctAnswer": "Эмир Кустурица, Андеграунд",
+      "correctAnswer": "Бэнкси, «Выход через сувенирную лавку» / Exit Through the Gift Shop",
       "time": 60
     },
     {
       "round": 5,
       "type": "open",
-      "question": "Определите режиссера и его работу",
+      "question": "Режиссеры. Узнайте режиссера и его работу по характерному визуальному стилю: черно-белая хроника, похороны в латвийской деревне.",
       "image": "../images/quiz/round5-2.jpg",
-      "correctAnswer": "Кен Лоуч, Я, Дэниел Блэйк",
+      "correctAnswer": "Марис Мартинсонс, «Листопад»",
       "time": 60
     },
     {
       "round": 5,
       "type": "open",
-      "question": "Узнайте режиссера по визуальному стилю",
+      "question": "Режиссеры. Определите режиссера и фильм по кадру: молодой человек принимает таблетку, раскрывающую потенциал его мозга.",
       "image": "../images/quiz/round5-3.jpg",
-      "correctAnswer": "Ингмар Бергман, Седьмая печать",
+      "correctAnswer": "Нил Бергер, «Области тьмы» / Limitless",
       "time": 60
     },
     {
       "round": 5,
       "type": "open",
-      "question": "Какой режиссер и какой фильм?",
+      "question": "Режиссеры. Какой режиссер и какой фильм? Двое братьев-гинекологов в идентичных костюмах.",
       "image": "../images/quiz/round5-4.jpg",
-      "correctAnswer": "Алексей Герман, Мой друг Иван Лапшин",
+      "correctAnswer": "Дэвид Кроненберг, «Связанные насмерть» / Dead Ringers",
       "time": 60
     },
     {
       "round": 5,
       "type": "open",
-      "question": "Определите режиссера по характерному кадру",
+      "question": "Режиссеры. Назовите режиссера и фильм по кадру: абсурдистская сцена, где мужчина в костюме акулы разговаривает с главным героем.",
       "image": "../images/quiz/round5-5.jpg",
-      "correctAnswer": "Кирилл Серебренников, Петровы в гриппе",
+      "correctAnswer": "Джако Ван Дормел, «Собаки не носят штанов» / Koirat eivät käytä housuja",
       "time": 60
     },
     {
       "round": 5,
       "type": "open",
-      "question": "Назовите режиссера и фильм",
+      "question": "Режиссеры. Узнайте режиссера по его работе: аниматор входит в сны пациентов с помощью украденного устройства.",
       "image": "../images/quiz/round5-6.jpg",
-      "correctAnswer": "Роберт Земекис, Назад в будущее",
+      "correctAnswer": "Сатоси Кон, «Паприка» / Paprika",
       "time": 60
     },
     {
       "round": 5,
       "type": "open",
-      "question": "Узнайте режиссера по его работе",
+      "question": "Режиссеры. Определите режиссера и фильм по характерному кадру: аукционист-затворник в своем секретном зале с коллекцией портретов.",
       "image": "../images/quiz/round5-7.jpg",
-      "correctAnswer": "Жан-Пьер Жене, Амели",
+      "correctAnswer": "Джузеппе Торнаторе, «Лучшее предложение» / La migliore offerta",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "Определите фильм из золотой коллекции",
+      "question": "",
       "image": "../images/quiz/round6-1.jpg",
-      "correctAnswer": "Кабинет доктора Калигари, Роберт Вине",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "Узнайте классику мирового кино",
+      "question": "",
       "image": "../images/quiz/round6-2.jpg",
-      "correctAnswer": "Мост через реку Квай, Дэвид Лин",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "Какой классический фильм представлен?",
+      "question": "",
       "image": "../images/quiz/round6-3.jpg",
-      "correctAnswer": "Великий диктатор, Чарли Чаплин",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "Определите фильм из истории кино",
+      "question": "",
       "image": "../images/quiz/round6-4.jpg",
-      "correctAnswer": "Окно во двор, Альфред Хичкок",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "Узнайте классику французского кино",
+      "question": "",
       "image": "../images/quiz/round6-5.jpg",
-      "correctAnswer": "Аталанта, Жан Виго",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "Какой фильм итальянского неореализма?",
+      "question": "",
       "image": "../images/quiz/round6-6.jpg",
-      "correctAnswer": "Дорога, Федерико Феллини",
+      "correctAnswer": "",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "Определите японскую классику",
+      "question": "",
       "image": "../images/quiz/round6-7.jpg",
-      "correctAnswer": "Женщина в песках, Хироси Тэсигахара",
+      "correctAnswer": "",
       "time": 60
     },
     {
@@ -405,32 +405,32 @@
       "question": "Блиц-раунд! Ответьте на 7 быстрых вопросов за 30 секунд!",
       "blitzQuestions": [
         {
-          "question": "В каком году вышел 'Крестный отец'?",
-          "correctAnswer": "1972"
+          "question": "",
+          "correctAnswer": ""
         },
         {
-          "question": "Кто сыграл главную роль в 'Заводном апельсине'?",
-          "correctAnswer": "Малкольм Макдауэлл"
+          "question": "",
+          "correctAnswer": ""
         },
         {
-          "question": "Какой фильм получил Оскар за лучший фильм в 1994?",
-          "correctAnswer": "Список Шиндлера"
+          "question": "",
+          "correctAnswer": ""
         },
         {
-          "question": "Режиссер 'Подводной лодки'?",
-          "correctAnswer": "Вольфганг Петерсен"
+          "question": "",
+          "correctAnswer": ""
         },
         {
-          "question": "Актер, сыгравший Дарта Вейдера в оригинальной трилогии?",
-          "correctAnswer": "Дэвид Проуз"
+          "question": "",
+          "correctAnswer": ""
         },
         {
-          "question": "Сколько Оскаров получил 'Титаник'?",
-          "correctAnswer": "11"
+          "question": "",
+          "correctAnswer": ""
         },
         {
-          "question": "Режиссер фильма 'Парк юрского периода'?",
-          "correctAnswer": "Стивен Спилберг"
+          "question": "",
+          "correctAnswer": ""
         }
       ],
       "time": 30
