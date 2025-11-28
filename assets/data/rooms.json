@@ -1,71 +1,68 @@
 {
-  "YBEWWX": {
-    "code": "YBEWWX",
-    "name": "Geek",
+  "OP1M5F": {
+    "code": "OP1M5F",
+    "name": "Geek1",
     "adminChatId": 1147849296,
     "participants": {
       "1147849296": {
         "chatId": 1147849296,
-        "name": "Настя",
-        "address": "Подушка",
-        "wishes": "Подушка",
-        "joinedAt": "2025-10-11T11:09:33.075Z",
-        "updatedAt": "2025-10-11T11:11:15.870Z"
+        "name": "Stanislav",
+        "address": "Носорог",
+        "wishes": "Носорог",
+        "joinedAt": "2025-11-28T12:42:06.306Z"
       },
       "7644957461": {
         "chatId": 7644957461,
-        "name": "Стас",
-        "address": "Книга",
-        "wishes": "Книга",
-        "joinedAt": "2025-10-11T11:10:09.999Z",
-        "updatedAt": "2025-10-11T11:11:36.869Z"
+        "name": "Gansta",
+        "address": "Выгину и лего",
+        "wishes": "Выгину и лего",
+        "joinedAt": "2025-11-28T12:39:45.123Z",
+        "updatedAt": "2025-11-28T12:41:35.562Z"
       }
     },
-    "createdAt": "2025-10-11T11:09:24.701Z",
+    "createdAt": "2025-11-28T12:39:12.083Z",
     "isActive": true,
     "drawCompleted": true,
     "drawResults": [
       {
         "giver": {
           "chatId": 1147849296,
-          "name": "Настя",
-          "address": "Подушка",
-          "wishes": "Подушка",
-          "joinedAt": "2025-10-11T11:09:33.075Z",
-          "updatedAt": "2025-10-11T11:11:15.870Z",
-          "roomCode": "YBEWWX"
+          "name": "Stanislav",
+          "address": "Носорог",
+          "wishes": "Носорог",
+          "joinedAt": "2025-11-28T12:42:06.306Z",
+          "roomCode": "OP1M5F"
         },
         "receiver": {
           "chatId": 7644957461,
-          "name": "Стас",
-          "address": "Книга",
-          "wishes": "Книга",
-          "joinedAt": "2025-10-11T11:10:09.999Z",
-          "updatedAt": "2025-10-11T11:11:36.869Z",
-          "roomCode": "YBEWWX"
+          "name": "Gansta",
+          "address": "Выгину и лего",
+          "wishes": "Выгину и лего",
+          "joinedAt": "2025-11-28T12:39:45.123Z",
+          "updatedAt": "2025-11-28T12:41:35.562Z",
+          "roomCode": "OP1M5F"
         }
       },
       {
         "giver": {
           "chatId": 7644957461,
-          "name": "Стас",
-          "address": "Книга",
-          "wishes": "Книга",
-          "joinedAt": "2025-10-11T11:10:09.999Z",
-          "updatedAt": "2025-10-11T11:11:36.869Z",
-          "roomCode": "YBEWWX"
+          "name": "Gansta",
+          "address": "Выгину и лего",
+          "wishes": "Выгину и лего",
+          "joinedAt": "2025-11-28T12:39:45.123Z",
+          "updatedAt": "2025-11-28T12:41:35.562Z",
+          "roomCode": "OP1M5F"
         },
         "receiver": {
           "chatId": 1147849296,
-          "name": "Настя",
-          "address": "Подушка",
-          "wishes": "Подушка",
-          "joinedAt": "2025-10-11T11:09:33.075Z",
-          "updatedAt": "2025-10-11T11:11:15.870Z",
-          "roomCode": "YBEWWX"
+          "name": "Stanislav",
+          "address": "Носорог",
+          "wishes": "Носорог",
+          "joinedAt": "2025-11-28T12:42:06.306Z",
+          "roomCode": "OP1M5F"
         }
       }
     ],
-    "drawAt": "2025-10-11T11:12:01.896Z"
+    "drawAt": "2025-11-28T12:42:36.029Z"
   }
 }
