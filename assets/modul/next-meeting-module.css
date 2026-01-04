@@ -245,6 +245,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -255,16 +256,19 @@
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }
+
     100% {
         transform: scale(1);
     }
 }
 
 /* Состояния загрузки и ошибок */
-.loading-message, .no-data {
+.loading-message,
+.no-data {
     text-align: center;
     padding: var(--space-xl);
     color: var(--gray);
@@ -283,7 +287,9 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Адаптивность для мобильных устройств */
@@ -333,7 +339,128 @@
         padding: 0.7rem 1.2rem;
         font-size: 0.9rem;
     }
-}
+    }
+
+    .next-meeting-watch-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-sm);
+        padding: var(--space-md) var(--space-lg);
+        background: linear-gradient(135deg, #c23e3e83, #a04141);
+        color: var(--light) !important;
+        text-decoration: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: var(--text-base);
+        transition: var(--transition);
+        margin-top: var(--space-md);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .next-meeting-watch-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.7s ease;
+    }
+
+    .next-meeting-watch-btn:hover::before {
+        left: 100%;
+    }
+
+    .next-meeting-watch-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 77, 77, 0.4);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .next-meeting-watch-btn:active {
+        transform: translateY(-1px);
+    }
+
+    .zona-logo {
+        width: 20px;
+        height: 20px;
+        filter: brightness(0) invert(1);
+        transition: var(--transition);
+    }
+
+    .next-meeting-watch-btn:hover .zona-logo {
+        transform: scale(1.1);
+    }
+
+    .next-meeting-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-md);
+        margin-top: var(--space-lg);
+        padding-top: var(--space-lg);
+        border-top: 1px solid var(--light-dark);
+    }
+
+    @media (max-width: 768px) {
+        .next-meeting-actions {
+            flex-direction: column;
+        }
+
+        .next-meeting-watch-btn,
+        .next-meeting-kinopoisk-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @keyframes pulseWatch {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(255, 77, 77, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(255, 77, 77, 0);
+        }
+    }
+
+    .next-meeting-watch-btn.pulse {
+        animation: pulseWatch 2s infinite;
+    }
+
+    .new-content-badge {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        background: var(--accent);
+        color: white;
+        font-size: var(--text-xs);
+        padding: 2px 6px;
+        border-radius: var(--radius-full);
+        font-weight: bold;
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-5px);
+        }
+    }
+
 
 @media (max-width: 480px) {
     .next-meeting-poster {

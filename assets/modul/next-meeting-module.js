@@ -42,12 +42,17 @@ class NextMeetingModule {
                 loading: 'Загрузка информации о встрече...',
                 noMeeting: 'Информация о следующей встрече пока не доступна',
                 meetingAnnouncement: 'Ближайшая встреча будет анонсирована позже'
+            },
+            zonaPlus: {
+                baseUrl: 'https://w140.zona.plus/search/',
+                logoUrl: 'https://w140.zona.plus/build/6b6b2c89e58f3b1d4f402666f6d622c4.svg'
             }
         };
 
         this.state = {
             nextMeeting: null,
-            countdownInterval: null
+            countdownInterval: null,
+            zonaLogoLoaded: false
         };
 
         this.init();
@@ -60,7 +65,27 @@ class NextMeetingModule {
     async init() {
         console.log('Инициализация NextMeetingModule...');
         this.cacheDOM();
+        await this.preloadZonaLogo();
         await this.loadData();
+    }
+
+    /**
+     * Предзагрузка логотипа Zona.plus
+     */
+    async preloadZonaLogo() {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                this.state.zonaLogoLoaded = true;
+                console.log('Логотип Zona.plus загружен');
+                resolve();
+            };
+            img.onerror = () => {
+                console.warn('Не удалось загрузить логотип Zona.plus');
+                resolve();
+            };
+            img.src = this.config.zonaPlus.logoUrl;
+        });
     }
 
     /**
@@ -220,8 +245,14 @@ class NextMeetingModule {
             return;
         }
 
-        const { defaults, messages } = this.config;
+        const { defaults, messages, zonaPlus } = this.config;
         const { date, time, place, film, director, genre, country, year, poster, discussionNumber, cast, requirements } = meetingData;
+
+        // Для заголовка оставляем полную вариацию
+        const fullFilmTitle = film || 'Фильм';
+
+        // Для поиска используем русское название
+        const russianFilmTitle = this.extractRussianTitle(film);
 
         // Проверяем, актуальна ли дата встречи
         try {
@@ -231,70 +262,152 @@ class NextMeetingModule {
 
             if (meetingDate < today) {
                 this.elements.nextMeetingContainer.innerHTML = `
-                    <div class="next-meeting-card">
-                        <div class="next-meeting-info">
-                            <div class="next-meeting-header">
-                                <h3 class="next-meeting-title">Следующая встреча</h3>
-                            </div>
-                            <div class="next-meeting-description">
-                                <p>${messages.meetingAnnouncement}</p>
-                                <p>Следите за обновлениями в наших соцсетях:</p>
-                                <div style="margin-top: 1rem;">
-                                    <a href="https://vk.com/club199046020" target="_blank" class="btn btn--primary" style="margin-right: 0.5rem;">ВКонтакте</a>
-                                    <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" class="btn btn--outline">Telegram</a>
-                                </div>
+                <div class="next-meeting-card">
+                    <div class="next-meeting-info">
+                        <div class="next-meeting-header">
+                            <h3 class="next-meeting-title">Следующая встреча</h3>
+                        </div>
+                        <div class="next-meeting-description">
+                            <p>${messages.meetingAnnouncement}</p>
+                            <p>Следите за обновлениями в наших соцсетях:</p>
+                            <div style="margin-top: 1rem;">
+                                <a href="https://vk.com/club199046020" target="_blank" class="btn btn--primary" style="margin-right: 0.5rem;">ВКонтакте</a>
+                                <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" class="btn btn--outline">Telegram</a>
                             </div>
                         </div>
                     </div>
-                `;
+                </div>
+            `;
                 return;
             }
         } catch (dateError) {
             console.warn('Ошибка парсинга даты:', dateError);
         }
 
-        // Генерируем ссылку на КиноПоиск
+        // Генерируем ссылки (используем русское название для поиска)
         const kinopoiskUrl = this.generateKinopoiskUrl(film, year);
+        const zonaUrl = this.generateZonaUrl(film);
 
         // HTML с местом для таймера
         this.elements.nextMeetingContainer.innerHTML = `
-            <div class="next-meeting-card">
-                <div class="next-meeting-poster">
-                    <img src="${poster || defaults.poster}" alt="Постер: ${film || 'Фильм'} (${year || 'Год'})" loading="lazy" onerror="this.src='${defaults.poster}'">
-                    <div class="next-meeting-badge">Обсуждение #${discussionNumber || 'N/A'}</div>
+        <div class="next-meeting-card">
+            <div class="next-meeting-poster">
+                <img src="${poster || defaults.poster}" alt="Постер: ${fullFilmTitle} (${year || 'Год'})" loading="lazy" onerror="this.src='${defaults.poster}'">
+                <div class="next-meeting-badge">Обсуждение #${discussionNumber || 'N/A'}</div>
+            </div>
+            <div class="next-meeting-info">
+                <div class="next-meeting-header">
+                    <h3 class="next-meeting-title">${this.escapeHtml(fullFilmTitle)} (${year || 'Год'})</h3>
+                    <div class="next-meeting-meta">
+                        <span class="next-meeting-datetime">📅 ${date || 'Дата не указана'} 🕒 ${time || 'Время не указано'}</span>
+                    </div>
                 </div>
-                <div class="next-meeting-info">
-                    <div class="next-meeting-header">
-                        <h3 class="next-meeting-title">${this.escapeHtml(film || 'Фильм')} (${year || 'Год'})</h3>
-                        <div class="next-meeting-meta">
-                            <span class="next-meeting-datetime">📅 ${date || 'Дата не указана'} 🕒 ${time || 'Время не указано'}</span>
-                        </div>
-                    </div>
-                    <div class="next-meeting-details">
-                        ${this.createMeetingDetail('🎬', 'Режиссер:', director)}
-                        ${this.createMeetingDetail('🎭', 'Жанр:', genre)}
-                        ${this.createMeetingDetail('🌍', 'Страна:', country)}
-                        ${this.createMeetingDetail('📍', 'Место:', place)}
-                        ${this.createMeetingDetail('👥', 'В главных ролях:', cast)}
-                    </div>
-                    
-                    <div id="meeting-countdown"></div>
+                <div class="next-meeting-details">
+                    ${this.createMeetingDetail('🎬', 'Режиссер:', director)}
+                    ${this.createMeetingDetail('🎭', 'Жанр:', genre)}
+                    ${this.createMeetingDetail('🌍', 'Страна:', country)}
+                    ${this.createMeetingDetail('📍', 'Место:', place)}
+                    ${this.createMeetingDetail('👥', 'В главных ролях:', cast)}
+                </div>
+                
+                <div id="meeting-countdown"></div>
+                
+                <div class="next-meeting-actions">
+                    ${zonaUrl ? `
+                        <a href="${zonaUrl}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="next-meeting-watch-btn pulse">
+                           ${this.state.zonaLogoLoaded ? `<img src="${zonaPlus.logoUrl}" alt="Zona.plus" class="zona-logo">` : '🎬'}
+                           Смотреть онлайн
+                           <span class="new-content-badge">NEW</span>
+                        </a>
+                    ` : ''}
                     
                     ${kinopoiskUrl ? `
                         <a href="${kinopoiskUrl}" 
                            target="_blank" 
                            rel="noopener noreferrer"
                            class="next-meeting-kinopoisk-btn">
-                           🎬 Информация о фильме на КиноПоиске
+                           🎬 Информация на КиноПоиске
                         </a>
                     ` : ''}
-                    ${requirements ? `<div class="next-meeting-requirements"><p>⚠️ <strong>Важно:</strong> ${this.escapeHtml(requirements)}</p></div>` : ''}
+                </div>
+                
+                <div class="next-meeting-requirements">
+                    <p style="margin-bottom: 8px; font-weight: 600;">⚠️ <strong>Важно:</strong> ${this.escapeHtml(requirements || 'Рекомендуем посмотреть фильм заранее')}</p>
+                        <ul style="margin: 0; padding-left: 20px; opacity: 0.9;">
+                            <li>Ссылки ведут на сторонние ресурсы, не контролируемые киноклубом</li>
+                            <li>Мы не размещаем и не распространяем пиратский контент</li>
+                            <li>Рекомендуем использовать только легальные сервисы (Kion, Okko, IVI, START и др.)</li>
+                            <li>Администрация сайта не несет ответственности за содержимое внешних ссылок</li>
+                        </ul>
                 </div>
             </div>
-        `;
+        </div>
+    `;
 
         // Инициализация таймера
         this.initCountdown(date, time);
+    }
+
+    /**
+     * Генерация URL для Zona.plus
+     * Создает ссылку для поиска фильма на Zona.plus
+     * 
+     * @param {string} filmName - Название фильма
+     * @returns {string|null} - URL для поиска на Zona.plus или null при ошибке
+     */
+    generateZonaUrl(filmName) {
+        if (!filmName) return null;
+
+        // Извлекаем русское название для поиска
+        const russianTitle = this.extractRussianTitle(filmName);
+
+        // Очищаем название фильма от специальных символов и приводим к нижнему регистру
+        const cleanName = russianTitle
+            .replace(/[^\w\sа-яА-ЯёЁ\-:]/gi, ' ')  // Оставляем дефисы и двоеточия
+            .replace(/\s+/g, ' ')  // Убираем лишние пробелы
+            .trim()
+            .toLowerCase();
+
+        // Кодируем для URL
+        const encodedName = encodeURIComponent(cleanName);
+
+        return `${this.config.zonaPlus.baseUrl}${encodedName}`;
+    }
+
+    /**
+     * Извлечение русского названия фильма из строки
+     * Обрабатывает форматы: "Название фильма", "English Title/Русское Название"
+     * 
+     * @param {string} filmString - Строка с названием фильма
+     * @returns {string} - Русское название или исходная строка
+     */
+    extractRussianTitle(filmString) {
+        if (!filmString || typeof filmString !== 'string') {
+            return filmString || '';
+        }
+
+        // Разделяем строку по слэшу
+        const parts = filmString.split('/');
+
+        if (parts.length < 2) {
+            // Если нет слэша, возвращаем как есть
+            return filmString.trim();
+        }
+
+        // Ищем русское название (содержит кириллические символы)
+        for (let i = parts.length - 1; i >= 0; i--) {
+            const part = parts[i].trim();
+            // Проверяем, содержит ли часть кириллические символы
+            if (/[а-яА-ЯёЁ]/.test(part)) {
+                return part;
+            }
+        }
+
+        // Если русское название не найдено, берем последнюю часть
+        return parts[parts.length - 1].trim();
     }
 
     /**
@@ -516,7 +629,10 @@ class NextMeetingModule {
      */
     generateKinopoiskUrl(filmName, filmYear) {
         if (!filmName) return null;
-        const cleanName = filmName
+
+        // Извлекаем русское название для поиска
+        const russianTitle = this.extractRussianTitle(filmName);
+        const cleanName = russianTitle
             .replace(/[^\w\sа-яА-ЯёЁ]/gi, ' ')
             .replace(/\s+/g, ' ')
             .trim();
