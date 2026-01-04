@@ -76,7 +76,7 @@ class MapModule {
      */
     async loadMeetingData() {
         try {
-            const response = await fetch('../modul/next-meeting.json');
+            const response = await fetch('../data/next-meeting.json');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
