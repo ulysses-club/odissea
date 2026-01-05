@@ -596,6 +596,59 @@ img {
     height: 2px;
 }
 
+/* Дополнительные стили для улучшенной навигации */
+
+/* Активный пункт меню */
+.dropdown-toggle.active {
+    font-weight: 700;
+}
+
+/* Плавное появление dropdown */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nav-dropdown:hover .dropdown-menu {
+    animation: slideDown 0.3s ease forwards;
+}
+
+/* Подсветка текущей страницы в dropdown */
+.dropdown-item.current {
+    background: rgba(106, 17, 203, 0.15);
+    border-left: 3px solid var(--primary);
+}
+
+/* Улучшение доступности для фокуса */
+.dropdown-toggle:focus,
+.dropdown-item:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Адаптивные улучшения */
+@media (max-width: 768px) {
+    .header {
+        padding: var(--space-md) 5%;
+    }
+    
+    .nav-container {
+        flex: 1;
+        justify-content: flex-end;
+    }
+}
+
+/* Эффект подчеркивания для активных ссылок */
+.nav__link {
+    position: relative;
+}
+
 /* Адаптивность */
 @media (max-width: 992px) {
     .faq-grid {

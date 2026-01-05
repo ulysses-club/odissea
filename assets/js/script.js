@@ -493,7 +493,7 @@ function initApp() {
     // Инициализация модулей
     initSeasonEffects();
     initScrollToTop();
-    initVKSyncModule(); // ← ДОБАВЛЕНО!
+    initVKSyncModule();
     
     // Инициализация модуля погоды
     initWeatherModule();
