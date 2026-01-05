@@ -427,6 +427,7 @@ img {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -437,9 +438,17 @@ img {
     animation: fadeIn 0.5s ease forwards;
 }
 
-.delay-1 { animation-delay: 0.2s; }
-.delay-2 { animation-delay: 0.4s; }
-.delay-3 { animation-delay: 0.6s; }
+.delay-1 {
+    animation-delay: 0.2s;
+}
+
+.delay-2 {
+    animation-delay: 0.4s;
+}
+
+.delay-3 {
+    animation-delay: 0.6s;
+}
 
 /* Адаптация существующих стилей под новую структуру */
 .setup-section.alt {
@@ -452,15 +461,15 @@ img {
         grid-template-columns: 1fr;
         gap: var(--space-lg);
     }
-    
+
     .parameter-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .nav-cards {
         grid-template-columns: 1fr;
     }
-    
+
     .tips-grid {
         grid-template-columns: 1fr;
     }

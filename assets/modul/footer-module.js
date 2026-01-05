@@ -275,22 +275,34 @@ class FooterModule {
      * 
      * @returns {string} - Ключ страницы для данных футера
      */
+    /**
+     * Определяет текущую страницу
+     */
     detectPage() {
-        const path = window.location.pathname;
+        const path = window.location.pathname.toLowerCase();
 
+        // Сначала проверяем data-hero-theme атрибут если есть
+        const heroContainer = document.querySelector('.hero-container');
+        if (heroContainer && heroContainer.dataset.heroTheme) {
+            return heroContainer.dataset.heroTheme;
+        }
+
+        // Затем проверяем по имени файла
         if (path.includes('index.html') || path.endsWith('/') || path.includes('/kinoclub-odisseya/')) {
             return 'index';
-        } else if (path.includes('crocodile-game.html')) {
+        } else if (path.includes('crocodile-game.html') || path.includes('crocodile-game')) {
             return 'crocodile-game';
-        } else if (path.includes('Interactive-game.html')) {
-            return 'Interactive-game';
-        } else if (path.includes('quiz.html')) {
+        } else if (path.includes('setup-guide.html') || path.includes('setup-guide')) {
+            return 'setup-guide';
+        } else if (path.includes('interactive-game.html') || path.includes('interactive-game')) {
+            return 'interactive-game';
+        } else if (path.includes('quiz.html') || path.includes('quiz')) {
             return 'quiz';
-        } else if (path.includes('randomizer.html')) {
+        } else if (path.includes('randomizer.html') || path.includes('randomizer')) {
             return 'randomizer';
-        } else if (path.includes('santa-game.html')) {
+        } else if (path.includes('santa-game.html') || path.includes('santa-game')) {
             return 'santa-game';
-        } else if (path.includes('stanislav.html')) {
+        } else if (path.includes('stanislav.html') || path.includes('stanislav')) {
             return 'stanislav';
         } else {
             return 'default';
