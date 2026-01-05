@@ -327,7 +327,7 @@ class NextMeetingModule {
     prepareShareData(meetingData) {
         const { film, date, time, place } = meetingData;
         const title = `🎬 Киноклуб Одиссея: ${film || 'Новая встреча'}`;
-        const text = `${this.config.shareText}\n\n📅 ${date || 'Скоро'} | 🕒 ${time || '15:00'}\n📍 ${place || 'Кофейня "Том Сойер"'}\n\nПрисоединяйтесь!`;
+        const text = `${this.config.shareText}\n\n📅 ${date || 'Скоро'} | 🕒 ${time || '15:00'}\n📍 ${place || 'Кофейня "Том Сойер"'}\n\n`;
         const url = window.location.href;
 
         return { title, text, url };

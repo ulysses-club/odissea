@@ -44,6 +44,18 @@
     margin-bottom: var(--space-xl);
 }
 
+.zona-logo {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+    margin-right: 4px;
+    transition: var(--transition);
+}
+
+.film-zone-btn:hover .zona-logo {
+    transform: scale(1.1);
+}
+
 /* Карточка фильма */
 .film-card {
     background: rgba(255, 255, 255, 0.05);
@@ -65,15 +77,15 @@
 .film-card-image {
     position: relative;
     width: 100%;
-    height: auto; /* Высота становится адаптивной */
+    height: auto;
     overflow: hidden;
-    aspect-ratio: 2/3; /* Сохраняем пропорции постера (2:3) */
+    aspect-ratio: 2/3;
 }
 
 .film-thumbnail {
     width: 100%;
-    height: 100%; /* Занимает всю высоту контейнера */
-    object-fit: cover; /* Обеспечивает правильное отображение */
+    height: 100%;
+    object-fit: cover;
     transition: var(--transition);
 }
 
@@ -106,7 +118,7 @@
 
 .film-info {
     padding: var(--space-lg);
-    flex-grow: 1; /* Занимает оставшееся пространство */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
@@ -123,14 +135,14 @@
     font-size: var(--text-xl);
     margin-bottom: var(--space-sm);
     color: var(--light);
-    flex-grow: 0; /* Не растягивается */
+    flex-grow: 0;
 }
 
 .film-meta {
     margin: var(--space-xs) 0;
     font-size: var(--text-sm);
     color: #827fa7;
-    flex-grow: 0; /* Не растягивается */
+    flex-grow: 0;
 }
 
 .meta-label {
@@ -144,7 +156,93 @@
     color: var(--light);
     opacity: 0.8;
     line-height: 1.5;
-    flex-grow: 1; /* Описание занимает оставшееся пространство */
+    flex-grow: 1;
+}
+
+/* Кнопки действий фильма - ОБНОВЛЕНО */
+.film-actions {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.film-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Стили для кнопки КиноПоиск */
+.film-kinopoisk-btn {
+    background: linear-gradient(135deg, var(#3424449d), var(--secondary-kp));
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.film-kinopoisk-btn:hover {
+    background: linear-gradient(135deg, #6200ff, #0084ff);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(106, 17, 203, 0.6);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Стили для кнопки Zona - КАК В NEXT-MEETING-MODULE */
+.film-zone-btn {
+    background: linear-gradient(135deg, #4744cc, #130970c2);
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.film-zone-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+}
+
+.film-zone-btn:hover::before {
+    left: 100%;
+}
+
+.film-zone-btn:hover {
+    background: linear-gradient(135deg, #ff3333, #b30000);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 77, 77, 0.4);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Стили для кнопки Поделиться */
+.film-share-btn {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.film-share-btn:hover {
+    background: linear-gradient(135deg, #1ebea5, #0d7c6f);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
 }
 
 /* Кнопка "Показать еще" */
@@ -199,7 +297,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.8rem 1.5rem;
-    background: linear-gradient(135deg, #3d13af, #155877);
+    background: linear-gradient(135deg, var(--primary-kp), var(--secondary-kp));
     color: white !important;
     text-decoration: none;
     border-radius: 8px;
@@ -208,6 +306,7 @@
     transition: all 0.3s ease;
     transform: translateY(20px);
     opacity: 0;
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .film-card:hover .kinopoisk-poster-button {
@@ -218,7 +317,137 @@
 .kinopoisk-poster-button:hover {
     background: linear-gradient(135deg, #6200ff, #0084ff);
     transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(160, 160, 160, 0.8);
+    box-shadow: 0 6px 20px rgba(106, 17, 203, 0.6);
+}
+
+/* Модальное окно шаринга */
+.share-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    animation: modalFadeIn 0.3s ease forwards;
+}
+
+@keyframes modalFadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.share-modal-content {
+    background: var(--dark-light);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    max-width: 400px;
+    width: 90%;
+    border: 1px solid var(--light-dark);
+    transform: translateY(-20px);
+    animation: modalSlideIn 0.3s ease forwards;
+    backdrop-filter: blur(10px);
+}
+
+@keyframes modalSlideIn {
+    to {
+        transform: translateY(0);
+    }
+}
+
+.share-modal h3 {
+    color: var(--light);
+    margin-bottom: var(--space-lg);
+    text-align: center;
+    font-size: var(--text-xl);
+}
+
+.share-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.share-option {
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: var(--text-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.share-option.vk {
+    background: linear-gradient(135deg, #4c75a3, #3a5f8a);
+}
+
+.share-option.telegram {
+    background: linear-gradient(135deg, #0088cc, #006699);
+}
+
+.share-option.copy {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+.share-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.close-modal {
+    width: 100%;
+    padding: var(--space-md);
+    background: transparent;
+    border: 2px solid var(--light-dark);
+    color: var(--light);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: var(--text-base);
+}
+
+.close-modal:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary);
+}
+
+/* Уведомление */
+.share-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-md);
+    z-index: 10000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+    max-width: 300px;
+}
+
+.share-notification.show {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 /* Анимации */
@@ -276,6 +505,15 @@
         width: 100%;
         max-width: 300px;
     }
+
+    .film-actions {
+        flex-direction: column;
+    }
+
+    .film-action-btn {
+        width: 100%;
+        min-width: unset;
+    }
 }
 
 /* Адаптивность */
@@ -294,6 +532,15 @@
         padding: var(--space-sm) var(--space-md);
         font-size: var(--text-xs);
     }
+
+    .film-actions {
+        flex-direction: column;
+    }
+
+    .film-action-btn {
+        width: 100%;
+        min-width: unset;
+    }
 }
 
 @media (max-width: 480px) {
@@ -307,13 +554,23 @@
         padding: var(--space-sm) var(--space-md);
         font-size: var(--text-xs);
     }
+
+    .share-modal-content {
+        width: 95%;
+        padding: var(--space-lg);
+    }
+
+    .share-option {
+        padding: var(--space-sm) var(--space-md);
+        font-size: var(--text-sm);
+    }
 }
 
 /* Поддержка для браузеров, которые не поддерживают aspect-ratio */
 @supports not (aspect-ratio: 2/3) {
     .film-card-image {
         height: 0;
-        padding-bottom: 150%; /* 3:2 = 150% (высота/ширина * 100%) */
+        padding-bottom: 150%;
     }
     
     .film-thumbnail {

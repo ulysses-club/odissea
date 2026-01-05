@@ -1,3 +1,11 @@
+// Добавь этот код в начале файла, после конфигурации zonaPlus
+this.config = {
+    zonaPlus: {
+        baseUrl: 'https://w140.zona.plus/search/',
+        logoUrl: 'https://w140.zona.plus/build/6b6b2c89e58f3b1d4f402666f6d622c4.svg'
+    }
+};
+
 /**
  * Модуль для управления секцией "История обсуждений"
  */
@@ -24,7 +32,12 @@ class DiscussionsModule {
                 loading: 'Загрузка списка фильмов...',
                 noFilms: 'Нет данных о фильмах',
                 loadMore: 'Показать еще',
-                allFilmsLoaded: 'Все фильмы загружены'
+                allFilmsLoaded: 'Все фильмы загружены',
+                copySuccess: 'Ссылка скопирована!'
+            },
+            zonaPlus: {
+                baseUrl: 'https://w140.zona.plus/search/',
+                logoUrl: 'https://w140.zona.plus/build/6b6b2c89e58f3b1d4f402666f6d622c4.svg'
             }
         };
 
@@ -35,7 +48,8 @@ class DiscussionsModule {
                 currentPage: 0,
                 totalFilms: 0,
                 hasMore: true
-            }
+            },
+            zonaLogoLoaded: false
         };
 
         this.init();
@@ -49,8 +63,28 @@ class DiscussionsModule {
         console.log('Инициализация DiscussionsModule...');
         this.cacheDOM();
         this.initEventListeners();
+        await this.preloadZonaLogo();
         await this.loadData();
         this.renderFilms();
+    }
+
+    /**
+     * Предзагрузка логотипа Zona.plus
+     */
+    async preloadZonaLogo() {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                this.state.zonaLogoLoaded = true;
+                console.log('Логотип Zona.plus загружен');
+                resolve();
+            };
+            img.onerror = () => {
+                console.warn('Не удалось загрузить логотип Zona.plus');
+                resolve();
+            };
+            img.src = this.config.zonaPlus.logoUrl;
+        });
     }
 
     /**
@@ -292,6 +326,24 @@ class DiscussionsModule {
 
         this.elements.filmsContainer.innerHTML = filmsHTML;
         console.log(`Отображено ${paginatedFilms.length} фильмов из ${this.state.sortedFilms.length}`);
+
+        // Инициализируем кнопки поделиться после рендера
+        this.initShareButtons();
+    }
+
+    /**
+ * Предзагрузка логотипа Zona.plus
+ */
+    async preloadZonaLogo() {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                this.state.zonaLogoLoaded = true;
+                resolve();
+            };
+            img.onerror = resolve;
+            img.src = this.config.zonaPlus.logoUrl;
+        });
     }
 
     /**
@@ -308,6 +360,8 @@ class DiscussionsModule {
         const filmYear = film['Год'] || '';
         const discussionNumber = film['Номер обсуждения'] || 'N/A';
         const kinopoiskUrl = this.generateKinopoiskUrl(filmName, filmYear);
+        const zoneUrl = this.generateZoneUrl(filmName);
+        const shareData = this.prepareShareData(filmName, filmYear, discussionNumber);
 
         return `
     <article class="film-card" role="article" aria-labelledby="film-${discussionNumber}-title">
@@ -322,16 +376,6 @@ class DiscussionsModule {
                 <span class="rating-number">${formattedRating}</span>
             </div>
         </div>
-        
-        ${kinopoiskUrl ? `
-        <a href="${kinopoiskUrl}" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           class="film-kinopoisk-button"
-           aria-label="Информация о фильме ${filmName} на КиноПоиске">
-           🎬 Информация о фильме
-        </a>
-        ` : ''}
         
         <div class="film-info">
             <div class="discussion-header">
@@ -348,9 +392,184 @@ class DiscussionsModule {
             ${this.createFilmMeta('Страна:', film['Страна'])}
             ${this.createFilmMeta('Участников:', film['Участников'])}
             ${film['Описание'] ? `<p class="film-description">${this.escapeHtml(film['Описание'])}</p>` : ''}
+            
+            <div class="film-actions">
+                ${kinopoiskUrl ? `
+                <a href="${kinopoiskUrl}" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="film-action-btn film-kinopoisk-btn"
+                   aria-label="Информация о фильме ${filmName} на КиноПоиске">
+                   🎬 КиноПоиск
+                </a>
+                ` : ''}
+                
+                ${zoneUrl ? `
+                <a href="${zoneUrl}" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="film-action-btn film-zone-btn"
+                   aria-label="Смотреть фильм ${filmName} в Зоне">
+                   ${this.state.zonaLogoLoaded ?
+                    `<img src="${this.config.zonaPlus.logoUrl}" alt="Zona.plus" class="zona-logo" style="width: 16px; height: 16px; filter: brightness(0) invert(1); margin-right: 4px;">` :
+                    '📺'} 
+                   Смотреть через Zona
+                </a>
+                ` : ''}
+                
+                <button class="film-action-btn film-share-btn"
+                        data-share='${JSON.stringify(shareData)}'
+                        aria-label="Поделиться информацией о фильме ${filmName}">
+                    📢 Поделиться
+                </button>
+            </div>
         </div>
     </article>
     `;
+    }
+
+    /**
+     * Инициализация кнопок поделиться
+     */
+    initShareButtons() {
+        document.querySelectorAll('.film-share-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const shareData = JSON.parse(e.currentTarget.dataset.share);
+                this.shareFilm(shareData);
+            });
+        });
+    }
+
+    /**
+     * Поделиться фильмом
+     */
+    async shareFilm(shareData) {
+        try {
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                    return;
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        throw err;
+                    }
+                    return;
+                }
+            }
+
+            this.showShareModal(shareData);
+        } catch (error) {
+            console.error('Ошибка шаринга:', error);
+            this.copyToClipboard(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
+        }
+    }
+
+    /**
+     * Показать модальное окно шаринга
+     */
+    showShareModal(shareData) {
+        const modal = document.createElement('div');
+        modal.className = 'share-modal';
+        modal.innerHTML = `
+            <div class="share-modal-content">
+                <h3>Поделиться фильмом</h3>
+                <div class="share-options">
+                    <a href="https://vk.com/share.php?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}&comment=${encodeURIComponent(shareData.text)}"
+                       target="_blank" class="share-option vk">
+                        ВКонтакте
+                    </a>
+                    <a href="https://t.me/share/url?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.text)}"
+                       target="_blank" class="share-option telegram">
+                        Telegram
+                    </a>
+                    <button class="share-option copy" data-text="${encodeURIComponent(shareData.text + '\n\n' + shareData.url)}">
+                        Скопировать ссылку
+                    </button>
+                </div>
+                <button class="close-modal">Закрыть</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+
+        const closeModal = () => {
+            modal.remove();
+            document.body.style.overflow = '';
+        };
+
+        modal.querySelector('.close-modal').addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        modal.querySelector('.copy').addEventListener('click', (e) => {
+            const text = decodeURIComponent(e.target.dataset.text);
+            this.copyToClipboard(text);
+            this.showNotification(this.config.messages.copySuccess);
+            setTimeout(closeModal, 1000);
+        });
+
+        document.addEventListener('keydown', function closeOnEscape(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', closeOnEscape);
+            }
+        });
+    }
+
+    /**
+     * Копирование текста в буфер обмена
+     */
+    async copyToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            this.showNotification(this.config.messages.copySuccess);
+        } catch {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            this.showNotification(this.config.messages.copySuccess);
+        }
+    }
+
+    /**
+     * Показать уведомление
+     */
+    showNotification(message) {
+        const oldNotification = document.querySelector('.share-notification');
+        if (oldNotification) oldNotification.remove();
+
+        const notification = document.createElement('div');
+        notification.className = 'share-notification';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    /**
+     * Подготовка данных для шаринга
+     */
+    prepareShareData(filmName, filmYear, discussionNumber) {
+        const title = `🎬 ${filmName} (${filmYear})`;
+        const text = `Обсуждение #${discussionNumber} в киноклубе Одиссея`;
+        const url = window.location.href;
+
+        return { title, text, url };
     }
 
     /**
@@ -454,6 +673,30 @@ class DiscussionsModule {
     }
 
     /**
+     * Извлечение русского названия фильма из строки
+     */
+    extractRussianTitle(filmString) {
+        if (!filmString || typeof filmString !== 'string') {
+            return filmString || '';
+        }
+
+        const parts = filmString.split('/');
+
+        if (parts.length < 2) {
+            return filmString.trim();
+        }
+
+        for (let i = parts.length - 1; i >= 0; i--) {
+            const part = parts[i].trim();
+            if (/[а-яА-ЯёЁ]/.test(part)) {
+                return part;
+            }
+        }
+
+        return parts[parts.length - 1].trim();
+    }
+
+    /**
      * Генерация URL для КиноПоиска
      * Создает ссылку для поиска информации о фильме на КиноПоиске
      * 
@@ -463,13 +706,31 @@ class DiscussionsModule {
      */
     generateKinopoiskUrl(filmName, filmYear) {
         if (!filmName) return null;
-        const cleanName = filmName
+        const russianTitle = this.extractRussianTitle(filmName);
+        const cleanName = russianTitle
             .replace(/[^\w\sа-яА-ЯёЁ]/gi, ' ')
             .replace(/\s+/g, ' ')
             .trim();
         const searchQuery = filmYear ? `${cleanName} ${filmYear}` : cleanName;
         const encodedQuery = encodeURIComponent(searchQuery);
         return `https://www.kinopoisk.ru/index.php?kp_query=${encodedQuery}`;
+    }
+
+    /**
+     * Генерация URL для Зоны
+     */
+    generateZoneUrl(filmName) {
+        if (!filmName) return null;
+
+        const russianTitle = this.extractRussianTitle(filmName);
+        const cleanName = russianTitle
+            .replace(/[^\w\sа-яА-ЯёЁ\-:]/gi, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toLowerCase();
+
+        const encodedName = encodeURIComponent(cleanName);
+        return `${this.config.zonaPlus.baseUrl}${encodedName}`;
     }
 
     /**
