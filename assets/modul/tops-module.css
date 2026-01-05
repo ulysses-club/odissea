@@ -84,6 +84,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
 .top-rank {
@@ -159,6 +160,184 @@
 
 .top-item.visible {
     display: flex;
+}
+/* Дополнительные стили для обновленного модуля */
+
+/* Переменные для адаптивности */
+.tops-grid {
+    --items-per-row: 2;
+}
+
+/* Анимация обновления */
+.tops-grid.updating .top-section {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+/* Рейтинг с цветовой индикацией */
+.rating-percentage {
+    font-size: 0.8em;
+    opacity: 0.7;
+    margin-left: 2px;
+}
+
+/* Состояния ошибок */
+.error-state {
+    text-align: center;
+    padding: var(--space-lg);
+    background: rgba(244, 67, 54, 0.1);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.error-state p {
+    margin-bottom: var(--space-md);
+    color: var(--accent);
+}
+
+/* Год фильма */
+.film-year {
+    color: var(--gray);
+    font-weight: normal;
+    margin-left: 4px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .tops-grid {
+        --items-per-row: 1;
+    }
+    
+    .top-item {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+    }
+    
+    .top-film-meta {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+/* Высокий контраст */
+@media (prefers-contrast: high) {
+    .top-item {
+        border: 2px solid currentColor;
+    }
+    
+    .rating-badge {
+        border: 1px solid currentColor;
+    }
+}
+
+/* Улучшения для touch устройств */
+@media (hover: none) and (pointer: coarse) {
+    .top-item {
+        min-height: 60px;
+    }
+    
+    .kinopoisk-poster-button {
+        padding: var(--space-sm);
+        font-size: var(--text-sm);
+    }
+}
+
+/* Стили для списков */
+.top-list {
+    counter-reset: top-items;
+}
+
+.top-item {
+    counter-increment: top-items;
+}
+
+.top-item::before {
+    display: none; /* Для кастомного счетчика */
+}
+
+/* Плавное появление элементов */
+@keyframes fadeInItem {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.top-item {
+    animation: fadeInItem 0.4s ease forwards;
+    animation-delay: calc(var(--item-index, 0) * 0.05s);
+}
+
+/* Оптимизация изображений */
+.top-poster img {
+    content-visibility: auto;
+    contain-intrinsic-size: 50px 75px;
+}
+
+/* Эффекты наведения для сенсорных устройств */
+@media (hover: hover) {
+    .top-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* Ленивая загрузка */
+.top-poster img[data-src] {
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0.1) 0%, 
+        rgba(255,255,255,0.2) 50%, 
+        rgba(255,255,255,0.1) 100%);
+    background-size: 200% 100%;
+    animation: loadingShimmer 1.5s infinite;
+}
+
+@keyframes loadingShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Улучшение доступности */
+.top-item:focus-within {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.kinopoisk-poster-button:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+/* Стили для компактного режима */
+.top-item.compact .top-film-title {
+    font-size: 0.9em;
+    line-height: 1.3;
+}
+
+.top-item.compact .top-film-meta {
+    font-size: 0.8em;
+}
+
+/* Индикатор активности кнопок */
+.toggle-tops-btn:not(.active):hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.toggle-tops-btn.active {
+    box-shadow: 0 4px 12px rgba(106, 17, 203, 0.3);
+}
+
+/* Сетка для топ-секций */
+@media (min-width: 769px) and (max-width: 1200px) {
+    .tops-grid {
+        grid-template-columns: repeat(var(--items-per-row), minmax(300px, 1fr));
+    }
 }
 
 /* Анимация появления */
@@ -270,6 +449,16 @@
 
 .top-poster:hover .poster-overlay {
     opacity: 1;
+}
+
+.top-poster:hover img {
+    transform: scale(1.05);
+}
+
+/* Фолбэк для битых изображений */
+.top-poster img[src*="default-poster.jpg"] {
+    filter: grayscale(0.3);
+    opacity: 0.8;
 }
 
 /* Анимации для плавного появления */
