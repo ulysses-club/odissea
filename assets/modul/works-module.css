@@ -215,6 +215,77 @@
     animation: fadeInUp 0.5s ease forwards;
 }
 
+/* Добавьте эти стили в конец файла */
+
+/* Футер с временем обновления */
+.weather-footer {
+    text-align: center;
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--light-dark);
+    font-size: var(--text-xs);
+    color: var(--gray);
+}
+
+/* Улучшение accessibility */
+.weather-compact:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-md);
+}
+
+/* Анимация обновления */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.weather-loading .spinner {
+    animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+}
+
+/* Более плавные переходы */
+.weather-widget {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.weather-details {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Темная тема для уведомлений */
+@media (prefers-color-scheme: dark) {
+    .weather-details {
+        background: rgba(15, 15, 30, 0.97);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* Улучшение для touch устройств */
+@media (hover: none) and (pointer: coarse) {
+    .weather-compact {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .weather-details {
+        -webkit-overflow-scrolling: touch;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+}
+
+/* Поддержка high contrast */
+@media (prefers-contrast: high) {
+    .weather-widget {
+        border: 2px solid currentColor;
+    }
+    
+    .weather-details {
+        border: 2px solid currentColor;
+    }
+}
+
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
