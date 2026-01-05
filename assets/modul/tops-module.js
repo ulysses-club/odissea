@@ -656,19 +656,19 @@ class TopsModule {
         actionsContainer.innerHTML = '';
 
         // Кнопка "Смотреть онлайн"
-        if (zonaUrl) {
-            const zonaButton = document.createElement('a');
-            zonaButton.href = zonaUrl;
-            zonaButton.target = '_blank';
-            zonaButton.rel = 'noopener noreferrer';
-            zonaButton.className = 'btn btn--primary film-modal__zona-btn pulse';
-            zonaButton.innerHTML = `
-                <span class="zona-icon">🎬</span>
-                Смотреть онлайн
-                <span class="new-content-badge">NEW</span>
-            `;
-            actionsContainer.appendChild(zonaButton);
-        }
+        //if (zonaUrl) {
+        //    const zonaButton = document.createElement('a');
+        //    zonaButton.href = zonaUrl;
+        //    zonaButton.target = '_blank';
+        //    zonaButton.rel = 'noopener noreferrer';
+        //    zonaButton.className = 'btn btn--primary film-modal__zona-btn pulse';
+        //    zonaButton.innerHTML = `
+        //        <span class="zona-icon">🎬</span>
+        //        Смотреть онлайн
+        //        <span class="new-content-badge">NEW</span>
+        //    `;
+        //    actionsContainer.appendChild(zonaButton);
+        //}
 
         // Кнопка "КиноПоиск"
         if (kinopoiskUrl) {

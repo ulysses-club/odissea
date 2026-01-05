@@ -403,20 +403,6 @@ class DiscussionsModule {
                    🎬 КиноПоиск
                 </a>
                 ` : ''}
-                
-                ${zoneUrl ? `
-                <a href="${zoneUrl}" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   class="film-action-btn film-zone-btn"
-                   aria-label="Смотреть фильм ${filmName} в Зоне">
-                   ${this.state.zonaLogoLoaded ?
-                    `<img src="${this.config.zonaPlus.logoUrl}" alt="Zona.plus" class="zona-logo" style="width: 16px; height: 16px; filter: brightness(0) invert(1); margin-right: 4px;">` :
-                    '📺'} 
-                   Смотреть через Zona
-                </a>
-                ` : ''}
-                
                 <button class="film-action-btn film-share-btn"
                         data-share='${JSON.stringify(shareData)}'
                         aria-label="Поделиться информацией о фильме ${filmName}">

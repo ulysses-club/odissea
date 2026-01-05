@@ -223,17 +223,6 @@ class NextMeetingModule {
                     
                     <div class="next-meeting-actions">
                         <div class="action-buttons">
-                            ${zonaUrl ? `
-                                <a href="${zonaUrl}" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer"
-                                   class="next-meeting-watch-btn ${this.state.zonaLogoLoaded ? 'with-logo' : ''}">
-                                   ${this.state.zonaLogoLoaded ? `<img src="${zonaPlus.logoUrl}" alt="Zona.plus" class="zona-logo">` : '🎬'}
-                                   Смотреть онлайн
-                                   <span class="new-content-badge"></span>
-                                </a>
-                            ` : ''}
-                            
                             ${kinopoiskUrl ? `
                                 <a href="${kinopoiskUrl}" 
                                    target="_blank" 
