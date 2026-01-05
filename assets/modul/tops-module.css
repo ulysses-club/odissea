@@ -1,4 +1,4 @@
-/* Стили для секции топов */
+/* Основные элементы управления */
 .tops-controls {
     display: flex;
     justify-content: center;
@@ -26,8 +26,10 @@
 .toggle-tops-btn.active {
     background: linear-gradient(to right, var(--primary), var(--secondary));
     border-color: transparent;
+    box-shadow: 0 4px 12px rgba(106, 17, 203, 0.3);
 }
 
+/* Сетка топов */
 .tops-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -35,11 +37,19 @@
     margin-bottom: var(--space-xxl);
 }
 
+@media (max-width: 992px) {
+    .tops-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Секции топа */
 .top-section {
     background: rgba(255, 255, 255, 0.03);
     border-radius: var(--radius-lg);
     padding: var(--space-lg);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .top-title {
@@ -51,6 +61,7 @@
     gap: var(--space-sm);
 }
 
+/* Элементы топа */
 .top-list {
     display: grid;
     gap: var(--space-md);
@@ -64,13 +75,38 @@
     background: rgba(255, 255, 255, 0.03);
     border-radius: var(--radius-sm);
     transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+    animation: fadeInItem 0.4s ease forwards;
 }
 
 .top-item:hover {
     background: rgba(255, 255, 255, 0.07);
     transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* Компактный вид */
+.top-item.compact {
+    padding: var(--space-xs) var(--space-sm);
+}
+
+.top-item.compact .top-poster {
+    width: 40px;
+    height: 60px;
+}
+
+.top-item.compact .top-rank {
+    font-size: var(--text-md);
+    min-width: 20px;
+}
+
+.top-item.compact .top-film-title {
+    font-size: var(--text-xs);
+    -webkit-line-clamp: 1;
+}
+
+/* Постер */
 .top-poster {
     width: 50px;
     height: 75px;
@@ -87,6 +123,11 @@
     transition: transform 0.3s ease;
 }
 
+.top-poster:hover img {
+    transform: scale(1.05);
+}
+
+/* Информация о фильме */
 .top-rank {
     font-size: var(--text-lg);
     font-weight: bold;
@@ -105,17 +146,20 @@
     font-weight: 600;
     margin-bottom: var(--space-xs);
     color: var(--light);
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.3;
 }
 
 .top-film-meta {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
+    align-items: center;
+    gap: var(--space-md);
     font-size: var(--text-xs);
     color: var(--gray);
+    flex-wrap: wrap;
 }
 
 .top-rating {
@@ -123,7 +167,6 @@
     align-items: center;
     gap: var(--space-xs);
     font-weight: bold;
-    color: var(--secondary);
 }
 
 .rating-badge {
@@ -135,53 +178,7 @@
     color: var(--light);
 }
 
-/* Компактное отображение топов */
-.top-item.compact {
-    padding: var(--space-xs) var(--space-sm);
-}
-
-.top-item.compact .top-poster {
-    width: 40px;
-    height: 60px;
-}
-
-.top-item.compact .top-rank {
-    font-size: var(--text-md);
-    min-width: 20px;
-}
-
-.top-item.compact .top-film-title {
-    font-size: var(--text-xs);
-}
-
-.top-item.hidden {
-    display: none;
-}
-
-.top-item.visible {
-    display: flex;
-}
-/* Дополнительные стили для обновленного модуля */
-
-/* Переменные для адаптивности */
-.tops-grid {
-    --items-per-row: 2;
-}
-
-/* Анимация обновления */
-.tops-grid.updating .top-section {
-    opacity: 0.5;
-    transition: opacity 0.3s ease;
-}
-
-/* Рейтинг с цветовой индикацией */
-.rating-percentage {
-    font-size: 0.8em;
-    opacity: 0.7;
-    margin-left: 2px;
-}
-
-/* Состояния ошибок */
+/* Стили для состояний */
 .error-state {
     text-align: center;
     padding: var(--space-lg);
@@ -195,194 +192,343 @@
     color: var(--accent);
 }
 
-/* Год фильма */
-.film-year {
+.no-data {
+    text-align: center;
     color: var(--gray);
-    font-weight: normal;
-    margin-left: 4px;
+    font-style: italic;
+    padding: var(--space-lg);
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-    .tops-grid {
-        --items-per-row: 1;
+/* Модальное окно фильма */
+.film-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+}
+
+.film-modal.active {
+    display: flex;
+}
+
+.film-modal__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+}
+
+.film-modal__content {
+    position: relative;
+    background: var(--dark-light);
+    border-radius: var(--radius-lg);
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--light-dark);
+    animation: modalSlideIn 0.3s ease-out;
+    z-index: 2001;
+}
+
+/* Кнопка закрытия модального окна */
+.film-modal__close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--light);
+    font-size: var(--text-xxl);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2002;
+    transition: var(--transition);
+}
+
+.film-modal__close:hover {
+    background: var(--accent);
+    transform: rotate(90deg);
+}
+
+/* Заголовок модального окна */
+.film-modal__header {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--space-xl);
+    padding: var(--space-xl);
+    border-bottom: 1px solid var(--light-dark);
+    background: linear-gradient(135deg, rgba(106, 17, 203, 0.1), rgba(37, 117, 252, 0.1));
+}
+
+.film-modal__poster {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.film-modal__poster img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.film-modal__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.film-modal__title {
+    font-size: var(--text-xxxl);
+    margin: 0;
+    color: var(--light);
+    line-height: 1.2;
+}
+
+.film-modal__year {
+    font-size: var(--text-lg);
+    color: var(--gray);
+}
+
+.film-modal__director,
+.film-modal__genre {
+    font-size: var(--text-md);
+    color: var(--light);
+}
+
+.film-modal__rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+}
+
+.film-modal__rating-value {
+    font-size: var(--text-xxl);
+    font-weight: bold;
+    color: var(--accent);
+    background: rgba(255, 77, 77, 0.1);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+}
+
+/* Тело модального окна */
+.film-modal__body {
+    padding: var(--space-xl);
+}
+
+.film-modal__section {
+    margin-bottom: var(--space-xl);
+}
+
+.film-modal__section h3 {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-md);
+    color: var(--light);
+}
+
+/* Детали фильма */
+.film-modal__details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    background: rgba(255, 255, 255, 0.03);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.film-modal__detail {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.film-modal__detail:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+}
+
+.detail-label {
+    font-size: var(--text-xs);
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: var(--text-sm);
+    color: var(--light);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Действия в модальном окне */
+.film-modal__actions {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-top: var(--space-xl);
+}
+
+.film-modal__actions .btn {
+    flex: 1;
+    min-width: 150px;
+    justify-content: center;
+    padding: var(--space-md) var(--space-lg);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+/* Специальные стили для кнопок */
+.film-modal__zona-btn {
+    background: linear-gradient(to right, #4CAF50, #45a049);
+    border: none;
+    color: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.film-modal__zona-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    background: linear-gradient(to right, #45a049, #3d8b40);
+}
+
+.film-modal__kinopoisk-btn {
+    border: 2px solid #FF5722;
+    color: #FF5722;
+    background: transparent;
+}
+
+.film-modal__kinopoisk-btn:hover {
+    background: rgba(255, 87, 34, 0.1);
+    border-color: #FF5722;
+}
+
+/* Бейдж "NEW" */
+.new-content-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #FF5722;
+    color: white;
+    font-size: var(--text-xs);
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+/* Анимации */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
     }
-    
-    .top-item {
-        flex-direction: row;
-        align-items: center;
-        text-align: left;
-    }
-    
-    .top-film-meta {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
-/* Высокий контраст */
-@media (prefers-contrast: high) {
-    .top-item {
-        border: 2px solid currentColor;
-    }
-    
-    .rating-badge {
-        border: 1px solid currentColor;
-    }
-}
-
-/* Улучшения для touch устройств */
-@media (hover: none) and (pointer: coarse) {
-    .top-item {
-        min-height: 60px;
-    }
-    
-    .kinopoisk-poster-button {
-        padding: var(--space-sm);
-        font-size: var(--text-sm);
-    }
-}
-
-/* Стили для списков */
-.top-list {
-    counter-reset: top-items;
-}
-
-.top-item {
-    counter-increment: top-items;
-}
-
-.top-item::before {
-    display: none; /* Для кастомного счетчика */
-}
-
-/* Плавное появление элементов */
 @keyframes fadeInItem {
     from {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-.top-item {
-    animation: fadeInItem 0.4s ease forwards;
-    animation-delay: calc(var(--item-index, 0) * 0.05s);
-}
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+    }
 
-/* Оптимизация изображений */
-.top-poster img {
-    content-visibility: auto;
-    contain-intrinsic-size: 50px 75px;
-}
+    70% {
+        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+    }
 
-/* Эффекты наведения для сенсорных устройств */
-@media (hover: hover) {
-    .top-item:hover {
-        transform: translateX(5px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    100% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
     }
 }
 
-/* Ленивая загрузка */
-.top-poster img[data-src] {
-    background: linear-gradient(90deg, 
-        rgba(255,255,255,0.1) 0%, 
-        rgba(255,255,255,0.2) 50%, 
-        rgba(255,255,255,0.1) 100%);
-    background-size: 200% 100%;
-    animation: loadingShimmer 1.5s infinite;
-}
-
-@keyframes loadingShimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* Улучшение доступности */
-.top-item:focus-within {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-}
-
-.kinopoisk-poster-button:focus {
-    outline: 2px solid white;
-    outline-offset: 2px;
-}
-
-/* Стили для компактного режима */
-.top-item.compact .top-film-title {
-    font-size: 0.9em;
-    line-height: 1.3;
-}
-
-.top-item.compact .top-film-meta {
-    font-size: 0.8em;
-}
-
-/* Индикатор активности кнопок */
-.toggle-tops-btn:not(.active):hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.toggle-tops-btn.active {
-    box-shadow: 0 4px 12px rgba(106, 17, 203, 0.3);
-}
-
-/* Сетка для топ-секций */
-@media (min-width: 769px) and (max-width: 1200px) {
-    .tops-grid {
-        grid-template-columns: repeat(var(--items-per-row), minmax(300px, 1fr));
-    }
-}
-
-/* Анимация появления */
-@keyframes slideInTop {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.top-item {
-    animation: slideInTop 0.3s ease forwards;
-}
-
-/* Адаптивность для топов */
-@media (max-width: 992px) {
-    .tops-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
+/* Адаптивность */
 @media (max-width: 768px) {
-    .top-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-sm);
+    .film-modal__header {
+        grid-template-columns: 1fr;
         text-align: center;
     }
 
-    .top-poster {
-        align-self: center;
+    .film-modal__poster {
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
+    .film-modal__content {
+        max-height: 95vh;
+    }
+
+    .film-modal__details {
+        grid-template-columns: 1fr;
+    }
+
+    .film-modal__actions {
+        flex-direction: column;
+    }
+
+    .film-modal__actions .btn {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .new-content-badge {
+        top: -6px;
+        right: -6px;
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+
+    .top-item {
+        padding: var(--space-sm);
     }
 
     .top-film-meta {
         flex-direction: column;
+        align-items: flex-start;
         gap: var(--space-xs);
-        align-items: center;
-    }
-
-    .top-rank {
-        align-self: center;
     }
 }
 
@@ -397,87 +543,3 @@
         max-width: 200px;
     }
 }
-
-/* Дополнения к существующим стилям */
-.kinopoisk-poster-button {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.8);
-    color: var(--light);
-    padding: 4px;
-    font-size: 10px;
-    text-align: center;
-    text-decoration: none;
-    opacity: 0;
-    transition: var(--transition);
-    transform: translateY(100%);
-}
-
-.top-poster:hover .kinopoisk-poster-button {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.rating-stars {
-    color: var(--secondary);
-    font-size: 12px;
-    letter-spacing: -1px;
-}
-
-.no-data {
-    text-align: center;
-    color: var(--gray);
-    font-style: italic;
-    padding: var(--space-lg);
-}
-
-.poster-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.top-poster:hover .poster-overlay {
-    opacity: 1;
-}
-
-.top-poster:hover img {
-    transform: scale(1.05);
-}
-
-/* Фолбэк для битых изображений */
-.top-poster img[src*="default-poster.jpg"] {
-    filter: grayscale(0.3);
-    opacity: 0.8;
-}
-
-/* Анимации для плавного появления */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.top-section {
-    animation: fadeInUp 0.6s ease forwards;
-}
-
-.top-section:nth-child(1) { animation-delay: 0.1s; }
-.top-section:nth-child(2) { animation-delay: 0.2s; }
-.top-section:nth-child(3) { animation-delay: 0.3s; }
-.top-section:nth-child(4) { animation-delay: 0.4s; }

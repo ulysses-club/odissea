@@ -219,6 +219,75 @@
         </div>
     </section>
 
+    <div id="film-modal" class="film-modal" role="dialog" aria-modal="true" aria-labelledby="modal-film-title"
+        aria-hidden="true">
+        <div class="film-modal__overlay"></div>
+        <div class="film-modal__content">
+            <button class="film-modal__close" aria-label="Закрыть окно">×</button>
+
+            <div class="film-modal__header">
+                <div class="film-modal__poster">
+                    <img id="modal-film-poster" src="../images/default-poster.jpg" alt="Постер фильма">
+                </div>
+                <div class="film-modal__info">
+                    <h2 id="modal-film-title" class="film-modal__title"></h2>
+                    <div id="modal-film-year" class="film-modal__year"></div>
+                    <div id="modal-film-director" class="film-modal__director"></div>
+                    <div id="modal-film-genre" class="film-modal__genre"></div>
+                    <div class="film-modal__rating">
+                        <span id="modal-film-rating" class="film-modal__rating-value">0.0</span>
+                        <span class="film-modal__rating-stars" id="modal-film-stars"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="film-modal__body">
+                <div class="film-modal__section">
+                    <h3>📝 Описание</h3>
+                    <p id="modal-film-description"></p>
+                </div>
+
+                <div class="film-modal__details">
+                    <div class="film-modal__detail">
+                        <span class="detail-label">Дата обсуждения:</span>
+                        <span id="modal-film-date" class="detail-value"></span>
+                    </div>
+                    <div class="film-modal__detail">
+                        <span class="detail-label">Страна:</span>
+                        <span id="modal-film-country" class="detail-value"></span>
+                    </div>
+                    <div class="film-modal__detail">
+                        <span class="detail-label">Длительность:</span>
+                        <span id="modal-film-duration" class="detail-value"></span>
+                    </div>
+                    <div class="film-modal__detail">
+                        <span class="detail-label">Наша оценка:</span>
+                        <span id="modal-film-our-rating" class="detail-value"></span>
+                    </div>
+                    <!-- Добавьте дополнительные поля по необходимости -->
+                    <div class="film-modal__detail">
+                        <span class="detail-label">Оператор:</span>
+                        <span id="modal-film-cinematographer" class="detail-value"></span>
+                    </div>
+                    <div class="film-modal__detail">
+                        <span class="detail-label">Композитор:</span>
+                        <span id="modal-film-composer" class="detail-value"></span>
+                    </div>
+                </div>
+
+                <div class="film-modal__actions">
+                    <a id="modal-film-kinopoisk" href="#" target="_blank" rel="noopener noreferrer"
+                        class="btn btn--primary">
+                        🎬 КиноПоиск
+                    </a>
+                    <button class="btn btn--outline" id="modal-film-share">
+                        📢 Поделиться
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Контакты -->
     <section id="contacts" class="contacts">
         <h2 class="section__title">Контакты</h2>
