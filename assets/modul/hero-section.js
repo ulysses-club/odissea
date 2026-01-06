@@ -21,7 +21,7 @@ class HeroSectionModule {
                 'setup-guide': {
                     title: 'Настройка устройств',
                     subtitle: 'Настрой своё устройство для комфортного просмотра',
-                    image: '../images/setup/device-setup.png',
+                    image: '../images/setup/device-setup.jpg',
                     imageAlt: 'Настройка устройств для просмотра фильмов',
                     buttons: [
                         { text: 'Настройка ТВ', href: '#tv-setup', type: 'primary', icon: '📺' },

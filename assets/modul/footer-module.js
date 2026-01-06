@@ -21,6 +21,17 @@ class FooterModule {
                     ],
                     copyright: '© 2026 Киноклуб "ОДИССЕЯ"'
                 },
+                'setup-guide': {
+                    logo: 'НАСТРОЙКА',
+                    links: [
+                        { text: 'ТВ', href: '#tv-setup', active: true },
+                        { text: 'ПК', href: '#pc-setup' },
+                        { text: 'Телефоны', href: '#phone-setup' },
+                        { text: 'Главная', href: '../index.html' },
+                        { text: 'Автор', href: '../pages/stanislav.html' }
+                    ],
+                    copyright: '© 2026 Киноклуб "ОДИССЕЯ" | Настройка устройств'
+                },
                 'crocodile-game': {
                     logo: 'КРОКОДИЛ',
                     links: [
@@ -99,14 +110,14 @@ class FooterModule {
 
         const page = pageKey || this.detectPage();
         const data = this.config.pages[page] || this.config.pages.default;
-        
+
         // Добавляем социальные сети если их нет
         if (!data.social) {
             data.social = this.config.social;
         }
 
         const html = this.generateFooter(data);
-        
+
         if (method === 'prepend') {
             containerEl.insertAdjacentHTML('afterbegin', html);
         } else {
@@ -121,6 +132,7 @@ class FooterModule {
         const path = window.location.pathname.toLowerCase();
         const pageMap = {
             'index': 'index',
+            'setup-guide': 'setup-guide',
             'crocodile-game': 'crocodile-game',
             'interactive-game': 'Interactive-game',
             'quiz': 'quiz',
@@ -182,11 +194,11 @@ class FooterModule {
         document.addEventListener('click', (e) => {
             const link = e.target.closest('.footer__link[href^="#"]');
             if (!link || link.getAttribute('href') === '#') return;
-            
+
             e.preventDefault();
             const targetId = link.hash.substring(1);
             const target = document.getElementById(targetId);
-            
+
             if (target) {
                 const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
                 window.scrollTo({
