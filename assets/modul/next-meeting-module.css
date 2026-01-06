@@ -1,354 +1,251 @@
-/* Стили для секции ближайшей встречи */
-.next-meeting {
-    padding: var(--space-xxl) 5%;
-    background: linear-gradient(135deg, rgba(106, 17, 203, 0.1), rgba(37, 117, 252, 0.1));
+/* Контейнер для загрузки */
+.next-meeting__content {
+    position: relative;
+    min-height: 200px;
 }
 
-.next-meeting__container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.05);
+/* Карточка встречи */
+.next-meeting-card {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0.02) 100%);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: var(--shadow-xl);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.next-meeting-card {
     display: grid;
-    grid-template-columns: minmax(300px, 400px) 1fr;
-    gap: var(--space-lg);
-}
-
-.next-meeting-poster {
+    grid-template-columns: 1fr;
+    border: 1px solid rgba(106, 17, 203, 0.15);
+    backdrop-filter: blur(20px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    overflow: hidden;
-    min-height: 300px;
+    margin: 0;
+    will-change: transform;
 }
 
-.next-meeting-poster img {
+/* Эффект свечения при наведении */
+.next-meeting-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        var(--primary) 0%, 
+        var(--secondary) 50%, 
+        var(--primary) 100%);
+    border-radius: calc(var(--radius-lg) + 2px);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.next-meeting-card:hover::before {
+    opacity: 0.3;
+}
+
+.next-meeting-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(106, 17, 203, 0.3);
+    box-shadow: 
+        0 12px 40px rgba(106, 17, 203, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Верхний блок с постером и основной информацией */
+.meeting-top-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    background: linear-gradient(180deg, 
+        rgba(106, 17, 203, 0.08) 0%, 
+        transparent 100%);
+}
+
+@media (min-width: 1024px) {
+    .meeting-top-section {
+        grid-template-columns: 320px 1fr;
+        gap: var(--space-xl);
+    }
+}
+
+/* Постер карточки */
+.meeting-poster {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    background: linear-gradient(45deg, 
+        rgba(106, 17, 203, 0.1), 
+        rgba(37, 117, 252, 0.05));
+    transition: transform 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+    .meeting-poster {
+        height: 360px;
+    }
+}
+
+.meeting-poster img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.next-meeting-poster:hover img {
+.meeting-poster:hover img {
     transform: scale(1.05);
 }
 
-.next-meeting-badge {
+/* Бейдж на постере */
+.meeting-poster-badge {
     position: absolute;
-    top: var(--space-md);
-    left: var(--space-md);
-    background: #141672e1;
-    color: rgb(255, 255, 255);
-    padding: var(--space-sm) var(--space-md);
+    top: var(--space-sm);
+    left: var(--space-sm);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--light);
+    padding: 6px 16px;
     border-radius: var(--radius-full);
-    font-weight: bold;
-    font-size: var(--text-sm);
+    font-weight: 700;
+    font-size: var(--text-xs);
     z-index: 2;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-md);
+    letter-spacing: 0.5px;
 }
 
-.next-meeting-info {
-    padding: var(--space-xl);
+/* Основная информация */
+.meeting-main-info {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
 }
 
-.next-meeting-header {
-    border-bottom: 2px solid var(--primary-light);
-    padding-bottom: var(--space-md);
+/* Заголовок и год */
+.meeting-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
 }
 
-.next-meeting-title {
-    font-size: var(--text-xxl);
-    margin-bottom: var(--space-sm);
+.meeting-title {
+    font-size: var(--text-xl);
+    font-weight: 800;
     color: var(--light);
-    line-height: 1.3;
-}
-
-.next-meeting-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-md);
-    font-size: var(--text-sm);
-    color: var(--gray);
-}
-
-.next-meeting-datetime {
-    background: var(--primary-light);
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-md);
-    font-weight: bold;
-    color: var(--light);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.next-meeting-details {
-    display: grid;
-    gap: var(--space-sm);
-}
-
-.next-meeting-detail {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-sm);
-    line-height: 1.4;
-}
-
-.detail-icon {
-    color: var(--secondary);
-    font-size: var(--text-lg);
-    width: 24px;
-    text-align: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-}
-
-/* Стили для кнопки "Смотреть через Zona" */
-.next-meeting-watch-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-sm);
-    padding: var(--space-md) var(--space-lg);
-    background: linear-gradient(135deg, #c23e3e83, #a04141);
-    color: var(--light) !important;
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    font-size: var(--text-base);
-    transition: var(--transition);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-
-.next-meeting-watch-btn.with-logo {
-    background: linear-gradient(135deg, #ff4d4d, #cc0000);
-}
-
-.next-meeting-watch-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.7s ease;
-}
-
-.next-meeting-watch-btn:hover::before {
-    left: 100%;
-}
-
-.next-meeting-watch-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 77, 77, 0.4);
-    border-color: rgba(255, 255, 255, 0.4);
-}
-
-.next-meeting-watch-btn:active {
-    transform: translateY(-1px);
-}
-
-.zona-logo {
-    width: 20px;
-    height: 20px;
-    filter: brightness(0) invert(1);
-    transition: var(--transition);
-}
-
-.next-meeting-watch-btn:hover .zona-logo {
-    transform: scale(1.1);
-}
-
-.new-content-badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: var(--accent);
-    color: white;
-    font-size: var(--text-xs);
-    padding: 2px 6px;
-    border-radius: var(--radius-full);
-    font-weight: bold;
-    animation: bounce 2s infinite;
-}
-
-@keyframes pulseWatch {
-    0% {
-        box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7);
-    }
-
-    70% {
-        box-shadow: 0 0 0 10px rgba(255, 77, 77, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(255, 77, 77, 0);
-    }
-}
-
-.next-meeting-watch-btn.pulse {
-    animation: pulseWatch 2s infinite;
-}
-
-@keyframes bounce {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-5px);
-    }
-}
-
-/* Стили для кнопок */
-.next-meeting-actions {
-    margin-top: var(--space-md);
-}
-
-.action-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-}
-
-.next-meeting-kinopoisk-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.8rem 1.5rem;
-    background: linear-gradient(135deg, var(--primary-kp), var(--secondary-kp));
-    color: white !important;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-
-.next-meeting-kinopoisk-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.7s ease;
-}
-
-.next-meeting-kinopoisk-btn:hover {
-    background: linear-gradient(135deg, #6200ff, #0084ff);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(106, 17, 203, 0.6);
-    border-color: rgba(255, 255, 255, 0.4);
-}
-
-.next-meeting-kinopoisk-btn:active {
-    transform: translateY(-1px);
-}
-
-.next-meeting-kinopoisk-btn:hover {
-    background: linear-gradient(135deg, #6200ff, #0084ff);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(160, 160, 160, 0.8);
-}
-
-.next-meeting-share-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.8rem 1.5rem;
-    background: linear-gradient(135deg, #25d366, #128c7e);
-    color: white !important;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.next-meeting-share-btn:hover {
-    background: linear-gradient(135deg, #1ebea5, #0d7c6f);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
-}
-
-.next-meeting-requirements {
-    background: rgba(255, 77, 77, 0.1);
-    padding: var(--space-md);
-    border-radius: var(--radius-md);
-    border-left: 3px solid var(--accent);
-    margin-top: var(--space-md);
-}
-
-.next-meeting-requirements p {
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.next-meeting-requirements ul {
+    line-height: 1.2;
     margin: 0;
-    padding-left: 20px;
-    opacity: 0.9;
-    font-size: var(--text-sm);
-}
-
-.next-meeting-requirements li {
-    margin-bottom: 4px;
-}
-
-.next-meeting-requirements strong {
-    color: var(--accent);
-}
-
-/* Стили для таймера обратного отсчета */
-.countdown-timer {
-    margin: var(--space-xl) 0;
-    padding: var(--space-lg);
-    background: rgba(10, 8, 129, 0.05);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--light-dark);
-    text-align: center;
-    backdrop-filter: blur(10px);
-    animation: fadeInUp 0.6s ease;
-}
-
-.countdown-title {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-lg);
-    color: var(--light);
-    font-weight: 700;
     background: linear-gradient(to right, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    letter-spacing: 0.5px;
+}
+
+@media (min-width: 768px) {
+    .meeting-title {
+        font-size: var(--text-xxl);
+    }
+}
+
+.meeting-year {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--text-base);
+    color: var(--light);
+    font-weight: 600;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: fit-content;
+}
+
+/* Детали встречи - компактная сетка */
+.meeting-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+    margin: var(--space-md) 0;
+}
+
+@media (min-width: 768px) {
+    .meeting-details-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.meeting-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.meeting-detail-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+.detail-label {
+    font-size: var(--text-xs);
+    color: var(--gray-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: var(--text-sm);
+    color: var(--light);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Нижний блок с таймером и кнопками */
+.meeting-bottom-section {
+    padding: var(--space-lg);
+    background: linear-gradient(180deg, 
+        transparent 0%, 
+        rgba(0, 0, 0, 0.2) 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Таймер */
+.meeting-countdown {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.countdown-title {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--light);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
 }
 
 .countdown-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-md);
+    gap: var(--space-xs);
     max-width: 400px;
     margin: 0 auto;
 }
@@ -357,379 +254,414 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: var(--space-sm);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--primary-light);
 }
 
 .countdown-number {
-    font-size: var(--text-xxxl);
-    font-weight: 700;
-    color: var(--light);
+    font-size: var(--text-lg);
+    font-weight: 800;
+    color: var(--primary);
+    font-family: var(--font-mono);
     line-height: 1;
-    margin-bottom: var(--space-xs);
-    padding: var(--space-sm);
-    border-radius: var(--radius-md);
-    min-width: 70px;
-    background: rgba(26, 26, 46, 0.8);
-    border: 2px solid var(--primary-light);
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
-    position: relative;
-    overflow: hidden;
-    transition: var(--transition);
-    box-shadow: var(--shadow-primary);
-}
-
-.countdown-number::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-md);
-    z-index: -1;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.countdown-number.updated {
-    animation: pulse 0.5s ease;
+    text-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
 }
 
 .countdown-label {
-    font-size: var(--text-sm);
-    color: var(--gray);
-    font-weight: 500;
-    text-transform: lowercase;
+    font-size: var(--text-xs);
+    color: var(--gray-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
 }
 
-.countdown-completed {
+/* Кнопки действий */
+.meeting-actions {
     display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+@media (min-width: 480px) {
+    .meeting-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+.meeting-btn {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-sm);
-    font-size: var(--text-xl);
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--accent);
-    padding: var(--space-lg);
-    background: rgba(255, 77, 77, 0.1);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--accent-light);
-    animation: pulse 2s infinite;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex: 1;
+    min-width: 140px;
 }
 
-.completed-icon {
-    font-size: var(--text-xxl);
+.meeting-btn--primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--light);
+    box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
 }
 
-.countdown-error {
-    text-align: center;
-    color: var(--accent);
+.meeting-btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+}
+
+.meeting-btn--secondary {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--light);
+}
+
+.meeting-btn--secondary:hover {
+    background: rgba(106, 17, 203, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Блок важной информации */
+.meeting-important {
+    background: linear-gradient(135deg, 
+        rgba(255, 77, 77, 0.1), 
+        rgba(255, 152, 0, 0.05));
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-lg);
     padding: var(--space-md);
-    font-style: italic;
+    margin-top: var(--space-lg);
+    position: relative;
+    backdrop-filter: blur(10px);
 }
 
-/* Анимации для таймера */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.meeting-important::before {
+    content: '⚠️ ВАЖНО';
+    position: absolute;
+    top: -10px;
+    left: var(--space-md);
+    background: var(--primary);
+    padding: 0 var(--space-sm);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
 }
 
+.important-text {
+    font-size: var(--text-sm);
+    color: var(--light);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Состояния загрузки */
+.next-meeting-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xxl);
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--space-md);
+}
+
+/* Нет встречи */
+.next-meeting-empty {
+    text-align: center;
+    padding: var(--space-xxl);
+    color: var(--gray);
+}
+
+/* Анимации */
 @keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
 
-    50% {
-        transform: scale(1.05);
-    }
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
 
-    100% {
-        transform: scale(1);
+/* Адаптивность */
+@media (max-width: 768px) {
+    .meeting-top-section {
+        padding: var(--space-md);
+        gap: var(--space-md);
+    }
+    
+    .meeting-poster {
+        height: 240px;
+    }
+    
+    .meeting-details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .countdown-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
     }
 }
 
-/* Модальное окно шаринга */
-.share-modal {
+@media (max-width: 480px) {
+    .meeting-details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .meeting-actions {
+        flex-direction: column;
+    }
+    
+    .meeting-btn {
+        width: 100%;
+    }
+}
+
+/* Поддержка prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .next-meeting-card,
+    .meeting-poster img,
+    .meeting-detail-item,
+    .meeting-btn {
+        transition: none;
+        animation: none;
+    }
+    
+    .next-meeting-card:hover,
+    .meeting-detail-item:hover,
+    .meeting-btn:hover {
+        transform: none;
+    }
+}
+
+/* Модальное окно изображения */
+.image-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-    backdrop-filter: blur(5px);
     opacity: 0;
-    animation: modalFadeIn 0.3s ease forwards;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: var(--space-md);
 }
 
-@keyframes modalFadeIn {
+.image-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.image-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    cursor: pointer;
+}
+
+.image-modal-content {
+    position: relative;
+    z-index: 2;
+    background: var(--bg-section-2);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-modal.active .image-modal-content {
+    transform: scale(1);
+}
+
+.image-modal-header {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+}
+
+.image-modal-header h3 {
+    color: var(--light);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.image-modal-body {
+    padding: var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+.image-modal-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.image-modal-close {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: var(--text-xl);
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.image-modal-close:hover {
+    background: var(--accent);
+    transform: rotate(90deg);
+}
+
+/* Анимации уведомлений */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
     to {
+        transform: translateX(0);
         opacity: 1;
     }
 }
 
-.share-modal-content {
-    background: var(--dark-light);
-    padding: var(--space-xl);
-    border-radius: var(--radius-lg);
-    max-width: 400px;
-    width: 90%;
-    border: 1px solid var(--light-dark);
-    transform: translateY(-20px);
-    animation: modalSlideIn 0.3s ease forwards;
-    backdrop-filter: blur(10px);
-}
-
-@keyframes modalSlideIn {
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
     to {
-        transform: translateY(0);
+        transform: translateX(100%);
+        opacity: 0;
     }
 }
 
-.share-modal h3 {
-    color: var(--light);
-    margin-bottom: var(--space-lg);
-    text-align: center;
-    font-size: var(--text-xl);
+/* Адаптивность модального окна */
+@media (max-width: 768px) {
+    .image-modal-content {
+        max-height: 85vh;
+        margin: var(--space-sm);
+    }
+    
+    .image-modal-header {
+        padding: var(--space-sm);
+    }
+    
+    .image-modal-body {
+        padding: var(--space-sm);
+    }
+    
+    .image-modal-close {
+        top: 6px;
+        right: 6px;
+        width: 32px;
+        height: 32px;
+        font-size: var(--text-lg);
+    }
 }
 
-.share-options {
+@media (prefers-reduced-motion: reduce) {
+    .image-modal,
+    .image-modal-content,
+    .image-modal-close {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* Список важной информации */
+.meeting-important-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-sm) 0 0 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-lg);
+    gap: var(--space-xs);
 }
 
-.share-option {
-    padding: var(--space-md);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    color: white;
-    font-weight: 600;
-    text-align: center;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-    font-size: var(--text-base);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-sm);
+.meeting-important-list li {
+    position: relative;
+    padding-left: var(--space-md);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
 }
 
-.share-option.vk {
-    background: linear-gradient(135deg, #4c75a3, #3a5f8a);
-}
-
-.share-option.telegram {
-    background: linear-gradient(135deg, #0088cc, #006699);
-}
-
-.share-option.copy {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-}
-
-.share-option:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.close-modal {
-    width: 100%;
-    padding: var(--space-md);
-    background: transparent;
-    border: 2px solid var(--light-dark);
-    color: var(--light);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    font-size: var(--text-base);
-}
-
-.close-modal:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--primary);
-}
-
-/* Уведомление */
-.share-notification {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    padding: var(--space-md) var(--space-lg);
-    border-radius: var(--radius-md);
-    z-index: 10000;
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    font-weight: 600;
-    max-width: 300px;
-}
-
-.share-notification.show {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* Состояния загрузки и ошибок */
-.loading-message,
-.no-data {
-    text-align: center;
-    padding: var(--space-xl);
-    color: var(--gray);
+.meeting-important-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
     font-size: var(--text-lg);
-    grid-column: 1 / -1;
 }
 
-.spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--gray);
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s ease-in-out infinite;
-    margin-right: var(--space-sm);
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
+/* Для темной темы - более светлый текст */
+@media (prefers-color-scheme: dark) {
+    .meeting-important-list li {
+        color: rgba(255, 255, 255, 0.95);
     }
 }
 
-/* Адаптивность для мобильных устройств */
-@media (max-width: 992px) {
-    .next-meeting-card {
-        grid-template-columns: minmax(200px, 300px) 1fr;
-    }
-}
-
+/* Адаптивность */
 @media (max-width: 768px) {
-    .next-meeting-card {
-        grid-template-columns: 1fr;
-    }
-
-    .next-meeting-kinopoisk-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 0.7rem 1.2rem;
-        font-size: 0.9rem;
-    }
-
-    .next-meeting-poster {
-        height: 400px;
-    }
-
-    .next-meeting-info {
-        padding: var(--space-lg);
-    }
-
-    .next-meeting-title {
-        font-size: var(--text-xl);
-    }
-
-    .countdown-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: var(--space-sm);
-        max-width: 350px;
-    }
-
-    .countdown-number {
-        font-size: var(--text-xxl);
-        min-width: 60px;
-        padding: var(--space-xs);
-    }
-
-    .countdown-title {
-        font-size: var(--text-md);
-    }
-
-    .action-buttons {
-        flex-direction: column;
-    }
-
-    .next-meeting-watch-btn,
-    .next-meeting-kinopoisk-btn,
-    .next-meeting-share-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 0.7rem 1.2rem;
-        font-size: 0.9rem;
-    }
-
-    .share-modal-content {
-        width: 95%;
-        padding: var(--space-lg);
-    }
-
-    .share-option {
-        padding: var(--space-sm) var(--space-md);
-        font-size: var(--text-sm);
-    }
-}
-
-@media (max-width: 480px) {
-    .next-meeting-poster {
-        height: 300px;
-    }
-
-    .next-meeting-kinopoisk-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
-    }
-
-    .countdown-timer {
-        padding: var(--space-md);
-        margin: var(--space-lg) 0;
-    }
-
-    .countdown-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-xs);
-        max-width: 250px;
-    }
-
-    .countdown-number {
-        font-size: var(--text-xl);
-        min-width: 50px;
-        padding: 0.3rem;
-    }
-
-    .countdown-label {
+    .meeting-important-list li {
         font-size: var(--text-xs);
-    }
-
-    .next-meeting-watch-btn,
-    .next-meeting-kinopoisk-btn,
-    .next-meeting-share-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
-    }
-
-    .next-meeting-requirements ul {
-        padding-left: 16px;
-        font-size: var(--text-xs);
-    }
-
-    .share-notification {
-        left: 20px;
-        right: 20px;
-        max-width: none;
-        font-size: var(--text-sm);
+        padding-left: var(--space-sm);
     }
 }
