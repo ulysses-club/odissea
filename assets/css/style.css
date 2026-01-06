@@ -1,18 +1,30 @@
 /* ===== КОРНЕВЫЕ ПЕРЕМЕННЫЕ ===== */
 :root {
-    /* Цвета */
+    /* Основные цвета */
     --primary: #6a11cb;
     --secondary: #2575fc;
     --accent: #ff4d4d;
-    --dark: #1a1a2e;
+    --dark: #0a0a14;
     --light: #f8f9fa;
     --gray: #6c757d;
     --gray-light: #dee2e6;
     
+    /* Цвета фона для секций */
+    --bg-section-1: #0a0a14;      /* Основной тёмный */
+    --bg-section-2: #0f0f1a;      /* Слегка светлее */
+    --bg-section-3: #141422;      /* Ещё светлее */
+    --bg-section-4: #1a1a2a;      /* Самый светлый */
+    
     /* Прозрачности */
     --primary-light: rgba(106, 17, 203, 0.2);
-    --dark-transparent: rgba(26, 26, 46, 0.98);
+    --dark-transparent: rgba(10, 10, 20, 0.98);
     --light-transparent: rgba(248, 249, 250, 0.1);
+    
+    /* Градиенты для фона секций */
+    --gradient-section-1: linear-gradient(135deg, rgba(10, 10, 20, 0.95), rgba(20, 20, 34, 0.95));
+    --gradient-section-2: linear-gradient(135deg, rgba(15, 15, 26, 0.95), rgba(25, 25, 40, 0.95));
+    --gradient-section-3: linear-gradient(135deg, rgba(20, 20, 34, 0.95), rgba(30, 30, 46, 0.95));
+    --gradient-section-4: linear-gradient(135deg, rgba(26, 26, 42, 0.95), rgba(36, 36, 52, 0.95));
     
     /* Тени */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -67,11 +79,78 @@ body {
     font-family: var(--font-base);
     line-height: 1.6;
     color: var(--light);
-    background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%);
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    
+    /* Основной тёмный фон */
+    background-color: var(--dark);
+    position: relative;
+}
+
+/* ===== ДВИЖУЩАЯСЯ КИНОЛЕНТА С ПЕРФОРАЦИЕЙ ===== */
+.film-reel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.film-perforations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 400%;
+    
+    /* Левая перфорация - УВЕЛИЧЕННЫЕ ОТВЕРСТИЯ */
+    background-image: 
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 28px,
+            rgba(255, 255, 255, 0.05) 28px,
+            rgba(255, 255, 255, 0.05) 36px,
+            transparent 36px,
+            transparent 56px
+        ),
+        /* Правая перфорация */
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 28px,
+            rgba(255, 255, 255, 0.05) 28px,
+            rgba(255, 255, 255, 0.05) 36px,
+            transparent 36px,
+            transparent 56px
+        );
+    
+    /* Располагаем перфорации по краям с увеличенным отступом */
+    background-position: 
+        left center,
+        right center;
+    
+    background-repeat: repeat-y;
+    background-size: 24px 56px;
+    
+    /* Анимация движения ленты сверху вниз */
+    animation: moveFilmReel 25s linear infinite;
+    opacity: 0.3;
+}
+
+/* Анимация движения киноленты */
+@keyframes moveFilmReel {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-50%);
+    }
 }
 
 /* Контейнер */
@@ -80,21 +159,105 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--space-lg);
+    position: relative;
+    z-index: 1;
 }
 
 /* Основной контейнер контента */
 .main {
     padding-top: 80px;
+    position: relative;
+    z-index: 1;
 }
 
 /* ===== ОБЩИЕ КЛАССЫ ДЛЯ СЕКЦИЙ ===== */
 .section {
     padding: var(--space-xxxl) 0;
     position: relative;
+    z-index: 1;
 }
 
-.section:not(:last-child) {
-    border-bottom: 1px solid var(--light-transparent);
+/* Фоновое разделение секций */
+.section--bg-1 {
+    background: var(--gradient-section-1);
+    position: relative;
+    overflow: hidden;
+}
+
+.section--bg-1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(106, 17, 203, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(37, 117, 252, 0.03) 0%, transparent 50%);
+    z-index: 0;
+}
+
+.section--bg-2 {
+    background: var(--gradient-section-2);
+    position: relative;
+    overflow: hidden;
+}
+
+.section--bg-2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 30% 20%, rgba(255, 77, 77, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(106, 17, 203, 0.03) 0%, transparent 50%);
+    z-index: 0;
+}
+
+.section--bg-3 {
+    background: var(--gradient-section-3);
+    position: relative;
+    overflow: hidden;
+}
+
+.section--bg-3::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 40% 40%, rgba(37, 117, 252, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 60% 60%, rgba(255, 77, 77, 0.03) 0%, transparent 50%);
+    z-index: 0;
+}
+
+.section--bg-4 {
+    background: var(--gradient-section-4);
+    position: relative;
+    overflow: hidden;
+}
+
+.section--bg-4::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 25% 75%, rgba(106, 17, 203, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 75% 25%, rgba(37, 117, 252, 0.03) 0%, transparent 50%);
+    z-index: 0;
+}
+
+/* Контент секции поверх фона */
+.section__content {
+    position: relative;
+    z-index: 1;
 }
 
 /* Заголовки секций */
@@ -266,9 +429,25 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-                url('../images/hero-bg.jpg') center/cover no-repeat;
+    background: 
+        linear-gradient(rgba(10, 10, 20, 0.85), rgba(10, 10, 20, 0.9)),
+        url('../images/hero-bg.jpg') center/cover no-repeat;
     padding: var(--space-xxxl) var(--space-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(106, 17, 203, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(37, 117, 252, 0.15) 0%, transparent 50%);
+    z-index: 0;
 }
 
 /* ===== ПРЕДСТОЯЩАЯ ВСТРЕЧА ===== */
@@ -803,6 +982,11 @@ body {
     .main-image {
         height: 400px;
     }
+    
+    /* Адаптивность киноленты для планшетов */
+    .film-perforations {
+        background-size: 20px 48px;
+    }
 }
 
 /* Мобильные устройства */
@@ -871,6 +1055,12 @@ body {
     .about__quote p {
         font-size: var(--text-lg);
     }
+    
+    /* Адаптивность киноленты для мобильных */
+    .film-perforations {
+        background-size: 16px 40px;
+        opacity: 0.25;
+    }
 }
 
 /* Маленькие мобильные */
@@ -926,6 +1116,12 @@ body {
     .about__quote p {
         font-size: var(--text-base);
     }
+    
+    /* Адаптивность киноленты для маленьких экранов */
+    .film-perforations {
+        background-size: 14px 36px;
+        opacity: 0.2;
+    }
 }
 
 /* Поддержка темной темы */
@@ -933,6 +1129,10 @@ body {
     :root {
         --light: #f8f9fa;
         --dark: #121212;
+        --bg-section-1: #121212;
+        --bg-section-2: #1a1a1a;
+        --bg-section-3: #212121;
+        --bg-section-4: #2a2a2a;
     }
 }
 
@@ -944,6 +1144,10 @@ body {
         display: none;
     }
     
+    .film-reel-overlay {
+        display: none;
+    }
+    
     body {
         color: #000;
         background: #fff;
@@ -952,22 +1156,12 @@ body {
     .section {
         padding: 20px 0;
         break-inside: avoid;
+        background: none !important;
     }
-}
-
-/* Доступность для фокуса */
-*:focus {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-}
-
-*:focus:not(:focus-visible) {
-    outline: none;
-}
-
-*:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
+    
+    .section::before {
+        display: none;
+    }
 }
 
 /* Поддержка уменьшения движения */
@@ -987,4 +1181,23 @@ body {
     .about__quote::before {
         animation: none;
     }
+    
+    .film-perforations {
+        animation: none !important;
+    }
+}
+
+/* Доступность для фокуса */
+*:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+*:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
 }
