@@ -1,6 +1,6 @@
 /**
  * Модуль для управления секцией "Наши топы"
- * Основные функции: загрузка данных, формирование топов, отображение модальных окон
+ * Оптимизированная версия: устранены критические ошибки, удалена избыточность, сохранена логика
  */
 class TopsModule {
     constructor() {
@@ -12,19 +12,12 @@ class TopsModule {
                 cacheTTL: 3600000,
                 ratingPrecision: 1,
                 poster: '../images/default-poster.jpg'
-            },
-            messages: {
-                noTopData: 'Недостаточно данных для формирования топа',
-                loading: 'Загрузка данных...',
-                error: 'Ошибка загрузки данных',
-                retry: 'Повторить попытку'
             }
         };
 
         this.state = {
             limit: 3,
             films: [],
-            isLoading: false,
             data: {
                 bestFilms: [],
                 worstFilms: [],
@@ -45,8 +38,7 @@ class TopsModule {
         if (!this.checkRequirements()) return;
 
         this.cacheDOM();
-        this.bindModalEvents();
-        this.initEventListeners();
+        this.bindEvents();
         await this.loadData();
     }
 
@@ -58,7 +50,7 @@ class TopsModule {
     }
 
     /**
-     * Кэширование DOM элементов для быстрого доступа
+     * Кэширование DOM элементов
      */
     cacheDOM() {
         this.elements = {
@@ -70,53 +62,40 @@ class TopsModule {
             toggleButtons: document.querySelectorAll('.toggle-tops-btn'),
             modal: document.getElementById('film-modal'),
             modalOverlay: document.querySelector('.film-modal__overlay'),
-            modalClose: document.querySelector('.film-modal__close')
+            modalClose: document.querySelector('.film-modal__close'),
+            modalContent: document.querySelector('.film-modal__content')
         };
     }
 
     /**
-     * Привязка событий для модального окна
+     * Привязка событий
      */
-    bindModalEvents() {
-        if (!this.elements.modal) return;
+    bindEvents() {
+        // Переключение лимита
+        this.elements.toggleButtons?.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const limit = parseInt(e.target.dataset.limit);
+                this.toggleTopsLimit(limit);
+            });
+        });
 
+        // Клики по фильмам - делегирование
+        const topsGrid = document.querySelector('.tops-grid');
+        if (topsGrid) {
+            topsGrid.addEventListener('click', (e) => this.handleFilmClick(e));
+        }
+
+        // Модальное окно
         this.elements.modalOverlay?.addEventListener('click', () => this.closeModal());
         this.elements.modalClose?.addEventListener('click', () => this.closeModal());
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.elements.modal.classList.contains('active')) {
+            if (e.key === 'Escape' && this.elements.modal?.classList.contains('active')) {
                 this.closeModal();
             }
         });
 
-        const shareBtn = document.getElementById('modal-film-share');
-        if (shareBtn) {
-            shareBtn.addEventListener('click', () => this.shareFilm());
-        }
-    }
-
-    /**
-     * Инициализация обработчиков событий
-     */
-    initEventListeners() {
-        // Переключение лимита отображения
-        if (this.elements.toggleButtons) {
-            this.elements.toggleButtons.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const limit = parseInt(e.target.dataset.limit);
-                    this.toggleTopsLimit(limit);
-                });
-            });
-        }
-
-        // Делегирование кликов на фильмы
-        const topsGrid = document.querySelector('.tops-grid');
-        if (topsGrid) {
-            topsGrid.addEventListener('click', (e) => this.handleFilmClick(e));
-            topsGrid.addEventListener('keydown', (e) => this.handleFilmKeydown(e));
-        }
-
-        // Кнопка ретрая
+        // Ретрай
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('retry-tops-button')) {
                 this.loadData();
@@ -136,34 +115,29 @@ class TopsModule {
 
         const filmId = topItem.dataset.filmId;
         const type = topItem.dataset.type;
+        
+        // Находим фильм по ID
         const film = this.findFilmById(filmId, type);
-
-        if (film) this.showFilmModal(film);
-    }
-
-    /**
-     * Обработка нажатия клавиш на фильме (для доступности)
-     */
-    handleFilmKeydown(e) {
-        if (e.key !== 'Enter' && e.key !== ' ') return;
-
-        const topItem = e.target.closest('.top-item[data-film-id]');
-        if (!topItem) return;
-
-        e.preventDefault();
-        const filmId = topItem.dataset.filmId;
-        const type = topItem.dataset.type;
-        const film = this.findFilmById(filmId, type);
-
-        if (film) this.showFilmModal(film);
+        if (film) {
+            this.currentFilm = film;
+            this.showFilmModal(film);
+        }
     }
 
     /**
      * Поиск фильма по ID и типу
      */
     findFilmById(filmId, type) {
-        const films = type === 'best' ? this.state.data.bestFilms : this.state.data.worstFilms;
-        return films.find((film, index) => `${type}-${index}` === filmId);
+        const [typePrefix, indexStr] = filmId.split('-');
+        const index = parseInt(indexStr);
+        
+        if (typePrefix === 'best' && this.state.data.bestFilms[index]) {
+            return this.state.data.bestFilms[index];
+        } else if (typePrefix === 'worst' && this.state.data.worstFilms[index]) {
+            return this.state.data.worstFilms[index];
+        }
+        
+        return null;
     }
 
     /**
@@ -178,7 +152,6 @@ class TopsModule {
             return;
         }
 
-        this.state.isLoading = true;
         this.showLoadingState();
 
         try {
@@ -191,9 +164,7 @@ class TopsModule {
             this.renderTops();
         } catch (error) {
             console.error('Ошибка загрузки данных:', error);
-            this.showErrorState(error.message);
-        } finally {
-            this.state.isLoading = false;
+            this.showErrorState('Ошибка загрузки данных');
         }
     }
 
@@ -241,7 +212,7 @@ class TopsModule {
     }
 
     /**
-     * Получение топ фильмов (лучших или худших)
+     * Получение топ фильмов
      */
     getTopFilms(type) {
         const ratedFilms = this.state.films.filter(film => {
@@ -323,7 +294,7 @@ class TopsModule {
 
         const films = this.state.data[`${type}Films`];
         if (!films || films.length === 0) {
-            container.innerHTML = `<p class="no-data">${this.config.messages.noTopData}</p>`;
+            container.innerHTML = '<p class="no-data">Недостаточно данных</p>';
             return;
         }
 
@@ -343,7 +314,7 @@ class TopsModule {
 
         const genres = this.state.data.genres.slice(0, this.state.limit);
         if (genres.length === 0) {
-            this.elements.topGenres.innerHTML = `<p class="no-data">${this.config.messages.noTopData}</p>`;
+            this.elements.topGenres.innerHTML = '<p class="no-data">Недостаточно данных</p>';
             return;
         }
 
@@ -360,7 +331,7 @@ class TopsModule {
 
         const directors = this.state.data.directors.slice(0, this.state.limit);
         if (directors.length === 0) {
-            this.elements.topDirectors.innerHTML = `<p class="no-data">${this.config.messages.noTopData}</p>`;
+            this.elements.topDirectors.innerHTML = '<p class="no-data">Недостаточно данных</p>';
             return;
         }
 
@@ -378,7 +349,8 @@ class TopsModule {
         const filmName = film['Фильм'] || film['Название'] || 'Неизвестный фильм';
         const filmYear = film['Год'] || '';
         const director = film['Режиссер'] || 'Неизвестен';
-        const kinopoiskUrl = this.generateKinopoiskUrl(filmName, filmYear);
+        const genre = film['Жанр'] || '';
+        const country = film['Страна'] || '';
         const isCompact = this.state.limit === 3;
         const ratingColor = this.getRatingColor(rating);
         const filmId = `${type}-${index}`;
@@ -389,25 +361,15 @@ class TopsModule {
                  data-type="${type}"
                  role="button"
                  tabindex="0"
-                 aria-label="Подробнее о фильме ${filmName}">
+                 aria-label="Подробнее о фильме ${this.escapeHtml(filmName)}">
                 
                 <div class="top-rank">${index + 1}</div>
                 
                 <div class="top-poster">
                     <img src="${posterUrl}" 
-                         alt="${filmName}"
+                         alt="${this.escapeHtml(filmName)}"
                          loading="lazy"
                          onerror="this.src='${this.config.defaults.poster}'">
-                    
-                    ${kinopoiskUrl ? `
-                    <a href="${kinopoiskUrl}" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       class="kinopoisk-poster-button"
-                       onclick="event.stopPropagation()">
-                       🎬 КиноПоиск
-                    </a>
-                    ` : ''}
                 </div>
                 
                 <div class="top-info">
@@ -417,15 +379,19 @@ class TopsModule {
                     </div>
                     
                     <div class="top-film-meta">
-                        <span class="top-director" title="${director}">
+                        <span class="top-director" title="${this.escapeHtml(director)}">
                             ${this.escapeHtml(director)}
                         </span>
                         
                         <span class="top-rating" style="color: ${ratingColor}">
-                            <span class="rating-stars">${this.createRatingStars(rating)}</span>
                             <span class="rating-value">${rating.toFixed(1)}</span>
                             <span class="rating-percentage">/10</span>
                         </span>
+                    </div>
+                    
+                    <div class="top-film-details">
+                        ${genre ? `<span class="top-genre">${this.escapeHtml(genre)}</span>` : ''}
+                        ${country ? `<span class="top-country">${this.escapeHtml(country)}</span>` : ''}
                     </div>
                 </div>
             </div>
@@ -473,7 +439,7 @@ class TopsModule {
     }
 
     /**
-     * Переключение лимита отображения топов
+     * Переключение лимита отображения
      */
     toggleTopsLimit(limit) {
         if (this.state.limit === limit) return;
@@ -491,7 +457,7 @@ class TopsModule {
     }
 
     /**
-     * Отображение модального окна с информацией о фильме
+     * Отображение модального окна
      */
     showFilmModal(film) {
         if (!this.elements.modal) return;
@@ -501,9 +467,7 @@ class TopsModule {
         document.body.style.overflow = 'hidden';
 
         setTimeout(() => {
-            if (this.elements.modalClose) {
-                this.elements.modalClose.focus();
-            }
+            this.elements.modalClose?.focus();
         }, 100);
     }
 
@@ -518,34 +482,58 @@ class TopsModule {
     }
 
     /**
-     * Заполнение модального окна данными о фильме
+     * Заполнение модального окна данными
      */
     fillModalData(film) {
-        // Постер
-        const posterImg = document.getElementById('modal-film-poster');
-        if (posterImg) {
-            posterImg.src = this.getPosterUrl(film);
-            posterImg.alt = film['Фильм'] || 'Постер фильма';
+        // Проверяем и создаем структуру модального окна если её нет
+        if (!this.elements.modalContent || !this.elements.modalContent.querySelector('.film-modal__details')) {
+            this.createModalStructure();
         }
 
-        // Основная информация
-        const mainFields = [
-            { id: 'modal-film-title', value: film['Фильм'] || 'Неизвестный фильм' },
-            { id: 'modal-film-year', value: film['Год'] ? `(${film['Год']})` : '' },
-            { id: 'modal-film-director', value: film['Режиссер'] ? `Режиссер: ${film['Режиссер']}` : '' },
-            { id: 'modal-film-genre', value: film['Жанр'] ? `Жанр: ${film['Жанр']}` : '' }
-        ];
+        const filmName = film['Фильм'] || film['Название'] || 'Неизвестный фильм';
+        const filmYear = film['Год'] || '';
+        const director = film['Режиссер'] || 'Неизвестен';
+        const genre = film['Жанр'] || 'Не указан';
+        const country = film['Страна'] || '';
+        const rating = this.parseRating(film['Оценка']);
+        const date = film['Дата'] || '';
+        const discussionNumber = film['Номер обсуждения'] || '';
+        const participants = film['Участников'] || '';
+        const actors = film['В главных ролях'] || '';
 
-        mainFields.forEach(({ id, value }) => {
-            const element = document.getElementById(id);
-            if (element) element.textContent = value;
-        });
+        // Постер
+        const posterImg = this.elements.modal.querySelector('#modal-film-poster');
+        if (posterImg) {
+            posterImg.src = this.getPosterUrl(film);
+            posterImg.alt = filmName;
+        }
+
+        // Заполняем заголовок
+        const titleElement = this.elements.modal.querySelector('#modal-film-title');
+        if (titleElement) {
+            titleElement.textContent = filmName;
+        }
+        
+        // Заполняем год
+        const yearElement = this.elements.modal.querySelector('#modal-film-year');
+        if (yearElement) {
+            yearElement.textContent = filmYear ? `(${filmYear})` : '';
+        }
+        
+        // Заполняем режиссера
+        const directorElement = this.elements.modal.querySelector('#modal-film-director');
+        if (directorElement) {
+            directorElement.textContent = director ? `Режиссер: ${director}` : '';
+        }
+        
+        // Заполняем жанр
+        const genreElement = this.elements.modal.querySelector('#modal-film-genre');
+        if (genreElement) {
+            genreElement.textContent = genre ? `Жанр: ${genre}` : '';
+        }
 
         // Рейтинг
-        const rating = this.parseRating(film['Оценка']);
-        const ratingElement = document.getElementById('modal-film-rating');
-        const starsElement = document.getElementById('modal-film-stars');
-
+        const ratingElement = this.elements.modal.querySelector('#modal-film-rating');
         if (ratingElement) {
             if (rating > 0) {
                 ratingElement.textContent = rating.toFixed(this.config.defaults.ratingPrecision);
@@ -556,89 +544,34 @@ class TopsModule {
             }
         }
 
-        if (starsElement) {
-            starsElement.textContent = rating > 0 ? this.createRatingStars(rating) : '';
-        }
-
-        // Детальная информация
-        const realFields = [
-            { label: 'Дата обсуждения', value: film['Дата'] },
-            { label: 'Номер обсуждения', value: film['Номер обсуждения'] ? `#${film['Номер обсуждения']}` : null },
-            { label: 'Участников', value: this.formatParticipants(film['Участников']) },
-            { label: 'Страна', value: film['Страна'] },
-            { label: 'В главных ролях', value: film['В главных ролях'] },
-        ];
-
-        const detailsContainer = document.querySelector('.film-modal__details');
+        // Детали фильма
+        const detailsContainer = this.elements.modal.querySelector('.film-modal__details');
         if (detailsContainer) {
-            const availableDetails = realFields.filter(({ value }) => this.hasValue(value));
+            const details = [
+                { label: 'Дата обсуждения', value: date },
+                { label: 'Номер обсуждения', value: discussionNumber ? `#${discussionNumber}` : null },
+                { label: 'Участников', value: participants ? `${participants} чел.` : null },
+                { label: 'Страна', value: country },
+                { label: 'В главных ролях', value: actors }
+            ].filter(({ value }) => value && value.toString().trim() !== '');
 
-            if (availableDetails.length > 0) {
-                const detailsHTML = availableDetails
-                    .map(({ label, value }) => {
-                        if (label === 'В главных ролях' && value.length > 100) {
-                            const shortValue = value.substring(0, 100) + '...';
-                            return `
-                            <div class="film-modal__detail actors-detail">
-                                <span class="detail-label">${label}:</span>
-                                <span class="detail-value actors-value" data-full="${this.escapeHtml(value)}">
-                                    ${this.escapeHtml(shortValue)}
-                                    <button class="show-all-actors-btn">Показать всех</button>
-                                </span>
-                            </div>
-                        `;
-                        }
-                        return `
-                            <div class="film-modal__detail">
-                                <span class="detail-label">${label}:</span>
-                                <span class="detail-value">${this.escapeHtml(value)}</span>
-                            </div>
-                        `;
-                    })
-                    .join('');
-
+            if (details.length > 0) {
+                const detailsHTML = details
+                    .map(({ label, value }) => `
+                        <div class="film-modal__detail">
+                            <span class="detail-label">${label}:</span>
+                            <span class="detail-value">${this.escapeHtml(value)}</span>
+                        </div>
+                    `).join('');
+                
                 detailsContainer.innerHTML = detailsHTML;
-
-                // Обработчик для кнопки "показать всех актеров"
-                const showAllBtn = detailsContainer.querySelector('.show-all-actors-btn');
-                if (showAllBtn) {
-                    showAllBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const actorsValue = showAllBtn.closest('.actors-value');
-                        actorsValue.innerHTML = this.escapeHtml(actorsValue.dataset.full);
-                        showAllBtn.remove();
-                    });
-                }
             } else {
                 detailsContainer.innerHTML = '<p class="no-data">Дополнительная информация отсутствует</p>';
             }
         }
 
-        // Кнопки действий
+        // Обновляем кнопки
         this.updateActionButtons(film);
-
-        // Сохраняем фильм для sharing
-        this.currentFilm = film;
-    }
-
-    /**
-     * Форматирование участников
-     */
-    formatParticipants(participants) {
-        if (typeof participants === 'number' || (typeof participants === 'string' && participants.trim() !== '')) {
-            return `${participants} чел.`;
-        }
-        return null;
-    }
-
-    /**
-     * Проверка наличия значения
-     */
-    hasValue(value) {
-        if (value === null || value === undefined) return false;
-        if (typeof value === 'string') return value.trim() !== '';
-        if (typeof value === 'number') return true;
-        return !!value;
     }
 
     /**
@@ -648,27 +581,12 @@ class TopsModule {
         const filmName = film['Фильм'] || '';
         const filmYear = film['Год'] || '';
         const kinopoiskUrl = this.generateKinopoiskUrl(filmName, filmYear);
-        const zonaUrl = this.generateZonaPlusUrl(filmName);
 
-        const actionsContainer = document.querySelector('.film-modal__actions');
+        const actionsContainer = this.elements.modal.querySelector('.film-modal__actions');
         if (!actionsContainer) return;
 
+        // Очищаем контейнер
         actionsContainer.innerHTML = '';
-
-        // Кнопка "Смотреть онлайн"
-        //if (zonaUrl) {
-        //    const zonaButton = document.createElement('a');
-        //    zonaButton.href = zonaUrl;
-        //    zonaButton.target = '_blank';
-        //    zonaButton.rel = 'noopener noreferrer';
-        //    zonaButton.className = 'btn btn--primary film-modal__zona-btn pulse';
-        //    zonaButton.innerHTML = `
-        //        <span class="zona-icon">🎬</span>
-        //        Смотреть онлайн
-        //        <span class="new-content-badge">NEW</span>
-        //    `;
-        //    actionsContainer.appendChild(zonaButton);
-        //}
 
         // Кнопка "КиноПоиск"
         if (kinopoiskUrl) {
@@ -691,36 +609,49 @@ class TopsModule {
     }
 
     /**
-     * Генерация URL для Zona.plus
+     * Создание структуры модального окна
      */
-    generateZonaPlusUrl(filmName) {
-        if (!filmName) return null;
+    createModalStructure() {
+        if (!this.elements.modal) return;
 
-        const russianTitle = this.extractRussianTitle(filmName);
-        const cleanName = russianTitle
-            .replace(/[^\w\sа-яА-ЯёЁ\-:]/gi, ' ')
-            .replace(/\s+/g, ' ')
-            .trim()
-            .toLowerCase();
+        // Создаем базовую структуру модального окна
+        this.elements.modal.innerHTML = `
+            <div class="film-modal__overlay"></div>
+            <div class="film-modal__content">
+                <button class="film-modal__close" aria-label="Закрыть">×</button>
+                <div class="film-modal__header">
+                    <div class="film-modal__poster">
+                        <img id="modal-film-poster" src="${this.config.defaults.poster}" alt="Постер фильма">
+                    </div>
+                    <div class="film-modal__info">
+                        <h2 id="modal-film-title" class="film-modal__title">Название фильма</h2>
+                        <div id="modal-film-year" class="film-modal__year"></div>
+                        <div id="modal-film-director" class="film-modal__director"></div>
+                        <div id="modal-film-genre" class="film-modal__genre"></div>
+                        <div class="film-modal__rating">
+                            <span id="modal-film-rating" class="film-modal__rating-value">0.0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="film-modal__body">
+                    <div class="film-modal__details">
+                        <!-- Детали будут заполнены динамически -->
+                    </div>
+                    <div class="film-modal__actions">
+                        <!-- Кнопки будут добавлены динамически -->
+                    </div>
+                </div>
+            </div>
+        `;
 
-        return `https://w140.zona.plus/search/${encodeURIComponent(cleanName)}`;
-    }
-
-    /**
-     * Извлечение русского названия из строки
-     */
-    extractRussianTitle(filmString) {
-        if (!filmString || typeof filmString !== 'string') return filmString || '';
-
-        const parts = filmString.split('/');
-        if (parts.length < 2) return filmString.trim();
-
-        for (let i = parts.length - 1; i >= 0; i--) {
-            const part = parts[i].trim();
-            if (/[а-яА-ЯёЁ]/.test(part)) return part;
-        }
-
-        return parts[parts.length - 1].trim();
+        // Обновляем кэшированные элементы
+        this.elements.modalOverlay = this.elements.modal.querySelector('.film-modal__overlay');
+        this.elements.modalClose = this.elements.modal.querySelector('.film-modal__close');
+        this.elements.modalContent = this.elements.modal.querySelector('.film-modal__content');
+        
+        // Привязываем события к новым элементам
+        this.elements.modalOverlay.addEventListener('click', () => this.closeModal());
+        this.elements.modalClose.addEventListener('click', () => this.closeModal());
     }
 
     /**
@@ -735,27 +666,15 @@ class TopsModule {
         const year = film['Год'] || '';
         const director = film['Режиссер'] || '';
         const genre = film['Жанр'] || '';
-        const country = film['Страна'] || '';
-        const participants = film['Участников'] || '';
-        const actors = film['В главных ролях'] || '';
 
         // Формирование текста для sharing
         let shareText = `🎬 ${title}${year ? ` (${year})` : ''}`;
         if (director) shareText += `\n👨‍🎤 Режиссер: ${director}`;
         if (genre) shareText += `\n🎭 Жанр: ${genre}`;
-        if (country) shareText += `\n🌍 Страна: ${country}`;
         if (rating > 0) shareText += `\n⭐ Клубная оценка: ${rating.toFixed(1)}/10`;
-        if (participants) shareText += `\n👥 Участников: ${participants}`;
-        if (actors) shareText += `\n🎭 В главных ролях: ${actors.substring(0, 100)}${actors.length > 100 ? '...' : ''}`;
         shareText += `\n\n🎬 Посмотрели в киноклубе "Одиссея"!\n👉 Подробнее: ${window.location.href}`;
 
-        this.showShareMenu(shareText, title);
-    }
-
-    /**
-     * Отображение меню sharing
-     */
-    showShareMenu(shareText, title) {
+        // Пытаемся использовать Web Share API
         if (navigator.share) {
             navigator.share({
                 title: `${title} - Киноклуб Одиссея`,
@@ -763,46 +682,29 @@ class TopsModule {
                 url: window.location.href
             }).catch(console.error);
         } else {
-            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(shareText)}`;
-            const vkUrl = `https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(title)}&comment=${encodeURIComponent(shareText)}`;
-
-            const shareMenu = document.createElement('div');
-            shareMenu.className = 'share-menu';
-            shareMenu.innerHTML = `
-                <div class="share-menu-content">
-                    <h3>Поделиться</h3>
-                    <a href="${telegramUrl}" target="_blank" class="share-option telegram">📱 Telegram</a>
-                    <a href="${vkUrl}" target="_blank" class="share-option vk">👥 ВКонтакте</a>
-                    <button class="copy-text-btn">📋 Скопировать текст</button>
-                    <button class="close-share-menu">Закрыть</button>
-                </div>
-            `;
-
-            document.body.appendChild(shareMenu);
-            this.setupShareMenuEvents(shareMenu, shareText);
+            // Fallback: копирование в буфер обмена
+            navigator.clipboard.writeText(shareText)
+                .then(() => {
+                    alert('Информация о фильме скопирована в буфер обмена!');
+                })
+                .catch(err => {
+                    console.error('Ошибка копирования:', err);
+                    alert('Скопируйте текст вручную:\n\n' + shareText);
+                });
         }
     }
 
     /**
-     * Настройка обработчиков событий для меню sharing
+     * Генерация URL для КиноПоиска
      */
-    setupShareMenuEvents(shareMenu, shareText) {
-        const copyBtn = shareMenu.querySelector('.copy-text-btn');
-        const closeBtn = shareMenu.querySelector('.close-share-menu');
-
-        copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(shareText)
-                .then(() => alert('Информация о фильме скопирована!'))
-                .finally(() => shareMenu.remove());
-        });
-
-        closeBtn.addEventListener('click', () => shareMenu.remove());
-        shareMenu.addEventListener('click', (e) => {
-            if (e.target === shareMenu) shareMenu.remove();
-        });
+    generateKinopoiskUrl(filmName, filmYear) {
+        if (!filmName) return null;
+        const cleanName = filmName.replace(/[^\w\sа-яА-ЯёЁ]/gi, ' ').replace(/\s+/g, ' ').trim();
+        const searchQuery = filmYear ? `${cleanName} ${filmYear}` : cleanName;
+        return `https://www.kinopoisk.ru/index.php?kp_query=${encodeURIComponent(searchQuery)}`;
     }
 
-    /* ========== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ========== */
+    /* ===== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===== */
 
     /**
      * Парсинг рейтинга
@@ -824,17 +726,6 @@ class TopsModule {
     }
 
     /**
-     * Создание звезд рейтинга
-     */
-    createRatingStars(rating) {
-        const num = Math.min(Math.max(rating || 0, 0), 10);
-        const full = Math.floor(num);
-        const half = num % 1 >= 0.5 ? 1 : 0;
-        const empty = 10 - full - half;
-        return `${'★'.repeat(full)}${half ? '⯨' : ''}${'☆'.repeat(empty)}`;
-    }
-
-    /**
      * Получение URL постера
      */
     getPosterUrl(film) {
@@ -852,16 +743,6 @@ class TopsModule {
     }
 
     /**
-     * Генерация URL для КиноПоиска
-     */
-    generateKinopoiskUrl(filmName, filmYear) {
-        if (!filmName) return null;
-        const cleanName = filmName.replace(/[^\w\sа-яА-ЯёЁ]/gi, ' ').replace(/\s+/g, ' ').trim();
-        const searchQuery = filmYear ? `${cleanName} ${filmYear}` : cleanName;
-        return `https://www.kinopoisk.ru/index.php?kp_query=${encodeURIComponent(searchQuery)}`;
-    }
-
-    /**
      * Капитализация первой буквы
      */
     capitalizeFirstLetter(string) {
@@ -870,7 +751,7 @@ class TopsModule {
     }
 
     /**
-     * Получение правильной формы слова для русского языка
+     * Правильная форма слова для русского языка
      */
     getRussianWordForm(number, one, two, five) {
         const n = Math.abs(number) % 100;
@@ -888,12 +769,9 @@ class TopsModule {
     escapeHtml(unsafe) {
         if (unsafe === null || unsafe === undefined) return '';
         if (typeof unsafe !== 'string') unsafe = String(unsafe);
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        const div = document.createElement('div');
+        div.textContent = unsafe;
+        return div.innerHTML;
     }
 
     /**
@@ -912,7 +790,7 @@ class TopsModule {
                 container.innerHTML = `
                     <div class="loading-message">
                         <div class="spinner" aria-hidden="true"></div>
-                        ${this.config.messages.loading}
+                        Загрузка данных...
                     </div>
                 `;
             }
@@ -936,7 +814,7 @@ class TopsModule {
                     <div class="error-state">
                         <p>${message}</p>
                         <button class="retry-tops-button btn btn--primary">
-                            ${this.config.messages.retry}
+                            Попробовать снова
                         </button>
                     </div>
                 `;
