@@ -126,7 +126,7 @@ body {
             transparent 28px,
             rgba(255, 255, 255, 0.05) 28px,
             rgba(255, 255, 255, 0.05) 36px,
-            transparent 36px,
+            transparent 50px,
             transparent 56px),
         /* Правая перфорация */
         repeating-linear-gradient(to bottom,
@@ -134,7 +134,7 @@ body {
             transparent 28px,
             rgba(255, 255, 255, 0.05) 28px,
             rgba(255, 255, 255, 0.05) 36px,
-            transparent 36px,
+            transparent 50px,
             transparent 56px);
 
     /* Располагаем перфорации по краям с увеличенным отступом */
@@ -479,180 +479,6 @@ body {
     backdrop-filter: blur(10px);
 }
 
-/* ===== FAQ ===== */
-.faq-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-lg);
-    margin-bottom: var(--space-xxxl);
-}
-
-.faq-column {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-lg);
-}
-
-.faq-item {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-lg);
-    padding: var(--space-xl);
-    border: 1px solid transparent;
-    transition: var(--transition);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    backdrop-filter: blur(10px);
-}
-
-.faq-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: var(--primary-light);
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
-}
-
-.faq-question {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-}
-
-.faq-icon {
-    font-size: var(--text-xl);
-    background: linear-gradient(45deg, var(--primary), var(--secondary));
-    width: 56px;
-    height: 56px;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: var(--light);
-}
-
-.faq-title {
-    font-size: var(--text-lg);
-    font-weight: 600;
-    color: var(--light);
-    margin-bottom: var(--space-xs);
-}
-
-.faq-answer {
-    font-size: var(--text-base);
-    line-height: 1.7;
-    color: var(--gray-light);
-    flex-grow: 1;
-}
-
-/* Контейнер с изображением */
-.image-container-wrapper {
-    margin: var(--space-xxxl) 0;
-    position: relative;
-}
-
-.image-container {
-    position: relative;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    transition: var(--transition);
-}
-
-.image-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-    border-color: rgba(106, 17, 203, 0.3);
-}
-
-.main-image {
-    width: 100%;
-    height: 500px;
-    object-fit: cover;
-    display: block;
-    transition: var(--transition);
-    filter: brightness(0.9) contrast(1.1);
-}
-
-.image-container:hover .main-image {
-    transform: scale(1.03);
-    filter: brightness(1) contrast(1.2);
-}
-
-.cine-logo {
-    position: absolute;
-    bottom: var(--space-lg);
-    left: var(--space-lg);
-    font-size: var(--text-xl);
-    font-weight: 700;
-    color: var(--light);
-    background: linear-gradient(90deg, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
-    padding: var(--space-sm) var(--space-lg);
-    border-radius: var(--radius-md);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Цитата */
-.about__quote {
-    text-align: center;
-    max-width: 800px;
-    margin: var(--space-xxxl) auto 0;
-    padding: var(--space-xxl);
-    background: linear-gradient(135deg, rgba(106, 17, 203, 0.15), rgba(37, 117, 252, 0.15));
-    border-radius: var(--radius-lg);
-    border-left: none;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.about__quote::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-    transform: translateX(-100%);
-    animation: shine 3s infinite;
-}
-
-@keyframes shine {
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-.quote-icon {
-    font-size: var(--text-huge);
-    color: var(--primary);
-    margin-bottom: var(--space-lg);
-    opacity: 0.7;
-}
-
-.about__quote p {
-    font-size: var(--text-xl);
-    font-style: italic;
-    line-height: 1.8;
-    color: var(--light);
-    margin-bottom: var(--space-md);
-    font-weight: 500;
-}
-
-.quote-author {
-    display: block;
-    margin-top: var(--space-lg);
-    font-style: normal;
-    color: var(--gray-light);
-    font-size: var(--text-lg);
-    font-weight: 600;
-}
-
 /* ===== ТОПЫ ===== */
 .tops-controls {
     display: flex;
@@ -920,9 +746,325 @@ body {
     color: var(--light);
 }
 
-/* ===== МОДАЛЬНОЕ ОКНО ===== */
-.film-modal {
-    /* Стили модального окна */
+/* ===== СЕКЦИЯ "О НАШЕМ КИНОКЛУБЕ" - ОПТИМИЗИРОВАННАЯ ===== */
+
+/**
+ * @name about
+ * @description Оптимизированная секция с FAQ и цитатой
+ * @optimizations Минимальный CSS, no-JS анимации, оптимизированные изображения
+ */
+.about {
+    padding: var(--space-xxl) 0;
+    position: relative;
+    background: linear-gradient(135deg, 
+        rgba(20, 20, 34, 0.95) 0%, 
+        rgba(30, 30, 46, 0.95) 100%);
+}
+
+.about .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+}
+
+/* ===== FAQ СЕТКА ===== */
+/**
+ * @name faq-grid
+ * @description Адаптивная сетка FAQ с минимальными эффектами
+ * @method Использует CSS Grid с fallback на flex
+ */
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    margin: var(--space-xl) 0 var(--space-xxl);
+    contain: layout style;
+}
+
+/**
+ * @name faq-item
+ * @description Карточка FAQ с простыми hover-эффектами
+ * @performance Использует transform вместо box-shadow для анимации
+ */
+.faq-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+    min-height: 100%;
+    will-change: transform;
+}
+
+.faq-item:hover {
+    transform: translateY(-4px);
+    border-color: rgba(106, 17, 203, 0.3);
+}
+
+/**
+ * @name faq-icon
+ * @description Иконка FAQ с градиентом
+ * @optimization CSS-only градиент без изображений
+ */
+.faq-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-lg);
+    color: var(--light);
+    font-weight: 600;
+}
+
+/**
+ * @name faq-content
+ * @description Контент FAQ с минимальными стилями
+ */
+.faq-content {
+    flex: 1;
+}
+
+.faq-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--light);
+    margin-bottom: var(--space-xs);
+    line-height: 1.4;
+}
+
+.faq-answer {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--gray-light);
+    opacity: 0.9;
+}
+
+/* ===== ОПТИМИЗИРОВАННОЕ ИЗОБРАЖЕНИЕ ===== */
+/**
+ * @name image-optimized
+ * @description Контейнер для изображения с ленивой загрузкой
+ * @optimizations loading="lazy", decoding="async", правильные размеры
+ */
+.image-optimized {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin: var(--space-xxl) 0;
+    max-width: 100%;
+    contain: layout paint;
+}
+
+.image-optimized img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background: linear-gradient(45deg, 
+        rgba(106, 17, 203, 0.1), 
+        rgba(37, 117, 252, 0.1));
+    transition: transform 0.5s ease;
+    will-change: transform;
+}
+
+.image-optimized:hover img {
+    transform: scale(1.02);
+}
+
+/**
+ * @name image-caption
+ * @description Подпись к изображению с плавным появлением
+ */
+.image-caption {
+    position: absolute;
+    bottom: var(--space-lg);
+    left: var(--space-lg);
+    background: linear-gradient(90deg, 
+        rgba(106, 17, 203, 0.9), 
+        rgba(37, 117, 252, 0.9));
+    color: var(--light);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-base);
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+    animation: fadeInUp 0.6s ease 0.3s both;
+}
+
+/* ===== ОПТИМИЗИРОВАННАЯ ЦИТАТА ===== */
+/**
+ * @name quote-optimized
+ * @description Простая, но эффектная цитата с минимальными эффектами
+ * @method Использует CSS градиенты без изображений
+ */
+.quote-optimized {
+    max-width: 800px;
+    margin: var(--space-xxl) auto 0;
+    padding: var(--space-xl);
+    text-align: center;
+    position: relative;
+    contain: layout style;
+}
+
+.quote-optimized::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(106, 17, 203, 0.1), 
+        rgba(37, 117, 252, 0.1));
+    border-radius: var(--radius-lg);
+    z-index: 0;
+    animation: subtlePulse 6s ease-in-out infinite;
+}
+
+.quote-optimized > * {
+    position: relative;
+    z-index: 1;
+}
+
+/**
+ * @name quote-mark
+ * @description Декоративная кавычка с анимацией
+ */
+.quote-mark {
+    font-size: var(--text-huge);
+    color: var(--primary);
+    opacity: 0.6;
+    display: block;
+    margin-bottom: var(--space-md);
+    line-height: 1;
+    animation: subtleFloat 3s ease-in-out infinite;
+}
+
+.quote-optimized p {
+    font-size: var(--text-xl);
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--light);
+    margin-bottom: var(--space-md);
+    font-weight: 500;
+}
+
+.quote-optimized cite {
+    display: block;
+    font-style: normal;
+    color: var(--gray-light);
+    font-size: var(--text-base);
+    opacity: 0.8;
+}
+
+/* ===== МИНИМАЛЬНЫЕ АНИМАЦИИ ===== */
+/**
+ * @name subtlePulse
+ * @description Еле заметная пульсация фона
+ * @performance Использует opacity вместо сложных трансформаций
+ */
+@keyframes subtlePulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.7; }
+}
+
+/**
+ * @name subtleFloat
+ * @description Плавное плавание элемента
+ */
+@keyframes subtleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/**
+ * @name fadeInUp
+ * @description Плавное появление с подъемом
+ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== СЕТИ СТАТУС ===== */
+.network-status {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.network-status.online {
+    background: rgba(40, 167, 69, 0.9);
+    color: white;
+}
+
+.network-status.offline {
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ===== ОШИБКИ ===== */
+.error-message {
+    text-align: center;
+    padding: var(--space-xl);
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.error-message p {
+    color: #f8d7da;
+    margin-bottom: var(--space-md);
+    font-size: var(--text-base);
+}
+
+.retry-button {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: var(--light);
+    border: none;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.retry-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-primary);
 }
 
 /* ===== АДАПТИВНОСТЬ ===== */
@@ -939,11 +1081,6 @@ body {
         gap: var(--space-md);
     }
 
-    .faq-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-md);
-    }
-
     .contacts__grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -956,8 +1093,8 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .main-image {
-        height: 400px;
+    .image-optimized img {
+        height: 350px;
     }
 
     /* Адаптивность киноленты для планшетов */
@@ -1023,18 +1160,9 @@ body {
         margin-bottom: var(--space-xl);
     }
 
-    .faq-grid {
-        grid-template-columns: 1fr;
-    }
-
     .contacts__grid {
         grid-template-columns: 1fr;
         gap: var(--space-lg);
-    }
-
-    .faq-answer {
-        padding-left: 0;
-        margin-top: var(--space-sm);
     }
 
     .video-posters-grid,
@@ -1043,15 +1171,15 @@ body {
         gap: var(--space-md);
     }
 
-    .main-image {
+    .image-optimized img {
         height: 300px;
     }
 
-    .about__quote {
-        padding: var(--space-xl);
+    .quote-optimized {
+        padding: var(--space-lg);
     }
 
-    .about__quote p {
+    .quote-optimized p {
         font-size: var(--text-lg);
     }
 
@@ -1059,6 +1187,43 @@ body {
     .film-perforations {
         background-size: 16px 40px;
         opacity: 0.25;
+    }
+
+    /* FAQ адаптивность */
+    .faq-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+        margin: var(--space-lg) 0 var(--space-xl);
+    }
+    
+    .faq-item {
+        padding: var(--space-md);
+        gap: var(--space-sm);
+    }
+    
+    .faq-icon {
+        width: 40px;
+        height: 40px;
+        font-size: var(--text-base);
+    }
+    
+    .image-optimized img {
+        height: 250px;
+    }
+    
+    .image-caption {
+        font-size: var(--text-sm);
+        padding: var(--space-xs) var(--space-sm);
+        bottom: var(--space-md);
+        left: var(--space-md);
+    }
+    
+    .quote-optimized {
+        margin: var(--space-xl) auto 0;
+    }
+    
+    .quote-mark {
+        font-size: var(--text-xxxl);
     }
 }
 
@@ -1099,24 +1264,11 @@ body {
         padding: var(--space-lg);
     }
 
-    .faq-item {
-        padding: var(--space-lg);
+    .image-optimized img {
+        height: 200px;
     }
 
-    .faq-icon {
-        width: 48px;
-        height: 48px;
-    }
-
-    .main-image {
-        height: 250px;
-    }
-
-    .about__quote {
-        padding: var(--space-lg);
-    }
-
-    .about__quote p {
+    .quote-optimized p {
         font-size: var(--text-base);
     }
 
@@ -1125,12 +1277,38 @@ body {
         background-size: 14px 36px;
         opacity: 0.2;
     }
+
+    /* FAQ маленькие экраны */
+    .about {
+        padding: var(--space-lg) 0;
+    }
+    
+    .faq-grid {
+        margin: var(--space-md) 0 var(--space-lg);
+    }
+    
+    .faq-item {
+        padding: var(--space-sm);
+    }
+    
+    .faq-title {
+        font-size: var(--text-sm);
+    }
+    
+    .faq-answer {
+        font-size: var(--text-xs);
+    }
 }
 
 /* Очень маленькие экраны */
 @media (max-width: 360px) {
     .logo__text {
         display: none;
+    }
+    
+    .faq-icon {
+        width: 36px;
+        height: 36px;
     }
 }
 
@@ -1191,12 +1369,22 @@ body {
         scroll-behavior: auto;
     }
 
-    .about__quote::before {
-        animation: none;
-    }
-
     .film-perforations {
         animation: none !important;
+    }
+    
+    .quote-optimized::before,
+    .quote-mark,
+    .image-caption {
+        animation: none !important;
+    }
+    
+    .faq-item:hover {
+        transform: none;
+    }
+    
+    .image-optimized:hover img {
+        transform: none;
     }
 }
 
@@ -1244,5 +1432,17 @@ body {
     
     .weather-widget {
         -webkit-backdrop-filter: blur(10px);
+    }
+}
+
+/* ===== ДОСТУПНОСТЬ И КАЧЕСТВО ===== */
+@media (prefers-contrast: high) {
+    .faq-item {
+        border: 2px solid var(--light);
+    }
+    
+    .faq-title {
+        color: #fff;
+        text-shadow: 0 1px 1px rgba(0,0,0,0.8);
     }
 }

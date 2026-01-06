@@ -46,6 +46,7 @@ function initApp() {
     initMobileMenu();      // Мобильная навигация
     initSmoothScroll();    // Плавная прокрутка
     initScrollAnimations();// Анимации при скролле
+    initFAQAnimations();   // Анимации FAQ
     initSeasonEffects();   // Сезонные эффекты
     initWeatherModule();   // Модуль погоды
     initVKSyncModule();    // Синхронизация с ВК
@@ -54,6 +55,35 @@ function initApp() {
     cacheDOMElements();
 
     console.log('✅ Приложение инициализировано');
+}
+
+/**
+ * ИНИЦИАЛИЗАЦИЯ FAQ АНИМАЦИЙ
+ * @method initFAQAnimations
+ * @description Простые анимации для FAQ элементов при скролле
+ * @optimization Использует Intersection Observer с минимальными настройками
+ */
+function initFAQAnimations() {
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.faq-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            observer.observe(el);
+        });
+    }
 }
 
 /**
@@ -215,14 +245,19 @@ function showError(container, error, retryFn = null) {
 
     const message = error.message.includes('Failed to fetch')
         ? CONFIG.messages.connectionError
-        : error.message || CONFIG.messages.genericError;
+        : error.message || 'Произошла ошибка';
 
     container.innerHTML = `
         <div class="error-message">
             <p>${message}</p>
-            ${retryFn ? `<button class="retry-button" onclick="${retryFn.name}()">${CONFIG.messages.retry}</button>` : ''}
+            ${retryFn ? `<button class="retry-button">${CONFIG.messages.retry}</button>` : ''}
         </div>
     `;
+
+    // Добавляем обработчик для кнопки повтора
+    if (retryFn) {
+        container.querySelector('.retry-button').addEventListener('click', retryFn);
+    }
 }
 
 /**
@@ -238,6 +273,10 @@ function initConnectivityCheck() {
         status.className = `network-status ${STATE.isOnline ? 'online' : 'offline'}`;
         status.textContent = STATE.isOnline ? 'Онлайн' : 'Офлайн';
         status.setAttribute('aria-live', 'polite');
+
+        // Удаляем старый статус если есть
+        const oldStatus = document.querySelector('.network-status');
+        if (oldStatus) oldStatus.remove();
 
         document.body.appendChild(status);
         setTimeout(() => status.remove(), 3000);
