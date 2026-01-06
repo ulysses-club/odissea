@@ -77,7 +77,13 @@
             <div class="container section__content">
                 <h2 class="section__title fade-in">Где мы собираемся</h2>
                 <div class="map-container fade-in delay-1">
-                    <div id="map" class="map"></div>
+                    <div id="map" class="map">
+                        <!-- Карта будет загружена через JavaScript -->
+                        <div class="map-loading">
+                            <div class="spinner"></div>
+                            <p>Загрузка кинематографичной карты...</p>
+                        </div>
+                    </div>
                     <div class="map-info">
                         <h3 class="map-info__title">Кофейня "Том Сойер"</h3>
                         <address class="map-info__address">

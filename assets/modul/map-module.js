@@ -1,21 +1,8 @@
-/**
- * Независимый модуль для секции "Где мы собираемся"
- */
 class MapModule {
-    /**
-     * Конструктор класса MapModule
-     * Инициализирует конфигурацию, состояние и запускает модуль карты
-     */
+    /** Конструктор - инициализация модуля карты */
     constructor() {
         this.config = {
-            selectors: {
-                mapContainer: '.map-section',
-                mapElement: '#map'
-            },
-            coordinates: {
-                default: [44.601145, 33.520966], // Кофейня "Том Сойер"
-                fallback: [44.601145, 33.520966]
-            },
+            coordinates: [44.601145, 33.520966], // Координаты Севастополя
             placeInfo: {
                 name: 'Кофейня "Том Сойер"',
                 address: 'ул. Шмидта, 12, Севастополь',
@@ -23,587 +10,506 @@ class MapModule {
                 vkLink: 'https://vk.com/tomsoyerbartending',
                 tgBot: 'https://t.me/Odyssey_Cinema_Club_bot'
             },
-            messages: {
-                loading: 'Загрузка карты...',
-                error: 'Карта временно недоступна',
-                meetingPlace: 'Собираемся каждую неделю в выходные',
-                checkTime: 'Точное время и дату узнавать тут:'
+            mapOptions: {
+                zoom: 16,
+                controls: ['zoomControl', 'typeSelector', 'fullscreenControl'],
+                behaviors: ['drag', 'scrollZoom', 'dblClickZoom', 'multiTouch']
             }
         };
-
+        
         this.state = {
             map: null,
             placemark: null,
             isInitialized: false,
-            fallbackDisplayed: false,
+            isVisible: false,
             meetingData: null,
-            useMeetingLocation: false
+            observer: null,
+            loadAttempts: 0,
+            maxLoadAttempts: 3
         };
-
-        this.init();
+        
+        // Загружаем немедленно если видима, иначе ждем появления
+        setTimeout(() => this.init(), 100);
     }
 
-    /**
-     * Инициализация модуля
-     * Кэширует DOM элементы, загружает данные о встрече и Яндекс.Карты
-     */
+    /** Основная инициализация модуля */
     async init() {
-        console.log('Инициализация MapModule...');
-
+        console.log('🔄 Инициализация модуля карты...');
+        
         try {
             this.cacheDOM();
             
-            // Загружаем данные о встрече перед инициализацией карты
-            await this.loadMeetingData();
-
-            // Проверяем, виден ли элемент карты
-            if (!this.isMapElementVisible()) {
-                console.log('Элемент карты не виден, откладываем инициализацию');
-                this.setupIntersectionObserver();
-                return;
-            }
-
-            await this.loadYandexMaps();
+            // Показываем loading состояние
+            this.showLoading();
+            
+            // Параллельно загружаем данные и карту
+            await Promise.all([
+                this.loadMeetingData(),
+                this.initMapIfVisible()
+            ]);
+            
         } catch (error) {
-            console.error('Ошибка инициализации MapModule:', error);
+            console.error('❌ Ошибка инициализации карты:', error);
             this.showFallback();
         }
     }
 
-    /**
-     * Загрузка данных о встрече из next-meeting.json
-     * Обновляет информацию о месте на основе данных встречи
-     */
+    /** Кэширование DOM элементов */
+    cacheDOM() {
+        this.elements = {
+            container: document.querySelector('.map-section'),
+            mapElement: document.getElementById('map'),
+            infoElement: document.querySelector('.map-info'),
+            loadingElement: null
+        };
+        
+        if (!this.elements.mapElement) {
+            throw new Error('Элемент карты не найден');
+        }
+    }
+
+    /** Показать состояние загрузки */
+    showLoading() {
+        if (!this.elements.mapElement) return;
+        
+        this.elements.mapElement.innerHTML = `
+            <div class="map-loading">
+                <div class="spinner"></div>
+                <p>Загрузка кинематографичной карты...</p>
+                <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.7;">Подождите немного...</p>
+            </div>
+        `;
+        this.elements.loadingElement = this.elements.mapElement.querySelector('.map-loading');
+    }
+
+    /** Загрузить данные о встрече */
     async loadMeetingData() {
         try {
             const response = await fetch('../data/next-meeting.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            this.state.meetingData = await response.json();
+            if (this.state.meetingData?.place) {
+                this.updatePlaceInfo(this.state.meetingData.place);
             }
-            
-            const meetingData = await response.json();
-            console.log('Данные о встрече загружены:', meetingData);
-            
-            this.state.meetingData = meetingData;
-
-            // Обновляем информацию о месте на основе данных встречи
-            if (meetingData.place && meetingData.place.trim() !== '') {
-                this.updatePlaceFromMeetingData(meetingData);
-                this.state.useMeetingLocation = true;
-                console.log('Будет использовано место встречи из данных:', meetingData.place);
-            } else {
-                console.log('Место встречи не указано, используем стандартное');
-                this.state.useMeetingLocation = false;
-            }
-            
+            this.updateInfoElement();
         } catch (error) {
-            console.warn('Не удалось загрузить данные о встрече, используем значения по умолчанию:', error);
-            this.state.useMeetingLocation = false;
+            console.warn('⚠️ Не удалось загрузить данные о встрече:', error);
+            // Не прерываем работу, используем стандартные данные
         }
     }
 
-    /**
-     * Обновление информации о месте на основе данных встречи
-     * @param {Object} meetingData - Данные о встрече
-     */
-    updatePlaceFromMeetingData(meetingData) {
-        const place = meetingData.place;
-        
-        // Определяем название места и адрес из поля place
-        let placeName = 'Место встречи киноклуба';
-        let address = place;
+    /** Обновить информацию о месте */
+    updatePlaceInfo(place) {
+        if (!place) return;
         
         if (place.includes('"')) {
-            // Извлекаем название в кавычках
             const nameMatch = place.match(/"([^"]*)"/);
             if (nameMatch) {
-                placeName = nameMatch[1];
-                // Адрес - все что после кавычек
-                address = place.replace(nameMatch[0], '').replace(',', '').trim();
+                this.config.placeInfo.name = nameMatch[1];
+                this.config.placeInfo.address = place.replace(nameMatch[0], '').replace(',', '').trim();
             }
         } else if (place.includes(',')) {
-            // Если есть запятая, берем первую часть как название
             const parts = place.split(',');
-            placeName = parts[0].trim();
-            address = parts.slice(1).join(',').trim();
+            this.config.placeInfo.name = parts[0].trim();
+            this.config.placeInfo.address = parts.slice(1).join(',').trim();
         }
-
-        // Обновляем конфигурацию
-        this.config.placeInfo.name = placeName;
-        this.config.placeInfo.address = address;
         
-        // Если есть описание фильма, добавляем его в описание места
-        if (meetingData.film) {
-            this.config.placeInfo.description = `Место встречи киноклуба. Обсуждаем: ${meetingData.film}`;
+        if (this.state.meetingData?.film) {
+            this.config.placeInfo.description = `Место встречи киноклуба. Обсуждаем: ${this.state.meetingData.film}`;
         }
-
-        console.log('Информация о месте обновлена:', this.config.placeInfo);
     }
 
-    /**
-     * Геокодирование адреса для получения координат
-     * @param {string} address - Адрес для геокодирования
-     * @returns {Promise} - Промис с координатами [широта, долгота]
-     */
-    geocodeAddress(address) {
-        return new Promise((resolve, reject) => {
-            if (typeof ymaps === 'undefined') {
-                reject(new Error('Yandex Maps API не загружен'));
-                return;
-            }
-
-            ymaps.geocode(address).then(function (res) {
-                const firstGeoObject = res.geoObjects.get(0);
-                if (firstGeoObject) {
-                    const coordinates = firstGeoObject.geometry.getCoordinates();
-                    console.log('Координаты найдены:', coordinates, 'для адреса:', address);
-                    resolve(coordinates);
-                } else {
-                    reject(new Error('Адрес не найден: ' + address));
-                }
-            }).catch(reject);
-        });
-    }
-
-    /**
-     * Кэширование DOM элементов
-     * Находит и сохраняет ссылки на DOM элементы карты
-     */
-    cacheDOM() {
-        this.elements = {
-            container: document.querySelector(this.config.selectors.mapContainer),
-            mapElement: document.querySelector(this.config.selectors.mapElement)
-        };
-
-        if (!this.elements.container || !this.elements.mapElement) {
-            throw new Error('Контейнер карты не найден');
+    /** Инициализировать карту если видима */
+    async initMapIfVisible() {
+        if (this.isElementVisible()) {
+            console.log('📍 Карта видима, загружаем немедленно');
+            await this.loadMap();
+        } else {
+            console.log('📍 Карта не видима, настраиваем ленивую загрузку');
+            this.setupIntersectionObserver();
         }
-
-        console.log('DOM элементы MapModule закэшированы');
     }
 
-    /**
-     * Проверка видимости элемента карты
-     * Определяет, виден ли элемент карты в области просмотра
-     * 
-     * @returns {boolean} - true если элемент видим, иначе false
-     */
-    isMapElementVisible() {
+    /** Проверить видимость элемента */
+    isElementVisible() {
         if (!this.elements.mapElement) return false;
-
         const rect = this.elements.mapElement.getBoundingClientRect();
-        const isVisible = (
-            rect.width > 0 &&
-            rect.height > 0 &&
-            rect.top < window.innerHeight &&
-            rect.bottom > 0
-        );
-
-        console.log('Элемент карты видим:', isVisible, 'размеры:', rect.width, 'x', rect.height);
-        return isVisible;
+        return rect.top < window.innerHeight + 100 && rect.bottom > -100;
     }
 
-    /**
-     * Настройка Intersection Observer для ленивой загрузки
-     * Откладывает загрузку карты до момента её появления в области просмотра
-     */
+    /** Настроить Intersection Observer */
     setupIntersectionObserver() {
-        if (!this.elements.mapElement) return;
-
-        const observer = new IntersectionObserver((entries) => {
+        if (!this.elements.mapElement || !('IntersectionObserver' in window)) {
+            // Если IntersectionObserver не поддерживается, загружаем немедленно
+            setTimeout(() => this.loadMap(), 500);
+            return;
+        }
+        
+        this.state.observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting && !this.state.isInitialized) {
-                    console.log('Карта стала видимой, начинаем загрузку...');
-                    observer.unobserve(entry.target);
-                    this.loadYandexMaps().catch(error => {
-                        console.error('Ошибка загрузки карты:', error);
-                        this.showFallback();
-                    });
+                if (entry.isIntersecting && !this.state.isInitialized && this.state.loadAttempts < this.state.maxLoadAttempts) {
+                    console.log('📍 Карта появилась в viewport, начинаем загрузку');
+                    this.state.isVisible = true;
+                    this.loadMap();
+                    this.state.observer?.unobserve(entry.target);
                 }
             });
         }, {
-            rootMargin: '100px', // Начинаем загрузку когда до карты осталось 100px
-            threshold: 0.1
+            rootMargin: '200px', // Загружаем заранее
+            threshold: 0.01
         });
-
-        observer.observe(this.elements.mapElement);
+        
+        this.state.observer.observe(this.elements.mapElement);
+        
+        // На всякий случай загружаем через 3 секунды
+        setTimeout(() => {
+            if (!this.state.isInitialized && !this.state.isVisible) {
+                console.log('📍 Загрузка по таймауту');
+                this.loadMap();
+            }
+        }, 3000);
     }
 
-    /**
-     * Загрузка API Яндекс.Карт
-     * Динамически загружает API Яндекс.Карт с обработкой ошибок и таймаутами
-     * 
-     * @returns {Promise} - Промис, разрешающийся при успешной загрузке API
-     */
+    /** Загрузить карту */
+    async loadMap() {
+        if (this.state.isInitialized || this.state.loadAttempts >= this.state.maxLoadAttempts) {
+            return;
+        }
+        
+        this.state.loadAttempts++;
+        console.log(`📍 Попытка загрузки карты ${this.state.loadAttempts}/${this.state.maxLoadAttempts}`);
+        
+        try {
+            await this.loadYandexMaps();
+            await this.initYandexMap();
+            this.state.isInitialized = true;
+            console.log('✅ Карта успешно загружена');
+        } catch (error) {
+            console.error('❌ Ошибка загрузки карты:', error);
+            
+            if (this.state.loadAttempts < this.state.maxLoadAttempts) {
+                console.log(`📍 Повторная попытка через 2 секунды...`);
+                setTimeout(() => this.loadMap(), 2000);
+            } else {
+                this.showFallback();
+            }
+        }
+    }
+
+    /** Загрузить API Яндекс.Карт */
     loadYandexMaps() {
         return new Promise((resolve, reject) => {
-            // Проверяем, виден ли элемент перед загрузкой API
-            if (!this.isMapElementVisible()) {
-                console.log('Элемент карты все еще не видим, откладываем загрузку');
-                this.setupIntersectionObserver();
-                reject(new Error('Элемент карты не видим'));
-                return;
-            }
-
-            if (typeof ymaps !== 'undefined') {
-                this.initYandexMap();
-                resolve();
-                return;
-            }
-
-            // Проверяем, не загружается ли уже API
+            // Проверяем, не загружается ли уже
             if (window._yandexMapsLoading) {
                 const checkInterval = setInterval(() => {
                     if (typeof ymaps !== 'undefined') {
                         clearInterval(checkInterval);
-                        this.initYandexMap();
                         resolve();
                     }
                 }, 100);
                 return;
             }
-
+            
+            // Проверяем, не загружено ли уже
+            if (typeof ymaps !== 'undefined') {
+                return resolve();
+            }
+            
             window._yandexMapsLoading = true;
-
             const script = document.createElement('script');
-            script.src = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=&load=package.full';
+            script.src = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=';
             script.async = true;
-
+            
+            let loaded = false;
+            
             script.onload = () => {
+                if (loaded) return;
+                loaded = true;
                 window._yandexMapsLoading = false;
-                if (typeof ymaps !== 'undefined') {
-                    setTimeout(() => {
-                        this.initYandexMap();
-                        resolve();
-                    }, 100);
-                } else {
-                    reject(new Error('Yandex Maps API не загрузился'));
-                }
+                console.log('✅ Яндекс.Карты загружены');
+                resolve();
             };
-
+            
             script.onerror = () => {
+                if (loaded) return;
+                loaded = true;
                 window._yandexMapsLoading = false;
-                reject(new Error('Не удалось загрузить Яндекс Карты'));
+                console.error('❌ Ошибка загрузки Яндекс.Карт');
+                reject(new Error('Не удалось загрузить Яндекс.Карты'));
             };
-
-            document.head.appendChild(script);
-
-            // Таймаут на загрузку
+            
+            // Таймаут на случай проблем с сетью
             setTimeout(() => {
-                if (!this.state.isInitialized && !this.state.fallbackDisplayed) {
-                    reject(new Error('Таймаут загрузки Яндекс Карт'));
+                if (!loaded) {
+                    loaded = true;
+                    window._yandexMapsLoading = false;
+                    reject(new Error('Таймаут загрузки Яндекс.Карт'));
                 }
-            }, 15000);
+            }, 10000);
+            
+            document.head.appendChild(script);
         });
     }
 
-    /**
-     * Инициализация Яндекс.Карты
-     * Создает экземпляр карты, добавляет метку и настраивает элементы управления
-     */
+    /** Инициализировать Яндекс.Карту */
     initYandexMap() {
-        if (this.state.isInitialized) return;
-
-        try {
+        return new Promise((resolve, reject) => {
             ymaps.ready(() => {
                 try {
-                    // Дополнительная проверка перед созданием карты
-                    if (!this.elements.mapElement || this.elements.mapElement.offsetWidth === 0) {
-                        console.error('Элемент карты имеет нулевую ширину');
-                        this.showFallback();
-                        return;
-                    }
-
-                    console.log('Создание карты. Используем данные встречи:', this.state.useMeetingLocation);
-
-                    // Сначала создаем карту с координатами по умолчанию
-                    const map = new ymaps.Map(this.elements.mapElement, {
-                        center: this.config.coordinates.default,
-                        zoom: 16,
-                        controls: ['zoomControl', 'typeSelector', 'fullscreenControl']
+                    // Создаем карту
+                    this.state.map = new ymaps.Map(this.elements.mapElement, {
+                        center: this.config.coordinates,
+                        zoom: this.config.mapOptions.zoom,
+                        controls: this.config.mapOptions.controls
                     });
-
-                    // Создаем временную метку
-                    const placemark = new ymaps.Placemark(this.config.coordinates.default, {
-                        hintContent: this.config.placeInfo.name,
-                        balloonContent: `
-                            <strong>${this.config.placeInfo.name}</strong><br>
-                            ${this.config.placeInfo.address}<br>
-                            <em>${this.config.placeInfo.description}</em>
-                        `
-                    }, {
-                        iconLayout: 'default#image',
-                        iconImageHref: this.generatePlacemarkIcon(),
-                        iconImageSize: [40, 40],
-                        iconImageOffset: [-20, -40]
-                    });
-
-                    map.geoObjects.add(placemark);
-
-                    this.state.map = map;
-                    this.state.placemark = placemark;
-
-                    // Обновляем карту в зависимости от наличия данных о встрече
-                    if (this.state.useMeetingLocation) {
-                        this.updateMapWithMeetingAddress();
-                    } else {
-                        this.finalizeMapInitialization();
+                    
+                    // Оптимизация для мобильных
+                    if (window.innerWidth < 768) {
+                        this.state.map.behaviors.disable('scrollZoom');
                     }
-
+                    
+                    // Создаем кастомную метку
+                    this.createPlacemark();
+                    
+                    // Обновляем местоположение если есть данные
+                    if (this.state.meetingData?.place) {
+                        this.updateMapLocation();
+                    }
+                    
+                    // Настраиваем обработчики
+                    this.setupMapEvents();
+                    
+                    resolve();
                 } catch (error) {
-                    console.error('Ошибка создания карты:', error);
-                    this.showFallback();
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    /** Создать кастомную метку */
+    createPlacemark() {
+        // Создаем кастомную иконку метки
+        const placemarkLayout = ymaps.templateLayoutFactory.createClass(
+            '<div class="custom-placemark" title="Место встречи киноклуба"></div>'
+        );
+
+        this.state.placemark = new ymaps.Placemark(this.config.coordinates, {
+            hintContent: this.config.placeInfo.name,
+            balloonContentHeader: `
+                <div style="padding: 8px 0; border-bottom: 1px solid #eee; margin-bottom: 10px;">
+                    <strong style="color: #6a11cb; font-size: 18px;">${this.config.placeInfo.name}</strong>
+                </div>
+            `,
+            balloonContentBody: `
+                <div style="padding: 8px 0;">
+                    <p style="margin: 8px 0; color: #333;">
+                        <span style="color: #6a11cb;">📍</span> ${this.config.placeInfo.address}
+                    </p>
+                    ${this.state.meetingData?.film ? `
+                        <p style="margin: 8px 0; color: #666; font-style: italic;">
+                            🎬 Обсуждаем: ${this.state.meetingData.film}
+                        </p>
+                    ` : ''}
+                    <p style="margin: 8px 0; color: #666;">
+                        ${this.config.placeInfo.description}
+                    </p>
+                </div>
+            `,
+            balloonContentFooter: `
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+                    <a href="${this.config.placeInfo.vkLink}" target="_blank" 
+                       style="color: #2575fc; text-decoration: none; margin-right: 15px; display: inline-block;">
+                        💬 ВКонтакте
+                    </a>
+                    <a href="${this.config.placeInfo.tgBot}" target="_blank" 
+                       style="color: #2575fc; text-decoration: none; display: inline-block;">
+                        🤖 Telegram
+                    </a>
+                </div>
+            `
+        }, {
+            iconLayout: placemarkLayout,
+            iconShape: {
+                type: 'Circle',
+                coordinates: [0, 0],
+                radius: 30
+            },
+            hasBalloon: true,
+            openBalloonOnClick: true,
+            hideIconOnBalloonOpen: false
+        });
+
+        this.state.map.geoObjects.add(this.state.placemark);
+    }
+
+    /** Обновить местоположение на карте */
+    async updateMapLocation() {
+        try {
+            if (!ymaps || !this.state.map) return;
+            
+            const fullAddress = `${this.config.placeInfo.address}, Севастополь`;
+            
+            ymaps.geocode(fullAddress).then(res => {
+                const geoObject = res.geoObjects.get(0);
+                if (geoObject) {
+                    const coordinates = geoObject.geometry.getCoordinates();
+                    
+                    // Плавное перемещение карты
+                    this.state.map.panTo(coordinates, {
+                        duration: 1000,
+                        timingFunction: 'ease-in-out'
+                    });
+                    
+                    // Обновляем позицию метки
+                    this.state.placemark.geometry.setCoordinates(coordinates);
                 }
             });
         } catch (error) {
-            console.error('Ошибка ymaps.ready:', error);
-            this.showFallback();
+            console.warn('⚠️ Не удалось геокодировать адрес:', error);
         }
     }
 
-    /**
-     * Обновление карты с адресом из данных встречи через геокодирование
-     */
-    async updateMapWithMeetingAddress() {
-        try {
-            const fullAddress = `${this.config.placeInfo.address}, Севастополь`;
-            console.log('Геокодирование адреса встречи:', fullAddress);
-
-            const coordinates = await this.geocodeAddress(fullAddress);
-            
-            // Обновляем центр карты
-            this.state.map.setCenter(coordinates, 16, {
-                duration: 1000
-            });
-
-            // Обновляем позицию метки
-            this.state.placemark.geometry.setCoordinates(coordinates);
-
-            // Обновляем свойства метки
-            this.state.placemark.properties.set({
-                hintContent: this.config.placeInfo.name,
-                balloonContent: `
-                    <strong>${this.config.placeInfo.name}</strong><br>
-                    ${this.config.placeInfo.address}<br>
-                    <em>${this.config.placeInfo.description}</em>
-                `
-            });
-
-            this.finalizeMapInitialization();
-            console.log('Карта успешно обновлена с координатами встречи');
-
-        } catch (error) {
-            console.warn('Не удалось геокодировать адрес встречи, используем стандартное место:', error);
-            // Возвращаем к стандартному месту
-            this.state.useMeetingLocation = false;
-            this.revertToDefaultLocation();
-        }
-    }
-
-    /**
-     * Возврат к стандартному местоположению
-     */
-    revertToDefaultLocation() {
-        if (!this.state.map || !this.state.placemark) return;
-
-        // Возвращаем карту к стандартным координатам
-        this.state.map.setCenter(this.config.coordinates.default, 16, {
-            duration: 1000
-        });
-
-        this.state.placemark.geometry.setCoordinates(this.config.coordinates.default);
+    /** Обновить информационный элемент */
+    updateInfoElement() {
+        if (!this.elements.infoElement) return;
         
-        // Восстанавливаем стандартную информацию о месте
-        this.config.placeInfo = {
-            name: 'Кофейня "Том Сойер"',
-            address: 'ул. Шмидта, 12, Севастополь',
-            description: 'Место встреч киноклуба',
-            vkLink: 'https://vk.com/tomsoyerbartending',
-            tgBot: 'https://t.me/Odyssey_Cinema_Club_bot'
-        };
+        const filmInfo = this.state.meetingData?.film ? 
+            `<p class="map-info__text"><strong>🎬 Обсуждаем:</strong> ${this.state.meetingData.film}</p>` : '';
+        
+        const timeInfo = (this.state.meetingData?.date && this.state.meetingData?.time) ? 
+            `<p class="map-info__text"><strong>⏰ Когда:</strong> ${this.state.meetingData.date} в ${this.state.meetingData.time}</p>` : '';
 
-        this.state.placemark.properties.set({
-            hintContent: this.config.placeInfo.name,
-            balloonContent: `
-                <strong>${this.config.placeInfo.name}</strong><br>
-                ${this.config.placeInfo.address}<br>
-                <em>${this.config.placeInfo.description}</em>
-            `
-        });
-
-        this.finalizeMapInitialization();
-    }
-
-    /**
-     * Завершение инициализации карты
-     */
-    finalizeMapInitialization() {
-        this.state.isInitialized = true;
-        this.updateMapInfo();
-        this.hideFallback();
-        console.log('Карта полностью инициализирована');
-    }
-
-    /**
-     * Генерация иконки для метки
-     * Создает SVG иконку в формате base64 для метки на карте
-     * 
-     * @returns {string} - Data URL с SVG иконкой
-     */
-    generatePlacemarkIcon() {
-        return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiM2YTExY2IiIGZpbGwtb3BhY2l0eT0iMC44IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIyMCIgeT0iMjUiIGZpbGw9IiNmZmYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIj7QmtC+PC90ZXh0Pgo8L3N2Zz4=';
-    }
-
-    /**
-     * Обновление информации на карте
-     * Обновляет текстовую информацию о месте встречи рядом с картой
-     */
-    updateMapInfo() {
-        const infoElement = this.elements.container.querySelector('.map-info');
-        if (!infoElement) return;
-
-        // Добавляем информацию о фильме если есть
-        let filmInfo = '';
-        if (this.state.meetingData && this.state.meetingData.film) {
-            filmInfo = `<p><strong>Обсуждаем:</strong> ${this.state.meetingData.film}</p>`;
-        }
-
-        // Добавляем информацию о дате и времени если есть
-        let timeInfo = '';
-        if (this.state.meetingData && this.state.meetingData.date && this.state.meetingData.time) {
-            timeInfo = `<p><strong>Когда:</strong> ${this.state.meetingData.date} в ${this.state.meetingData.time}</p>`;
-        }
-
-        infoElement.innerHTML = `
-            <h3>${this.config.placeInfo.name}</h3>
-            <p>${this.config.placeInfo.address}</p>
+        this.elements.infoElement.innerHTML = `
+            <h3 class="map-info__title">${this.config.placeInfo.name}</h3>
+            <address class="map-info__address">${this.config.placeInfo.address}</address>
             ${filmInfo}
             ${timeInfo}
-            <a href="${this.config.placeInfo.vkLink}" target="_blank" rel="noopener noreferrer" class="contact-card__link">
-                Tom Soyer Bartending
-            </a>
-            <p>${this.config.messages.meetingPlace}</p>
-            <p>${this.config.messages.checkTime}</p>
-            <a href="${this.config.placeInfo.tgBot}" target="_blank" rel="noopener noreferrer" class="contact-card__link">
-                @Odyssey_Cinema_Club_bot
-            </a>
+            <div style="margin-top: var(--space-md);">
+                <a href="${this.config.placeInfo.vkLink}" target="_blank" rel="noopener noreferrer" class="contact-card__link map-link">
+                    💬 Tom Soyer Bartending
+                </a>
+                <br>
+                <a href="${this.config.placeInfo.tgBot}" target="_blank" rel="noopener noreferrer" class="contact-card__link map-link">
+                    🤖 @Odyssey_Cinema_Club_bot
+                </a>
+            </div>
+            <p class="map-info__text" style="margin-top: var(--space-md); font-size: 0.9em;">
+                Собираемся каждую неделю в выходные<br>
+                Точное время и дату узнавать в телеграм-боте
+            </p>
         `;
     }
 
-    /**
-     * Показать fallback-контент
-     * Отображает запасной контент при недоступности Яндекс.Карт
-     */
+    /** Настроить обработчики событий карты */
+    setupMapEvents() {
+        if (!this.state.map) return;
+        
+        // Оптимизация при изменении размера окна
+        let resizeTimeout;
+        const handleResize = () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (this.state.map) {
+                    this.state.map.container.fitToViewport();
+                    
+                    // Отключаем scrollZoom на мобильных
+                    if (window.innerWidth < 768) {
+                        this.state.map.behaviors.disable('scrollZoom');
+                    } else {
+                        this.state.map.behaviors.enable('scrollZoom');
+                    }
+                }
+            }, 250);
+        };
+        
+        window.addEventListener('resize', handleResize);
+        this.handleResize = handleResize;
+    }
+
+    /** Показать fallback-контент */
     showFallback() {
-        if (this.state.fallbackDisplayed) return;
+        if (!this.elements.mapElement) return;
+        
+        const filmInfo = this.state.meetingData?.film ? 
+            `<p class="map-info__text"><strong>🎬 Обсуждаем:</strong> ${this.state.meetingData.film}</p>` : '';
+        
+        const timeInfo = (this.state.meetingData?.date && this.state.meetingData?.time) ? 
+            `<p class="map-info__text"><strong>⏰ Когда:</strong> ${this.state.meetingData.date} в ${this.state.meetingData.time}</p>` : '';
 
-        const mapElement = this.elements.mapElement;
-        if (!mapElement) return;
-
-        // Скрываем спиннер загрузки если есть
-        const loadingMessage = mapElement.querySelector('.loading-message');
-        if (loadingMessage) {
-            loadingMessage.style.display = 'none';
-        }
-
-        let fallback = mapElement.querySelector('.map-module-fallback');
-
-        if (!fallback) {
-            fallback = document.createElement('div');
-            fallback.className = 'map-module-fallback';
-            fallback.innerHTML = this.generateFallbackHTML();
-            mapElement.appendChild(fallback);
-        } else {
-            fallback.innerHTML = this.generateFallbackHTML();
-            fallback.style.display = 'flex';
-        }
-
-        this.state.fallbackDisplayed = true;
-        this.updateMapInfo();
-    }
-
-    /**
-     * Скрыть fallback-контент
-     * Скрывает запасной контент при успешной загрузке карты
-     */
-    hideFallback() {
-        const fallback = this.elements.mapElement?.querySelector('.map-module-fallback');
-        if (fallback) {
-            fallback.style.display = 'none';
-        }
-        this.state.fallbackDisplayed = false;
-    }
-
-    /**
-     * Генерация HTML для fallback
-     * Создает HTML разметку для отображения когда карта недоступна
-     * 
-     * @returns {string} - HTML строка fallback-контента
-     */
-    generateFallbackHTML() {
-        let filmInfo = '';
-        if (this.state.meetingData && this.state.meetingData.film) {
-            filmInfo = `<p><strong>Обсуждаем:</strong> ${this.state.meetingData.film}</p>`;
-        }
-
-        let timeInfo = '';
-        if (this.state.meetingData && this.state.meetingData.date && this.state.meetingData.time) {
-            timeInfo = `<p><strong>Когда:</strong> ${this.state.meetingData.date} в ${this.state.meetingData.time}</p>`;
-        }
-
-        return `
-            <div>
-                <div style="font-size:3rem;margin-bottom:1rem;">🗺️</div>
-                <h3>Карта временно недоступна</h3>
-                <p><strong>Место:</strong> ${this.config.placeInfo.name}</p>
-                <p><strong>Адрес:</strong> ${this.config.placeInfo.address}</p>
+        this.elements.mapElement.innerHTML = `
+            <div class="map-module-fallback">
+                <div style="font-size: 4rem; margin-bottom: 1.5rem; animation: bounce 2s infinite;">🗺️</div>
+                <h3>Кинематографичная карта встреч</h3>
+                <p><strong>🎭 Место:</strong> ${this.config.placeInfo.name}</p>
+                <p><strong>📍 Адрес:</strong> ${this.config.placeInfo.address}</p>
                 ${filmInfo}
                 ${timeInfo}
-                <p><em>${this.config.placeInfo.description}</em></p>
-                <p style="font-size:0.9rem;opacity:0.8;">Мы встречаемся здесь каждую неделю!</p>
+                <p style="margin: 1.5rem 0; font-style: italic; color: var(--accent);">
+                    ${this.config.placeInfo.description}
+                </p>
+                <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+                    <a href="${this.config.placeInfo.vkLink}" target="_blank" class="contact-card__link map-link">
+                        💬 Перейти в группу ВКонтакте
+                    </a>
+                    <a href="${this.config.placeInfo.tgBot}" target="_blank" class="contact-card__link map-link">
+                        🤖 Написать в Telegram-бот
+                    </a>
+                </div>
+                <p style="margin-top: 1.5rem; font-size: 0.9rem; opacity: 0.8;">
+                    Карта временно недоступна. Мы встретимся здесь в ближайшие выходные!
+                </p>
             </div>
         `;
     }
 
-    /**
-     * Очистка ресурсов
-     * Уничтожает экземпляр карты и сбрасывает состояние модуля
-     */
+    /** Очистить ресурсы */
     destroy() {
+        if (this.state.observer) {
+            this.state.observer.disconnect();
+        }
+        
         if (this.state.map) {
             this.state.map.destroy();
         }
-        this.state = {
-            map: null,
-            placemark: null,
-            isInitialized: false,
-            fallbackDisplayed: false,
-            meetingData: null,
-            useMeetingLocation: false
-        };
+        
+        if (this.handleResize) {
+            window.removeEventListener('resize', this.handleResize);
+        }
     }
 }
 
-/**
- * Функция инициализации модуля карты
- * Создает экземпляр MapModule с задержкой для стабилизации DOM
- */
+/** Функция инициализации модуля карты */
 function initMapModule() {
+    console.log('🚀 Запуск инициализации модуля карты...');
+    
     const mapContainer = document.querySelector('.map-section');
-    if (mapContainer) {
-        console.log('Найден контейнер карты, инициализация MapModule...');
-
-        // Небольшая задержка для стабилизации DOM
-        setTimeout(() => {
-            window.mapModule = new MapModule();
-        }, 500);
+    if (!mapContainer) {
+        console.warn('⚠️ Контейнер карты не найден');
+        return;
     }
+    
+    console.log('✅ Контейнер карты найден, создаем экземпляр MapModule');
+    
+    // Создаем глобальную переменную для отладки
+    window.mapModuleInstance = new MapModule();
 }
 
-// Инициализация при полной загрузке DOM
+// Проверяем, нужно ли подождать загрузки DOM
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMapModule);
+    console.log('📄 DOM еще загружается, ждем события DOMContentLoaded');
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('✅ DOM загружен, инициализируем карту');
+        setTimeout(initMapModule, 100);
+    });
 } else {
-    // Если DOM уже загружен, ждем немного перед инициализацией
+    console.log('✅ DOM уже загружен, инициализируем карту');
     setTimeout(initMapModule, 100);
 }
+
+// Альтернативная инициализация на случай если DOM уже готов
+window.addEventListener('load', () => {
+    if (!window.mapModuleInstance) {
+        console.log('⚡ Страница полностью загружена, пробуем инициализировать карту');
+        setTimeout(initMapModule, 500);
+    }
+});
