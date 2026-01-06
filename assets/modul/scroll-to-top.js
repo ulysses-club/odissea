@@ -1,193 +1,206 @@
+/**
+ * МОДУЛЬ "НАВЕРХ" - Прокрутка к началу страницы
+ * Минималистичная реализация с плавной анимацией
+ */
 class ScrollToTop {
-    /**
-     * Конструктор класса ScrollToTop
-     * Инициализирует кнопку прокрутки наверх и её параметры
-     */
-    constructor() {
-        this.button = null;
-        this.scrollThreshold = 300;
-        this.isVisible = false;
+    constructor(options = {}) {
+        this.config = {
+            threshold: 300,               // Когда показывать кнопку (px)
+            duration: 800,                // Длительность анимации (ms)
+            easing: 'cubic-bezier(0.4, 0, 0.2, 1)', // Функция плавности
+            buttonText: '↑',              // Текст кнопки
+            pulseEffect: false,           // Эффект пульсации
+            ...options
+        };
+
+        this.state = {
+            isVisible: false,
+            lastScroll: 0,
+            isAnimating: false
+        };
+
+        this.elements = {};
         this.init();
     }
 
-    /**
-     * Инициализация модуля
-     * Создает кнопку, добавляет обработчики событий и проверяет позицию скролла
-     */
+    // Основная инициализация
     init() {
         this.createButton();
-        this.addEventListeners();
-        this.checkScrollPosition();
+        this.bindEvents();
+        this.checkVisibility();
     }
 
-    /**
-     * Создание кнопки прокрутки наверх
-     * Создает и добавляет в DOM кнопку для прокрутки к началу страницы
-     */
+    // Создание кнопки
     createButton() {
-        this.button = document.createElement('button');
-        this.button.className = 'scroll-to-top';
-        this.button.setAttribute('aria-label', 'Наверх');
-        this.button.setAttribute('title', 'Наверх');
-        this.button.innerHTML = '↑';
-
-        document.body.appendChild(this.button);
-    }
-
-    /**
-     * Добавление обработчиков событий
-     * Назначает обработчики для клика по кнопке, отслеживания скролла и плавной прокрутки
-     */
-    addEventListeners() {
-        // Клик по кнопке
-        this.button.addEventListener('click', () => {
-            this.scrollToTop();
-        });
-
-        // Отслеживание скролла с троттлингом
-        window.addEventListener('scroll', () => {
-            this.throttle(this.checkScrollPosition.bind(this), 100)();
-        });
-
-        // Плавный скролл для якорей
-        document.addEventListener('click', (e) => {
-            const link = e.target.closest('a[href^="#"]');
-            if (link && link.getAttribute('href') !== '#') {
-                e.preventDefault();
-                this.smoothScrollTo(link.getAttribute('href'));
-            }
-        });
-    }
-
-    /**
-     * Функция троттлинга для оптимизации
-     * Ограничивает частоту вызова функции для улучшения производительности
-     * 
-     * @param {Function} func - Функция для ограничения вызовов
-     * @param {number} limit - Временной интервал в миллисекундах
-     * @returns {Function} - Функция с примененным троттлингом
-     */
-    throttle(func, limit) {
-        let inThrottle;
-        return function () {
-            const args = arguments;
-            const context = this;
-            if (!inThrottle) {
-                func.apply(context, args);
-                inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
-            }
+        this.elements.button = document.createElement('button');
+        this.elements.button.className = 'scroll-to-top';
+        this.elements.button.setAttribute('aria-label', 'Прокрутить наверх');
+        this.elements.button.innerHTML = this.config.buttonText;
+        
+        if (this.config.pulseEffect) {
+            this.elements.button.classList.add('pulse');
         }
+
+        document.body.appendChild(this.elements.button);
     }
 
-    /**
-     * Проверка позиции скролла
-     * Определяет, должна ли кнопка быть видимой на основе текущей позиции скролла
-     */
-    checkScrollPosition() {
-        const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    // Привязка событий с оптимизацией
+    bindEvents() {
+        // Прокрутка наверх по клику
+        this.elements.button.addEventListener('click', () => this.scrollToTop());
+        
+        // Отслеживание скролла с троттлингом
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    this.checkVisibility();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
 
-        if (scrollPosition > this.scrollThreshold && !this.isVisible) {
+        // Клавиатурная навигация
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Home' || (e.ctrlKey && e.key === 'Home')) {
+                e.preventDefault();
+                this.scrollToTop();
+            }
+        });
+    }
+
+    // Проверка видимости кнопки
+    checkVisibility() {
+        const scrollY = window.scrollY || document.documentElement.scrollTop;
+        
+        if (scrollY > this.config.threshold && !this.state.isVisible) {
             this.show();
-        } else if (scrollPosition <= this.scrollThreshold && this.isVisible) {
+        } else if (scrollY <= this.config.threshold && this.state.isVisible) {
             this.hide();
         }
+        
+        this.state.lastScroll = scrollY;
     }
 
-    /**
-     * Прокрутка к началу страницы
-     * Выполняет плавную прокрутку к верху страницы
-     */
-    scrollToTop() {
-        this.smoothScrollTo(0);
-    }
-
-    /**
-     * Плавная прокрутка к цели
-     * Выполняет анимированную прокрутку к указанному элементу или позиции
-     * 
-     * @param {string|number} target - CSS селектор элемента или числовая позиция скролла
-     */
-    smoothScrollTo(target) {
-        const targetElement = typeof target === 'string'
-            ? document.querySelector(target)
-            : null;
-
-        const targetPosition = targetElement
-            ? targetElement.getBoundingClientRect().top + window.pageYOffset
-            : target;
-
-        const startPosition = window.pageYOffset;
-        const distance = targetPosition - startPosition;
-        const duration = 800;
-        let start = null;
-
-        const animation = (currentTime) => {
-            if (start === null) start = currentTime;
-            const timeElapsed = currentTime - start;
-            const run = this.easeInOutQuad(timeElapsed, startPosition, distance, duration);
-            window.scrollTo(0, run);
-            if (timeElapsed < duration) {
-                requestAnimationFrame(animation);
-            }
-        };
-
-        requestAnimationFrame(animation);
-    }
-
-    /**
-     * Функция плавности easing
-     * Реализует алгоритм плавности easeInOutQuad для анимации прокрутки
-     * 
-     * @param {number} t - Текущее время анимации
-     * @param {number} b - Начальное значение
-     * @param {number} c - Изменение значения
-     * @param {number} d - Продолжительность анимации
-     * @returns {number} - Текущее значение для анимации
-     */
-    easeInOutQuad(t, b, c, d) {
-        t /= d / 2;
-        if (t < 1) return c / 2 * t * t + b;
-        t--;
-        return -c / 2 * (t * (t - 2) - 1) + b;
-    }
-
-    /**
-     * Показать кнопку
-     * Делает кнопку прокрутки наверх видимой
-     */
+    // Показать кнопку
     show() {
-        this.button.classList.add('visible');
-        this.isVisible = true;
+        this.state.isVisible = true;
+        this.elements.button.classList.add('visible');
     }
 
-    /**
-     * Скрыть кнопку
-     * Скрывает кнопку прокрутки наверх
-     */
+    // Скрыть кнопку
     hide() {
-        this.button.classList.remove('visible');
-        this.isVisible = false;
+        this.state.isVisible = false;
+        this.elements.button.classList.remove('visible');
     }
 
-    /**
-     * Установка порога видимости
-     * Изменяет значение скролла, при котором кнопка становится видимой
-     * 
-     * @param {number} threshold - Новое значение порога в пикселях
-     */
-    setThreshold(threshold) {
-        this.scrollThreshold = threshold;
-        this.checkScrollPosition();
+    // Прокрутка наверх
+    scrollToTop() {
+        if (this.state.isAnimating) return;
+        
+        this.state.isAnimating = true;
+        
+        // Простая нативная прокрутка
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+        
+        // Прячем кнопку после прокрутки
+        setTimeout(() => {
+            this.hide();
+            this.state.isAnimating = false;
+        }, this.config.duration);
+    }
+
+    // Альтернативный метод с requestAnimationFrame (если нужно)
+    smoothScroll(targetY, duration = this.config.duration) {
+        return new Promise(resolve => {
+            const startY = window.scrollY;
+            const distance = targetY - startY;
+            let startTime = null;
+
+            const animation = (currentTime) => {
+                if (!startTime) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+                const ease = this.easeInOut(progress);
+                
+                window.scrollTo(0, startY + distance * ease);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animation);
+                } else {
+                    resolve();
+                }
+            };
+
+            requestAnimationFrame(animation);
+        });
+    }
+
+    // Функция плавности
+    easeInOut(t) {
+        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    }
+
+    // Обновление конфигурации
+    updateConfig(newConfig) {
+        this.config = { ...this.config, ...newConfig };
+        
+        if (newConfig.pulseEffect !== undefined) {
+            this.elements.button.classList.toggle('pulse', newConfig.pulseEffect);
+        }
+        
+        this.checkVisibility();
+    }
+
+    // Удаление кнопки
+    destroy() {
+        this.elements.button.remove();
+        window.removeEventListener('scroll', this.checkVisibility);
+    }
+
+    // Статический метод для быстрой инициализации
+    static init(options = {}) {
+        return new ScrollToTop(options);
     }
 }
 
-// Автоматическая инициализация при загрузке DOM
-document.addEventListener('DOMContentLoaded', () => {
-    new ScrollToTop();
-});
+// Автоматическая инициализация при загрузке
+function initScrollToTop() {
+    // Проверяем, нужна ли кнопка на этой странице
+    const hasLongContent = document.body.scrollHeight > window.innerHeight * 2;
+    const isScrollable = document.body.scrollHeight > window.innerHeight;
+    
+    if (hasLongContent && isScrollable) {
+        window.scrollToTop = ScrollToTop.init({
+            threshold: 400,
+            pulseEffect: true,
+            buttonText: '↑'
+        });
+    }
+}
+
+// Запуск при загрузке DOM
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrollToTop);
+} else {
+    initScrollToTop();
+}
 
 // Экспорт для использования в других модулях
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ScrollToTop;
-}
+window.ScrollToTop = ScrollToTop;
+
+// Глобальный хелпер для быстрого доступа
+window.scrollToTop = () => {
+    if (window.scrollToTopInstance) {
+        window.scrollToTopInstance.scrollToTop();
+    } else {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+};
