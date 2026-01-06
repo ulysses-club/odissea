@@ -1,4 +1,4 @@
-/* Стили для сезонных эффектов */
+/* Контейнер сезонных эффектов */
 .seasons-container {
     position: fixed;
     top: 0;
@@ -10,7 +10,7 @@
     overflow: hidden;
 }
 
-/* Базовые стили для сезонных элементов */
+/* Базовые стили элементов */
 .season-element {
     position: absolute;
     pointer-events: none;
@@ -18,80 +18,7 @@
     z-index: 1;
 }
 
-/* Переключатель сезонных эффектов - ДЕСКТОПНАЯ ВЕРСИЯ */
-.seasons-toggle-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 9999;
-    pointer-events: auto;
-}
-
-.seasons-toggle {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    background: rgba(26, 26, 46, 0.9);
-    backdrop-filter: blur(10px);
-    padding: var(--space-md) var(--space-lg);
-    border-radius: var(--radius-full);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: var(--shadow-lg);
-}
-
-.seasons-toggle:hover {
-    background: rgba(26, 26, 46, 0.95);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-xl);
-}
-
-.seasons-toggle input[type="checkbox"] {
-    display: none;
-}
-
-.slider {
-    position: relative;
-    width: 60px; /* Увеличен для десктопа */
-    height: 30px; /* Увеличен для десктопа */
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-full);
-    transition: var(--transition);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.slider:before {
-    content: '';
-    position: absolute;
-    width: 24px; /* Увеличен для десктопа */
-    height: 24px; /* Увеличен для десктопа */
-    border-radius: 50%;
-    background: var(--primary);
-    top: 2px;
-    left: 2px;
-    transition: var(--transition);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.seasons-toggle input:checked + .slider {
-    background: rgba(106, 17, 203, 0.3);
-    border-color: rgba(106, 17, 203, 0.5);
-}
-
-.seasons-toggle input:checked + .slider:before {
-    transform: translateX(30px); /* Увеличен сдвиг для десктопа */
-    background: var(--secondary);
-}
-
-.toggle-label {
-    color: var(--light);
-    font-size: var(--text-base); /* Увеличен для десктопа */
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-/* ОСЕННИЕ ЭФФЕКТЫ - Падающие листья */
+/* ОСЕНЬ - Листья */
 .leaf {
     background: linear-gradient(45deg, #ff6b35, #ff8e25, #f7931e);
     border-radius: 50% 0 50% 50%;
@@ -102,31 +29,22 @@
 
 @keyframes fall-leaves {
     0% {
-        transform: translateY(-100px) rotate(0deg) rotateX(0deg);
+        transform: translateY(-100px) rotate(0deg);
         opacity: 0;
     }
-    10% {
-        opacity: 0.8;
-    }
-    90% {
-        opacity: 0.6;
-    }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.6; }
     100% {
-        transform: translateY(100vh) rotate(360deg) rotateX(180deg);
+        transform: translateY(100vh) rotate(360deg);
         opacity: 0;
     }
 }
 
-/* ЗИМНИЕ ЭФФЕКТЫ - Снежинки */
+/* ЗИМА - Снежинки */
 .snowflake {
     color: white;
-    font-size: 20px;
-    animation: fall-snow linear infinite;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-}
-
-.snowflake::before {
-    content: '❄';
+    animation: fall-snow linear infinite;
 }
 
 @keyframes fall-snow {
@@ -134,19 +52,15 @@
         transform: translateY(-100px) rotate(0deg);
         opacity: 0;
     }
-    10% {
-        opacity: 0.7;
-    }
-    90% {
-        opacity: 0.5;
-    }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.5; }
     100% {
         transform: translateY(100vh) rotate(360deg);
         opacity: 0;
     }
 }
 
-/* ВЕСЕННИЕ ЭФФЕКТЫ - Бабочки */
+/* ВЕСНА - Бабочки */
 .butterfly {
     width: 30px;
     height: 30px;
@@ -156,34 +70,14 @@
     animation: fly-butterfly ease-in-out infinite;
 }
 
-.butterfly::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    width: 20px;
-    height: 10px;
-    background: inherit;
-    border-radius: 50%;
-    transform: rotate(-45deg);
-}
-
 @keyframes fly-butterfly {
-    0%, 100% {
-        transform: translateX(-100px) translateY(0) rotate(-5deg);
-    }
-    25% {
-        transform: translateX(-50px) translateY(-20px) rotate(5deg);
-    }
-    50% {
-        transform: translateX(0) translateY(0) rotate(-5deg);
-    }
-    75% {
-        transform: translateX(50px) translateY(-20px) rotate(5deg);
-    }
+    0%, 100% { transform: translateX(-100px) translateY(0) rotate(-5deg); }
+    25% { transform: translateX(-50px) translateY(-20px) rotate(5deg); }
+    50% { transform: translateX(0) translateY(0) rotate(-5deg); }
+    75% { transform: translateX(50px) translateY(-20px) rotate(5deg); }
 }
 
-/* ВЕСЕННИЕ ЭФФЕКТЫ - Цветы */
+/* ВЕСНА - Цветы */
 .flower {
     width: 15px;
     height: 15px;
@@ -191,26 +85,6 @@
     border-radius: 50%;
     opacity: 0.6;
     animation: bloom-flowers ease-in-out infinite;
-}
-
-.flower::before,
-.flower::after {
-    content: '';
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: inherit;
-    border-radius: 50%;
-}
-
-.flower::before {
-    top: -4px;
-    left: 3px;
-}
-
-.flower::after {
-    top: 3px;
-    left: -4px;
 }
 
 @keyframes bloom-flowers {
@@ -224,7 +98,7 @@
     }
 }
 
-/* ЛЕТНИЕ ЭФФЕКТЫ - Солнечные лучи */
+/* ЛЕТО - Лучи солнца */
 .sun-ray {
     width: 2px;
     height: 100px;
@@ -246,7 +120,7 @@
     }
 }
 
-/* ЛЕТНИЕ ЭФФЕКТЫ - Пузыри */
+/* ЛЕТО - Пузыри */
 .bubble {
     width: 20px;
     height: 20px;
@@ -261,181 +135,51 @@
         transform: translateY(100vh) scale(0.5);
         opacity: 0;
     }
-    10% {
-        opacity: 0.5;
-    }
-    90% {
-        opacity: 0.3;
-    }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.3; }
     100% {
         transform: translateY(-100px) scale(1.2);
         opacity: 0;
     }
 }
 
-/* Специфичные настройки для разных страниц */
-.home-page .seasons-container {
-    /* Дополнительные эффекты для главной страницы */
-}
-
-.quiz-page .leaf,
-.quiz-page .snowflake {
-    /* Меньшая плотность для игровых страниц */
-    opacity: 0.6;
-}
-
-.crocodile-page .season-element {
-    /* Минимальные эффекты для страницы игры */
-    opacity: 0.4;
-}
-
-/* Адаптивность для планшетов */
-@media (max-width: 968px) {
-    .seasons-toggle-container {
-        bottom: 15px;
-        right: 15px;
+/* Адаптивность */
+@media (max-width: 768px) {
+    .seasons-container {
+        opacity: 0.7;
     }
     
-    .seasons-toggle {
-        padding: var(--space-sm) var(--space-md);
-    }
-    
-    .slider {
-        width: 50px; /* Средний размер для планшетов */
-        height: 25px;
-    }
-    
-    .slider:before {
-        width: 20px;
-        height: 20px;
-    }
-    
-    .seasons-toggle input:checked + .slider:before {
-        transform: translateX(25px);
-    }
-    
-    .toggle-label {
-        font-size: var(--text-sm);
-    }
-    
-    /* Уменьшаем количество элементов на мобильных устройствах */
-    .leaf, .snowflake, .butterfly, .flower, .sun-ray, .bubble {
+    .season-element {
         transform: scale(0.8);
     }
 }
 
-/* Адаптивность для мобильных */
-@media (max-width: 768px) {
-    .seasons-container {
-        /* Уменьшаем интенсивность эффектов на мобильных */
-        opacity: 0.7;
-    }
-    
-    .seasons-toggle-container {
-        bottom: 10px;
-        right: 10px;
-    }
-    
-    .seasons-toggle {
-        padding: var(--space-xs) var(--space-sm);
-        background: rgba(26, 26, 46, 0.95);
-    }
-    
-    .slider {
-        width: 44px; /* Компактный размер для мобильных */
-        height: 22px;
-    }
-    
-    .slider:before {
-        width: 18px;
-        height: 18px;
-        top: 2px;
-        left: 2px;
-    }
-    
-    .seasons-toggle input:checked + .slider:before {
-        transform: translateX(22px);
-    }
-    
-    .toggle-label {
-        font-size: var(--text-xs);
-    }
-}
-
-/* Для очень маленьких экранов */
 @media (max-width: 480px) {
     .seasons-container {
-        /* Еще больше уменьшаем интенсивность */
         opacity: 0.5;
     }
     
-    .seasons-toggle-container {
-        bottom: 8px;
-        right: 8px;
-    }
-    
-    .seasons-toggle {
-        padding: 8px 12px;
-    }
-    
-    .slider {
-        width: 40px; /* Минимальный размер для очень маленьких экранов */
-        height: 20px;
-    }
-    
-    .slider:before {
-        width: 16px;
-        height: 16px;
-    }
-    
-    .seasons-toggle input:checked + .slider:before {
-        transform: translateX(20px);
-    }
-    
-    .toggle-label {
-        font-size: 11px;
-    }
-    
     .season-element {
-        /* Уменьшаем размер элементов */
         transform: scale(0.6);
     }
 }
 
-/* Для ультра-маленьких экранов */
-@media (max-width: 360px) {
-    .seasons-toggle {
-        padding: 6px 10px;
-    }
-    
-    .slider {
-        width: 36px;
-        height: 18px;
-    }
-    
-    .slider:before {
-        width: 14px;
-        height: 14px;
-    }
-    
-    .seasons-toggle input:checked + .slider:before {
-        transform: translateX(18px);
-    }
-    
-    .toggle-label {
-        font-size: 10px;
-    }
-}
-
-/* Отключение анимаций для пользователей, предпочитающих reduced motion */
+/* Поддержка уменьшения движения */
 @media (prefers-reduced-motion: reduce) {
     .season-element {
         animation: none !important;
-        transition: none !important;
+        display: none !important;
+    }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+    .leaf {
+        background: linear-gradient(45deg, #d35400, #e67e22);
     }
     
-    .seasons-toggle {
-        transition: none;
+    .butterfly, .flower {
+        opacity: 0.5;
     }
 }
 
@@ -450,55 +194,4 @@
         color: #ffffff;
         text-shadow: 0 0 3px #000000;
     }
-    
-    .butterfly, .flower {
-        background: #ffff00;
-        opacity: 0.9;
-    }
-    
-    .slider {
-        border: 2px solid #ffffff;
-    }
-}
-
-/* Темная тема по умолчанию */
-@media (prefers-color-scheme: dark) {
-    .seasons-toggle {
-        background: rgba(26, 26, 46, 0.8);
-    }
-}
-
-/* Гарантия что эффекты не мешают взаимодействию */
-.seasons-container * {
-    pointer-events: none !important;
-}
-
-/* Плавное появление */
-.seasons-container {
-    animation: fadeInSeasons 1s ease-out;
-}
-
-@keyframes fadeInSeasons {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* Анимация для переключателя */
-@keyframes toggleSlideIn {
-    from {
-        transform: translateX(100px);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-.seasons-toggle-container {
-    animation: toggleSlideIn 0.5s ease-out 0.5s both;
 }

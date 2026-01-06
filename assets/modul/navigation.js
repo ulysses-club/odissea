@@ -40,8 +40,8 @@ class NavigationModule {
             isMobileMenuOpen: false,
             currentOpenDropdown: null,
             isMobileView: window.innerWidth <= 768,
-            closeDropdownTimeout: null, // Таймер для задержки закрытия
-            isHoveringDropdown: false   // Флаг наведения на dropdown
+            closeDropdownTimeout: null,
+            isHoveringDropdown: false
         };
 
         // Кэш DOM элементов
@@ -50,7 +50,7 @@ class NavigationModule {
         // Дебаунс для ресайза
         this.debouncedResize = this.debounce(this.handleResize.bind(this), 150);
 
-        // Привязываем обработчики с сохранением контекста и события
+        // Привязываем обработчики
         this.boundHandleDropdownEnter = this.handleDropdownEnter.bind(this);
         this.boundHandleDropdownLeave = this.handleDropdownLeave.bind(this);
         this.boundHandleMenuEnter = this.handleMenuEnter.bind(this);
@@ -120,7 +120,7 @@ class NavigationModule {
     }
 
     /**
-     * Генерация HTML навигации
+     * Генерация HTML навигации с переключателем сезонных эффектов
      */
     generateNavigation(currentPage) {
         return `
@@ -128,7 +128,25 @@ class NavigationModule {
                 ${this.navData.items.map((item, index) =>
             this.generateNavItem(item, currentPage, index)
         ).join('')}
+                ${this.generateSeasonsToggle()}
             </nav>
+        `;
+    }
+
+    /**
+     * Генерация переключателя сезонных эффектов
+     */
+    generateSeasonsToggle() {
+        const isEnabled = window.seasonsEffects?.getState()?.enabled || false;
+        return `
+            <div class="nav-seasons-toggle">
+                <label class="seasons-toggle" for="seasons-toggle" title="Сезонные эффекты">
+                    <input type="checkbox" id="seasons-toggle" ${isEnabled ? 'checked' : ''}>
+                    <span class="seasons-toggle-slider"></span>
+                    <span class="seasons-toggle-label" aria-hidden="true">⚡</span>
+                    <span class="sr-only">Сезонные эффекты</span>
+                </label>
+            </div>
         `;
     }
 

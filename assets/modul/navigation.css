@@ -465,6 +465,164 @@
     animation: spin 1s linear infinite;
 }
 
+/* ===== ПЕРЕКЛЮЧАТЕЛЬ СЕЗОННЫХ ЭФФЕКТОВ В НАВИГАЦИИ ===== */
+.nav-seasons-toggle {
+    display: flex;
+    align-items: center;
+    margin-left: var(--space-sm);
+}
+
+.seasons-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    gap: var(--space-xs);
+}
+
+.seasons-toggle input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.seasons-toggle-slider {
+    position: relative;
+    width: 40px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.seasons-toggle-slider:before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--light);
+    top: 1px;
+    left: 2px;
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.seasons-toggle input:checked + .seasons-toggle-slider {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-color: rgba(106, 17, 203, 0.5);
+}
+
+.seasons-toggle input:checked + .seasons-toggle-slider:before {
+    transform: translateX(20px);
+    background: var(--light);
+}
+
+.seasons-toggle-label {
+    font-size: var(--text-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease;
+}
+
+.seasons-toggle:hover .seasons-toggle-label {
+    transform: scale(1.1);
+}
+
+/* Анимация переключателя */
+@keyframes togglePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.seasons-toggle input:checked ~ .seasons-toggle-label {
+    animation: togglePulse 0.5s ease;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .nav-seasons-toggle {
+        margin-left: 0;
+        margin-top: var(--space-md);
+        padding: var(--space-md) var(--space-lg);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: var(--radius-md);
+    }
+    
+    .seasons-toggle {
+        justify-content: center;
+        width: 100%;
+        gap: var(--space-sm);
+    }
+    
+    .seasons-toggle-label {
+        font-size: var(--text-xl);
+        order: -1;
+    }
+    
+    .seasons-toggle-slider {
+        width: 36px;
+        height: 18px;
+    }
+    
+    .seasons-toggle-slider:before {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .seasons-toggle input:checked + .seasons-toggle-slider:before {
+        transform: translateX(18px);
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
+    .nav-seasons-toggle {
+        padding: var(--space-sm) var(--space-md);
+    }
+    
+    .seasons-toggle {
+        gap: var(--space-xs);
+    }
+    
+    .seasons-toggle-slider {
+        width: 32px;
+        height: 16px;
+    }
+    
+    .seasons-toggle-slider:before {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .seasons-toggle input:checked + .seasons-toggle-slider:before {
+        transform: translateX(16px);
+    }
+}
+
+/* Поддержка уменьшения движения */
+@media (prefers-reduced-motion: reduce) {
+    .seasons-toggle-slider,
+    .seasons-toggle-slider:before,
+    .seasons-toggle-label {
+        transition: none;
+        animation: none;
+    }
+    
+    .seasons-toggle:hover .seasons-toggle-label {
+        transform: none;
+    }
+}
+
 /* Поддержка темной темы по умолчанию */
 @media (prefers-color-scheme: light) {
     .dropdown-menu {
