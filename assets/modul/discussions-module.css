@@ -456,6 +456,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -467,7 +468,8 @@
 }
 
 /* Состояния загрузки и ошибок */
-.loading-message, .no-data {
+.loading-message,
+.no-data {
     text-align: center;
     padding: var(--space-xl);
     color: var(--gray);
@@ -487,7 +489,9 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Адаптивность для кнопки */
@@ -549,7 +553,7 @@
         max-width: 300px;
         padding: var(--space-md) var(--space-lg);
     }
-    
+
     .film-kinopoisk-button {
         padding: var(--space-sm) var(--space-md);
         font-size: var(--text-xs);
@@ -572,7 +576,7 @@
         height: 0;
         padding-bottom: 150%;
     }
-    
+
     .film-thumbnail {
         position: absolute;
         top: 0;

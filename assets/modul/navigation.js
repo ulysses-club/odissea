@@ -49,7 +49,7 @@ class NavigationModule {
 
         // Дебаунс для ресайза
         this.debouncedResize = this.debounce(this.handleResize.bind(this), 150);
-        
+
         // Привязываем обработчики с сохранением контекста и события
         this.boundHandleDropdownEnter = this.handleDropdownEnter.bind(this);
         this.boundHandleDropdownLeave = this.handleDropdownLeave.bind(this);
@@ -239,7 +239,7 @@ class NavigationModule {
         if (dropdown && this.state.currentOpenDropdown === dropdown) {
             // Не закрываем сразу, если курсор перешел в меню
             if (this.state.isHoveringDropdown) return;
-            
+
             // Задержка перед закрытием (100ms)
             this.state.closeDropdownTimeout = setTimeout(() => {
                 if (!this.state.isHoveringDropdown) {
@@ -257,7 +257,7 @@ class NavigationModule {
 
         const target = e.target;
         if (!target || !target.closest) return;
-        
+
         const menu = target.closest('.dropdown-menu');
         if (menu) {
             this.state.isHoveringDropdown = true;
@@ -277,11 +277,11 @@ class NavigationModule {
 
         const target = e.target;
         if (!target || !target.closest) return;
-        
+
         const menu = target.closest('.dropdown-menu');
         if (menu && !menu.contains(e.relatedTarget)) {
             this.state.isHoveringDropdown = false;
-            
+
             const dropdown = menu.closest('.nav-dropdown');
             if (dropdown && this.state.currentOpenDropdown === dropdown) {
                 // Задержка перед закрытием (100ms)
@@ -381,7 +381,7 @@ class NavigationModule {
         if (this.state.currentOpenDropdown === dropdown) {
             this.state.currentOpenDropdown = null;
         }
-        
+
         // Сбрасываем флаг
         this.state.isHoveringDropdown = false;
     }
@@ -456,7 +456,7 @@ class NavigationModule {
             clearTimeout(this.state.closeDropdownTimeout);
             this.state.closeDropdownTimeout = null;
         }
-        
+
         this.elements.dropdowns?.forEach(dropdown => {
             this.closeDropdown(dropdown);
         });

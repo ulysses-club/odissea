@@ -1,549 +1,485 @@
-/**
- * Модуль виджета погоды для киноклуба Одиссея
- */
 class WeatherModule {
     constructor() {
         this.config = {
             apiKey: '8ebf62377e7ff596ad44ef69a1958f3f',
             city: 'Sevastopol',
-            country: 'UA',
             units: 'metric',
             lang: 'ru',
-            updateInterval: 900000, // 15 минут
-            cacheTimeout: 300000 // 5 минут
-        };
-        
-        this.state = {
-            isExpanded: false,
-            isLoading: false,
-            lastUpdate: null,
-            weatherData: null,
-            error: null,
-            isOnline: navigator.onLine
-        };
-        
-        this.icons = {
-            '01d': '☀️', '01n': '🌙',
-            '02d': '⛅', '02n': '☁️',
-            '03d': '☁️', '03n': '☁️',
-            '04d': '☁️', '04n': '☁️',
-            '09d': '🌧️', '09n': '🌧️',
-            '10d': '🌦️', '10n': '🌦️',
-            '11d': '⛈️', '11n': '⛈️',
-            '13d': '❄️', '13n': '❄️',
-            '50d': '🌫️', '50n': '🌫️'
+            updateInterval: 15 * 60 * 1000, // 15 минут
+            cacheTime: 5 * 60 * 1000 // 5 минут кэша
         };
 
-        // Кэш для предсказаний
-        this.recommendations = {
-            hot: [
-                "Легкая одежда, шорты, футболка",
-                "Головной убор от солнца",
-                "Солнцезащитные очки",
-                "Вода для питья"
-            ],
-            warm: [
-                "Футболка или легкая рубашка",
-                "Джинсы или шорты",
-                "Легкая куртка на вечер"
-            ],
-            mild: [
-                "Джинсы или брюки",
-                "Кофта или свитер",
-                "Ветровка или легкая куртка"
-            ],
-            cool: [
-                "Теплая кофта",
-                "Джинсы или утепленные брюки",
-                "Куртка, шапка"
-            ],
-            cold: [
-                "Термобелье",
-                "Теплая куртка или пальто",
-                "Шарф, перчатки, шапка"
-            ],
-            freezing: [
-                "Термобелье обязательно",
-                "Пуховик или зимняя куртка",
-                "Теплая обувь, шапка, шарф, перчатки"
-            ]
+        this.state = {
+            data: null,
+            error: null,
+            loading: false,
+            expanded: false,
+            lastUpdate: null
         };
-        
+
+        // Объект вместо switch/case
+        this.icons = {
+            '01': '☀️', '02': '⛅', '03': '☁️', '04': '☁️',
+            '09': '🌧️', '10': '🌦️', '11': '⛈️', '13': '❄️', '50': '🌫️'
+        };
+
+        // Рекомендации по одежде
+        this.recommendations = {
+            hot: 'Легкая одежда, головной убор, вода',
+            warm: 'Футболка, джинсы, легкая куртка',
+            mild: 'Кофта, джинсы, ветровка',
+            cool: 'Теплая кофта, куртка, шапка',
+            cold: 'Термобелье, теплая куртка, шарф',
+            freezing: 'Термобелье, пуховик, зимняя обувь'
+        };
+
+        console.log('WeatherModule: инициализация началась');
         this.init();
     }
 
     /**
-     * Инициализация модуля погоды
+     * Инициализация
      */
     init() {
-        if (!this.checkRequirements()) return;
-        
-        this.createWidget();
-        this.setupEventListeners();
-        this.loadWeatherData();
-        this.setupAutoUpdate();
-    }
-
-    /**
-     * Проверка требований
-     */
-    checkRequirements() {
-        // Проверка на мобильных устройствах с медленным интернетом
-        if (navigator.connection) {
-            const connection = navigator.connection;
-            if (connection.saveData || connection.effectiveType === 'slow-2g') {
-                console.log('Модуль погоды отключен для экономии трафика');
-                return false;
+        try {
+            // Проверка требований в одном условии
+            const shouldSkip = navigator.connection?.saveData ||
+                navigator.connection?.effectiveType === 'slow-2g';
+            if (shouldSkip) {
+                console.log('Weather module skipped for data saving');
+                return;
             }
+
+            console.log('WeatherModule: создание виджета');
+            this.createWidget();
+            this.attachEvents();
+            this.loadData();
+            this.setupAutoUpdate();
+            
+            console.log('WeatherModule: инициализация завершена');
+        } catch (error) {
+            console.error('WeatherModule: ошибка инициализации', error);
         }
-        return true;
     }
 
     /**
-     * Создание HTML структуры виджета
+     * Создание виджета
      */
     createWidget() {
-        if (document.querySelector('.weather-widget')) {
-            this.widget = document.querySelector('.weather-widget');
+        // Проверяем, не создан ли уже виджет
+        const existingWidget = document.querySelector('.weather-widget');
+        if (existingWidget && existingWidget.dataset.initialized === 'true') {
+            this.widget = existingWidget;
+            console.log('WeatherModule: виджет уже существует');
             return;
         }
 
-        const widget = document.createElement('div');
-        widget.className = 'weather-widget';
-        widget.setAttribute('aria-label', 'Виджет погоды');
-        widget.innerHTML = this.getWidgetHTML();
+        // Ищем существующий контейнер из HTML
+        const weatherContainer = document.querySelector('.weather-widget');
         
-        // Оптимизированное размещение в header
-        const header = document.querySelector('.header');
-        if (header) {
-            const navContainer = header.querySelector('.nav-container');
-            if (navContainer) {
-                header.insertBefore(widget, navContainer);
-            } else {
-                header.appendChild(widget);
+        if (weatherContainer) {
+            console.log('WeatherModule: найден существующий контейнер');
+            this.widget = weatherContainer;
+            
+            // Очищаем и добавляем содержимое
+            this.widget.innerHTML = '';
+            const compactDiv = document.createElement('div');
+            compactDiv.className = 'weather-compact';
+            compactDiv.setAttribute('role', 'button');
+            compactDiv.setAttribute('tabindex', '0');
+            compactDiv.setAttribute('aria-label', 'Показать погоду');
+            
+            const detailsDiv = document.createElement('div');
+            detailsDiv.className = 'weather-details';
+            detailsDiv.setAttribute('aria-hidden', 'true');
+            
+            this.widget.appendChild(compactDiv);
+            this.widget.appendChild(detailsDiv);
+        } else {
+            console.log('WeatherModule: создание нового виджета');
+            // Создаем новый виджет
+            const widget = document.createElement('div');
+            widget.className = 'weather-widget';
+            widget.innerHTML = `
+                <div class="weather-compact" role="button" tabindex="0" aria-label="Показать погоду">
+                    <span class="weather-icon">⏳</span>
+                    <span class="weather-temp">--°</span>
+                </div>
+                <div class="weather-details" aria-hidden="true">
+                    <!-- Динамически заполняется -->
+                </div>
+            `;
+
+            // Вставляем в правильное место
+            const headerInner = document.querySelector('.header__inner');
+            const navContainer = document.querySelector('.nav-container');
+            
+            if (headerInner) {
+                if (navContainer) {
+                    // Вставляем перед навигацией
+                    headerInner.insertBefore(widget, navContainer);
+                } else {
+                    // Добавляем перед кнопкой меню
+                    const mobileBtn = document.querySelector('.mobile-menu-btn');
+                    if (mobileBtn) {
+                        headerInner.insertBefore(widget, mobileBtn);
+                    } else {
+                        headerInner.appendChild(widget);
+                    }
+                }
             }
+            
+            this.widget = widget;
         }
         
-        this.widget = widget;
+        // Помечаем как инициализированный
+        this.widget.dataset.initialized = 'true';
+        console.log('WeatherModule: виджет создан/обновлен');
     }
 
     /**
-     * Генерация HTML для виджета
+     * Загрузка данных
      */
-    getWidgetHTML() {
-        return `
-            <div class="weather-compact" role="button" tabindex="0" 
-                 aria-label="Показать детали погоды" aria-expanded="false">
-                ${this.getCompactContent()}
-            </div>
-            <div class="weather-details" role="dialog" aria-modal="true" aria-label="Детали погоды">
-                ${this.getDetailsContent()}
-            </div>
-        `;
-    }
-
-    /**
-     * Генерация компактного контента
-     */
-    getCompactContent() {
-        if (this.state.isLoading) {
-            return `
-                <div class="weather-loading" aria-live="polite">
-                    <div class="spinner" aria-hidden="true"></div>
-                </div>
-            `;
+    async loadData() {
+        console.log('WeatherModule: загрузка данных начата');
+        
+        // Быстрая проверка кэша
+        const cached = this.getCache();
+        if (cached && Date.now() - cached.timestamp < this.config.cacheTime) {
+            console.log('WeatherModule: используем кэш');
+            this.updateState({ data: cached.data, error: null });
+            this.render();
+            return;
         }
 
-        if (this.state.error || !this.state.weatherData) {
-            return `
-                <div class="weather-icon" aria-hidden="true">🌤️</div>
-                <div class="weather-temp">--°</div>
-            `;
+        // Офлайн режим
+        if (!navigator.onLine) {
+            console.log('WeatherModule: офлайн режим');
+            if (cached) {
+                this.updateState({ data: cached.data, error: 'Офлайн (кэш)' });
+            } else {
+                this.updateState({ error: 'Нет подключения' });
+            }
+            this.render();
+            return;
         }
 
-        const data = this.state.weatherData;
-        const icon = this.icons[data.weather[0].icon] || '🌤️';
-        const temp = Math.round(data.main.temp);
+        this.updateState({ loading: true });
+        console.log('WeatherModule: запрос к API');
 
-        return `
-            <div class="weather-icon" aria-hidden="true">${icon}</div>
-            <div class="weather-temp" aria-label="Температура ${temp} градусов">${temp}°</div>
-        `;
+        try {
+            const data = await this.fetchWeather();
+            console.log('WeatherModule: данные получены', data);
+            this.updateState({
+                data,
+                loading: false,
+                error: null,
+                lastUpdate: Date.now()
+            });
+            this.setCache(data);
+        } catch (error) {
+            console.error('WeatherModule: ошибка загрузки', error);
+            this.handleError(error);
+        } finally {
+            this.updateState({ loading: false });
+            this.render();
+        }
     }
 
     /**
-     * Генерация детального контента
+     * Запрос к API
      */
-    getDetailsContent() {
-        if (this.state.isLoading) {
-            return `
-                <div class="weather-loading" aria-live="polite">
-                    <div class="spinner" aria-hidden="true"></div>
-                    <p>Загрузка погоды...</p>
-                </div>
-            `;
+    async fetchWeather() {
+        const { apiKey, city, units, lang } = this.config;
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&lang=${lang}&appid=${apiKey}`;
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+
+        try {
+            const response = await fetch(url, {
+                signal: controller.signal,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            clearTimeout(timeout);
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+
+            // Быстрая валидация
+            if (!data?.main?.temp || !data?.weather?.[0]) {
+                throw new Error('Invalid data format');
+            }
+
+            return data;
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                throw new Error('Таймаут запроса');
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Управление состоянием
+     */
+    updateState(updates) {
+        Object.assign(this.state, updates);
+        // Отложенный рендер для минимизации перерисовок
+        if (!this.renderTimeout) {
+            this.renderTimeout = setTimeout(() => {
+                this.render();
+                this.renderTimeout = null;
+            }, 16);
+        }
+    }
+
+    /**
+     * Рендеринг
+     */
+    render() {
+        if (!this.widget) {
+            console.warn('WeatherModule: виджет не найден для рендеринга');
+            return;
+        }
+
+        console.log('WeatherModule: рендеринг');
+        this.renderCompact();
+        if (this.state.expanded) {
+            this.renderDetails();
+        }
+    }
+
+    /**
+     * Рендер компактного вида
+     */
+    renderCompact() {
+        const compact = this.widget.querySelector('.weather-compact');
+        if (!compact) return;
+
+        let content = '';
+
+        if (this.state.loading) {
+            content = '<span class="weather-icon">⏳</span><span class="weather-temp">...</span>';
+        } else if (this.state.error) {
+            content = '<span class="weather-icon">⚠️</span><span class="weather-temp">--°</span>';
+        } else if (this.state.data) {
+            const icon = this.getIcon(this.state.data.weather[0].icon);
+            const temp = Math.round(this.state.data.main.temp);
+            content = `<span class="weather-icon">${icon}</span><span class="weather-temp">${temp}°</span>`;
+        } else {
+            content = '<span class="weather-icon">🌤️</span><span class="weather-temp">--°</span>';
+        }
+
+        compact.innerHTML = content;
+    }
+
+    /**
+     * Рендер детального вида
+     */
+    renderDetails() {
+        const details = this.widget.querySelector('.weather-details');
+        if (!details) return;
+
+        if (this.state.loading) {
+            details.innerHTML = '<div class="weather-loading">Загрузка погоды...</div>';
+            details.hidden = false;
+            return;
         }
 
         if (this.state.error) {
-            const isOffline = !this.state.isOnline || this.state.error.includes('сети');
-            return `
+            const isOffline = this.state.error.includes('подключения') || this.state.error.includes('Офлайн');
+            details.innerHTML = `
                 <div class="weather-error">
-                    <p>${isOffline ? 'Нет подключения к интернету' : this.state.error}</p>
-                    ${isOffline ? '' : '<button class="retry-button" aria-label="Повторить попытку">Обновить</button>'}
+                    <p>${this.state.error}</p>
+                    ${!isOffline ? '<button class="retry-btn" aria-label="Повторить">Обновить</button>' : ''}
                 </div>
             `;
+            details.hidden = false;
+            return;
         }
 
-        if (!this.state.weatherData) {
-            return `
-                <div class="weather-loading">
-                    <div class="spinner"></div>
-                    <p>Обновление погоды...</p>
-                </div>
-            `;
+        if (!this.state.data) {
+            details.innerHTML = '<div class="weather-loading">Нет данных о погоде</div>';
+            details.hidden = false;
+            return;
         }
 
-        const data = this.state.weatherData;
-        const icon = this.icons[data.weather[0].icon] || '🌤️';
+        const data = this.state.data;
         const temp = Math.round(data.main.temp);
-        const feelsLike = Math.round(data.main.feels_like);
-        const wind = Math.round(data.wind.speed);
-        const humidity = data.main.humidity;
-        const pressure = Math.round(data.main.pressure * 0.75);
-        const clothingRec = this.getClothingRecommendation();
+        const feels = Math.round(data.main.feels_like);
+        const icon = this.getIcon(data.weather[0].icon);
+        const desc = data.weather[0].description;
+        const rec = this.getRecommendation(temp);
 
-        return `
+        details.innerHTML = `
             <div class="weather-header">
-                <h3 class="weather-title">Погода в Севастополе</h3>
-                <button class="weather-close" aria-label="Закрыть детали погоды">×</button>
+                <h3>Погода в Севастополе</h3>
+                <button class="close-btn" aria-label="Закрыть">×</button>
             </div>
-            <div class="weather-content">
-                <div class="weather-main-icon" aria-hidden="true">${icon}</div>
-                <div class="weather-main-temp">${temp}°</div>
-                <div class="weather-description">${data.weather[0].description}</div>
+            <div class="weather-main">
+                <div class="weather-icon-large">${icon}</div>
+                <div class="weather-temp-large">${temp}°</div>
+                <div class="weather-desc">${desc}</div>
             </div>
             <div class="weather-stats">
-                <div class="weather-stat weather-feels-like">
-                    <div class="stat-value">${feelsLike}°</div>
-                    <div class="stat-label">Ощущается</div>
+                <div class="weather-stat">
+                    <span class="stat-label">Ощущается</span>
+                    <span class="stat-value">${feels}°</span>
                 </div>
-                <div class="weather-stat weather-wind">
-                    <div class="stat-value">${wind} м/с</div>
-                    <div class="stat-label">Ветер</div>
+                <div class="weather-stat">
+                    <span class="stat-label">Влажность</span>
+                    <span class="stat-value">${data.main.humidity}%</span>
                 </div>
-                <div class="weather-stat weather-humidity">
-                    <div class="stat-value">${humidity}%</div>
-                    <div class="stat-label">Влажность</div>
-                </div>
-                <div class="weather-stat weather-pressure">
-                    <div class="stat-value">${pressure}</div>
-                    <div class="stat-label">мм рт.ст.</div>
+                <div class="weather-stat">
+                    <span class="stat-label">Ветер</span>
+                    <span class="stat-value">${Math.round(data.wind.speed)} м/с</span>
                 </div>
             </div>
-            ${clothingRec ? `
-                <div class="weather-recommendation">
-                    <div class="recommendation-title">
-                        <span aria-hidden="true">👕</span>
-                        <span>Рекомендации:</span>
-                    </div>
-                    <div class="recommendation-text">${clothingRec}</div>
-                </div>
-            ` : ''}
-            ${this.state.lastUpdate ? `
-                <div class="weather-footer">
-                    <small>Обновлено: ${this.formatUpdateTime()}</small>
-                </div>
-            ` : ''}
+            ${rec ? `<div class="weather-recommendation"><p>${rec}</p></div>` : ''}
+            ${this.state.lastUpdate ?
+                `<div class="weather-update">Обновлено: ${this.formatTime(this.state.lastUpdate)}</div>` : ''}
         `;
+        details.hidden = false;
+        
+        // Обновляем обработчики событий для новых элементов
+        this.setupDynamicEventListeners();
     }
 
     /**
-     * Форматирование времени обновления
+     * Получение иконки
      */
-    formatUpdateTime() {
-        if (!this.state.lastUpdate) return '';
-        
-        const date = new Date(this.state.lastUpdate);
-        const now = new Date();
-        const diffMs = now - date;
-        const diffMins = Math.floor(diffMs / 60000);
-        
-        if (diffMins < 1) return 'только что';
-        if (diffMins < 60) return `${diffMins} ${this.getPlural(diffMins, 'минуту', 'минуты', 'минут')} назад`;
-        
-        const diffHours = Math.floor(diffMins / 60);
-        if (diffHours < 24) return `${diffHours} ${this.getPlural(diffHours, 'час', 'часа', 'часов')} назад`;
-        
-        return date.toLocaleTimeString('ru-RU', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
+    getIcon(iconCode) {
+        return this.icons[iconCode.substring(0, 2)] || '🌤️';
+    }
+
+    /**
+     * Рекомендации
+     */
+    getRecommendation(temp) {
+        if (temp >= 25) return this.recommendations.hot;
+        if (temp >= 18) return this.recommendations.warm;
+        if (temp >= 10) return this.recommendations.mild;
+        if (temp >= 0) return this.recommendations.cool;
+        if (temp >= -10) return this.recommendations.cold;
+        return this.recommendations.freezing;
+    }
+
+    /**
+     * Форматирование времени
+     */
+    formatTime(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit'
         });
     }
 
     /**
-     * Получение правильной формы слова
+     * Обработка ошибок
      */
-    getPlural(number, one, two, five) {
-        const n = Math.abs(number) % 100;
-        if (n >= 5 && n <= 20) return five;
-        switch (n % 10) {
-            case 1: return one;
-            case 2: case 3: case 4: return two;
-            default: return five;
-        }
+    handleError(error) {
+        const errorMap = {
+            'AbortError': 'Таймаут запроса',
+            'Failed to fetch': 'Нет подключения',
+            'NetworkError': 'Проблемы с сетью',
+            'TypeError': 'Ошибка сети'
+        };
+
+        this.updateState({
+            error: errorMap[error.name] || errorMap[error.message] || 'Ошибка загрузки',
+            data: this.getCache()?.data || null
+        });
     }
 
     /**
-     * Загрузка данных о погоде с оптимизациями
+     * Управление кэшем
      */
-    async loadWeatherData() {
-        // Проверка кэша и сети
-        if (this.shouldUseCache()) {
-            this.updateDisplay();
-            return;
-        }
-
-        // Проверка подключения
-        if (!navigator.onLine) {
-            this.state.isOnline = false;
-            this.state.error = 'Нет подключения к сети';
-            this.updateDisplay();
-            return;
-        }
-
-        this.state.isLoading = true;
-        this.state.error = null;
-        this.state.isOnline = true;
-        this.updateDisplay();
-
+    setCache(data) {
         try {
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${this.config.city},${this.config.country}&units=${this.config.units}&lang=${this.config.lang}&appid=${this.config.apiKey}`;
-            
-            // Таймаут запроса
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
-            
-            const response = await fetch(url, { 
-                signal: controller.signal,
-                headers: {
-                    'Accept': 'application/json',
-                }
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            
-            // Валидация данных
-            if (!data.main || !data.weather || !data.weather[0]) {
-                throw new Error('Неверный формат данных погоды');
-            }
-            
-            this.state.weatherData = data;
-            this.state.lastUpdate = Date.now();
-            this.state.isLoading = false;
-            
-            // Сохранение в кэш
-            this.saveToCache(data);
-            
-        } catch (error) {
-            console.warn('Ошибка загрузки погоды:', error);
-            this.handleLoadError(error);
-        } finally {
-            this.state.isLoading = false;
-            this.updateDisplay();
-        }
-    }
-
-    /**
-     * Обработка ошибок загрузки
-     */
-    handleLoadError(error) {
-        // Определение типа ошибки
-        if (error.name === 'AbortError') {
-            this.state.error = 'Таймаут запроса';
-        } else if (error.message.includes('Failed to fetch') || error.message.includes('network')) {
-            this.state.error = 'Нет подключения к сети';
-            this.state.isOnline = false;
-        } else if (error.message.includes('404')) {
-            this.state.error = 'Город не найден';
-        } else if (error.message.includes('401')) {
-            this.state.error = 'Ошибка API ключа';
-        } else {
-            this.state.error = 'Ошибка загрузки';
-        }
-
-        // Попытка использовать кэш
-        const cache = this.getCachedData();
-        if (cache) {
-            this.state.weatherData = cache.data;
-            this.state.lastUpdate = cache.timestamp;
-            this.state.error = null;
-        }
-    }
-
-    /**
-     * Сохранение в кэш
-     */
-    saveToCache(data) {
-        try {
-            const cacheData = {
-                data: data,
+            localStorage.setItem('weather_cache', JSON.stringify({
+                data,
                 timestamp: Date.now()
-            };
-            localStorage.setItem('weatherCache', JSON.stringify(cacheData));
-        } catch (error) {
-            console.warn('Не удалось сохранить в кэш:', error);
+            }));
+        } catch (e) {
+            console.warn('WeatherModule: не удалось сохранить кэш');
         }
     }
 
-    /**
-     * Проверка возможности использования кэша
-     */
-    shouldUseCache() {
-        const cache = this.getCachedData();
-        if (!cache) return false;
-        
-        const cacheAge = Date.now() - cache.timestamp;
-        const shouldUpdate = cacheAge > this.config.cacheTimeout;
-        
-        // Если есть свежий кэш, используем его сразу
-        if (!shouldUpdate) {
-            this.state.weatherData = cache.data;
-            this.state.lastUpdate = cache.timestamp;
-            return true;
-        }
-        
-        // Если кэш устарел, но мы офлайн - все равно используем его
-        if (!navigator.onLine) {
-            this.state.weatherData = cache.data;
-            this.state.lastUpdate = cache.timestamp;
-            this.state.error = 'Данные из кэша (офлайн)';
-            return true;
-        }
-        
-        return false;
-    }
-
-    /**
-     * Получение данных из кэша
-     */
-    getCachedData() {
+    getCache() {
         try {
-            const cache = localStorage.getItem('weatherCache');
-            if (!cache) return null;
-            
-            const parsed = JSON.parse(cache);
-            if (!parsed.data || !parsed.timestamp) return null;
-            
-            return parsed;
-        } catch (error) {
+            const cached = localStorage.getItem('weather_cache');
+            return cached ? JSON.parse(cached) : null;
+        } catch (e) {
             return null;
         }
     }
 
     /**
-     * Обновление отображения виджета
+     * Обработчики событий
      */
-    updateDisplay() {
+    attachEvents() {
         if (!this.widget) return;
 
-        const compactElement = this.widget.querySelector('.weather-compact');
-        const detailsElement = this.widget.querySelector('.weather-details');
-
-        if (compactElement) {
-            compactElement.innerHTML = this.getCompactContent();
-        }
-
-        if (detailsElement) {
-            detailsElement.innerHTML = this.getDetailsContent();
-        }
-
-        this.setupDynamicEventListeners();
-    }
-
-    /**
-     * Настройка автоматического обновления
-     */
-    setupAutoUpdate() {
-        // Обновление при возвращении онлайн
-        window.addEventListener('online', () => {
-            this.state.isOnline = true;
-            this.loadWeatherData();
-        });
-
-        window.addEventListener('offline', () => {
-            this.state.isOnline = false;
-            this.state.error = 'Нет подключения к сети';
-            this.updateDisplay();
-        });
-
-        // Периодическое обновление
-        setInterval(() => {
-            if (navigator.onLine) {
-                this.loadWeatherData();
-            }
-        }, this.config.updateInterval);
-    }
-
-    /**
-     * Настройка обработчиков событий
-     */
-    setupEventListeners() {
-        if (!this.widget) return;
-
-        // Открытие/закрытие деталей погоды
+        // Делегирование событий
         this.widget.addEventListener('click', (e) => {
-            const compact = this.widget.querySelector('.weather-compact');
-            if (compact && compact.contains(e.target)) {
+            if (e.target.closest('.weather-compact')) {
                 this.toggleDetails();
                 e.stopPropagation();
             }
         });
 
-        // Клавиши для accessibility
+        // Клавиатурные события
         this.widget.addEventListener('keydown', (e) => {
-            const compact = this.widget.querySelector('.weather-compact');
-            if (compact && compact === e.target) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.toggleDetails();
-                }
-                if (e.key === 'Escape' && this.state.isExpanded) {
-                    this.closeDetails();
-                }
+            if (e.key === 'Escape' && this.state.expanded) {
+                this.closeDetails();
+            }
+            if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.weather-compact')) {
+                e.preventDefault();
+                this.toggleDetails();
             }
         });
 
-        // Закрытие по клику вне виджета
+        // Закрытие по клику снаружи
         document.addEventListener('click', (e) => {
-            if (!this.widget.contains(e.target) && this.state.isExpanded) {
+            if (this.state.expanded && !this.widget.contains(e.target)) {
                 this.closeDetails();
             }
+        });
+
+        // События сети
+        window.addEventListener('online', () => {
+            console.log('WeatherModule: онлайн, обновляем данные');
+            this.loadData();
+        });
+        
+        window.addEventListener('offline', () => {
+            console.log('WeatherModule: офлайн');
+            this.updateState({ error: 'Нет подключения' });
+            this.render();
         });
 
         this.setupDynamicEventListeners();
     }
 
     /**
-     * Настройка динамических обработчиков событий
+     * Динамические обработчики событий
      */
     setupDynamicEventListeners() {
         // Кнопка повтора
-        const retryButton = this.widget.querySelector('.retry-button');
+        const retryButton = this.widget.querySelector('.retry-btn');
         if (retryButton) {
             retryButton.addEventListener('click', (e) => {
                 e.stopPropagation();
-                this.loadWeatherData();
+                this.loadData();
             });
         }
 
         // Кнопка закрытия
-        const closeButton = this.widget.querySelector('.weather-close');
+        const closeButton = this.widget.querySelector('.close-btn');
         if (closeButton) {
             closeButton.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -553,125 +489,114 @@ class WeatherModule {
     }
 
     /**
-     * Переключение отображения деталей
+     * Управление детальным видом
      */
     toggleDetails() {
-        this.state.isExpanded = !this.state.isExpanded;
-        this.widget.classList.toggle('expanded', this.state.isExpanded);
+        this.state.expanded = !this.state.expanded;
+        this.widget.classList.toggle('expanded', this.state.expanded);
         
         const compact = this.widget.querySelector('.weather-compact');
+        const details = this.widget.querySelector('.weather-details');
+        
         if (compact) {
-            compact.setAttribute('aria-expanded', this.state.isExpanded);
+            compact.setAttribute('aria-expanded', this.state.expanded);
+        }
+        
+        if (details) {
+            details.setAttribute('aria-hidden', !this.state.expanded);
+            if (this.state.expanded) {
+                this.renderDetails();
+            } else {
+                details.hidden = true;
+            }
         }
     }
 
-    /**
-     * Закрытие деталей
-     */
     closeDetails() {
-        this.state.isExpanded = false;
+        this.state.expanded = false;
         this.widget.classList.remove('expanded');
         
         const compact = this.widget.querySelector('.weather-compact');
+        const details = this.widget.querySelector('.weather-details');
+        
         if (compact) {
             compact.setAttribute('aria-expanded', 'false');
-            compact.focus(); // Возвращаем фокус для accessibility
+        }
+        
+        if (details) {
+            details.setAttribute('aria-hidden', 'true');
+            details.hidden = true;
         }
     }
 
     /**
-     * Получение рекомендаций по одежде
+     * Настройка автообновления
      */
-    getClothingRecommendation() {
-        if (!this.state.weatherData) return '';
-        
-        const data = this.state.weatherData;
-        const temp = data.main.temp;
-        const feelsLike = data.main.feels_like;
-        const weather = data.weather[0].main.toLowerCase();
-        const wind = data.wind.speed;
-        const humidity = data.main.humidity;
-        
-        // Определяем температурную категорию
-        let tempCategory;
-        const effectiveTemp = Math.min(temp, feelsLike); // Учитываем "ощущается как"
-        
-        if (effectiveTemp >= 25) tempCategory = 'hot';
-        else if (effectiveTemp >= 18) tempCategory = 'warm';
-        else if (effectiveTemp >= 10) tempCategory = 'mild';
-        else if (effectiveTemp >= 0) tempCategory = 'cool';
-        else if (effectiveTemp >= -10) tempCategory = 'cold';
-        else tempCategory = 'freezing';
-        
-        // Базовые рекомендации
-        let recommendations = this.recommendations[tempCategory] || [];
-        
-        // Дополнительные рекомендации по погоде
-        const weatherTips = [];
-        
-        if (weather.includes('rain') || weather.includes('drizzle')) {
-            weatherTips.push('зонт или дождевик');
-            weatherTips.push('непромокаемая обувь');
-        }
-        
-        if (weather.includes('snow')) {
-            weatherTips.push('зимняя обувь');
-            weatherTips.push('термоноски');
-        }
-        
-        if (wind > 7) {
-            weatherTips.push('ветровка или куртка от ветра');
-            if (temp < 10) weatherTips.push('шапка, чтобы не продуло');
-        }
-        
-        if (humidity > 80 && temp > 20) {
-            weatherTips.push('легкая дышащая одежда');
-        }
-        
-        if (weather.includes('clear') && temp > 20) {
-            weatherTips.push('солнцезащитные очки');
-            weatherTips.push('крем от загара');
-        }
-        
-        // Объединяем рекомендации
-        const allTips = [...recommendations, ...weatherTips];
-        return this.formatRecommendations(allTips);
+    setupAutoUpdate() {
+        // Обновление по интервалу
+        this.updateInterval = setInterval(() => {
+            if (navigator.onLine) {
+                console.log('WeatherModule: автоматическое обновление');
+                this.loadData();
+            }
+        }, this.config.updateInterval);
+
+        // Обновление при фокусе страницы
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && navigator.onLine) {
+                console.log('WeatherModule: страница активна, обновляем');
+                this.loadData();
+            }
+        });
     }
 
     /**
-     * Форматирование рекомендаций
+     * Очистка ресурсов
      */
-    formatRecommendations(tips) {
-        if (tips.length === 0) return '';
+    destroy() {
+        if (this.updateInterval) clearInterval(this.updateInterval);
+        if (this.renderTimeout) clearTimeout(this.renderTimeout);
         
-        // Убираем дубликаты
-        const uniqueTips = [...new Set(tips)];
+        // Удаляем обработчики событий
+        const closeButton = this.widget?.querySelector('.close-btn');
+        const retryButton = this.widget?.querySelector('.retry-btn');
         
-        // Форматируем в читаемый вид
-        if (uniqueTips.length === 1) {
-            return uniqueTips[0];
+        if (closeButton) {
+            closeButton.replaceWith(closeButton.cloneNode(true));
         }
         
-        const last = uniqueTips.pop();
-        return uniqueTips.join(', ') + ' и ' + last;
+        if (retryButton) {
+            retryButton.replaceWith(retryButton.cloneNode(true));
+        }
+        
+        console.log('WeatherModule: уничтожен');
     }
 }
 
 /**
- * Инициализация модуля погоды
+ * Инициализация модуля
  */
 function initWeatherModule() {
-    try {
+    console.log('initWeatherModule: запуск');
+    
+    // Ждем полной загрузки DOM
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOMContentLoaded: инициализация WeatherModule');
+            new WeatherModule();
+        });
+    } else {
+        // Если DOM уже загружен
+        console.log('DOM уже загружен: инициализация WeatherModule');
         new WeatherModule();
-        console.log('Модуль погоды инициализирован');
-    } catch (error) {
-        console.error('Ошибка инициализации модуля погоды:', error);
     }
 }
 
-// Автоматическая инициализация при загрузке страницы
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initWeatherModule);
-} else {
-    initWeatherModule();
+// Экспорт для использования в других модулях
+if (typeof window !== 'undefined') {
+    window.WeatherModule = WeatherModule;
 }
+
+// Автоматическая инициализация
+console.log('weather-module.js загружен');
+initWeatherModule();

@@ -10,7 +10,8 @@
           "backdrop-filter",
           "-webkit-overflow-scrolling",
           "min-height: auto",
-          "user-select"
+          "user-select",
+          "-webkit-backdrop-filter"
         ]
       }
     ],

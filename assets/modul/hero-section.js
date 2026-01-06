@@ -1,8 +1,3 @@
-/**
- * Оптимизированный модуль герой-секции для киноклуба Одиссея
- * Сохранена оригинальная стилистика с улучшенной производительностью
- */
-
 class HeroSectionModule {
     constructor() {
         // Конфигурация для всех страниц
@@ -105,23 +100,23 @@ class HeroSectionModule {
     getCurrentPage() {
         const path = window.location.pathname;
         const page = path.split('/').pop().replace('.html', '').toLowerCase();
-        
+
         // Определяем страницу
         if (path.includes('index.html') || path === '/' || path.endsWith('/') || path.includes('/kinoclub-odisseya/')) {
             return 'index';
         }
-        
+
         // Проверяем существование страницы в конфиге
         return page in this.config.pages ? page : 'index';
     }
 
     /**
-     * Генерирует кнопку (округлую как раньше)
+     * Генерирует кнопку
      */
     generateButton(button) {
         const btnClass = button.type === 'primary' ? 'btn btn--primary' : 'btn btn--outline';
         const icon = button.icon ? `<span class="btn-icon" aria-hidden="true">${button.icon}</span>` : '';
-        
+
         return `
             <a href="${button.href}" class="${btnClass}">
                 ${icon}
@@ -135,7 +130,7 @@ class HeroSectionModule {
      */
     generateImage(pageData) {
         const { image, imageAlt } = pageData;
-        
+
         return `
             <div class="hero__image">
                 <img src="${image}" 
@@ -157,7 +152,7 @@ class HeroSectionModule {
         const pageData = this.config.pages[pageKey] || this.config.pages['index'];
         const buttonsHTML = pageData.buttons.map(btn => this.generateButton(btn)).join('');
         const imageHTML = this.generateImage(pageData);
-        
+
         return `
             <section class="hero" data-page="${pageKey}" aria-label="Главная секция">
                 <div class="hero__content">
@@ -187,10 +182,10 @@ class HeroSectionModule {
         try {
             const pageKey = this.getCurrentPage();
             container.innerHTML = this.generateHTML(pageKey);
-            
+
             // Оптимизация изображений
             this.optimizeImages();
-            
+
             console.log(`HeroSection: секция для "${pageKey}" загружена`);
         } catch (error) {
             console.error('HeroSection: ошибка инициализации:', error);
@@ -207,7 +202,7 @@ class HeroSectionModule {
         images.forEach(img => {
             // Устанавливаем атрибуты для ленивой загрузки
             if (!img.loading) img.loading = 'lazy';
-            
+
             // Обработчик ошибок загрузки
             img.onerror = () => {
                 img.src = this.config.defaults.image;
@@ -222,48 +217,48 @@ class HeroSectionModule {
  */
 window.HeroSection = {
     instance: null,
-    
+
     /**
      * Инициализация герой-секции
      */
-    init: function(containerSelector = '.hero-container') {
+    init: function (containerSelector = '.hero-container') {
         if (!this.instance) {
             this.instance = new HeroSectionModule();
         }
         this.instance.init(containerSelector);
         return this.instance;
     },
-    
+
     /**
      * Обновление данных страницы
      */
-    updatePageData: function(pageKey, newData) {
+    updatePageData: function (pageKey, newData) {
         if (this.instance && this.instance.config.pages[pageKey]) {
             Object.assign(this.instance.config.pages[pageKey], newData);
             this.instance.init();
         }
     },
-    
+
     /**
      * Добавление новой страницы
      */
-    addPage: function(pageKey, pageData) {
+    addPage: function (pageKey, pageData) {
         if (this.instance) {
             this.instance.config.pages[pageKey] = pageData;
         }
     },
-    
+
     /**
      * Получение текущей страницы
      */
-    getCurrentPage: function() {
+    getCurrentPage: function () {
         return this.instance ? this.instance.getCurrentPage() : 'index';
     },
-    
+
     /**
      * Перезагрузка секции
      */
-    reload: function() {
+    reload: function () {
         if (this.instance) {
             this.instance.init();
         }
@@ -273,7 +268,7 @@ window.HeroSection = {
 /**
  * Автоматическая инициализация
  */
-(function() {
+(function () {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => HeroSection.init());
     } else {

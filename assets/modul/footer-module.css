@@ -203,6 +203,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -228,11 +229,11 @@
     .footer {
         border-top: 2px solid currentColor;
     }
-    
+
     .footer__link {
         border: 1px solid transparent;
     }
-    
+
     .footer__link:hover,
     .footer__link:focus {
         border-color: currentColor;
