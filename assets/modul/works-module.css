@@ -1,86 +1,69 @@
-/* works-module.css - обновленная версия в стиле discussions-module */
-/* Стили для секции архива работ */
-
+/* works-module.css - обновленный дизайн карточек работ */
 .video-posters-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: var(--space-xl);
-    margin-bottom: var(--space-xxl);
-    position: relative;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
 }
 
-.video-posters-grid::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
-    opacity: 0.3;
-    z-index: -1;
-}
-
-/* Карточка видео работы - переименована для единообразия */
+/* Обновленная карточка */
 .film-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border-radius: var(--radius-lg);
     overflow: hidden;
     transition: var(--transition);
-    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     position: relative;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .film-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-xl);
+    transform: translateY(-6px);
+    border-color: var(--primary-light);
+    box-shadow: 0 12px 24px rgba(106, 17, 203, 0.15);
 }
 
-/* АДАПТИВНЫЙ КОНТЕЙНЕР ДЛЯ ПОСТЕРА - единообразие с discussions */
+/* Изображение с плавным зумом */
 .film-card-image {
     position: relative;
     width: 100%;
-    height: auto;
+    aspect-ratio: 9/14;
     overflow: hidden;
-    aspect-ratio: 9/14; /* Для видео другой аспект */
 }
 
 .poster-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: var(--transition);
+    transition: transform 0.5s ease;
 }
 
 .film-card:hover .poster-image {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
-/* Кнопка типа работы (бейдж) */
+/* Бейдж типа работы */
 .work-type {
     position: absolute;
-    top: var(--space-md);
-    left: var(--space-md);
+    top: 12px;
+    left: 12px;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
-    backdrop-filter: blur(5px);
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-full);
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    font-weight: bold;
-    font-size: var(--text-xs);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     z-index: 2;
-    color: var(--light);
-    box-shadow: 0 2px 8px rgba(106, 17, 203, 0.3);
+    backdrop-filter: blur(4px);
 }
 
+/* Информация о работе */
 .work-info {
-    padding: var(--space-lg);
+    padding: var(--space-md);
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -89,93 +72,72 @@
 .work-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: var(--space-sm);
-    font-size: var(--text-sm);
-    color: var(--gray);
-}
-
-.film-card h3 {
-    font-size: var(--text-xl);
-    margin-bottom: var(--space-sm);
-    color: var(--light);
-    flex-grow: 0;
-}
-
-.work-meta {
-    margin: var(--space-xs) 0;
-    font-size: var(--text-sm);
-    color: #827fa7;
-    flex-grow: 0;
-}
-
-.meta-label {
-    font-weight: 600;
-    color: #b18686;
-}
-
-.work-description {
-    margin-top: var(--space-sm);
-    font-size: var(--text-sm);
-    color: var(--light);
-    opacity: 0.8;
-    line-height: 1.5;
-    flex-grow: 1;
-}
-
-/* Оверлей с кнопкой воспроизведения */
-.play-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: var(--transition);
-    pointer-events: none;
+    margin-bottom: 8px;
+    font-size: var(--text-sm);
 }
 
-.film-card:hover .play-overlay {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.play-button {
-    font-size: var(--text-xxxxl);
-    color: white;
-    margin-bottom: var(--space-md);
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
-    transform: translateY(20px);
-    opacity: 0;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-}
-
-.film-card:hover .play-button {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* Год выпуска - стили как в discussions */
 .work-year {
     color: var(--accent);
     font-weight: 600;
     font-size: var(--text-sm);
+}
+
+.video-link {
+    color: var(--gray);
+    font-size: var(--text-xs);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.film-card h3 {
+    font-size: var(--text-lg);
+    margin: 8px 0;
+    color: var(--light);
+    line-height: 1.4;
+    flex-grow: 0;
+}
+
+.work-description {
+    margin-top: 8px;
+    font-size: var(--text-sm);
+    color: var(--gray-light);
+    line-height: 1.5;
+    opacity: 0.9;
+    flex-grow: 1;
+}
+
+/* Кнопка смотреть */
+.film-kinopoisk-button {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-xs);
-}
-
-.work-year::before {
-    content: '📅';
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 600;
     font-size: var(--text-sm);
+    margin-top: 16px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
-/* Состояния загрузки и ошибок */
+.film-kinopoisk-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(106, 17, 203, 0.3);
+}
+
+.film-kinopoisk-button[style*="pointer-events: none"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Состояния загрузки */
 .works-loading-message,
 .works-no-data {
     text-align: center;
@@ -196,197 +158,72 @@
     border-radius: 50%;
     border-top-color: var(--primary);
     animation: spin 1s ease-in-out infinite;
-    margin-right: var(--space-sm);
-}
-
-/* Анимации */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.film-card {
-    animation: fadeInUp 0.5s ease forwards;
-}
-
-/* Добавьте эти стили в конец файла */
-
-/* Футер с временем обновления */
-.weather-footer {
-    text-align: center;
-    padding-top: var(--space-sm);
-    border-top: 1px solid var(--light-dark);
-    font-size: var(--text-xs);
-    color: var(--gray);
-}
-
-/* Улучшение accessibility */
-.weather-compact:focus {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-    border-radius: var(--radius-md);
-}
-
-/* Анимация обновления */
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.6; }
-    100% { opacity: 1; }
-}
-
-.weather-loading .spinner {
-    animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
-}
-
-/* Более плавные переходы */
-.weather-widget {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.weather-details {
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Темная тема для уведомлений */
-@media (prefers-color-scheme: dark) {
-    .weather-details {
-        background: rgba(15, 15, 30, 0.97);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-}
-
-/* Улучшение для touch устройств */
-@media (hover: none) and (pointer: coarse) {
-    .weather-compact {
-        min-height: 44px;
-        min-width: 44px;
-    }
-    
-    .weather-details {
-        -webkit-overflow-scrolling: touch;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-}
-
-/* Поддержка high contrast */
-@media (prefers-contrast: high) {
-    .weather-widget {
-        border: 2px solid currentColor;
-    }
-    
-    .weather-details {
-        border: 2px solid currentColor;
-    }
+    margin-right: 12px;
 }
 
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
 
-/* Адаптивность */
-@media (max-width: 1200px) {
-    .video-posters-grid {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: var(--space-lg);
+/* Анимация появления карточек */
+.film-card {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
+/* Задержки для анимации */
+.film-card:nth-child(1) { animation-delay: 0.1s; }
+.film-card:nth-child(2) { animation-delay: 0.2s; }
+.film-card:nth-child(3) { animation-delay: 0.3s; }
+.film-card:nth-child(4) { animation-delay: 0.4s; }
+.film-card:nth-child(5) { animation-delay: 0.5s; }
+.film-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Адаптивность */
 @media (max-width: 768px) {
     .video-posters-grid {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: var(--space-lg);
-        padding: var(--space-md);
+        gap: var(--space-md);
+        padding: var(--space-sm);
     }
-
+    
     .film-card-image {
-        aspect-ratio: 9;
-    }
-
-    /* Мобильная версия overlay */
-    .play-overlay {
-        opacity: 1;
-        background: linear-gradient(135deg,
-                rgba(107, 17, 203, 0.123) 0%,
-                rgba(37, 116, 252, 0.082) 100%);
-    }
-
-    .work-info {
-        padding: var(--space-lg);
-    }
-
-    .film-card h3 {
-        font-size: var(--text-lg);
+        aspect-ratio: 9/12;
     }
 }
 
 @media (max-width: 480px) {
     .video-posters-grid {
         grid-template-columns: 1fr;
-        gap: var(--space-md);
+    }
+    
+    .work-info {
         padding: var(--space-sm);
     }
-
-    .film-card-image {
-        aspect-ratio: 9/16;
-    }
-
-    .work-info {
-        padding: var(--space-md);
-    }
-
+    
     .film-card h3 {
         font-size: var(--text-md);
     }
-
-    .play-button {
-        font-size: var(--text-xxxl);
-    }
 }
 
-/* Поддержка для браузеров, которые не поддерживают aspect-ratio */
-@supports not (aspect-ratio: 16/9) {
+/* Fallback для старых браузеров */
+@supports not (aspect-ratio: 9/14) {
     .film-card-image {
         height: 0;
-        padding-bottom: 56.25%; /* 16:9 = 56.25% */
+        padding-bottom: 155.56%;
+        position: relative;
     }
     
     .poster-image {
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
     }
-}
-
-/* Анимация появления карточек с задержкой */
-.film-card:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-.film-card:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.film-card:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.film-card:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-.film-card:nth-child(5) {
-    animation-delay: 0.5s;
-}
-
-.film-card:nth-child(6) {
-    animation-delay: 0.6s;
 }

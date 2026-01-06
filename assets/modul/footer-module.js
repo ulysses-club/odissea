@@ -1,37 +1,25 @@
 /**
- * Модуль футера для киноклуба Одиссея
+ * МОДУЛЬ ФУТЕРА - Генерация и управление футером
+ * Поддерживает разные страницы с уникальными настройками
  */
 class FooterModule {
-    /**
-     * Конструктор класса FooterModule
-     * Инициализирует данные футера для разных страниц
-     */
     constructor() {
-        this.footerData = {
-            // Данные для разных страниц
+        this.config = {
             pages: {
-                'index': {
+                index: {
                     logo: 'ОДИССЕЯ',
                     links: [
-                        { text: 'О нас', href: '#about', active: true },
-                        { text: 'Топы', href: '#top-films' },
                         { text: 'Фильмы', href: '#film-archive' },
+                        { text: 'О нас', href: '#about' },
+                        { text: 'Топы', href: '#top-films' },
                         { text: 'Контакты', href: '#contacts' },
-                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
+                        { text: 'Автор', href: '../pages/stanislav.html' }
                     ],
                     social: [
-                        {
-                            text: 'VK',
-                            href: 'https://vk.com/club199046020',
-                            ariaLabel: 'ВКонтакте'
-                        },
-                        {
-                            text: 'TG',
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
-                            ariaLabel: 'Telegram'
-                        }
+                        { text: 'VK', href: 'https://vk.com/club199046020', ariaLabel: 'ВКонтакте' },
+                        { text: 'TG', href: 'https://t.me/Odyssey_Cinema_Club_bot', ariaLabel: 'Telegram' }
                     ],
-                    copyright: '© 2025 Киноклуб "ОДИССЕЯ"'
+                    copyright: '© 2026 Киноклуб "ОДИССЕЯ"'
                 },
                 'crocodile-game': {
                     logo: 'КРОКОДИЛ',
@@ -39,21 +27,9 @@ class FooterModule {
                         { text: 'Правила', href: '#rules', active: true },
                         { text: 'Играть', href: '#game-start' },
                         { text: 'Главная', href: 'index.html' },
-                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
+                        { text: 'Автор', href: '../pages/stanislav.html' }
                     ],
-                    social: [
-                        {
-                            text: 'VK',
-                            href: 'https://vk.com/club199046020',
-                            ariaLabel: 'ВКонтакте'
-                        },
-                        {
-                            text: 'TG',
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
-                            ariaLabel: 'Telegram'
-                        }
-                    ],
-                    copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Игра "Крокодил"'
+                    copyright: '© 2026 Киноклуб "ОДИССЕЯ" | Игра "Крокодил"'
                 },
                 'Interactive-game': {
                     logo: 'ODISSEA',
@@ -61,63 +37,27 @@ class FooterModule {
                         { text: 'Как играть', href: '#how-to-play', active: true },
                         { text: 'Правила', href: '#rules' },
                         { text: 'Главная', href: 'index.html' },
-                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
+                        { text: 'Автор', href: '../pages/stanislav.html' }
                     ],
-                    social: [
-                        {
-                            text: 'VK',
-                            href: 'https://vk.com/club199046020',
-                            ariaLabel: 'ВКонтакте'
-                        },
-                        {
-                            text: 'TG',
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
-                            ariaLabel: 'Telegram'
-                        }
-                    ],
-                    copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Киноквест'
+                    copyright: '© 2026 Киноклуб "ОДИССЕЯ" | Киноквест'
                 },
-                'quiz': {
+                quiz: {
                     logo: 'Квиз Odissea',
                     links: [
                         { text: 'Правила', href: '#quiz-rules', active: true },
                         { text: 'Главная', href: 'index.html' },
-                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
+                        { text: 'Автор', href: '../pages/stanislav.html' }
                     ],
-                    social: [
-                        {
-                            text: 'VK',
-                            href: 'https://vk.com/club199046020',
-                            ariaLabel: 'ВКонтакте'
-                        },
-                        {
-                            text: 'TG',
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
-                            ariaLabel: 'Telegram'
-                        }
-                    ],
-                    copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Квиз'
+                    copyright: '© 2026 Киноклуб "ОДИССЕЯ" | Квиз'
                 },
-                'randomizer': {
+                randomizer: {
                     logo: 'РАНДОМАЙЗЕР',
                     links: [
                         { text: 'Числа', href: '#numbers-mode', active: true },
                         { text: 'Главная', href: 'index.html' },
-                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
+                        { text: 'Автор', href: '../pages/stanislav.html' }
                     ],
-                    social: [
-                        {
-                            text: 'VK',
-                            href: 'https://vk.com/club199046020',
-                            ariaLabel: 'ВКонтакте'
-                        },
-                        {
-                            text: 'TG',
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
-                            ariaLabel: 'Telegram'
-                        }
-                    ],
-                    copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Рандомайзер'
+                    copyright: '© 2026 Киноклуб "ОДИССЕЯ" | Рандомайзер'
                 },
                 'santa-game': {
                     logo: '🎅 ТАЙНЫЙ САНТА',
@@ -125,24 +65,11 @@ class FooterModule {
                         { text: 'Узнать Санту', href: '#auth', active: true },
                         { text: 'Правила', href: '#rules' },
                         { text: 'Главная', href: 'index.html' },
-                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
+                        { text: 'Автор', href: '../pages/stanislav.html' }
                     ],
-                    social: [
-                        {
-                            text: 'VK',
-                            href: 'https://vk.com/club199046020',
-                            ariaLabel: 'ВКонтакте'
-                        },
-                        {
-                            text: 'TG',
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
-                            ariaLabel: 'Telegram'
-                        }
-                    ],
-                    copyright: '© 2025 Киноклуб "ОДИССЕЯ" | Тайный Санта'
+                    copyright: '© 2026 Киноклуб "ОДИССЕЯ" | Тайный Санта'
                 },
-                // Дефолтные данные для других страниц
-                'default': {
+                default: {
                     logo: 'ОДИССЕЯ',
                     links: [
                         { text: 'О нас', href: 'index.html#about' },
@@ -150,272 +77,185 @@ class FooterModule {
                         { text: 'Фильмы', href: 'index.html#film-archive' },
                         { text: 'Контакты', href: 'index.html#contacts' },
                         { text: 'Главная', href: 'index.html' },
-                        { text: 'Автор сайта', href: '../pages/stanislav.html' }
+                        { text: 'Автор', href: '../pages/stanislav.html' }
                     ],
-                    social: [
-                        {
-                            text: 'VK',
-                            href: 'https://vk.com/club199046020',
-                            ariaLabel: 'ВКонтакте'
-                        },
-                        {
-                            text: 'TG',
-                            href: 'https://t.me/Odyssey_Cinema_Club_bot',
-                            ariaLabel: 'Telegram'
-                        }
-                    ],
-                    copyright: '© 2025 Киноклуб "ОДИССЕЯ"'
+                    copyright: '© 2026 Киноклуб "ОДИССЕЯ"'
                 }
-            }
+            },
+            social: [
+                { text: 'VK', href: 'https://vk.com/club199046020', ariaLabel: 'ВКонтакте' },
+                { text: 'TG', href: 'https://t.me/Odyssey_Cinema_Club_bot', ariaLabel: 'Telegram' }
+            ]
         };
     }
 
-    /**
-     * Генерирует HTML для футера
-     * Создает полную HTML разметку футера на основе данных страницы
-     * 
-     * @param {string} pageKey - Ключ страницы для выбора соответствующих данных
-     * @returns {string} - HTML строка футера
-     */
-    generateFooter(pageKey = 'index') {
-        const data = this.footerData.pages[pageKey] || this.footerData.pages['default'];
-
-        return `
-            <footer class="footer">
-                <div class="footer__content">
-                    <div class="footer__logo">${data.logo}</div>
-                    <div class="footer__links">
-                        ${data.links.map(link => this.generateLink(link)).join('')}
-                    </div>
-                    <div class="footer__social">
-                        ${data.social.map(social => this.generateSocialLink(social)).join('')}
-                    </div>
-                    <p class="footer__copyright">${data.copyright}</p>
-                </div>
-            </footer>
-        `;
-    }
-
-    /**
-     * Генерирует HTML для ссылки
-     * Создает HTML разметку для навигационной ссылки футера
-     * 
-     * @param {Object} link - Объект с данными ссылки
-     * @param {string} link.text - Текст ссылки
-     * @param {string} link.href - URL ссылки
-     * @param {boolean} link.active - Флаг активной ссылки
-     * @returns {string} - HTML строка ссылки
-     */
-    generateLink(link) {
-        const activeClass = link.active ? 'active' : '';
-        return `
-            <a href="${link.href}" class="footer__link ${activeClass}">
-                ${link.text}
-            </a>
-        `;
-    }
-
-    /**
-     * Генерирует HTML для социальной ссылки
-     * Создает HTML разметку для ссылки на социальные сети
-     * 
-     * @param {Object} social - Объект с данными социальной ссылки
-     * @param {string} social.text - Текст ссылки
-     * @param {string} social.href - URL социальной сети
-     * @param {string} social.ariaLabel - ARIA-лейбл для доступности
-     * @returns {string} - HTML строка социальной ссылки
-     */
-    generateSocialLink(social) {
-        return `
-            <a href="${social.href}" 
-               target="_blank" 
-               rel="noopener noreferrer" 
-               class="social__link"
-               aria-label="${social.ariaLabel}">
-               ${social.text}
-            </a>
-        `;
-    }
-
-    /**
-     * Инициализирует футер на странице
-     * Вставляет футер в указанный контейнер и настраивает функциональность
-     * 
-     * @param {string} containerSelector - CSS селектор контейнера для вставки футера
-     * @param {string} pageKey - Ключ страницы для выбора данных
-     * @param {string} insertMethod - Метод вставки ('append' или 'prepend')
-     */
-    init(containerSelector = 'body', pageKey = '', insertMethod = 'append') {
-        const container = document.querySelector(containerSelector);
-        if (!container) {
-            console.error('Footer container not found:', containerSelector);
+    // Основная инициализация
+    async init(container = 'body', pageKey = '', method = 'append') {
+        const containerEl = document.querySelector(container);
+        if (!containerEl) {
+            console.warn('Контейнер футера не найден:', container);
             return;
         }
 
-        const actualPageKey = pageKey || this.detectPage();
-        const footerHTML = this.generateFooter(actualPageKey);
-
-        // Вставляем футер в конец контейнера
-        if (insertMethod === 'prepend') {
-            container.insertAdjacentHTML('afterbegin', footerHTML);
-        } else {
-            container.insertAdjacentHTML('beforeend', footerHTML);
+        const page = pageKey || this.detectPage();
+        const data = this.config.pages[page] || this.config.pages.default;
+        
+        // Добавляем социальные сети если их нет
+        if (!data.social) {
+            data.social = this.config.social;
         }
 
-        // Добавляем обработчики для плавной прокрутки
-        this.attachSmoothScroll();
+        const html = this.generateFooter(data);
+        
+        if (method === 'prepend') {
+            containerEl.insertAdjacentHTML('afterbegin', html);
+        } else {
+            containerEl.insertAdjacentHTML('beforeend', html);
+        }
 
-        // Добавляем обработчики для активных ссылок
+        this.setupInteractions();
+    }
+
+    // Определение текущей страницы
+    detectPage() {
+        const path = window.location.pathname.toLowerCase();
+        const pageMap = {
+            'index': 'index',
+            'crocodile-game': 'crocodile-game',
+            'interactive-game': 'Interactive-game',
+            'quiz': 'quiz',
+            'randomizer': 'randomizer',
+            'santa-game': 'santa-game',
+            'stanislav': 'default'
+        };
+
+        for (const [key, value] of Object.entries(pageMap)) {
+            if (path.includes(key)) return value;
+        }
+
+        // Проверка темы героя
+        const hero = document.querySelector('.hero-container');
+        return hero?.dataset.heroTheme || 'default';
+    }
+
+    // Генерация HTML футера
+    generateFooter(data) {
+        return `
+        <footer class="footer">
+            <div class="footer__decorations"></div>
+            <div class="footer__content">
+                <div class="footer__logo">${data.logo}</div>
+                <nav class="footer__links" aria-label="Навигация">
+                    ${data.links.map(link => this.generateLink(link)).join('')}
+                </nav>
+                <div class="footer__social" aria-label="Социальные сети">
+                    ${data.social.map(social => this.generateSocialLink(social)).join('')}
+                </div>
+                <p class="footer__copyright">${data.copyright}</p>
+            </div>
+        </footer>`;
+    }
+
+    // Генерация ссылки
+    generateLink(link) {
+        const active = link.active ? 'active' : '';
+        const target = link.href.startsWith('#') ? '' : 'target="_blank" rel="noopener noreferrer"';
+        return `
+        <a href="${link.href}" class="footer__link ${active}" ${target}>
+            ${link.text}
+        </a>`;
+    }
+
+    // Генерация социальной ссылки
+    generateSocialLink(social) {
+        return `
+        <a href="${social.href}" class="social__link" 
+           target="_blank" rel="noopener noreferrer"
+           aria-label="${social.ariaLabel}">
+           ${social.text}
+        </a>`;
+    }
+
+    // Настройка взаимодействий
+    setupInteractions() {
+        // Плавная прокрутка для якорных ссылок
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('.footer__link[href^="#"]');
+            if (!link || link.getAttribute('href') === '#') return;
+            
+            e.preventDefault();
+            const targetId = link.hash.substring(1);
+            const target = document.getElementById(targetId);
+            
+            if (target) {
+                const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+                window.scrollTo({
+                    top: target.offsetTop - headerHeight,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        // Обновление активных ссылок при скролле
         this.updateActiveLinks();
     }
 
-    /**
-     * Определяет текущую страницу
-     * Анализирует URL для определения типа страницы и выбора соответствующих данных
-     * 
-     * @returns {string} - Ключ страницы для данных футера
-     */
-    /**
-     * Определяет текущую страницу
-     */
-    detectPage() {
-        const path = window.location.pathname.toLowerCase();
+    // Обновление активных ссылок
+    updateActiveLinks() {
+        const links = document.querySelectorAll('.footer__link[href^="#"]');
+        if (!links.length) return;
 
-        // Сначала проверяем data-hero-theme атрибут если есть
-        const heroContainer = document.querySelector('.hero-container');
-        if (heroContainer && heroContainer.dataset.heroTheme) {
-            return heroContainer.dataset.heroTheme;
-        }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        links.forEach(link => {
+                            link.classList.toggle('active', link.hash === `#${id}`);
+                        });
+                    }
+                });
+            },
+            { rootMargin: '-50% 0px -50% 0px', threshold: 0 }
+        );
 
-        // Затем проверяем по имени файла
-        if (path.includes('index.html') || path.endsWith('/') || path.includes('/kinoclub-odisseya/')) {
-            return 'index';
-        } else if (path.includes('crocodile-game.html') || path.includes('crocodile-game')) {
-            return 'crocodile-game';
-        } else if (path.includes('setup-guide.html') || path.includes('setup-guide')) {
-            return 'setup-guide';
-        } else if (path.includes('interactive-game.html') || path.includes('interactive-game')) {
-            return 'interactive-game';
-        } else if (path.includes('quiz.html') || path.includes('quiz')) {
-            return 'quiz';
-        } else if (path.includes('randomizer.html') || path.includes('randomizer')) {
-            return 'randomizer';
-        } else if (path.includes('santa-game.html') || path.includes('santa-game')) {
-            return 'santa-game';
-        } else if (path.includes('stanislav.html') || path.includes('stanislav')) {
-            return 'stanislav';
-        } else {
-            return 'default';
-        }
-    }
-
-    /**
-     * Добавляет обработчики для плавной прокрутки
-     * Настраивает плавную прокрутку для якорных ссылок футера
-     */
-    attachSmoothScroll() {
-        document.addEventListener('click', (e) => {
-            const link = e.target.closest('.footer__link[href^="#"]');
-            if (link && link.getAttribute('href') !== '#') {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            }
+        document.querySelectorAll('section[id]').forEach(section => {
+            observer.observe(section);
         });
     }
 
-    /**
-     * Обновляет активные ссылки на основе текущего положения прокрутки
-     * Использует Intersection Observer для отслеживания видимых секций
-     */
-    updateActiveLinks() {
-        const sections = document.querySelectorAll('section[id]');
-        const footerLinks = document.querySelectorAll('.footer__link[href^="#"]');
-
-        if (sections.length === 0 || footerLinks.length === 0) return;
-
-        const observerOptions = {
-            root: null,
-            rootMargin: '-50% 0px -50% 0px',
-            threshold: 0
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.getAttribute('id');
-                    footerLinks.forEach(link => {
-                        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
-                    });
-                }
-            });
-        }, observerOptions);
-
-        sections.forEach(section => observer.observe(section));
-    }
-
-    /**
-     * Обновляет данные футера
-     * Позволяет динамически изменять данные футера для конкретной страницы
-     * 
-     * @param {string} pageKey - Ключ страницы для обновления
-     * @param {Object} newData - Новые данные для страницы
-     */
-    updateFooterData(pageKey, newData) {
-        if (this.footerData.pages[pageKey]) {
-            this.footerData.pages[pageKey] = { ...this.footerData.pages[pageKey], ...newData };
+    // Динамическое обновление данных
+    updatePageData(pageKey, newData) {
+        if (this.config.pages[pageKey]) {
+            this.config.pages[pageKey] = { ...this.config.pages[pageKey], ...newData };
         }
     }
 
-    /**
-     * Добавляет новую страницу в данные
-     * Регистрирует данные футера для новой страницы
-     * 
-     * @param {string} pageKey - Ключ новой страницы
-     * @param {Object} pageData - Данные футера для страницы
-     */
+    // Добавление новой страницы
     addPage(pageKey, pageData) {
-        this.footerData.pages[pageKey] = pageData;
+        this.config.pages[pageKey] = pageData;
     }
 
-    /**
-     * Удаляет футер со страницы
-     * Удаляет элемент футера из DOM
-     */
+    // Удаление футера
     remove() {
-        const footer = document.querySelector('.footer');
-        if (footer) {
-            footer.remove();
-        }
+        document.querySelector('.footer')?.remove();
     }
 }
 
-/**
- * Функция инициализации футера
- * Создает экземпляр FooterModule и инициализирует футер на странице
- * 
- * @param {string} containerSelector - CSS селектор контейнера для вставки футера
- * @param {string} pageKey - Ключ страницы для выбора данных
- * @param {string} insertMethod - Метод вставки ('append' или 'prepend')
- */
-function initFooter(containerSelector = 'body', pageKey = '', insertMethod = 'append') {
-    try {
-        new FooterModule().init(containerSelector, pageKey, insertMethod);
-    } catch (error) {
-        console.error('Failed to initialize footer:', error);
+// Экспорт для использования в других модулях
+window.FooterModule = FooterModule;
+
+// Автоматическая инициализация
+function initFooterModule() {
+    const footer = document.querySelector('#footer-container') || document.body;
+    if (footer) {
+        new FooterModule().init('#footer-container, body');
     }
 }
 
-// Автоматическая инициализация при загрузке DOM
+// Запуск при загрузке
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => initFooter());
+    document.addEventListener('DOMContentLoaded', initFooterModule);
 } else {
-    initFooter();
+    initFooterModule();
 }
