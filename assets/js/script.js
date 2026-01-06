@@ -42,17 +42,17 @@ const DOM = {};
  */
 function initApp() {
     console.log('🎬 Инициализация Киноклуба "Одиссея"...');
-    
+
     initMobileMenu();      // Мобильная навигация
     initSmoothScroll();    // Плавная прокрутка
     initScrollAnimations();// Анимации при скролле
     initSeasonEffects();   // Сезонные эффекты
     initWeatherModule();   // Модуль погоды
     initVKSyncModule();    // Синхронизация с ВК
-    
+
     // Инициализация кэша DOM-элементов
     cacheDOMElements();
-    
+
     console.log('✅ Приложение инициализировано');
 }
 
@@ -77,14 +77,14 @@ function cacheDOMElements() {
 function initMobileMenu() {
     const menuBtn = document.querySelector('.mobile-menu-btn');
     const nav = document.querySelector('.nav');
-    
+
     if (!menuBtn || !nav) return;
-    
+
     // Создаем оверлей для закрытия меню
     const overlay = document.createElement('div');
     overlay.className = 'nav-overlay';
     document.body.appendChild(overlay);
-    
+
     /**
      * Переключение состояния меню
      * @method toggleMenu
@@ -96,7 +96,7 @@ function initMobileMenu() {
         menuBtn.setAttribute('aria-expanded', isActive);
         document.body.classList.toggle('no-scroll', isActive);
     };
-    
+
     /**
      * Закрытие меню
      * @method closeMenu
@@ -108,11 +108,11 @@ function initMobileMenu() {
         menuBtn.setAttribute('aria-expanded', 'false');
         document.body.classList.remove('no-scroll');
     };
-    
+
     // Обработчики событий
     menuBtn.addEventListener('click', toggleMenu);
     overlay.addEventListener('click', closeMenu);
-    
+
     // Закрытие при клике на ссылку
     nav.querySelectorAll('.nav__link').forEach(link => {
         link.addEventListener('click', closeMenu);
@@ -129,13 +129,13 @@ function initSmoothScroll() {
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a[href^="#"]');
         if (!link || link.hash === '#') return;
-        
+
         e.preventDefault();
         const target = document.getElementById(link.hash.slice(1));
         if (target) {
             const headerHeight = DOM.header ? DOM.header.offsetHeight : 0;
             const targetPosition = target.offsetTop - headerHeight;
-            
+
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
@@ -159,12 +159,12 @@ function initScrollAnimations() {
                 }
             });
         },
-        { 
-            threshold: 0.1, 
-            rootMargin: '0px 0px -50px 0px' 
+        {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         }
     );
-    
+
     // Наблюдаем за всеми анимируемыми элементами
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 }
@@ -182,7 +182,7 @@ function initScrollAnimations() {
 function formatDate(dateString) {
     if (!dateString) return 'дата не указана';
     const date = new Date(dateString);
-    return isNaN(date) ? dateString : 
+    return isNaN(date) ? dateString :
         `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
 }
 
@@ -197,7 +197,7 @@ function createRatingStars(rating) {
     const full = Math.floor(num);
     const half = num % 1 >= 0.5 ? 1 : 0;
     const empty = CONFIG.defaults.maxRating - full - half;
-    
+
     return `<span class="rating-stars" aria-hidden="true">
         ${'★'.repeat(full)}${half ? '⯨' : ''}${'☆'.repeat(empty)}
     </span>`;
@@ -212,11 +212,11 @@ function createRatingStars(rating) {
  */
 function showError(container, error, retryFn = null) {
     if (!container) return;
-    
-    const message = error.message.includes('Failed to fetch') 
-        ? CONFIG.messages.connectionError 
+
+    const message = error.message.includes('Failed to fetch')
+        ? CONFIG.messages.connectionError
         : error.message || CONFIG.messages.genericError;
-    
+
     container.innerHTML = `
         <div class="error-message">
             <p>${message}</p>
@@ -238,11 +238,11 @@ function initConnectivityCheck() {
         status.className = `network-status ${STATE.isOnline ? 'online' : 'offline'}`;
         status.textContent = STATE.isOnline ? 'Онлайн' : 'Офлайн';
         status.setAttribute('aria-live', 'polite');
-        
+
         document.body.appendChild(status);
         setTimeout(() => status.remove(), 3000);
     };
-    
+
     window.addEventListener('online', updateStatus);
     window.addEventListener('offline', updateStatus);
 }
@@ -257,13 +257,13 @@ function initConnectivityCheck() {
 async function loadData(url, options = {}) {
     try {
         const response = await fetch(url, {
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
-                ...options.headers 
+                ...options.headers
             },
             ...options
         });
-        
+
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return await response.json();
     } catch (error) {
@@ -330,7 +330,7 @@ function debounce(func, wait) {
  */
 function throttle(func, limit) {
     let inThrottle;
-    return function() {
+    return function () {
         const args = arguments;
         const context = this;
         if (!inThrottle) {
@@ -370,7 +370,7 @@ function scrollToElement(element, options = {}) {
         block: 'start',
         inline: 'nearest'
     };
-    
+
     element.scrollIntoView({ ...defaultOptions, ...options });
 }
 

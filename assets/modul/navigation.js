@@ -1,12 +1,6 @@
-/**
- * Модуль навигации для киноклуба Одиссея
- */
 class NavigationModule {
-    /**
-     * Конструктор класса NavigationModule
-     * Инициализирует данные навигации и состояние меню
-     */
     constructor() {
+        // Данные навигации для всех страниц
         this.navData = {
             items: [
                 {
@@ -36,50 +30,137 @@ class NavigationModule {
                         { title: "Интерактивная игра", href: "Interactive-game.html" },
                         { title: "Крокодил", href: "crocodile-game.html", badge: "NEW" },
                         { title: "Рандомайзер", href: "randomizer.html", badge: "NEW" },
-                        { title: "Тайный Санта", href: "santa-game.html", badge: "NEW" },
+                        { title: "Тайный Санта", href: "santa-game.html", badge: "NEW" }
                     ]
                 }
             ]
         };
 
-        this.isMobileMenuOpen = false;
-        this.currentOpenDropdown = null;
-        this.resizeTimeout = null;
+        this.state = {
+            isMobileMenuOpen: false,
+            currentOpenDropdown: null,
+            isMobileView: window.innerWidth <= 768,
+            closeDropdownTimeout: null, // Таймер для задержки закрытия
+            isHoveringDropdown: false   // Флаг наведения на dropdown
+        };
+
+        // Кэш DOM элементов
+        this.elements = {};
+
+        // Дебаунс для ресайза
+        this.debouncedResize = this.debounce(this.handleResize.bind(this), 150);
+        
+        // Привязываем обработчики с сохранением контекста и события
+        this.boundHandleDropdownEnter = this.handleDropdownEnter.bind(this);
+        this.boundHandleDropdownLeave = this.handleDropdownLeave.bind(this);
+        this.boundHandleMenuEnter = this.handleMenuEnter.bind(this);
+        this.boundHandleMenuLeave = this.handleMenuLeave.bind(this);
+        this.boundHandleClick = this.handleClick.bind(this);
+        this.boundHandleKeydown = this.handleKeydown.bind(this);
     }
 
-    generateNavigation(currentPage = '') {
+    /**
+     * Инициализация модуля
+     */
+    init(containerSelector = '.nav-container') {
+        try {
+            const container = document.querySelector(containerSelector);
+            if (!container) {
+                console.warn(`Навигация: контейнер ${containerSelector} не найден`);
+                return;
+            }
+
+            // Определяем текущую страницу
+            const currentPage = this.getCurrentPage();
+
+            // Генерируем и вставляем навигацию
+            container.innerHTML = this.generateNavigation(currentPage);
+
+            // Кэшируем элементы
+            this.cacheElements();
+
+            // Настраиваем обработчики
+            this.setupEventListeners();
+
+            // Создаем оверлей для мобильного меню
+            this.createMobileOverlay();
+
+            console.log('Навигация инициализирована');
+        } catch (error) {
+            console.error('Ошибка инициализации навигации:', error);
+        }
+    }
+
+    /**
+     * Кэширование DOM элементов
+     */
+    cacheElements() {
+        this.elements = {
+            nav: document.querySelector('.nav'),
+            mobileMenuBtn: document.querySelector('.mobile-menu-btn'),
+            overlay: document.querySelector('.nav-overlay'),
+            dropdowns: document.querySelectorAll('.nav-dropdown')
+        };
+    }
+
+    /**
+     * Определение текущей страницы
+     */
+    getCurrentPage() {
+        const path = window.location.pathname;
+        const page = path.split('/').pop() || '';
+
+        if (page === 'index.html' || page === '' || path.includes('/kinoclub-odisseya/')) return 'index';
+        if (page.includes('setup-guide')) return 'setup-guide';
+        if (page.includes('quiz') || page.includes('Interactive-game') ||
+            page.includes('crocodile-game') || page.includes('randomizer') ||
+            page.includes('santa-game')) return 'games';
+
+        return '';
+    }
+
+    /**
+     * Генерация HTML навигации
+     */
+    generateNavigation(currentPage) {
         return `
-            <nav class="nav" aria-label="Основная навигация">
-                ${this.navData.items.map((item, index) => this.generateNavItem(item, currentPage, index)).join('')}
+            <nav class="nav" role="navigation" aria-label="Основное меню">
+                ${this.navData.items.map((item, index) =>
+            this.generateNavItem(item, currentPage, index)
+        ).join('')}
             </nav>
         `;
     }
 
     /**
-     * Генерирует HTML для пункта навигации
-     * Создает HTML разметку для отдельного пункта меню с выпадающим списком
-     * 
-     * @param {Object} item - Объект с данными пункта меню
-     * @param {string} currentPage - Текущая страница
-     * @param {number} index - Индекс пункта меню
-     * @returns {string} - HTML строка пункта меню
+     * Генерация отдельного пункта меню
      */
     generateNavItem(item, currentPage, index) {
         const isActive = this.isItemActive(currentPage, index);
+        const hasBadge = item.dropdown.some(subItem => subItem.badge);
+
         return `
-            <div class="nav-dropdown">
-                <a href="${item.href}" class="nav__link dropdown-toggle ${isActive ? 'active' : ''}" 
-                   aria-expanded="false" aria-haspopup="true">
+            <div class="nav-dropdown" data-index="${index}">
+                <a href="${item.href}" 
+                   class="nav__link dropdown-toggle ${isActive ? 'active' : ''}" 
+                   aria-expanded="false" 
+                   aria-haspopup="true"
+                   ${isActive ? 'aria-current="page"' : ''}>
                     ${item.title}
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                        <path d="M3 4.5L6 7.5L9 4.5H3Z" />
-                    </svg>
+                    ${hasBadge ? '<span class="dropdown-indicator" aria-hidden="true">▼</span>' : ''}
                 </a>
-                <div class="dropdown-menu" role="menu">
-                    ${item.dropdown.map(dropdownItem => `
-                        <a href="${dropdownItem.href}" class="dropdown-item" role="menuitem">
-                            ${dropdownItem.title}${dropdownItem.badge ?
-                            `<sup class="${dropdownItem.badge === 'DEMO' ? 'demo-badge' : 'demo-tiny'}">${dropdownItem.badge}</sup>` : ''}
+                <div class="dropdown-menu" role="menu" aria-hidden="true">
+                    ${item.dropdown.map(subItem => `
+                        <a href="${subItem.href}" 
+                           class="dropdown-item" 
+                           role="menuitem"
+                           ${subItem.badge ? `data-badge="${subItem.badge}"` : ''}>
+                            ${subItem.title}
+                            ${subItem.badge ?
+                `<span class="badge ${subItem.badge.toLowerCase()}-badge" aria-label="${subItem.badge} версия">
+                                    ${subItem.badge}
+                                </span>` : ''
+            }
                         </a>
                     `).join('')}
                 </div>
@@ -88,12 +169,7 @@ class NavigationModule {
     }
 
     /**
-     * Проверяет активность пункта меню
-     * Определяет, является ли пункт меню активным для текущей страницы
-     * 
-     * @param {string} currentPage - Текущая страница
-     * @param {number} index - Индекс пункта меню
-     * @returns {boolean} - true если пункт активен, иначе false
+     * Проверка активности пункта
      */
     isItemActive(currentPage, index) {
         const pageMap = {
@@ -105,227 +181,386 @@ class NavigationModule {
     }
 
     /**
-     * Инициализирует навигацию на странице
-     * Вставляет навигацию в указанный контейнер и настраивает обработчики событий
-     * 
-     * @param {string} containerSelector - CSS селектор контейнера для навигации
-     * @param {string} currentPage - Текущая страница
+     * Настройка обработчиков событий
      */
-    init(containerSelector, currentPage = '') {
-        const container = document.querySelector(containerSelector);
-        if (!container) return;
+    setupEventListeners() {
+        // Делегирование событий для выпадающих меню
+        document.addEventListener('mouseenter', this.boundHandleDropdownEnter, true);
+        document.addEventListener('mouseleave', this.boundHandleDropdownLeave, true);
+        document.addEventListener('click', this.boundHandleClick);
+        document.addEventListener('keydown', this.boundHandleKeydown);
 
-        container.innerHTML = this.generateNavigation(currentPage);
-        this.createMobileOverlay();
-        this.attachEventListeners();
+        // События для кнопки мобильного меню
+        if (this.elements.mobileMenuBtn) {
+            this.elements.mobileMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleMobileMenu();
+            });
+        }
+
+        // Добавляем обработчики для самого выпадающего меню
+        document.addEventListener('mouseenter', this.boundHandleMenuEnter, true);
+        document.addEventListener('mouseleave', this.boundHandleMenuLeave, true);
+
+        // Событие ресайза
+        window.addEventListener('resize', this.debouncedResize);
     }
 
     /**
-     * Создает оверлей для мобильного меню
+     * Обработчик наведения на выпадающее меню (десктоп)
+     */
+    handleDropdownEnter(e) {
+        if (this.state.isMobileView) return;
+
+        const target = e.target;
+        if (!target || !target.closest) return;
+
+        const dropdown = target.closest('.nav-dropdown');
+        if (dropdown) {
+            // Очищаем таймер закрытия
+            if (this.state.closeDropdownTimeout) {
+                clearTimeout(this.state.closeDropdownTimeout);
+                this.state.closeDropdownTimeout = null;
+            }
+            this.openDropdown(dropdown);
+        }
+    }
+
+    /**
+     * Обработчик ухода с выпадающего меню (десктоп)
+     */
+    handleDropdownLeave(e) {
+        if (this.state.isMobileView) return;
+
+        const target = e.target;
+        if (!target || !target.closest) return;
+
+        const dropdown = target.closest('.nav-dropdown');
+        if (dropdown && this.state.currentOpenDropdown === dropdown) {
+            // Не закрываем сразу, если курсор перешел в меню
+            if (this.state.isHoveringDropdown) return;
+            
+            // Задержка перед закрытием (100ms)
+            this.state.closeDropdownTimeout = setTimeout(() => {
+                if (!this.state.isHoveringDropdown) {
+                    this.closeDropdown(dropdown);
+                }
+            }, 100);
+        }
+    }
+
+    /**
+     * Обработчик наведения на само меню
+     */
+    handleMenuEnter(e) {
+        if (this.state.isMobileView) return;
+
+        const target = e.target;
+        if (!target || !target.closest) return;
+        
+        const menu = target.closest('.dropdown-menu');
+        if (menu) {
+            this.state.isHoveringDropdown = true;
+            // Очищаем таймер закрытия
+            if (this.state.closeDropdownTimeout) {
+                clearTimeout(this.state.closeDropdownTimeout);
+                this.state.closeDropdownTimeout = null;
+            }
+        }
+    }
+
+    /**
+     * Обработчик ухода с меню
+     */
+    handleMenuLeave(e) {
+        if (this.state.isMobileView) return;
+
+        const target = e.target;
+        if (!target || !target.closest) return;
+        
+        const menu = target.closest('.dropdown-menu');
+        if (menu && !menu.contains(e.relatedTarget)) {
+            this.state.isHoveringDropdown = false;
+            
+            const dropdown = menu.closest('.nav-dropdown');
+            if (dropdown && this.state.currentOpenDropdown === dropdown) {
+                // Задержка перед закрытием (100ms)
+                this.state.closeDropdownTimeout = setTimeout(() => {
+                    this.closeDropdown(dropdown);
+                }, 100);
+            }
+        }
+    }
+
+    /**
+     * Обработчик кликов
+     */
+    handleClick(e) {
+        const target = e.target;
+        if (!target || !target.closest) return;
+
+        const dropdown = target.closest('.nav-dropdown');
+        const toggle = target.closest('.dropdown-toggle');
+
+        // Клик по переключателю на мобильном
+        if (toggle && this.state.isMobileView) {
+            e.preventDefault();
+            this.toggleMobileDropdown(dropdown);
+            return;
+        }
+
+        // Клик вне навигации
+        if (!target.closest('.nav-container')) {
+            this.closeAllDropdowns();
+            if (this.state.isMobileMenuOpen) {
+                this.closeMobileMenu();
+            }
+        }
+
+        // Клик по ссылке в мобильном меню
+        if (this.state.isMobileMenuOpen && target.closest('.dropdown-item')) {
+            setTimeout(() => this.closeMobileMenu(), 300);
+        }
+    }
+
+    /**
+     * Обработчик клавиатуры
+     */
+    handleKeydown(e) {
+        if (e.key === 'Escape') {
+            this.closeAllDropdowns();
+            if (this.state.isMobileMenuOpen) {
+                this.closeMobileMenu();
+            }
+        }
+
+        // Навигация Tab внутри выпадающего меню
+        if (e.key === 'Tab' && this.state.currentOpenDropdown) {
+            const menu = this.state.currentOpenDropdown.querySelector('.dropdown-menu');
+            const items = menu.querySelectorAll('.dropdown-item');
+            const activeElement = document.activeElement;
+
+            if (activeElement === items[items.length - 1] && !e.shiftKey) {
+                e.preventDefault();
+                this.closeDropdown(this.state.currentOpenDropdown);
+            }
+        }
+    }
+
+    /**
+     * Открытие выпадающего меню
+     */
+    openDropdown(dropdown) {
+        if (this.state.currentOpenDropdown && this.state.currentOpenDropdown !== dropdown) {
+            this.closeDropdown(this.state.currentOpenDropdown);
+        }
+
+        dropdown.classList.add('open');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+
+        menu.setAttribute('aria-hidden', 'false');
+        toggle.setAttribute('aria-expanded', 'true');
+
+        this.state.currentOpenDropdown = dropdown;
+    }
+
+    /**
+     * Закрытие выпадающего меню
+     */
+    closeDropdown(dropdown) {
+        if (!dropdown) return;
+
+        dropdown.classList.remove('open');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+
+        menu.setAttribute('aria-hidden', 'true');
+        toggle.setAttribute('aria-expanded', 'false');
+
+        if (this.state.currentOpenDropdown === dropdown) {
+            this.state.currentOpenDropdown = null;
+        }
+        
+        // Сбрасываем флаг
+        this.state.isHoveringDropdown = false;
+    }
+
+    /**
+     * Переключение выпадающего меню на мобильном
+     */
+    toggleMobileDropdown(dropdown) {
+        const isOpening = !dropdown.classList.contains('open');
+
+        // Закрываем другие открытые dropdowns
+        this.elements.dropdowns.forEach(d => {
+            if (d !== dropdown && d.classList.contains('open')) {
+                this.closeDropdown(d);
+            }
+        });
+
+        if (isOpening) {
+            this.openDropdown(dropdown);
+        } else {
+            this.closeDropdown(dropdown);
+        }
+    }
+
+    /**
+     * Переключение мобильного меню
+     */
+    toggleMobileMenu() {
+        if (this.state.isMobileMenuOpen) {
+            this.closeMobileMenu();
+        } else {
+            this.openMobileMenu();
+        }
+    }
+
+    /**
+     * Открытие мобильного меню
+     */
+    openMobileMenu() {
+        this.elements.nav?.classList.add('mobile-open');
+        this.elements.mobileMenuBtn?.classList.add('active');
+        this.elements.overlay?.classList.add('active');
+        document.body.classList.add('menu-open');
+
+        this.elements.mobileMenuBtn?.setAttribute('aria-label', 'Закрыть меню');
+        this.state.isMobileMenuOpen = true;
+
+        // Закрываем все dropdowns при открытии мобильного меню
+        this.closeAllDropdowns();
+    }
+
+    /**
+     * Закрытие мобильного меню
+     */
+    closeMobileMenu() {
+        this.elements.nav?.classList.remove('mobile-open');
+        this.elements.mobileMenuBtn?.classList.remove('active');
+        this.elements.overlay?.classList.remove('active');
+        document.body.classList.remove('menu-open');
+
+        this.elements.mobileMenuBtn?.setAttribute('aria-label', 'Открыть меню');
+        this.state.isMobileMenuOpen = false;
+        this.closeAllDropdowns();
+    }
+
+    /**
+     * Закрытие всех выпадающих меню
+     */
+    closeAllDropdowns() {
+        // Очищаем таймер
+        if (this.state.closeDropdownTimeout) {
+            clearTimeout(this.state.closeDropdownTimeout);
+            this.state.closeDropdownTimeout = null;
+        }
+        
+        this.elements.dropdowns?.forEach(dropdown => {
+            this.closeDropdown(dropdown);
+        });
+        this.state.currentOpenDropdown = null;
+        this.state.isHoveringDropdown = false;
+    }
+
+    /**
+     * Создание оверлея для мобильного меню
      */
     createMobileOverlay() {
         if (document.querySelector('.nav-overlay')) return;
 
         const overlay = document.createElement('div');
         overlay.className = 'nav-overlay';
+        overlay.setAttribute('aria-hidden', 'true');
         document.body.appendChild(overlay);
 
         overlay.addEventListener('click', () => this.closeMobileMenu());
+        this.elements.overlay = overlay;
     }
 
     /**
-     * Прикрепляет обработчики событий
-     * Назначает обработчики для десктопных и мобильных взаимодействий
+     * Обработчик изменения размера окна
      */
-    attachEventListeners() {
-        // Обработчики для десктопного ховера
-        document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
-            const toggle = dropdown.querySelector('.dropdown-toggle');
-            
-            // Десктопные события
-            if (window.innerWidth > 768) {
-                dropdown.addEventListener('mouseenter', () => this.handleDropdownEnter(dropdown));
-                dropdown.addEventListener('mouseleave', (e) => this.handleDropdownLeave(dropdown, e));
-            }
-            
-            // Мобильные события
-            toggle.addEventListener('click', (e) => {
-                if (window.innerWidth <= 768) {
-                    e.preventDefault();
-                    this.handleMobileDropdownClick(dropdown);
-                }
-            });
-        });
-
-        // Глобальные обработчики
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.nav-container')) {
-                this.closeAllDropdowns();
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeAllDropdowns();
-                if (this.isMobileMenuOpen) this.closeMobileMenu();
-            }
-        });
-
-        window.addEventListener('resize', () => this.handleResize());
-        this.attachMobileMenuListener();
-    }
-
-    /**
-     * Обрабатывает наведение на выпадающее меню (десктоп)
-     * Открывает выпадающее меню при наведении курсора
-     * 
-     * @param {HTMLElement} dropdown - Элемент выпадающего меню
-     */
-    handleDropdownEnter(dropdown) {
-        if (window.innerWidth <= 768) return;
-        
-        this.currentOpenDropdown && this.closeDropdown(this.currentOpenDropdown);
-        this.openDropdown(dropdown);
-    }
-
-    /**
-     * Обрабатывает уход курсора с выпадающего меню (десктоп)
-     * Закрывает выпадающее меню с задержкой при уходе курсора
-     * 
-     * @param {HTMLElement} dropdown - Элемент выпадающего меню
-     * @param {Event} e - Событие mouseleave
-     */
-    handleDropdownLeave(dropdown, e) {
-        if (window.innerWidth <= 768) return;
-        if (e.relatedTarget && dropdown.contains(e.relatedTarget)) return;
-        
-        this.closeDropdown(dropdown);
-    }
-
-    /**
-     * Обрабатывает клик по выпадающему меню (мобильные)
-     * Переключает состояние выпадающего меню на мобильных устройствах
-     * 
-     * @param {HTMLElement} dropdown - Элемент выпадающего меню
-     */
-    handleMobileDropdownClick(dropdown) {
-        document.querySelectorAll('.nav-dropdown').forEach(d => {
-            if (d !== dropdown) d.classList.remove('open');
-        });
-        dropdown.classList.toggle('open');
-        
-        const toggle = dropdown.querySelector('.dropdown-toggle');
-        toggle.setAttribute('aria-expanded', dropdown.classList.contains('open'));
-    }
-
-    openDropdown(dropdown) {
-        dropdown.classList.add('open');
-        this.currentOpenDropdown = dropdown;
-        
-        const toggle = dropdown.querySelector('.dropdown-toggle');
-        toggle.setAttribute('aria-expanded', 'true');
-    }
-
-    closeDropdown(dropdown) {
-        dropdown.classList.remove('open');
-        if (this.currentOpenDropdown === dropdown) {
-            this.currentOpenDropdown = null;
-        }
-        
-        const toggle = dropdown.querySelector('.dropdown-toggle');
-        toggle.setAttribute('aria-expanded', 'false');
-    }
-
-    attachMobileMenuListener() {
-        const btn = document.querySelector('.mobile-menu-btn');
-        if (!btn) return;
-
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.toggleMobileMenu();
-        });
-    }
-
-    toggleMobileMenu() {
-        const nav = document.querySelector('.nav');
-        const btn = document.querySelector('.mobile-menu-btn');
-        const overlay = document.querySelector('.nav-overlay');
-
-        if (!nav || !btn) return;
-
-        this.isMobileMenuOpen = !this.isMobileMenuOpen;
-        btn.classList.toggle('active', this.isMobileMenuOpen);
-
-        if (this.isMobileMenuOpen) {
-            nav.classList.add('mobile-open');
-            btn.innerHTML = '✕';
-            btn.setAttribute('aria-label', 'Закрыть меню');
-            overlay.classList.add('active');
-            document.body.classList.add('menu-open');
-        } else {
-            this.closeMobileMenu();
-        }
-    }
-
-    closeMobileMenu() {
-        const nav = document.querySelector('.nav');
-        const btn = document.querySelector('.mobile-menu-btn');
-        const overlay = document.querySelector('.nav-overlay');
-
-        if (nav) nav.classList.remove('mobile-open');
-        if (btn) {
-            btn.innerHTML = '☰';
-            btn.classList.remove('active');
-            btn.setAttribute('aria-label', 'Открыть меню');
-        }
-        if (overlay) overlay.classList.remove('active');
-
-        document.body.classList.remove('menu-open');
-        this.isMobileMenuOpen = false;
-        this.closeAllDropdowns();
-    }
-
-    closeAllDropdowns() {
-        document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
-            this.closeDropdown(dropdown);
-        });
-        this.currentOpenDropdown = null;
-    }
-
     handleResize() {
-        // Дебаунс ресайза
-        clearTimeout(this.resizeTimeout);
-        this.resizeTimeout = setTimeout(() => {
-            if (window.innerWidth > 768 && this.isMobileMenuOpen) {
+        const isNowMobile = window.innerWidth <= 768;
+
+        // Если изменился режим (десктоп/мобильный)
+        if (this.state.isMobileView !== isNowMobile) {
+            this.state.isMobileView = isNowMobile;
+
+            // При переходе на десктоп закрываем мобильное меню
+            if (!isNowMobile && this.state.isMobileMenuOpen) {
                 this.closeMobileMenu();
-            } else if (window.innerWidth <= 768) {
-                this.closeAllDropdowns();
             }
-        }, 150);
+
+            // Закрываем все dropdowns при смене режима
+            this.closeAllDropdowns();
+        }
+    }
+
+    /**
+     * Утилита дебаунса
+     */
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    /**
+     * Уничтожение модуля (cleanup)
+     */
+    destroy() {
+        window.removeEventListener('resize', this.debouncedResize);
+        document.removeEventListener('mouseenter', this.boundHandleDropdownEnter);
+        document.removeEventListener('mouseleave', this.boundHandleDropdownLeave);
+        document.removeEventListener('click', this.boundHandleClick);
+        document.removeEventListener('keydown', this.boundHandleKeydown);
+        document.removeEventListener('mouseenter', this.boundHandleMenuEnter);
+        document.removeEventListener('mouseleave', this.boundHandleMenuLeave);
+
+        // Очищаем таймер
+        if (this.state.closeDropdownTimeout) {
+            clearTimeout(this.state.closeDropdownTimeout);
+        }
+
+        if (this.elements.overlay) {
+            this.elements.overlay.remove();
+        }
     }
 }
 
-function getCurrentPage() {
-    const path = window.location.pathname;
-    if (path.includes('index.html') || path.endsWith('/') || path.includes('/kinoclub-odisseya/')) return 'index';
-    if (path.includes('setup-guide.html')) return 'setup-guide';
-    if (path.includes('quiz.html') || path.includes('Interactive-game.html') || 
-        path.includes('crocodile-game.html') || path.includes('randomizer.html') ||
-        path.includes('santa-game.html')) return 'games';
-    return '';
+/**
+ * Автоматическая инициализация при загрузке DOM
+ */
+function initNavigation() {
+    // Создаем инстанс только если есть контейнер для навигации
+    const navContainer = document.querySelector('.nav-container');
+    if (!navContainer) return;
+
+    // Инициализируем навигацию
+    const navigation = new NavigationModule();
+    navigation.init();
+
+    // Делаем доступной глобально для отладки
+    window.__navigation = navigation;
 }
 
-function initNavigation(currentPage = '') {
-    try {
-        new NavigationModule().init('.nav-container', currentPage);
-    } catch (error) {
-        console.error('Failed to initialize navigation:', error);
-    }
-}
-
-// Автоматическая инициализация
+// Запускаем инициализацию
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => initNavigation(getCurrentPage()));
+    document.addEventListener('DOMContentLoaded', initNavigation);
 } else {
-    initNavigation(getCurrentPage());
+    initNavigation();
+}
+
+// Экспорт для использования в других модулях
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = NavigationModule;
 }

@@ -8,39 +8,43 @@
     --light: #f8f9fa;
     --gray: #6c757d;
     --gray-light: #dee2e6;
-    
+
     /* Цвета фона для секций */
-    --bg-section-1: #0a0a14;      /* Основной тёмный */
-    --bg-section-2: #0f0f1a;      /* Слегка светлее */
-    --bg-section-3: #141422;      /* Ещё светлее */
-    --bg-section-4: #1a1a2a;      /* Самый светлый */
-    
+    --bg-section-1: #0a0a14;
+    /* Основной тёмный */
+    --bg-section-2: #0f0f1a;
+    /* Слегка светлее */
+    --bg-section-3: #141422;
+    /* Ещё светлее */
+    --bg-section-4: #1a1a2a;
+    /* Самый светлый */
+
     /* Прозрачности */
     --primary-light: rgba(106, 17, 203, 0.2);
     --dark-transparent: rgba(10, 10, 20, 0.98);
     --light-transparent: rgba(248, 249, 250, 0.1);
-    
+
     /* Градиенты для фона секций */
     --gradient-section-1: linear-gradient(135deg, rgba(10, 10, 20, 0.95), rgba(20, 20, 34, 0.95));
     --gradient-section-2: linear-gradient(135deg, rgba(15, 15, 26, 0.95), rgba(25, 25, 40, 0.95));
     --gradient-section-3: linear-gradient(135deg, rgba(20, 20, 34, 0.95), rgba(30, 30, 46, 0.95));
     --gradient-section-4: linear-gradient(135deg, rgba(26, 26, 42, 0.95), rgba(36, 36, 52, 0.95));
-    
+
     /* Тени */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     --shadow-primary: 0 4px 20px rgba(106, 17, 203, 0.4);
-    
+
     /* Анимации */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     /* Скругления */
     --radius-sm: 6px;
     --radius-md: 12px;
     --radius-lg: 20px;
     --radius-full: 9999px;
-    
+
     /* ОТСТУПЫ  */
     --space-xs: 4px;
     --space-sm: 8px;
@@ -49,18 +53,26 @@
     --space-xl: 32px;
     --space-xxl: 48px;
     --space-xxxl: 64px;
-    
+
     /* Шрифты */
     --font-base: 'Segoe UI', system-ui, -apple-system, sans-serif;
     --font-mono: 'Courier New', monospace;
-    --text-xs: 0.75rem;   /* 12px */
-    --text-sm: 0.875rem;  /* 14px */
-    --text-base: 1rem;    /* 16px */
-    --text-lg: 1.125rem;  /* 18px */
-    --text-xl: 1.25rem;   /* 20px */
-    --text-xxl: 1.5rem;   /* 24px */
-    --text-xxxl: 2rem;    /* 32px */
-    --text-huge: 2.5rem;  /* 40px */
+    --text-xs: 0.75rem;
+    /* 12px */
+    --text-sm: 0.875rem;
+    /* 14px */
+    --text-base: 1rem;
+    /* 16px */
+    --text-lg: 1.125rem;
+    /* 18px */
+    --text-xl: 1.25rem;
+    /* 20px */
+    --text-xxl: 1.5rem;
+    /* 24px */
+    --text-xxxl: 2rem;
+    /* 32px */
+    --text-huge: 2.5rem;
+    /* 40px */
 }
 
 /* ===== БАЗОВЫЕ СТИЛИ ===== */
@@ -83,7 +95,7 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    
+
     /* Основной тёмный фон */
     background-color: var(--dark);
     position: relative;
@@ -107,37 +119,33 @@ body {
     left: 0;
     width: 100%;
     height: 400%;
-    
+
     /* Левая перфорация - УВЕЛИЧЕННЫЕ ОТВЕРСТИЯ */
-    background-image: 
-        repeating-linear-gradient(
-            to bottom,
+    background-image:
+        repeating-linear-gradient(to bottom,
             transparent 0px,
             transparent 28px,
             rgba(255, 255, 255, 0.05) 28px,
             rgba(255, 255, 255, 0.05) 36px,
             transparent 36px,
-            transparent 56px
-        ),
+            transparent 56px),
         /* Правая перфорация */
-        repeating-linear-gradient(
-            to bottom,
+        repeating-linear-gradient(to bottom,
             transparent 0px,
             transparent 28px,
             rgba(255, 255, 255, 0.05) 28px,
             rgba(255, 255, 255, 0.05) 36px,
             transparent 36px,
-            transparent 56px
-        );
-    
+            transparent 56px);
+
     /* Располагаем перфорации по краям с увеличенным отступом */
-    background-position: 
+    background-position:
         left center,
         right center;
-    
+
     background-repeat: repeat-y;
     background-size: 24px 56px;
-    
+
     /* Анимация движения ленты сверху вниз */
     animation: moveFilmReel 25s linear infinite;
     opacity: 0.3;
@@ -148,6 +156,7 @@ body {
     0% {
         transform: translateY(0);
     }
+
     100% {
         transform: translateY(-50%);
     }
@@ -191,7 +200,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
+    background:
         radial-gradient(circle at 20% 30%, rgba(106, 17, 203, 0.03) 0%, transparent 50%),
         radial-gradient(circle at 80% 70%, rgba(37, 117, 252, 0.03) 0%, transparent 50%);
     z-index: 0;
@@ -210,7 +219,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
+    background:
         radial-gradient(circle at 30% 20%, rgba(255, 77, 77, 0.03) 0%, transparent 50%),
         radial-gradient(circle at 70% 80%, rgba(106, 17, 203, 0.03) 0%, transparent 50%);
     z-index: 0;
@@ -229,7 +238,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
+    background:
         radial-gradient(circle at 40% 40%, rgba(37, 117, 252, 0.03) 0%, transparent 50%),
         radial-gradient(circle at 60% 60%, rgba(255, 77, 77, 0.03) 0%, transparent 50%);
     z-index: 0;
@@ -248,7 +257,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
+    background:
         radial-gradient(circle at 25% 75%, rgba(106, 17, 203, 0.03) 0%, transparent 50%),
         radial-gradient(circle at 75% 25%, rgba(37, 117, 252, 0.03) 0%, transparent 50%);
     z-index: 0;
@@ -429,7 +438,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: 
+    background:
         linear-gradient(rgba(10, 10, 20, 0.85), rgba(10, 10, 20, 0.9)),
         url('../images/hero-bg.jpg') center/cover no-repeat;
     padding: var(--space-xxxl) var(--space-lg);
@@ -444,7 +453,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
+    background:
         radial-gradient(circle at 20% 20%, rgba(106, 17, 203, 0.15) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(37, 117, 252, 0.15) 0%, transparent 50%);
     z-index: 0;
@@ -665,7 +674,9 @@ body {
 }
 
 @keyframes shine {
-    100% { transform: translateX(100%); }
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 .quote-icon {
@@ -864,10 +875,21 @@ body {
     transform: translateY(0);
 }
 
-.delay-1 { transition-delay: 0.1s; }
-.delay-2 { transition-delay: 0.2s; }
-.delay-3 { transition-delay: 0.3s; }
-.delay-4 { transition-delay: 0.4s; }
+.delay-1 {
+    transition-delay: 0.1s;
+}
+
+.delay-2 {
+    transition-delay: 0.2s;
+}
+
+.delay-3 {
+    transition-delay: 0.3s;
+}
+
+.delay-4 {
+    transition-delay: 0.4s;
+}
 
 .spinner {
     display: inline-block;
@@ -880,7 +902,9 @@ body {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-message {
@@ -961,28 +985,28 @@ body {
         --space-xxl: 40px;
         --space-xxxl: 56px;
     }
-    
+
     .faq-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--space-md);
     }
-    
+
     .contacts__grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .map-container {
         grid-template-columns: 1fr;
     }
-    
+
     .tops-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .main-image {
         height: 400px;
     }
-    
+
     /* Адаптивность киноленты для планшетов */
     .film-perforations {
         background-size: 20px 48px;
@@ -997,65 +1021,65 @@ body {
         --space-xxl: 32px;
         --space-xxxl: 48px;
     }
-    
+
     .section {
         padding: var(--space-xxl) 0;
     }
-    
+
     .container {
         padding: 0 var(--space-md);
     }
-    
+
     .header__inner {
         padding: 0 var(--space-md);
     }
-    
+
     .mobile-menu-btn {
         display: flex;
     }
-    
+
     .section__title {
         font-size: var(--text-xxl);
         margin-bottom: var(--space-xl);
     }
-    
+
     .section-title {
         font-size: var(--text-xxl);
         margin-bottom: var(--space-xl);
     }
-    
+
     .faq-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .contacts__grid {
         grid-template-columns: 1fr;
         gap: var(--space-lg);
     }
-    
+
     .faq-answer {
         padding-left: 0;
         margin-top: var(--space-sm);
     }
-    
+
     .video-posters-grid,
     .film-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: var(--space-md);
     }
-    
+
     .main-image {
         height: 300px;
     }
-    
+
     .about__quote {
         padding: var(--space-xl);
     }
-    
+
     .about__quote p {
         font-size: var(--text-lg);
     }
-    
+
     /* Адаптивность киноленты для мобильных */
     .film-perforations {
         background-size: 16px 40px;
@@ -1070,53 +1094,53 @@ body {
         --space-lg: 16px;
         --space-xl: 20px;
     }
-    
+
     .section__title {
         font-size: var(--text-xl);
     }
-    
+
     .section-title {
         font-size: var(--text-xl);
     }
-    
+
     .logo {
         font-size: var(--text-lg);
     }
-    
+
     .logo__icon {
         width: 32px;
         height: 32px;
     }
-    
+
     .contact-card {
         padding: var(--space-lg);
     }
-    
+
     .top-section {
         padding: var(--space-lg);
     }
-    
+
     .faq-item {
         padding: var(--space-lg);
     }
-    
+
     .faq-icon {
         width: 48px;
         height: 48px;
     }
-    
+
     .main-image {
         height: 250px;
     }
-    
+
     .about__quote {
         padding: var(--space-lg);
     }
-    
+
     .about__quote p {
         font-size: var(--text-base);
     }
-    
+
     /* Адаптивность киноленты для маленьких экранов */
     .film-perforations {
         background-size: 14px 36px;
@@ -1138,27 +1162,28 @@ body {
 
 /* Пподдержка печати */
 @media print {
+
     .header,
     .footer,
     .mobile-menu-btn {
         display: none;
     }
-    
+
     .film-reel-overlay {
         display: none;
     }
-    
+
     body {
         color: #000;
         background: #fff;
     }
-    
+
     .section {
         padding: 20px 0;
         break-inside: avoid;
         background: none !important;
     }
-    
+
     .section::before {
         display: none;
     }
@@ -1166,6 +1191,7 @@ body {
 
 /* Поддержка уменьшения движения */
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -1173,15 +1199,15 @@ body {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
-    
+
     html {
         scroll-behavior: auto;
     }
-    
+
     .about__quote::before {
         animation: none;
     }
-    
+
     .film-perforations {
         animation: none !important;
     }
