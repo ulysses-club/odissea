@@ -1,4 +1,3 @@
-/* works-module.css - обновленный дизайн карточек работ */
 .video-posters-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -6,7 +5,7 @@
     margin-bottom: var(--space-xl);
 }
 
-/* Обновленная карточка */
+/* Карточка */
 .film-card {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
     border-radius: var(--radius-lg);
@@ -122,7 +121,7 @@
     min-height: 60px; /* Минимальная высота описания */
 }
 
-/* Кнопка смотреть - зафиксирована внизу */
+/* Кнопка смотреть */
 .film-kinopoisk-button {
     display: inline-flex;
     align-items: center;
@@ -202,7 +201,7 @@
 .film-card:nth-child(5) { animation-delay: 0.5s; }
 .film-card:nth-child(6) { animation-delay: 0.6s; }
 
-/* Адаптивность - УДАЛЕН aspect-ratio */
+/* Адаптивность */
 @media (max-width: 768px) {
     .video-posters-grid {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -211,11 +210,11 @@
     }
     
     .film-card {
-        min-height: 450px; /* Уменьшенная высота для мобильных */
+        min-height: 450px;
     }
     
     .film-card-image {
-        height: 250px; /* Уменьшенная высота изображения для мобильных */
+        height: 250px;
     }
     
     .film-card h3 {
@@ -225,7 +224,7 @@
     
     .work-description {
         min-height: 50px;
-        -webkit-line-clamp: 2; /* Меньше строк для мобильных */
+        -webkit-line-clamp: 2;
     }
 }
 
