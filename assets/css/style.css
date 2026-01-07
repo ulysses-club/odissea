@@ -33,6 +33,7 @@
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.25);
     --shadow-primary: 0 4px 20px rgba(106, 17, 203, 0.4);
 
     /* Анимации */
@@ -107,7 +108,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -2;
+    z-index: 50;
     pointer-events: none;
     overflow: hidden;
 }
@@ -124,18 +125,17 @@ body {
         repeating-linear-gradient(to bottom,
             transparent 0px,
             transparent 28px,
-            rgba(255, 255, 255, 0.05) 28px,
-            rgba(255, 255, 255, 0.05) 36px,
-            transparent 50px,
-            transparent 56px),
-        /* Правая перфорация */
+            rgba(255, 255, 255, 0.3) 28px,
+            rgba(255, 255, 255, 0.300) 80px,
+            transparent 56px,
+            transparent 72px),
         repeating-linear-gradient(to bottom,
             transparent 0px,
             transparent 28px,
-            rgba(255, 255, 255, 0.05) 28px,
-            rgba(255, 255, 255, 0.05) 36px,
-            transparent 50px,
-            transparent 56px);
+            rgba(255, 255, 255, 0.300) 28px,
+            rgba(255, 255, 255, 0.300) 80px,
+            transparent 56px,
+            transparent 72px);
 
     /* Располагаем перфорации по краям с увеличенным отступом */
     background-position:
@@ -143,11 +143,11 @@ body {
         right center;
 
     background-repeat: repeat-y;
-    background-size: 24px 56px;
+    background-size: 32px 100px;
 
     /* Анимация движения ленты сверху вниз */
-    animation: moveFilmReel 25s linear infinite;
-    opacity: 0.3;
+    animation: moveFilmReel 20s linear infinite;
+    opacity: 0.35;
 }
 
 /* Анимация движения киноленты */
@@ -440,33 +440,6 @@ body {
     background: var(--light);
     border-radius: var(--radius-full);
     transition: var(--transition);
-}
-
-/* ===== ГЕРОЙ СЕКЦИЯ ===== */
-.hero-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background:
-        linear-gradient(rgba(10, 10, 20, 0.85), rgba(10, 10, 20, 0.9)),
-        url('../images/hero-bg.jpg') center/cover no-repeat;
-    padding: var(--space-xxxl) var(--space-lg);
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(circle at 20% 20%, rgba(106, 17, 203, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(37, 117, 252, 0.15) 0%, transparent 50%);
-    z-index: 0;
 }
 
 /* ===== ПРЕДСТОЯЩАЯ ВСТРЕЧА ===== */
@@ -887,8 +860,8 @@ body {
     bottom: var(--space-lg);
     left: var(--space-lg);
     background: linear-gradient(90deg, 
-        rgba(106, 17, 203, 0.9), 
-        rgba(37, 117, 252, 0.9));
+        rgba(107, 17, 203, 0.295), 
+        rgba(37, 117, 252, 0.295));
     color: var(--light);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-sm);
@@ -898,7 +871,7 @@ body {
     animation: fadeInUp 0.6s ease 0.3s both;
 }
 
-/* ===== ОПТИМИЗИРОВАННАЯ ЦИТАТА ===== */
+/* ===== ЦИТАТА ===== */
 /**
  * @name quote-optimized
  * @description Простая, но эффектная цитата с минимальными эффектами
@@ -1274,7 +1247,7 @@ body {
 
     /* Адаптивность киноленты для маленьких экранов */
     .film-perforations {
-        background-size: 14px 36px;
+        background-size: 14px 50px;
         opacity: 0.2;
     }
 
@@ -1326,7 +1299,6 @@ body {
 
 /* Поддержка печати */
 @media print {
-
     .header,
     .footer,
     .mobile-menu-btn,
@@ -1356,7 +1328,6 @@ body {
 
 /* Поддержка уменьшения движения */
 @media (prefers-reduced-motion: reduce) {
-
     *,
     *::before,
     *::after {

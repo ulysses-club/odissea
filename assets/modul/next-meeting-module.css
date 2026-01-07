@@ -1,4 +1,4 @@
-/* Контейнер для загрузки */
+/* ===== ОСНОВНЫЕ СТИЛИ КАРТОЧКИ ===== */
 .next-meeting__content {
     position: relative;
     min-height: 200px;
@@ -21,7 +21,6 @@
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     margin: 0;
-    will-change: transform;
 }
 
 /* Эффект свечения при наведении */
@@ -54,12 +53,12 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-/* Верхний блок с постером и основной информацией */
+/* ===== СТРУКТУРА ===== */
 .meeting-top-section {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-lg);
-    padding: var(--space-lg);
+    gap: var(--space-xl);
+    padding: var(--space-xl);
     background: linear-gradient(180deg, 
         rgba(106, 17, 203, 0.08) 0%, 
         transparent 100%);
@@ -67,16 +66,30 @@
 
 @media (min-width: 1024px) {
     .meeting-top-section {
-        grid-template-columns: 320px 1fr;
+        grid-template-columns: 1fr 400px;
         gap: var(--space-xl);
+        padding: var(--space-xl) var(--space-xxl);
     }
 }
 
-/* Постер карточки */
+/* Контейнер информации о фильме (левая колонка) */
+.meeting-info-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+/* Контейнер для постера (правая колонка) */
+.meeting-poster-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== ПОСТЕР ===== */
 .meeting-poster {
     position: relative;
     width: 100%;
-    height: 280px;
+    height: 100%;
     border-radius: var(--radius-lg);
     overflow: hidden;
     cursor: pointer;
@@ -84,15 +97,19 @@
         rgba(106, 17, 203, 0.1), 
         rgba(37, 117, 252, 0.05));
     transition: transform 0.3s ease;
+    box-shadow: var(--shadow-lg);
+    flex-shrink: 0;
 }
 
-@media (min-width: 1024px) {
-    .meeting-poster {
-        height: 360px;
-    }
+.poster-watermark-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
 }
 
-.meeting-poster img {
+.poster-watermark-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -104,36 +121,77 @@
     transform: scale(1.05);
 }
 
+/* Водяной знак на постере */
+.poster-watermark {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--text-xl);
+    font-weight: 900;
+    font-family: var(--font-mono);
+    letter-spacing: 3px;
+    transform: rotate(-15deg);
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(106, 17, 203, 0.5);
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    z-index: 2;
+    opacity: 0.8;
+}
+
+/* Защита от скачивания изображений */
+.poster-watermark-container img,
+.image-modal-img {
+    pointer-events: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+}
+
 /* Бейдж на постере */
 .meeting-poster-badge {
     position: absolute;
-    top: var(--space-sm);
-    left: var(--space-sm);
+    top: var(--space-md);
+    left: var(--space-md);
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: var(--light);
     padding: 6px 16px;
     border-radius: var(--radius-full);
     font-weight: 700;
     font-size: var(--text-xs);
-    z-index: 2;
+    z-index: 3;
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255, 255, 255, 0.2);
     box-shadow: var(--shadow-md);
     letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-/* Основная информация */
+/* ===== ОСНОВНАЯ ИНФОРМАЦИЯ О ФИЛЬМЕ ===== */
 .meeting-main-info {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    gap: var(--space-lg);
 }
 
 /* Заголовок и год */
 .meeting-header {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
+    gap: var(--space-sm);
 }
 
 .meeting-title {
@@ -167,6 +225,24 @@
     border-radius: var(--radius-full);
     border: 1px solid rgba(255, 255, 255, 0.1);
     width: fit-content;
+}
+
+/* День недели */
+.meeting-weekday {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--text-base);
+    color: var(--accent);
+    font-weight: 600;
+    padding: 6px 16px;
+    background: rgba(255, 77, 77, 0.1);
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 77, 77, 0.2);
+    margin-left: var(--space-sm);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.1);
+    justify-content: space-around;
 }
 
 /* Детали встречи - компактная сетка */
@@ -215,21 +291,20 @@
     line-height: 1.4;
 }
 
-/* Нижний блок с таймером и кнопками */
-.meeting-bottom-section {
+/* ===== ТАЙМЕР ПОД ИНФОРМАЦИЕЙ О ФИЛЬМЕ ===== */
+.countdown-wrapper {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: var(--radius-lg);
     padding: var(--space-lg);
-    background: linear-gradient(180deg, 
-        transparent 0%, 
-        rgba(0, 0, 0, 0.2) 100%);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: var(--space-lg);
 }
 
-/* Таймер */
 .meeting-countdown {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-lg);
+    gap: var(--space-md);
 }
 
 .countdown-title {
@@ -246,8 +321,6 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--space-xs);
-    max-width: 400px;
-    margin: 0 auto;
 }
 
 .countdown-item {
@@ -277,28 +350,97 @@
     margin-top: 2px;
 }
 
-/* Кнопки действий */
-.meeting-actions {
+/* ===== ИНФОРМАЦИЯ О БОТЕ И РАССЫЛКЕ ===== */
+.bot-info {
+    background: linear-gradient(135deg, 
+        rgba(37, 117, 252, 0.1), 
+        rgba(106, 17, 203, 0.05));
+    border: 1px solid rgba(37, 117, 252, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin: var(--space-lg) var(--space-xl) 0;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.bot-info::before {
+    content: '🤖Инфо';
+    position: absolute;
+    top: -10px;
+    left: var(--space-lg);
+    background: var(--dark);
+    padding: 0 var(--space-sm);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--secondary);
+    border-radius: var(--radius-sm);
+}
+
+.bot-info-content {
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
-    max-width: 400px;
-    margin: 0 auto;
 }
 
-@media (min-width: 480px) {
+.bot-info-text {
+    font-size: var(--text-sm);
+    color: var(--light);
+    line-height: 1.6;
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+}
+
+.bot-info-text::before {
+    content: '📢';
+    font-size: var(--text-base);
+    flex-shrink: 0;
+}
+
+.bot-info-link {
+    color: var(--secondary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.bot-info-link:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+/* ===== НИЖНИЙ БЛОК С КНОПКАМИ ===== */
+.meeting-bottom-section {
+    padding: var(--space-xl);
+    background: linear-gradient(180deg, 
+        transparent 0%, 
+        rgba(0, 0, 0, 0.2) 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Кнопки действий */
+.meeting-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+    max-width: 600px;
+    margin: 0 auto var(--space-lg);
+}
+
+@media (min-width: 768px) {
     .meeting-actions {
-        flex-direction: row;
-        justify-content: center;
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
 .meeting-btn {
-    display: inline-flex;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-sm);
-    padding: var(--space-md) var(--space-lg);
+    gap: 4px;
+    padding: var(--space-sm) var(--space-xs);
     border-radius: var(--radius-full);
     font-size: var(--text-sm);
     font-weight: 600;
@@ -306,40 +448,78 @@
     border: none;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    flex: 1;
-    min-width: 140px;
+    min-height: 44px;
+    position: relative;
 }
 
+.btn-icon {
+    font-size: var(--text-lg);
+    line-height: 1;
+}
+
+.btn-text {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.btn-hint {
+    font-size: var(--text-xs);
+    opacity: 0.8;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+/* Стили для разных типов кнопок */
+
+/* Кнопка КиноПоиск - отличается визуально (информация о фильме) */
 .meeting-btn--primary {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background: linear-gradient(135deg, #ff6b00, #ff8c00);
     color: var(--light);
-    box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
 }
 
 .meeting-btn--primary:hover {
+    background: linear-gradient(135deg, #ff8c00, #ff6b00);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4);
+}
+
+/* Кнопки "поделиться" с единым стилем */
+.meeting-btn--vk,
+.meeting-btn--tg,
+.meeting-btn--copy {
+    background: linear-gradient(135deg, var(--primary-light), rgba(37, 117, 252, 0.2));
+    color: var(--light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.meeting-btn--vk:hover {
+    background: linear-gradient(135deg, #4C75A3, #2A5885);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 117, 163, 0.4);
+}
+
+.meeting-btn--tg:hover {
+    background: linear-gradient(135deg, #0088cc, #006699);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
+}
+
+.meeting-btn--copy:hover {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
 }
 
-.meeting-btn--secondary {
-    background: transparent;
-    border: 2px solid var(--primary);
-    color: var(--light);
-}
-
-.meeting-btn--secondary:hover {
-    background: rgba(106, 17, 203, 0.1);
-    transform: translateY(-2px);
-}
-
-/* Блок важной информации */
+/* ===== ВАЖНАЯ ИНФОРМАЦИЯ ===== */
 .meeting-important {
     background: linear-gradient(135deg, 
         rgba(255, 77, 77, 0.1), 
         rgba(255, 152, 0, 0.05));
     border: 1px solid var(--accent);
     border-radius: var(--radius-lg);
-    padding: var(--space-md);
+    padding: var(--space-lg);
     margin-top: var(--space-lg);
     position: relative;
     backdrop-filter: blur(10px);
@@ -349,13 +529,14 @@
     content: '⚠️ ВАЖНО';
     position: absolute;
     top: -10px;
-    left: var(--space-md);
+    left: var(--space-lg);
     background: var(--primary);
     padding: 0 var(--space-sm);
     font-size: var(--text-xs);
     font-weight: 700;
     color: var(--accent);
     letter-spacing: 0.5px;
+    border-radius: var(--radius-sm);
 }
 
 .important-text {
@@ -363,266 +544,6 @@
     color: var(--light);
     line-height: 1.6;
     margin: 0;
-}
-
-/* Состояния загрузки */
-.next-meeting-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-xxl);
-    text-align: center;
-}
-
-.loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    border-top-color: var(--primary);
-    animation: spin 1s linear infinite;
-    margin-bottom: var(--space-md);
-}
-
-/* Нет встречи */
-.next-meeting-empty {
-    text-align: center;
-    padding: var(--space-xxl);
-    color: var(--gray);
-}
-
-/* Анимации */
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .meeting-top-section {
-        padding: var(--space-md);
-        gap: var(--space-md);
-    }
-    
-    .meeting-poster {
-        height: 240px;
-    }
-    
-    .meeting-details-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .countdown-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-sm);
-    }
-}
-
-@media (max-width: 480px) {
-    .meeting-details-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .meeting-actions {
-        flex-direction: column;
-    }
-    
-    .meeting-btn {
-        width: 100%;
-    }
-}
-
-/* Поддержка prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-    .next-meeting-card,
-    .meeting-poster img,
-    .meeting-detail-item,
-    .meeting-btn {
-        transition: none;
-        animation: none;
-    }
-    
-    .next-meeting-card:hover,
-    .meeting-detail-item:hover,
-    .meeting-btn:hover {
-        transform: none;
-    }
-}
-
-/* Модальное окно изображения */
-.image-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    padding: var(--space-md);
-}
-
-.image-modal.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.image-modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(20px);
-    cursor: pointer;
-}
-
-.image-modal-content {
-    position: relative;
-    z-index: 2;
-    background: var(--bg-section-2);
-    border-radius: var(--radius-lg);
-    width: 100%;
-    max-width: 900px;
-    max-height: 90vh;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transform: scale(0.95);
-    transition: transform 0.3s ease;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.image-modal.active .image-modal-content {
-    transform: scale(1);
-}
-
-.image-modal-header {
-    padding: var(--space-md) var(--space-lg);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.5);
-    flex-shrink: 0;
-}
-
-.image-modal-header h3 {
-    color: var(--light);
-    font-size: var(--text-lg);
-    font-weight: 600;
-    margin: 0;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.image-modal-body {
-    padding: var(--space-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-    min-height: 0;
-    overflow: auto;
-}
-
-.image-modal-img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-radius: var(--radius-md);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-.image-modal-close {
-    position: absolute;
-    top: var(--space-sm);
-    right: var(--space-sm);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: var(--text-xl);
-    cursor: pointer;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.image-modal-close:hover {
-    background: var(--accent);
-    transform: rotate(90deg);
-}
-
-/* Анимации уведомлений */
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideOut {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-}
-
-/* Адаптивность модального окна */
-@media (max-width: 768px) {
-    .image-modal-content {
-        max-height: 85vh;
-        margin: var(--space-sm);
-    }
-    
-    .image-modal-header {
-        padding: var(--space-sm);
-    }
-    
-    .image-modal-body {
-        padding: var(--space-sm);
-    }
-    
-    .image-modal-close {
-        top: 6px;
-        right: 6px;
-        width: 32px;
-        height: 32px;
-        font-size: var(--text-lg);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .image-modal,
-    .image-modal-content,
-    .image-modal-close {
-        transition: none;
-        animation: none;
-    }
 }
 
 /* Список важной информации */
@@ -651,17 +572,309 @@
     font-size: var(--text-lg);
 }
 
-/* Для темной темы - более светлый текст */
-@media (prefers-color-scheme: dark) {
-    .meeting-important-list li {
-        color: rgba(255, 255, 255, 0.95);
+/* ===== СОСТОЯНИЯ КАРТОЧКИ ===== */
+.next-meeting-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xxl);
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--space-md);
+}
+
+.next-meeting-empty {
+    text-align: center;
+    padding: var(--space-xxl);
+    color: var(--gray);
+}
+
+/* ===== УПРОЩЕННОЕ МОДАЛЬНОЕ ОКНО ИЗОБРАЖЕНИЯ ===== */
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: var(--space-md);
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+}
+
+.image-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.image-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+}
+
+.image-modal-img {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.image-modal.active .image-modal-img {
+    transform: scale(1);
+}
+
+.image-modal-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: var(--text-xxl);
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.image-modal-close:hover {
+    background: var(--accent);
+    transform: rotate(90deg);
+    border-color: var(--accent);
+}
+
+/* ===== УВЕДОМЛЕНИЯ ===== */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    z-index: 9999;
+    animation: slideIn 0.3s ease;
+    box-shadow: var(--shadow-lg);
+    font-weight: 500;
+}
+
+/* ===== АНИМАЦИИ ===== */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }
 
-/* Адаптивность */
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 1024px) {
+    .meeting-poster {
+        height: 380px;
+    }
+}
+
 @media (max-width: 768px) {
+    .meeting-top-section {
+        padding: var(--space-lg);
+        gap: var(--space-lg);
+    }
+    
+    .meeting-poster {
+        height: 320px;
+    }
+    
+    .meeting-details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .countdown-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+    
+    .countdown-wrapper {
+        padding: var(--space-md);
+    }
+    
+    .bot-info {
+        margin: var(--space-lg) var(--space-lg) 0;
+        padding: var(--space-md);
+    }
+    
+    .meeting-bottom-section {
+        padding: var(--space-lg);
+    }
+    
+    .meeting-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-xs);
+    }
+    
+    /* Адаптивность кнопок для мобильных */
+    .meeting-btn {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: var(--space-sm);
+        gap: var(--space-sm);
+    }
+    
+    .btn-hint {
+        display: none;
+    }
+    
+    .btn-text {
+        font-size: var(--text-xs);
+    }
+    
+    .meeting-weekday {
+        font-size: var(--text-sm);
+        padding: 4px 12px;
+        margin-left: var(--space-xs);
+    }
+}
+
+@media (max-width: 480px) {
+    .meeting-details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .meeting-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .meeting-btn {
+        width: 100%;
+    }
+    
     .meeting-important-list li {
         font-size: var(--text-xs);
         padding-left: var(--space-sm);
+    }
+    
+    .bot-info-text {
+        font-size: var(--text-xs);
+    }
+    
+    /* Для очень маленьких экранов возвращаем вертикальное расположение кнопок */
+    .meeting-btn {
+        flex-direction: column;
+        gap: 4px;
+        padding: var(--space-xs);
+    }
+    
+    .poster-watermark {
+        font-size: var(--text-lg);
+        bottom: 10px;
+        right: 10px;
+        letter-spacing: 2px;
+    }
+}
+
+@media (max-width: 768px) {
+    .image-modal {
+        padding: var(--space-sm);
+    }
+    
+    .image-modal-img {
+        max-width: 95%;
+        max-height: 85vh;
+    }
+    
+    .image-modal-close {
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: var(--text-xl);
+    }
+}
+
+/* Для горизонтальной ориентации на мобильных */
+@media (max-width: 768px) and (orientation: landscape) {
+    .meeting-top-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .meeting-poster {
+        height: 250px;
+    }
+    
+    .meeting-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .next-meeting-card,
+    .meeting-poster img,
+    .meeting-detail-item,
+    .meeting-btn,
+    .image-modal,
+    .image-modal-img,
+    .image-modal-close,
+    .notification {
+        transition: none;
+        animation: none;
+    }
+    
+    .next-meeting-card:hover,
+    .meeting-detail-item:hover,
+    .meeting-btn:hover,
+    .image-modal-close:hover {
+        transform: none;
+    }
+    
+    .meeting-poster:hover img {
+        transform: none;
     }
 }

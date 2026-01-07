@@ -1,7 +1,3 @@
-/**
- * Оптимизированный модуль ближайшей встречи
- * @class NextMeetingModule
- */
 class NextMeetingModule {
     constructor() {
         this.config = {
@@ -23,7 +19,9 @@ class NextMeetingModule {
         };
 
         // Предварительное связывание обработчиков
-        this.handleShare = this.handleShare.bind(this);
+        this.handleVKShare = this.handleVKShare.bind(this);
+        this.handleTGShare = this.handleTGShare.bind(this);
+        this.handleCopyInfo = this.handleCopyInfo.bind(this);
         this.handlePosterClick = this.handlePosterClick.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.updateCountdown = this.updateCountdown.bind(this);
@@ -96,6 +94,16 @@ class NextMeetingModule {
             const data = await response.json();
             
             if (data && Object.keys(data).length > 0) {
+                // Автоматически определяем день недели
+                data.weekday = this.getWeekdayFromDate(data.date);
+                
+                // Добавляем информацию о боте
+                data.botInfo = {
+                    username: '@Odyssey_Cinema_Club_bot',
+                    schedule: 'Каждую пятницу в 14:00',
+                    description: 'Получайте анонсы встреч первыми'
+                };
+                
                 this.state.meeting = data;
                 this.cacheData(data);
                 this.renderMeeting(data);
@@ -136,7 +144,13 @@ class NextMeetingModule {
             cast: 'Скоро узнаем',
             poster: this.config.fallbackPoster,
             discussionNumber: Math.floor(Math.random() * 50) + 1,
-            requirements: 'Следите за обновлениями в наших соцсетях'
+            requirements: 'Следите за обновлениями в наших соцсетях',
+            weekday: null,
+            botInfo: {
+                username: '@Odyssey_Cinema_Club_bot',
+                schedule: 'Каждую пятницу в 14:00',
+                description: 'Получайте анонсы встреч первыми'
+            }
         };
 
         this.renderMeeting(fallbackData);
@@ -155,11 +169,11 @@ class NextMeetingModule {
                 <p class="important-text">${this.config.messages.meetingSoon}</p>
                 <div class="meeting-actions" style="margin-top: var(--space-lg);">
                     <a href="https://vk.com/club199046020" target="_blank" 
-                       class="meeting-btn meeting-btn--primary">
+                       class="meeting-btn meeting-btn--vk">
                         ВКонтакте
                     </a>
                     <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank"
-                       class="meeting-btn meeting-btn--secondary">
+                       class="meeting-btn meeting-btn--tg">
                         Telegram
                     </a>
                 </div>
@@ -194,72 +208,137 @@ class NextMeetingModule {
             cast,
             poster,
             discussionNumber,
-            requirements
+            requirements,
+            weekday,
+            botInfo
         } = data;
 
         const kinopoiskUrl = this.generateKinopoiskUrl(film, year);
         const shareData = this.prepareShareData(data);
+        
+        // Генерация таймера если есть дата и время
+        const countdownHTML = date && time && date !== 'Скоро' ? `
+            <div class="countdown-wrapper">
+                ${this.generateCountdownHTML(date, time)}
+            </div>
+        ` : '';
 
         return `
             <div class="next-meeting-card">
                 <div class="meeting-top-section">
-                    <!-- Постер -->
-                    <div class="meeting-poster" data-poster="${poster}">
-                        <img src="${poster}" 
-                             alt="Постер фильма: ${this.escapeHtml(film)}"
-                             loading="lazy"
-                             onerror="this.src='${this.config.fallbackPoster}'">
-                        <div class="meeting-poster-badge">
-                            Обсуждение #${discussionNumber || 'XX'}
+                    <!-- Левая колонка: информация о фильме и таймер -->
+                    <div class="meeting-info-container">
+                        <div class="meeting-main-info">
+                            <div class="meeting-header">
+                                <h3 class="meeting-title">${this.escapeHtml(film)}</h3>
+                                <div style="display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap;">
+                                    <span class="meeting-year">🎬 ${year || 'Год не указан'}</span>
+                                </div>
+                            </div>
+
+                            <!-- Детали фильма -->
+                            <div class="meeting-details-grid">
+                                ${this.renderDetailItem('🎬 Режиссер', director)}
+                                ${this.renderDetailItem('🎭 Жанр', genre)}
+                                ${this.renderDetailItem('🌍 Страна', country)}
+                                ${this.renderDetailItem('📍 Место встречи', place)}
+                                ${this.renderDetailItem('📅 Дата встречи', date)}
+                                ${this.renderDetailItem('🕒 Время встречи', time)}
+                            </div>
+
+                            <div class="meeting-header">
+                                <h3 class="meeting-detail-item">Неделя встречи: ${weekday ? `<span class="meeting-weekday">${weekday}</span>` : ''}</h3>
+                                <div style="display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap;">
+                                    
+                                </div>
+                            </div>
+
+                            <!-- Актеры -->
+                            ${cast && cast !== 'Нет данных' ? `
+                                <div class="meeting-detail-item" style="grid-column: span 2;">
+                                    <div class="detail-label">👥 В главных ролях</div>
+                                    <div class="detail-value">${this.escapeHtml(cast)}</div>
+                                </div>
+                            ` : ''}
+                            
+                            <!-- Таймер -->
+                            ${countdownHTML}
                         </div>
                     </div>
 
-                    <!-- Основная информация -->
-                    <div class="meeting-main-info">
-                        <div class="meeting-header">
-                            <h3 class="meeting-title">${this.escapeHtml(film)}</h3>
-                            <span class="meeting-year">🎬 ${year || 'Год не указан'}</span>
-                        </div>
-
-                        <!-- Детали фильма -->
-                        <div class="meeting-details-grid">
-                            ${this.renderDetailItem('🎬 Режиссер', director)}
-                            ${this.renderDetailItem('🎭 Жанр', genre)}
-                            ${this.renderDetailItem('🌍 Страна', country)}
-                            ${this.renderDetailItem('📍 Место встречи', place)}
-                            ${this.renderDetailItem('📅 Дата встречи', date)}
-                            ${this.renderDetailItem('🕒 Время встречи', time)}
-                        </div>
-
-                        <!-- Актеры -->
-                        ${cast && cast !== 'Нет данных' ? `
-                            <div class="meeting-detail-item" style="grid-column: span 2;">
-                                <div class="detail-label">👥 В главных ролях</div>
-                                <div class="detail-value">${this.escapeHtml(cast)}</div>
+                    <!-- Правая колонка: постер -->
+                    <div class="meeting-poster-container">
+                        <div class="meeting-poster" data-poster="${poster}">
+                            <div class="poster-watermark-container">
+                                <img src="${poster}" 
+                                     alt="Постер фильма: ${this.escapeHtml(film)}"
+                                     loading="lazy"
+                                     class="poster-with-watermark"
+                                     onerror="this.src='${this.config.fallbackPoster}'">
+                                <div class="poster-watermark">ОДИССЕЯ</div>
                             </div>
-                        ` : ''}
+                            <div class="meeting-poster-badge">
+                                Обсуждение #${discussionNumber || 'XX'}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Нижняя часть с таймером и кнопками -->
-                <div class="meeting-bottom-section">
-                    <!-- Таймер -->
-                    ${date && time ? this.generateCountdownHTML(date, time) : ''}
+                <!-- Информация о боте и рассылке -->
+                <div class="bot-info">
+                    <div class="bot-info-content">
+                        <p class="bot-info-text">
+                            Подпишитесь на нашего бота: 
+                            <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" 
+                               class="bot-info-link">${botInfo?.username || '@Odyssey_Cinema_Club_bot'}</a>
+                        </p>
+                        <p class="bot-info-text">
+                            ${botInfo?.schedule || 'Каждую пятницу в 14:00'} получайте анонсы встреч
+                        </p>
+                        <p class="bot-info-text">
+                            Узнавайте первыми: что смотрим, когда и где собираемся
+                        </p>
+                    </div>
+                </div>
 
+                <!-- Нижняя часть с кнопками и важной информацией -->
+                <div class="meeting-bottom-section">
                     <!-- Кнопки действий -->
                     <div class="meeting-actions">
                         ${kinopoiskUrl ? `
                             <a href="${kinopoiskUrl}" 
                                target="_blank" 
                                rel="noopener noreferrer"
-                               class="meeting-btn meeting-btn--primary">
-                               🎬 КиноПоиск
+                               class="meeting-btn meeting-btn--primary"
+                               title="Посмотреть информацию о фильме на КиноПоиске">
+                               <span class="btn-icon">🎬</span>
+                               <span class="btn-text">КиноПоиск</span>
+                               <span class="btn-hint">Инфо</span>
                             </a>
                         ` : ''}
                         
-                        <button class="meeting-btn meeting-btn--secondary" 
-                                data-share='${JSON.stringify(shareData)}'>
-                            📢 Поделиться
+                        <button class="meeting-btn meeting-btn--vk" 
+                                data-share='${JSON.stringify(shareData)}'
+                                title="Поделиться информацией о встрече во ВКонтакте">
+                            <span class="btn-icon">📱</span>
+                            <span class="btn-text">ВКонтакте</span>
+                            <span class="btn-hint">Поделиться</span>
+                        </button>
+                        
+                        <button class="meeting-btn meeting-btn--tg" 
+                                data-share='${JSON.stringify(shareData)}'
+                                title="Поделиться информацией о встрече в Telegram">
+                            <span class="btn-icon">✈️</span>
+                            <span class="btn-text">Telegram</span>
+                            <span class="btn-hint">Поделиться</span>
+                        </button>
+                        
+                        <button class="meeting-btn meeting-btn--copy" 
+                                data-share='${JSON.stringify(shareData)}'
+                                title="Скопировать информацию о встрече">
+                            <span class="btn-icon">📋</span>
+                            <span class="btn-text">Скопировать</span>
+                            <span class="btn-hint">Поделиться</span>
                         </button>
                     </div>
 
@@ -321,6 +400,26 @@ class NextMeetingModule {
     }
 
     /**
+     * Получить день недели по дате
+     */
+    getWeekdayFromDate(dateStr) {
+        if (!dateStr || dateStr === 'Скоро') return null;
+        
+        try {
+            const [day, month, year] = dateStr.split('.').map(Number);
+            const date = new Date(year, month - 1, day);
+            
+            const weekdays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 
+                             'Четверг', 'Пятница', 'Суббота'];
+            
+            return weekdays[date.getDay()];
+        } catch (error) {
+            console.warn('Ошибка определения дня недели:', error);
+            return null;
+        }
+    }
+
+    /**
      * Настройка интерактивных элементов
      */
     setupMeetingInteractions(data) {
@@ -330,14 +429,24 @@ class NextMeetingModule {
             poster.addEventListener('click', this.handlePosterClick);
         }
 
-        // Обработчик кнопки поделиться
-        const shareBtn = document.querySelector('[data-share]');
-        if (shareBtn) {
-            shareBtn.addEventListener('click', this.handleShare);
+        // Обработчики кнопок шеринга
+        const vkBtn = document.querySelector('.meeting-btn--vk');
+        if (vkBtn) {
+            vkBtn.addEventListener('click', this.handleVKShare);
+        }
+
+        const tgBtn = document.querySelector('.meeting-btn--tg');
+        if (tgBtn) {
+            tgBtn.addEventListener('click', this.handleTGShare);
+        }
+
+        const copyBtn = document.querySelector('.meeting-btn--copy');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', this.handleCopyInfo);
         }
 
         // Запуск таймера
-        if (data.date && data.time) {
+        if (data.date && data.time && data.date !== 'Скоро') {
             this.startCountdown(data.date, data.time);
         }
     }
@@ -432,19 +541,12 @@ class NextMeetingModule {
         modal.className = 'image-modal';
         modal.innerHTML = `
             <div class="image-modal-overlay" data-close="true"></div>
-            <div class="image-modal-content">
-                <button class="image-modal-close" aria-label="Закрыть">&times;</button>
-                <div class="image-modal-header">
-                    <h3>${this.escapeHtml(title)}</h3>
-                </div>
-                <div class="image-modal-body">
-                    <img src="${imgUrl}" 
-                         alt="${this.escapeHtml(title)}" 
-                         class="image-modal-img"
-                         loading="eager"
-                         onerror="this.src='${this.config.fallbackPoster}'">
-                </div>
-            </div>
+            <button class="image-modal-close" aria-label="Закрыть">&times;</button>
+            <img src="${imgUrl}" 
+                 alt="${this.escapeHtml(title)}" 
+                 class="image-modal-img"
+                 loading="eager"
+                 onerror="this.src='${this.config.fallbackPoster}'">
         `;
 
         document.body.appendChild(modal);
@@ -480,44 +582,107 @@ class NextMeetingModule {
     }
 
     /**
-     * Обработчик кнопки "Поделиться"
+     * Обработчик кнопки "Поделиться ВКонтакте"
      */
-    async handleShare(event) {
+    handleVKShare(event) {
         try {
             const shareBtn = event.currentTarget;
             const shareData = JSON.parse(shareBtn.dataset.share || '{}');
-
-            if (navigator.share) {
-                await navigator.share(shareData);
-            } else {
-                this.showShareFallback(shareData);
-            }
+            
+            const vkUrl = `https://vk.com/share.php?` +
+                `url=${encodeURIComponent(shareData.url)}&` +
+                `title=${encodeURIComponent(shareData.title)}&` +
+                `description=${encodeURIComponent(shareData.text)}&` +
+                `image=${encodeURIComponent(shareData.image || '')}&` +
+                `noparse=true`;
+            
+            window.open(vkUrl, '_blank', 'width=550,height=400');
         } catch (error) {
-            if (error.name !== 'AbortError') {
-                console.warn('Ошибка шаринга:', error);
-            }
+            console.warn('Ошибка шеринга ВК:', error);
+            this.showNotification('Не удалось открыть ВКонтакте');
         }
     }
 
     /**
-     * Фолбэк для шаринга
+     * Обработчик кнопки "Поделиться в Telegram"
      */
-    showShareFallback(shareData) {
-        const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
-        
-        // Используем буфер обмена
-        navigator.clipboard.writeText(shareText).then(() => {
-            this.showNotification('Ссылка скопирована в буфер обмена!');
-        }).catch(() => {
-            // Фолбэк для старых браузеров
-            const textarea = document.createElement('textarea');
-            textarea.value = shareText;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            this.showNotification('Ссылка скопирована!');
-        });
+    handleTGShare(event) {
+        try {
+            const shareBtn = event.currentTarget;
+            const shareData = JSON.parse(shareBtn.dataset.share || '{}');
+            
+            const tgUrl = `https://t.me/share/url?` +
+                `url=${encodeURIComponent(shareData.url)}&` +
+                `text=${encodeURIComponent(`${shareData.title}\n\n${shareData.text}`)}`;
+            
+            window.open(tgUrl, '_blank', 'width=550,height=400');
+        } catch (error) {
+            console.warn('Ошибка шеринга Telegram:', error);
+            this.showNotification('Не удалось открыть Telegram');
+        }
+    }
+
+    /**
+     * Обработчик кнопки "Скопировать информацию" - ИСПРАВЛЕННЫЙ
+     */
+    async handleCopyInfo(event) {
+        try {
+            const shareBtn = event.currentTarget;
+            const shareData = JSON.parse(shareBtn.dataset.share || '{}');
+            
+            // Получаем данные из DOM безопасным способом
+            const filmTitle = document.querySelector('.meeting-title')?.textContent || '';
+            const filmYearElement = document.querySelector('.meeting-year');
+            const filmYear = filmYearElement ? filmYearElement.textContent.replace('🎬 ', '') : '';
+            const weekdayElement = document.querySelector('.meeting-weekday');
+            const weekday = weekdayElement ? weekdayElement.textContent : '';
+            
+            // Получаем место, дату и время из деталей
+            let place = '';
+            let date = '';
+            let time = '';
+            
+            // Ищем все детали
+            const detailItems = document.querySelectorAll('.meeting-detail-item');
+            detailItems.forEach(item => {
+                const label = item.querySelector('.detail-label');
+                const value = item.querySelector('.detail-value');
+                
+                if (label && value) {
+                    const labelText = label.textContent;
+                    const valueText = value.textContent;
+                    
+                    if (labelText.includes('Место встречи')) {
+                        place = valueText;
+                    } else if (labelText.includes('Дата встречи')) {
+                        date = valueText;
+                    } else if (labelText.includes('Время встречи')) {
+                        time = valueText;
+                    }
+                }
+            });
+            
+            const botInfo = "Подпишитесь на бота: @Odyssey_Cinema_Club_bot\nКаждую пятницу в 14:00 получайте анонсы встреч";
+            
+            const textToCopy = `🎬 КИНОКЛУБ "ОДИССЕЯ"\n\n${filmTitle} (${filmYear})\n\n📅 ${weekday ? `${weekday}, ` : ''}${date}\n🕒 ${time}\n📍 ${place}\n\n🤖 ${botInfo}\n\n🔗 ${shareData.url}\n\n#КиноклубОдиссея #Киновстреча`.trim();
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(textToCopy);
+                this.showNotification('Информация о встрече скопирована!');
+            } else {
+                // Fallback для старых браузеров
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                this.showNotification('Информация о встрече скопирована!');
+            }
+        } catch (error) {
+            console.warn('Ошибка копирования:', error);
+            this.showNotification('Не удалось скопировать информацию');
+        }
     }
 
     /**
@@ -557,6 +722,14 @@ class NextMeetingModule {
                 this.closeModal();
             }
         });
+
+        // Предотвращаем сохранение изображения
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target.classList.contains('poster-with-watermark') || 
+                e.target.classList.contains('image-modal-img')) {
+                e.preventDefault();
+            }
+        }, false);
 
         // Очистка при разгрузке страницы
         window.addEventListener('beforeunload', () => {
@@ -599,10 +772,14 @@ class NextMeetingModule {
     }
 
     prepareShareData(data) {
+        const weekday = this.getWeekdayFromDate(data.date);
+        const dateWithWeekday = weekday ? `${weekday}, ${data.date}` : data.date;
+        
         return {
             title: `🎬 Киноклуб Одиссея: ${data.film}`,
-            text: `${data.film} (${data.year})\n📅 ${data.date} | 🕒 ${data.time}\n📍 ${data.place}`,
-            url: window.location.href
+            text: `${data.film} (${data.year})\n📅 ${dateWithWeekday} | 🕒 ${data.time}\n📍 ${data.place}\n\n🤖 Подпишитесь на бота: @Odyssey_Cinema_Club_bot`,
+            url: window.location.href,
+            image: data.poster
         };
     }
 
