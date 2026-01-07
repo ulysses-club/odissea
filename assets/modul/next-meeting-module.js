@@ -246,13 +246,6 @@ class NextMeetingModule {
                                 ${this.renderDetailItem('🕒 Время встречи', time)}
                             </div>
 
-                            <div class="meeting-header">
-                                <h3 class="meeting-detail-item">Неделя встречи: ${weekday ? `<span class="meeting-weekday">${weekday}</span>` : ''}</h3>
-                                <div style="display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap;">
-                                    
-                                </div>
-                            </div>
-
                             <!-- Актеры -->
                             ${cast && cast !== 'Нет данных' ? `
                                 <div class="meeting-detail-item" style="grid-column: span 2;">
@@ -260,6 +253,14 @@ class NextMeetingModule {
                                     <div class="detail-value">${this.escapeHtml(cast)}</div>
                                 </div>
                             ` : ''}
+
+                            <!-- Неделя встречи -->
+                            <div class="meeting-header">
+                                <h3 class="meeting-detail-item">Неделя встречи: ${weekday ? `<span class="meeting-weekday">${weekday}</span>` : ''}</h3>
+                                <div style="display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap;">
+                                    
+                                </div>
+                            </div>
                             
                             <!-- Таймер -->
                             ${countdownHTML}
