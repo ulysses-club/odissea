@@ -17,6 +17,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 500px; /* Фиксированная минимальная высота */
 }
 
 .film-card:hover {
@@ -29,8 +30,9 @@
 .film-card-image {
     position: relative;
     width: 100%;
-    aspect-ratio: 9/14;
+    height: 350px; /* Фиксированная высота изображения */
     overflow: hidden;
+    flex-shrink: 0; /* Не сжимается */
 }
 
 .poster-image {
@@ -67,6 +69,8 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    justify-content: space-between; /* Равномерное распределение */
+    min-height: 150px; /* Минимальная высота блока информации */
 }
 
 .work-header {
@@ -75,6 +79,7 @@
     align-items: center;
     margin-bottom: 8px;
     font-size: var(--text-sm);
+    flex-shrink: 0; /* Не сжимается */
 }
 
 .work-year {
@@ -89,6 +94,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
+    flex-shrink: 0;
 }
 
 .film-card h3 {
@@ -97,6 +103,9 @@
     color: var(--light);
     line-height: 1.4;
     flex-grow: 0;
+    min-height: 60px; /* Минимальная высота для заголовка */
+    display: flex;
+    align-items: flex-start;
 }
 
 .work-description {
@@ -106,9 +115,14 @@
     line-height: 1.5;
     opacity: 0.9;
     flex-grow: 1;
+    overflow: hidden; /* Защита от переполнения */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Ограничение строк для дескрипшена */
+    -webkit-box-orient: vertical;
+    min-height: 60px; /* Минимальная высота описания */
 }
 
-/* Кнопка смотреть */
+/* Кнопка смотреть - зафиксирована внизу */
 .film-kinopoisk-button {
     display: inline-flex;
     align-items: center;
@@ -121,10 +135,12 @@
     text-decoration: none;
     font-weight: 600;
     font-size: var(--text-sm);
-    margin-top: 16px;
+    margin-top: auto; /* Автоматический отступ сверху для прижатия к низу */
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
+    width: 100%; /* Занимает всю ширину */
+    flex-shrink: 0; /* Не сжимается */
 }
 
 .film-kinopoisk-button:hover {
@@ -186,7 +202,7 @@
 .film-card:nth-child(5) { animation-delay: 0.5s; }
 .film-card:nth-child(6) { animation-delay: 0.6s; }
 
-/* Адаптивность */
+/* Адаптивность - УДАЛЕН aspect-ratio */
 @media (max-width: 768px) {
     .video-posters-grid {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -194,36 +210,46 @@
         padding: var(--space-sm);
     }
     
+    .film-card {
+        min-height: 450px; /* Уменьшенная высота для мобильных */
+    }
+    
     .film-card-image {
-        aspect-ratio: 9/12;
+        height: 250px; /* Уменьшенная высота изображения для мобильных */
+    }
+    
+    .film-card h3 {
+        min-height: 50px;
+        font-size: var(--text-md);
+    }
+    
+    .work-description {
+        min-height: 50px;
+        -webkit-line-clamp: 2; /* Меньше строк для мобильных */
     }
 }
 
 @media (max-width: 480px) {
     .video-posters-grid {
         grid-template-columns: 1fr;
+        max-width: 100%;
     }
     
     .work-info {
         padding: var(--space-sm);
+        min-height: 140px;
     }
     
     .film-card h3 {
-        font-size: var(--text-md);
-    }
-}
-
-/* Fallback для старых браузеров */
-@supports not (aspect-ratio: 9/14) {
-    .film-card-image {
-        height: 0;
-        padding-bottom: 155.56%;
-        position: relative;
+        font-size: var(--text-base);
+        min-height: 45px;
     }
     
-    .poster-image {
-        position: absolute;
-        top: 0;
-        left: 0;
+    .film-card {
+        min-height: 420px;
+    }
+    
+    .film-card-image {
+        height: 220px;
     }
 }

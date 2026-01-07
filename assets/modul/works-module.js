@@ -15,13 +15,24 @@ class WorksModule {
         };
         
         this.state = { works: [] };
+        // Инициализируем сразу, не ждем DOMContentLoaded
         this.init();
     }
 
     /** Инициализация модуля */
     async init() {
+        // Ждем полной загрузки DOM для надежности
+        if (document.readyState === 'loading') {
+            await new Promise(resolve => {
+                document.addEventListener('DOMContentLoaded', resolve);
+            });
+        }
+        
         this.container = document.querySelector(this.config.containerId);
-        if (!this.container) return;
+        if (!this.container) {
+            console.warn('Контейнер для работ не найден:', this.config.containerId);
+            return;
+        }
         
         await this.loadData();
         this.renderWorks();
@@ -33,6 +44,12 @@ class WorksModule {
             this.showLoading();
             const data = await this.fetchWithFallback();
             this.state.works = Array.isArray(data) ? data : [];
+            
+            // Если данные загрузились, но массив пуст - используем моковые данные
+            if (this.state.works.length === 0) {
+                console.warn('Получен пустой массив работ, используем демо-данные');
+                this.state.works = this.getMockData();
+            }
         } catch (error) {
             console.error('Ошибка загрузки работ:', error);
             this.showError();
@@ -50,10 +67,15 @@ class WorksModule {
         
         for (const url of urls) {
             try {
+                console.log('Попытка загрузки работ из:', url);
                 const response = await fetch(url);
-                if (response.ok) return await response.json();
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Данные успешно загружены из:', url, data);
+                    return data;
+                }
             } catch (e) {
-                console.warn(`Не удалось загрузить ${url}`);
+                console.warn(`Не удалось загрузить ${url}:`, e);
             }
         }
         throw new Error('Все источники недоступны');
@@ -68,6 +90,13 @@ class WorksModule {
             "Ссылка на видео": "https://vkvideo.ru/video-199046020_456239064?gid=199046020",
             "Тип": "Трейлер",
             "Описание": "Трейлер к короткометражному фильму участника киноклуба"
+        }, {
+            "Название": "Документальный фильм о киноклубе",
+            "Год": "2024",
+            "URL постера": "https://via.placeholder.com/300x450/6a11cb/ffffff?text=Документальный",
+            "Ссылка на видео": "https://vk.com/video-199046020_456239065",
+            "Тип": "Документальный",
+            "Описание": "Фильм о создании и работе нашего киноклуба"
         }];
     }
 
@@ -92,11 +121,17 @@ class WorksModule {
 
     /** Рендеринг всех работ */
     renderWorks() {
-        if (!this.container || !this.state.works.length) {
+        if (!this.container) {
+            console.error('Контейнер для работ не найден при рендеринге');
+            return;
+        }
+        
+        if (!this.state.works.length) {
             this.showError();
             return;
         }
         
+        console.log('Рендеринг работ:', this.state.works.length);
         this.container.innerHTML = this.state.works
             .map(work => this.createWorkCard(work))
             .join('');
@@ -108,10 +143,11 @@ class WorksModule {
         const year = work['Год'] || '';
         const type = work['Тип'] || 'Работа';
         const videoUrl = work['Ссылка на видео'] || '#';
-        const hasVideo = videoUrl && videoUrl !== '#';
+        const hasVideo = videoUrl && videoUrl !== '#' && !videoUrl.includes('undefined');
         const safeTitle = this.escapeHtml(title);
         const safeYear = this.escapeHtml(year);
         const safeType = this.escapeHtml(type);
+        const description = work['Описание'] || '';
         
         return `
         <article class="film-card" role="article" aria-label="${safeType}: ${safeTitle}">
@@ -132,15 +168,15 @@ class WorksModule {
                 
                 <h3>${safeTitle}</h3>
                 
-                ${work['Описание'] ? `
-                <p class="work-description">${this.escapeHtml(work['Описание'])}</p>
+                ${description ? `
+                <p class="work-description">${this.escapeHtml(description)}</p>
                 ` : ''}
                 
                 <a href="${videoUrl}" 
                    ${hasVideo ? 'target="_blank" rel="noopener noreferrer"' : ''} 
                    class="film-kinopoisk-button"
-                   ${!hasVideo ? 'style="pointer-events: none; cursor: default;"' : ''}>
-                    🎬 Смотреть работу
+                   ${!hasVideo ? 'style="pointer-events: none; cursor: default; opacity: 0.6;"' : ''}>
+                    🎬 ${hasVideo ? 'Смотреть работу' : 'Нет видео'}
                 </a>
             </div>
         </article>
@@ -158,6 +194,16 @@ class WorksModule {
             .replace(/'/g, '&#039;');
     }
 }
+
+/** Инициализация модуля при наличии контейнера */
+function initWorksModule() {
+    console.log('Инициализация WorksModule...');
+    new WorksModule();
+}
+
+// Автоматическая инициализация - всегда вызываем
+console.log('Запуск WorksModule инициализации...');
+initWorksModule();
 
 /** Инициализация модуля при наличии контейнера */
 function initWorksModule() {
