@@ -130,6 +130,7 @@ class DiscussionsModule {
                             <div id="discussion-modal-year" class="discussion-modal__year"></div>
                             <div id="discussion-modal-director" class="discussion-modal__director"></div>
                             <div id="discussion-modal-genre" class="discussion-modal__genre"></div>
+                            <div id="discussion-modal-country" class="discussion-modal__country"></div>
                             <div class="discussion-modal__rating">
                                 <span id="discussion-modal-rating" class="discussion-modal__rating-value">0.0</span>
                             </div>
@@ -137,7 +138,7 @@ class DiscussionsModule {
                     </div>
                     <div class="discussion-modal__body">
                         <div class="discussion-modal__section">
-                            <h3>Детали фильма</h3>
+                            <h3>Детали обсуждения</h3>
                             <div class="discussion-modal__details">
                                 <!-- Детали будут заполнены динамически -->
                             </div>
@@ -637,6 +638,12 @@ class DiscussionsModule {
             genreElement.textContent = genre ? `Жанр: ${genre}` : '';
         }
 
+        // Страна
+        const countryElement = this.elements.modal.querySelector('#discussion-modal-country');
+        if (countryElement) {
+            countryElement.textContent = country ? `Страна: ${country}` : '';
+        }
+
         // Рейтинг
         const ratingElement = this.elements.modal.querySelector('#discussion-modal-rating');
         if (ratingElement) {
@@ -661,8 +668,7 @@ class DiscussionsModule {
             const details = [
                 { label: 'Дата обсуждения', value: date },
                 { label: 'Номер обсуждения', value: discussionNumber ? `#${discussionNumber}` : null },
-                { label: 'Участников', value: participants ? `${participants} чел.` : null },
-                { label: 'Страна', value: country }
+                { label: 'Участников', value: participants ? `${participants} чел.` : null }
             ].filter(({ value }) => value && value.toString().trim() !== '');
 
             if (details.length > 0) {

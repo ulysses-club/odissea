@@ -188,8 +188,11 @@
 
 /* ===== МОБИЛЬНАЯ НАВИГАЦИЯ ===== */
 @media (max-width: 768px) {
+    /* На десктопе nav-container скрывается, поэтому показываем на мобильных */
     .nav-container {
-        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
     }
 
     /* Кнопка гамбургер-меню */
@@ -204,8 +207,8 @@
         border: none;
         cursor: pointer;
         padding: 0;
-        position: relative;
         z-index: 1001;
+        flex-shrink: 0;
         border-radius: var(--radius-md, 8px);
         transition: background-color 0.2s ease;
     }
@@ -241,8 +244,9 @@
         transform: rotate(-45deg) translate(7px, -6px);
     }
 
-    /* Мобильное меню */
+    /* Мобильное меню - скрыто по умолчанию */
     .nav {
+        display: none;
         position: fixed;
         top: 0;
         right: -100%;
@@ -265,6 +269,7 @@
     }
 
     .nav.mobile-open {
+        display: flex;
         right: 0;
     }
 
@@ -351,6 +356,43 @@
         width: 100%;
         height: 100%;
     }
+
+    /* Стили для переключателя сезонных эффектов в мобильной навигации */
+    .nav-seasons-toggle {
+        margin-left: 0;
+        margin-top: var(--space-md);
+        padding: var(--space-md) var(--space-lg);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: var(--radius-md);
+    }
+    
+    .seasons-toggle {
+        justify-content: center;
+        width: 100%;
+        gap: var(--space-sm);
+    }
+    
+    .seasons-toggle-label {
+        font-size: var(--text-xl);
+        order: -1;
+    }
+    
+    .seasons-toggle-slider {
+        width: 36px;
+        height: 18px;
+    }
+    
+    .seasons-toggle-slider:before {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .seasons-toggle input:checked + .seasons-toggle-slider:before {
+        transform: translateX(18px);
+    }
 }
 
 /* ===== ПЛАНШЕТЫ (768px - 1024px) ===== */
@@ -368,19 +410,35 @@
         min-width: 180px;
     }
 
+    /* На планшетах кнопка меню не нужна */
     .mobile-menu-btn {
         display: none;
+    }
+
+    /* Переключатель сезонных эффектов для планшетов */
+    .nav-seasons-toggle {
+        margin-left: var(--space-sm);
     }
 }
 
 /* ===== ДЕСКТОП (> 1024px) ===== */
 @media (min-width: 769px) {
+    /* На десктопе показываем навигацию, а кнопку меню скрываем */
+    .nav-container {
+        display: flex;
+    }
+
     .mobile-menu-btn {
         display: none;
     }
 
     .nav-overlay {
         display: none !important;
+    }
+
+    /* Переключатель сезонных эффектов для десктопа */
+    .nav-seasons-toggle {
+        margin-left: var(--space-sm);
     }
 }
 
@@ -405,6 +463,29 @@
     .badge {
         font-size: 0.65em;
         padding: 2px 5px;
+    }
+
+    /* Переключатель сезонных эффектов для очень маленьких экранов */
+    .nav-seasons-toggle {
+        padding: var(--space-sm) var(--space-md);
+    }
+    
+    .seasons-toggle {
+        gap: var(--space-xs);
+    }
+    
+    .seasons-toggle-slider {
+        width: 32px;
+        height: 16px;
+    }
+    
+    .seasons-toggle-slider:before {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .seasons-toggle input:checked + .seasons-toggle-slider:before {
+        transform: translateX(16px);
     }
 }
 
@@ -463,6 +544,11 @@
     border-top-color: var(--primary, #6a11cb);
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* ===== ПЕРЕКЛЮЧАТЕЛЬ СЕЗОННЫХ ЭФФЕКТОВ В НАВИГАЦИИ ===== */
@@ -545,70 +631,6 @@
     animation: togglePulse 0.5s ease;
 }
 
-/* Адаптивность для мобильных */
-@media (max-width: 768px) {
-    .nav-seasons-toggle {
-        margin-left: 0;
-        margin-top: var(--space-md);
-        padding: var(--space-md) var(--space-lg);
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        width: 100%;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: var(--radius-md);
-    }
-    
-    .seasons-toggle {
-        justify-content: center;
-        width: 100%;
-        gap: var(--space-sm);
-    }
-    
-    .seasons-toggle-label {
-        font-size: var(--text-xl);
-        order: -1;
-    }
-    
-    .seasons-toggle-slider {
-        width: 36px;
-        height: 18px;
-    }
-    
-    .seasons-toggle-slider:before {
-        width: 14px;
-        height: 14px;
-    }
-    
-    .seasons-toggle input:checked + .seasons-toggle-slider:before {
-        transform: translateX(18px);
-    }
-}
-
-/* Для очень маленьких экранов */
-@media (max-width: 480px) {
-    .nav-seasons-toggle {
-        padding: var(--space-sm) var(--space-md);
-    }
-    
-    .seasons-toggle {
-        gap: var(--space-xs);
-    }
-    
-    .seasons-toggle-slider {
-        width: 32px;
-        height: 16px;
-    }
-    
-    .seasons-toggle-slider:before {
-        width: 12px;
-        height: 12px;
-    }
-    
-    .seasons-toggle input:checked + .seasons-toggle-slider:before {
-        transform: translateX(16px);
-    }
-}
-
 /* Поддержка уменьшения движения */
 @media (prefers-reduced-motion: reduce) {
     .seasons-toggle-slider,
@@ -657,7 +679,6 @@
 
 /* Поддержка уменьшения движения */
 @media (prefers-reduced-motion: reduce) {
-
     .nav__link.dropdown-toggle,
     .dropdown-item,
     .dropdown-menu,

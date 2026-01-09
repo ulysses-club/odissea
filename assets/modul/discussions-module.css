@@ -99,7 +99,7 @@
     top: var(--space-md);
     right: var(--space-md);
     background: var(--dark-light);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(50px);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-full);
     display: flex;
@@ -430,7 +430,7 @@
     color: var(--light);
     line-height: 1.2;
 }
-
+ы
 .discussion-modal__year {
     font-size: var(--text-lg);
     color: var(--gray);
@@ -438,6 +438,11 @@
 
 .discussion-modal__director,
 .discussion-modal__genre {
+    font-size: var(--text-md);
+    color: var(--light);
+}
+
+.discussion-modal__country {
     font-size: var(--text-md);
     color: var(--light);
 }
