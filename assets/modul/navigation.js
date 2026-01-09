@@ -32,6 +32,12 @@ class NavigationModule {
                         { title: "Рандомайзер", href: "randomizer.html", badge: "NEW" },
                         { title: "Тайный Санта", href: "santa-game.html", badge: "NEW" }
                     ]
+                },
+                // ДОБАВЛЕН НОВЫЙ ПУНКТ
+                {
+                    title: "Автор сайта",
+                    href: "stanislav.html",
+                    dropdown: []
                 }
             ]
         };
@@ -115,6 +121,7 @@ class NavigationModule {
         if (page.includes('quiz') || page.includes('Interactive-game') ||
             page.includes('crocodile-game') || page.includes('randomizer') ||
             page.includes('santa-game')) return 'games';
+        if (page.includes('stanislav')) return 'stanislav';
 
         return '';
     }
@@ -156,17 +163,19 @@ class NavigationModule {
     generateNavItem(item, currentPage, index) {
         const isActive = this.isItemActive(currentPage, index);
         const hasBadge = item.dropdown.some(subItem => subItem.badge);
+        const isAuthorItem = item.title === "Автор сайта";
 
         return `
-            <div class="nav-dropdown" data-index="${index}">
-                <a href="${item.href}" 
-                   class="nav__link dropdown-toggle ${isActive ? 'active' : ''}" 
-                   aria-expanded="false" 
-                   aria-haspopup="true"
-                   ${isActive ? 'aria-current="page"' : ''}>
-                    ${item.title}
-                    ${hasBadge ? '<span class="dropdown-indicator" aria-hidden="true">▼</span>' : ''}
-                </a>
+        <div class="nav-dropdown ${isAuthorItem ? 'author-item' : ''}" data-index="${index}">
+            <a href="${item.href}" 
+               class="nav__link dropdown-toggle ${isActive ? 'active' : ''}" 
+               aria-expanded="false" 
+               aria-haspopup="${item.dropdown.length > 0}"
+               ${isActive ? 'aria-current="page"' : ''}>
+                ${item.title}
+                ${item.dropdown.length > 0 && hasBadge ? '<span class="dropdown-indicator" aria-hidden="true">▼</span>' : ''}
+            </a>
+            ${item.dropdown.length > 0 ? `
                 <div class="dropdown-menu" role="menu" aria-hidden="true">
                     ${item.dropdown.map(subItem => `
                         <a href="${subItem.href}" 
@@ -182,8 +191,9 @@ class NavigationModule {
                         </a>
                     `).join('')}
                 </div>
-            </div>
-        `;
+            ` : ''}
+        </div>
+    `;
     }
 
     /**
@@ -193,7 +203,8 @@ class NavigationModule {
         const pageMap = {
             'index': 0,
             'setup-guide': 1,
-            'games': 2
+            'games': 2,
+            'stanislav': 3
         };
         return pageMap[currentPage] === index;
     }

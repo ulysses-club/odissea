@@ -687,6 +687,56 @@
                 transform: none !important;
             }
         }
+        
+        /* ===== СТИЛИ ДЛЯ КНОПКИ "АВТОР САЙТА" В НАВИГАЦИИ ===== */
+        .nav-dropdown.author-item .nav__link.dropdown-toggle {
+            color: var(--gray-light); /* Приглушенный цвет */
+            opacity: 0.8;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-dropdown.author-item .nav__link.dropdown-toggle:hover,
+        .nav-dropdown.author-item .nav__link.dropdown-toggle:focus-visible {
+            color: var(--light);
+            background: rgba(106, 17, 203, 0.1);
+            border-color: rgba(106, 17, 203, 0.3);
+            opacity: 1;
+        }
+
+        .nav-dropdown.author-item .nav__link.dropdown-toggle.active {
+            color: var(--light);
+            background: rgba(106, 17, 203, 0.15);
+            border-color: rgba(106, 17, 203, 0.4);
+            opacity: 1;
+        }
+
+        /* Убираем индикатор для пунктов без выпадающего меню */
+        .nav-dropdown.author-item .nav__link.dropdown-toggle .dropdown-indicator {
+            display: none;
+        }
+
+        /* На мобильных устройствах */
+        @media (max-width: 768px) {
+            .nav-dropdown.author-item {
+                margin-top: var(--space-sm);
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            
+            .nav-dropdown.author-item .nav__link.dropdown-toggle {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                margin: var(--space-sm) 0;
+                text-align: center;
+                justify-content: center;
+                color: var(--gray-light);
+            }
+            
+            .nav-dropdown.author-item .nav__link.dropdown-toggle:hover {
+                background: rgba(106, 17, 203, 0.1);
+                color: var(--light);
+            }
+        }
     </style>
 </head>
 
@@ -705,7 +755,7 @@
                 <!-- Содержимое виджета -->
             </div>
 
-            <!-- Навигация справа -->
+            <!-- Навигация справа (будет загружена через JavaScript) -->
             <nav class="nav-container"></nav>
 
             <!-- Кнопка мобильного меню -->
@@ -1138,13 +1188,21 @@
                 initNavigation();
                 
                 // Добавляем текущей странице активный класс
-                const navLinks = document.querySelectorAll('.nav__link');
-                navLinks.forEach(link => {
-                    if (link.href.includes('stanislav.html')) {
-                        link.classList.add('active');
-                        link.setAttribute('aria-current', 'page');
-                    }
-                });
+                setTimeout(() => {
+                    const navLinks = document.querySelectorAll('.nav__link');
+                    navLinks.forEach(link => {
+                        if (link.href.includes('stanislav.html')) {
+                            link.classList.add('active');
+                            link.setAttribute('aria-current', 'page');
+                            
+                            // Добавляем специальный класс author-item для стилизации
+                            const dropdown = link.closest('.nav-dropdown');
+                            if (dropdown) {
+                                dropdown.classList.add('author-item');
+                            }
+                        }
+                    });
+                }, 100);
             }
 
             // Инициализация футера с кастомными настройками для страницы автора

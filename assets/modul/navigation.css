@@ -188,6 +188,7 @@
 
 /* ===== МОБИЛЬНАЯ НАВИГАЦИЯ ===== */
 @media (max-width: 768px) {
+
     /* На десктопе nav-container скрывается, поэтому показываем на мобильных */
     .nav-container {
         display: flex;
@@ -248,11 +249,15 @@
     .nav {
         display: none;
         position: fixed;
-        top: 80px; /* Под хедером */
+        top: 80px;
+        /* Под хедером */
         right: -100%;
-        width: 280px; /* Фиксированная ширина */
-        height: auto; /* Автовысота по содержимому */
-        max-height: calc(100vh - 100px); /* Ограничиваем высоту */
+        width: 280px;
+        /* Фиксированная ширина */
+        height: auto;
+        /* Автовысота по содержимому */
+        max-height: calc(100vh - 100px);
+        /* Ограничиваем высоту */
         background: var(--dark, #0a0a14);
         flex-direction: column;
         justify-content: flex-start;
@@ -270,7 +275,8 @@
 
     .nav.mobile-open {
         display: flex;
-        right: 20px; /* Отступ от правого края */
+        right: 20px;
+        /* Отступ от правого края */
     }
 
     /* Пункты меню на мобильном */
@@ -384,29 +390,29 @@
         background: rgba(255, 255, 255, 0.03);
         border-radius: var(--radius-md);
     }
-    
+
     .seasons-toggle {
         justify-content: center;
         width: 100%;
         gap: var(--space-sm);
     }
-    
+
     .seasons-toggle-label {
         font-size: var(--text-xl);
         order: -1;
     }
-    
+
     .seasons-toggle-slider {
         width: 36px;
         height: 18px;
     }
-    
+
     .seasons-toggle-slider:before {
         width: 14px;
         height: 14px;
     }
-    
-    .seasons-toggle input:checked + .seasons-toggle-slider:before {
+
+    .seasons-toggle input:checked+.seasons-toggle-slider:before {
         transform: translateX(18px);
     }
 }
@@ -439,6 +445,7 @@
 
 /* ===== ДЕСКТОП (> 1024px) ===== */
 @media (min-width: 769px) {
+
     /* На десктопе показываем навигацию, а кнопку меню скрываем */
     .nav-container {
         display: flex;
@@ -460,6 +467,7 @@
 
 /* ===== ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ (< 480px) ===== */
 @media (max-width: 480px) {
+
     /* Ещё более компактное меню для маленьких экранов */
     .nav {
         width: 260px;
@@ -489,22 +497,22 @@
     .nav-seasons-toggle {
         padding: var(--space-sm) var(--space-md);
     }
-    
+
     .seasons-toggle {
         gap: var(--space-xs);
     }
-    
+
     .seasons-toggle-slider {
         width: 32px;
         height: 16px;
     }
-    
+
     .seasons-toggle-slider:before {
         width: 12px;
         height: 12px;
     }
-    
-    .seasons-toggle input:checked + .seasons-toggle-slider:before {
+
+    .seasons-toggle input:checked+.seasons-toggle-slider:before {
         transform: translateX(16px);
     }
 }
@@ -567,8 +575,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* ===== ПЕРЕКЛЮЧАТЕЛЬ СЕЗОННЫХ ЭФФЕКТОВ В НАВИГАЦИИ ===== */
@@ -616,12 +629,12 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.seasons-toggle input:checked + .seasons-toggle-slider {
+.seasons-toggle input:checked+.seasons-toggle-slider {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     border-color: rgba(106, 17, 203, 0.5);
 }
 
-.seasons-toggle input:checked + .seasons-toggle-slider:before {
+.seasons-toggle input:checked+.seasons-toggle-slider:before {
     transform: translateX(20px);
     background: var(--light);
 }
@@ -640,26 +653,86 @@
     transform: scale(1.1);
 }
 
-/* Анимация переключателя */
-@keyframes togglePulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+/* ===== СТИЛИ ДЛЯ КНОПКИ "АВТОР САЙТА" ===== */
+.nav-dropdown.author-item .nav__link.dropdown-toggle {
+    color: var(--gray-light);
+    /* Приглушенный цвет */
+    opacity: 0.8;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.seasons-toggle input:checked ~ .seasons-toggle-label {
+.nav-dropdown.author-item .nav__link.dropdown-toggle:hover,
+.nav-dropdown.author-item .nav__link.dropdown-toggle:focus-visible {
+    color: var(--light);
+    background: rgba(106, 17, 203, 0.1);
+    border-color: rgba(106, 17, 203, 0.3);
+    opacity: 1;
+}
+
+.nav-dropdown.author-item .nav__link.dropdown-toggle.active {
+    color: var(--light);
+    background: rgba(106, 17, 203, 0.15);
+    border-color: rgba(106, 17, 203, 0.4);
+    opacity: 1;
+}
+
+/* Убираем индикатор для пунктов без выпадающего меню */
+.nav-dropdown.author-item .nav__link.dropdown-toggle .dropdown-indicator {
+    display: none;
+}
+
+/* На мобильных устройствах */
+@media (max-width: 768px) {
+    .nav-dropdown.author-item {
+        margin-top: var(--space-sm);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-dropdown.author-item .nav__link.dropdown-toggle {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        margin: var(--space-sm) 0;
+        text-align: center;
+        justify-content: center;
+        color: var(--gray-light);
+    }
+
+    .nav-dropdown.author-item .nav__link.dropdown-toggle:hover {
+        background: rgba(106, 17, 203, 0.1);
+        color: var(--light);
+    }
+}
+
+/* Анимация переключателя */
+@keyframes togglePulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.seasons-toggle input:checked~.seasons-toggle-label {
     animation: togglePulse 0.5s ease;
 }
 
 /* Поддержка уменьшения движения */
 @media (prefers-reduced-motion: reduce) {
+
     .seasons-toggle-slider,
     .seasons-toggle-slider:before,
     .seasons-toggle-label {
         transition: none;
         animation: none;
     }
-    
+
     .seasons-toggle:hover .seasons-toggle-label {
         transform: none;
     }
@@ -695,15 +768,15 @@
             border-bottom-color: rgba(0, 0, 0, 0.03);
             color: var(--dark, #0a0a14);
         }
-        
+
         .nav__link.dropdown-toggle {
             color: var(--dark, #0a0a14);
         }
-        
+
         .nav__link.dropdown-toggle:hover {
             background: rgba(106, 17, 203, 0.1) !important;
         }
-        
+
         .nav__link.dropdown-toggle.active {
             color: var(--primary, #6a11cb);
         }
@@ -712,6 +785,7 @@
 
 /* Поддержка уменьшения движения */
 @media (prefers-reduced-motion: reduce) {
+
     .nav__link.dropdown-toggle,
     .dropdown-item,
     .dropdown-menu,
