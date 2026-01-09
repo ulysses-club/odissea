@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="../modul/weather-module.css">
     
     <style>
-        /* ===== СТИЛИ РЕЗЮМЕ (специфичные для страницы) ===== */
+        /* ===== СТИЛИ РЕЗЮМЕ ===== */
         .resume-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -575,7 +575,7 @@
             box-shadow: var(--shadow-primary);
         }
 
-        /* ===== АДАПТИВНОСТЬ ДЛЯ РЕЗЮМЕ ===== */
+        /* ===== АДАПТИВНОСТЬ ===== */
 
         /* Планшеты */
         @media (max-width: 1024px) {
@@ -1120,7 +1120,7 @@
         <img class="modal-content" id="modalImage">
     </div>
 
-    <!-- Движущаяся кинолента (дублируется для корректной работы) -->
+    <!-- Движущаяся кинолента -->
     <div class="film-reel-overlay">
         <div class="film-perforations"></div>
     </div>
@@ -1172,7 +1172,7 @@
         });
     </script>
 
-    <!-- Подключаем общие скрипты -->
+    <!-- Общие скрипты -->
     <script src="../js/script.js"></script>
     <script src="../modul/navigation.js"></script>
     <script src="../modul/footer-module.js"></script>
@@ -1183,11 +1183,9 @@
     <script>
         // Адаптация модулей для страницы stanislav.html
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация навигации с кастомными настройками для страницы автора
             if (typeof initNavigation === 'function') {
                 initNavigation();
                 
-                // Добавляем текущей странице активный класс
                 setTimeout(() => {
                     const navLinks = document.querySelectorAll('.nav__link');
                     navLinks.forEach(link => {
@@ -1195,7 +1193,6 @@
                             link.classList.add('active');
                             link.setAttribute('aria-current', 'page');
                             
-                            // Добавляем специальный класс author-item для стилизации
                             const dropdown = link.closest('.nav-dropdown');
                             if (dropdown) {
                                 dropdown.classList.add('author-item');
@@ -1204,8 +1201,6 @@
                     });
                 }, 100);
             }
-
-            // Инициализация футера с кастомными настройками для страницы автора
 
             // Инициализация анимаций при скролле
             if (typeof initScrollAnimations === 'function') {
