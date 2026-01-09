@@ -1,18 +1,10 @@
-// Добавь этот код в начале файла, после конфигурации zonaPlus
-this.config = {
-    zonaPlus: {
-        baseUrl: 'https://w140.zona.plus/search/',
-        logoUrl: 'https://w140.zona.plus/build/6b6b2c89e58f3b1d4f402666f6d622c4.svg'
-    }
-};
-
 /**
  * Модуль для управления секцией "История обсуждений"
+ * НЕЗАВИСИМЫЙ МОДУЛЬ с модальным окном
  */
 class DiscussionsModule {
     /**
      * Конструктор класса DiscussionsModule
-     * Инициализирует конфигурацию, состояние и запускает модуль
      */
     constructor() {
         this.config = {
@@ -49,19 +41,21 @@ class DiscussionsModule {
                 totalFilms: 0,
                 hasMore: true
             },
-            zonaLogoLoaded: false
+            zonaLogoLoaded: false,
+            currentFilm: null
         };
 
+        this.elements = {};
         this.init();
     }
 
     /**
      * Инициализация модуля
-     * Кэширует DOM элементы, инициализирует обработчики событий, загружает данные и рендерит фильмы
      */
     async init() {
         console.log('Инициализация DiscussionsModule...');
         this.cacheDOM();
+        this.createModalStructure();
         this.initEventListeners();
         await this.preloadZonaLogo();
         await this.loadData();
@@ -89,7 +83,6 @@ class DiscussionsModule {
 
     /**
      * Кэширование DOM элементов
-     * Находит и сохраняет ссылки на DOM элементы по селекторам из конфигурации
      */
     cacheDOM() {
         this.elements = {};
@@ -115,18 +108,111 @@ class DiscussionsModule {
     }
 
     /**
+     * Создание структуры модального окна
+     */
+    createModalStructure() {
+        // Создаем модальное окно если его нет
+        let modal = document.getElementById('discussion-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'discussion-modal';
+            modal.className = 'discussion-modal';
+            modal.innerHTML = `
+                <div class="discussion-modal__overlay"></div>
+                <div class="discussion-modal__content">
+                    <button class="discussion-modal__close" aria-label="Закрыть">×</button>
+                    <div class="discussion-modal__header">
+                        <div class="discussion-modal__poster">
+                            <img id="discussion-modal-poster" src="${this.config.defaults.poster}" alt="Постер фильма">
+                        </div>
+                        <div class="discussion-modal__info">
+                            <h2 id="discussion-modal-title" class="discussion-modal__title">Название фильма</h2>
+                            <div id="discussion-modal-year" class="discussion-modal__year"></div>
+                            <div id="discussion-modal-director" class="discussion-modal__director"></div>
+                            <div id="discussion-modal-genre" class="discussion-modal__genre"></div>
+                            <div class="discussion-modal__rating">
+                                <span id="discussion-modal-rating" class="discussion-modal__rating-value">0.0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="discussion-modal__body">
+                        <div class="discussion-modal__section">
+                            <h3>Детали фильма</h3>
+                            <div class="discussion-modal__details">
+                                <!-- Детали будут заполнены динамически -->
+                            </div>
+                        </div>
+                        <div class="discussion-modal__section">
+                            <h3>Описание</h3>
+                            <p id="discussion-modal-description" class="discussion-modal__description">
+                                Описание загружается...
+                            </p>
+                        </div>
+                        <div class="discussion-modal__actions">
+                            <!-- Кнопки будут добавлены динамически -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Сохраняем ссылки на элементы модального окна
+        this.elements.modal = modal;
+        this.elements.modalOverlay = modal.querySelector('.discussion-modal__overlay');
+        this.elements.modalClose = modal.querySelector('.discussion-modal__close');
+        this.elements.modalContent = modal.querySelector('.discussion-modal__content');
+    }
+
+    /**
      * Инициализация обработчиков событий
-     * Назначает обработчики событий для элементов управления
      */
     initEventListeners() {
         if (this.elements.loadMoreBtn) {
             this.elements.loadMoreBtn.addEventListener('click', () => this.loadMoreFilms());
         }
+
+        // Модальное окно
+        this.elements.modalOverlay?.addEventListener('click', () => this.closeModal());
+        this.elements.modalClose?.addEventListener('click', () => this.closeModal());
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.elements.modal?.classList.contains('active')) {
+                this.closeModal();
+            }
+        });
+
+        // Делегирование кликов по карточкам
+        document.addEventListener('click', (e) => {
+            // Клик по карточке фильма
+            const filmCard = e.target.closest('.film-card');
+            if (filmCard && !e.target.closest('.film-action-btn')) {
+                e.preventDefault();
+                const filmId = filmCard.dataset.filmId;
+                const film = this.findFilmById(filmId);
+                if (film) {
+                    this.showFilmModal(film);
+                }
+            }
+
+            // Клик по постеру
+            const filmThumbnail = e.target.closest('.film-thumbnail');
+            if (filmThumbnail) {
+                e.preventDefault();
+                const filmCard = filmThumbnail.closest('.film-card');
+                if (filmCard) {
+                    const filmId = filmCard.dataset.filmId;
+                    const film = this.findFilmById(filmId);
+                    if (film) {
+                        this.showFilmModal(film);
+                    }
+                }
+            }
+        });
     }
 
     /**
      * Загрузка данных из JSON
-     * Загружает данные фильмов, обрабатывает ошибки и загружает демо-данные при необходимости
      */
     async loadData() {
         try {
@@ -163,9 +249,6 @@ class DiscussionsModule {
 
     /**
      * Загрузка данных локально
-     * Выполняет fetch-запрос к локальному JSON файлу с резервными путями
-     * 
-     * @returns {Promise<Array>} - Промис с массивом данных о фильмах
      */
     async fetchLocalData() {
         try {
@@ -205,9 +288,6 @@ class DiscussionsModule {
 
     /**
      * Загрузка демонстрационных данных
-     * Создает макет данных для демонстрации при недоступности основных источников
-     * 
-     * @returns {Array} - Массив демо-данных фильмов
      */
     loadMockFilmsData() {
         console.log('Загрузка демо-данных фильмов');
@@ -230,7 +310,6 @@ class DiscussionsModule {
 
     /**
      * Сортировка фильмов по дате
-     * Сортирует фильмы по дате обсуждения в порядке убывания (сначала новые)
      */
     sortFilmsByDate() {
         this.state.sortedFilms = [...this.state.films].sort((a, b) => {
@@ -243,7 +322,6 @@ class DiscussionsModule {
 
     /**
      * Сброс пагинации
-     * Сбрасывает состояние пагинации к начальным значениям
      */
     resetPagination() {
         this.state.pagination = {
@@ -255,8 +333,18 @@ class DiscussionsModule {
     }
 
     /**
+     * Поиск фильма по ID
+     */
+    findFilmById(filmId) {
+        const index = parseInt(filmId);
+        if (!isNaN(index) && this.state.sortedFilms[index]) {
+            return this.state.sortedFilms[index];
+        }
+        return null;
+    }
+
+    /**
      * Показать состояние загрузки
-     * Отображает индикатор загрузки в контейнере фильмов
      */
     showLoadingState() {
         if (this.elements.filmsContainer) {
@@ -271,7 +359,6 @@ class DiscussionsModule {
 
     /**
      * Показать состояние ошибки
-     * Отображает сообщение об ошибке в контейнере фильмов
      */
     showErrorState() {
         if (this.elements.filmsContainer) {
@@ -283,7 +370,6 @@ class DiscussionsModule {
 
     /**
      * Загрузка дополнительных фильмов
-     * Увеличивает текущую страницу пагинации и рендерит дополнительные фильмы
      */
     loadMoreFilms() {
         if (!this.state.pagination.hasMore) return;
@@ -295,7 +381,6 @@ class DiscussionsModule {
 
     /**
      * Рендеринг фильмов
-     * Отображает фильмы в контейнере с учетом текущей пагинации
      */
     renderFilms() {
         if (!this.elements.filmsContainer) {
@@ -320,8 +405,8 @@ class DiscussionsModule {
 
         this.updateLoadMoreButton();
 
-        const filmsHTML = paginatedFilms.map(film =>
-            this.createFilmCard(film)
+        const filmsHTML = paginatedFilms.map((film, index) =>
+            this.createFilmCard(film, index)
         ).join('');
 
         this.elements.filmsContainer.innerHTML = filmsHTML;
@@ -332,39 +417,19 @@ class DiscussionsModule {
     }
 
     /**
- * Предзагрузка логотипа Zona.plus
- */
-    async preloadZonaLogo() {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => {
-                this.state.zonaLogoLoaded = true;
-                resolve();
-            };
-            img.onerror = resolve;
-            img.src = this.config.zonaPlus.logoUrl;
-        });
-    }
-
-    /**
      * Создание карточки фильма
-     * Генерирует HTML разметку для карточки отдельного фильма
-     * 
-     * @param {Object} film - Объект с данными о фильме
-     * @returns {string} - HTML строка карточки фильма
      */
-    createFilmCard(film) {
+    createFilmCard(film, index) {
         const rating = this.parseRating(film['Оценка']);
         const formattedRating = rating.toFixed(this.config.defaults.ratingPrecision);
         const filmName = film['Фильм'] || 'Неизвестный фильм';
         const filmYear = film['Год'] || '';
         const discussionNumber = film['Номер обсуждения'] || 'N/A';
         const kinopoiskUrl = this.generateKinopoiskUrl(filmName, filmYear);
-        const zoneUrl = this.generateZoneUrl(filmName);
         const shareData = this.prepareShareData(filmName, filmYear, discussionNumber);
 
         return `
-    <article class="film-card" role="article" aria-labelledby="film-${discussionNumber}-title">
+    <article class="film-card" data-film-id="${index}" role="article" aria-labelledby="film-${discussionNumber}-title">
         <div class="film-card-image">
             <img src="${film['Постер URL'] || this.config.defaults.poster}" 
                  alt="Постер: ${filmName} (${filmYear})" 
@@ -420,6 +485,7 @@ class DiscussionsModule {
     initShareButtons() {
         document.querySelectorAll('.film-share-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 const shareData = JSON.parse(e.currentTarget.dataset.share);
                 this.shareFilm(shareData);
             });
@@ -506,6 +572,199 @@ class DiscussionsModule {
     }
 
     /**
+     * Показать модальное окно фильма
+     */
+    showFilmModal(film) {
+        if (!this.elements.modal) return;
+
+        this.state.currentFilm = film;
+        this.fillModalData(film);
+        this.elements.modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        setTimeout(() => {
+            this.elements.modalClose?.focus();
+        }, 100);
+    }
+
+    /**
+     * Заполнение модального окна данными
+     */
+    fillModalData(film) {
+        const filmName = film['Фильм'] || 'Неизвестный фильм';
+        const filmYear = film['Год'] || '';
+        const director = film['Режиссер'] || 'Неизвестен';
+        const genre = film['Жанр'] || 'Не указан';
+        const country = film['Страна'] || '';
+        const rating = this.parseRating(film['Оценка']);
+        const date = film['Дата'] || '';
+        const discussionNumber = film['Номер обсуждения'] || '';
+        const participants = film['Участников'] || '';
+        const description = film['Описание'] || 'Описание отсутствует';
+        const posterUrl = film['Постер URL'] || this.config.defaults.poster;
+
+        // Постер
+        const posterImg = this.elements.modal.querySelector('#discussion-modal-poster');
+        if (posterImg) {
+            posterImg.src = posterUrl;
+            posterImg.alt = filmName;
+            posterImg.onerror = () => {
+                posterImg.src = this.config.defaults.poster;
+            };
+        }
+
+        // Заголовок
+        const titleElement = this.elements.modal.querySelector('#discussion-modal-title');
+        if (titleElement) {
+            titleElement.textContent = filmName;
+        }
+
+        // Год
+        const yearElement = this.elements.modal.querySelector('#discussion-modal-year');
+        if (yearElement) {
+            yearElement.textContent = filmYear ? `(${filmYear})` : '';
+        }
+
+        // Режиссер
+        const directorElement = this.elements.modal.querySelector('#discussion-modal-director');
+        if (directorElement) {
+            directorElement.textContent = director ? `Режиссер: ${director}` : '';
+        }
+
+        // Жанр
+        const genreElement = this.elements.modal.querySelector('#discussion-modal-genre');
+        if (genreElement) {
+            genreElement.textContent = genre ? `Жанр: ${genre}` : '';
+        }
+
+        // Рейтинг
+        const ratingElement = this.elements.modal.querySelector('#discussion-modal-rating');
+        if (ratingElement) {
+            if (rating > 0) {
+                ratingElement.textContent = rating.toFixed(this.config.defaults.ratingPrecision);
+                ratingElement.style.color = this.getRatingColor(rating);
+            } else {
+                ratingElement.textContent = 'Нет оценки';
+                ratingElement.style.color = 'var(--gray)';
+            }
+        }
+
+        // Описание
+        const descriptionElement = this.elements.modal.querySelector('#discussion-modal-description');
+        if (descriptionElement) {
+            descriptionElement.textContent = description;
+        }
+
+        // Детали фильма
+        const detailsContainer = this.elements.modal.querySelector('.discussion-modal__details');
+        if (detailsContainer) {
+            const details = [
+                { label: 'Дата обсуждения', value: date },
+                { label: 'Номер обсуждения', value: discussionNumber ? `#${discussionNumber}` : null },
+                { label: 'Участников', value: participants ? `${participants} чел.` : null },
+                { label: 'Страна', value: country }
+            ].filter(({ value }) => value && value.toString().trim() !== '');
+
+            if (details.length > 0) {
+                const detailsHTML = details
+                    .map(({ label, value }) => `
+                        <div class="discussion-modal__detail">
+                            <span class="detail-label">${label}:</span>
+                            <span class="detail-value">${this.escapeHtml(value)}</span>
+                        </div>
+                    `).join('');
+
+                detailsContainer.innerHTML = detailsHTML;
+            } else {
+                detailsContainer.innerHTML = '<p class="no-data">Дополнительная информация отсутствует</p>';
+            }
+        }
+
+        // Обновляем кнопки
+        this.updateModalActionButtons(film);
+    }
+
+    /**
+     * Обновление кнопок действий в модальном окне
+     */
+    updateModalActionButtons(film) {
+        const filmName = film['Фильм'] || '';
+        const filmYear = film['Год'] || '';
+        const kinopoiskUrl = this.generateKinopoiskUrl(filmName, filmYear);
+
+        const actionsContainer = this.elements.modal.querySelector('.discussion-modal__actions');
+        if (!actionsContainer) return;
+
+        // Очищаем контейнер
+        actionsContainer.innerHTML = '';
+
+        // Кнопка "КиноПоиск"
+        if (kinopoiskUrl) {
+            const kinopoiskButton = document.createElement('a');
+            kinopoiskButton.href = kinopoiskUrl;
+            kinopoiskButton.target = '_blank';
+            kinopoiskButton.rel = 'noopener noreferrer';
+            kinopoiskButton.className = 'btn btn--outline';
+            kinopoiskButton.innerHTML = '🎬 КиноПоиск';
+            actionsContainer.appendChild(kinopoiskButton);
+        }
+
+        // Кнопка "Поделиться"
+        const shareButton = document.createElement('button');
+        shareButton.className = 'btn btn--primary';
+        shareButton.innerHTML = '📢 Поделиться';
+        shareButton.addEventListener('click', () => this.shareCurrentFilm());
+        actionsContainer.appendChild(shareButton);
+    }
+
+    /**
+     * Поделиться текущим фильмом
+     */
+    async shareCurrentFilm() {
+        if (!this.state.currentFilm) return;
+
+        const film = this.state.currentFilm;
+        const title = film['Фильм'] || 'Фильм';
+        const rating = this.parseRating(film['Оценка']);
+        const year = film['Год'] || '';
+        const director = film['Режиссер'] || '';
+        const genre = film['Жанр'] || '';
+
+        let shareText = `🎬 ${title}${year ? ` (${year})` : ''}`;
+        if (director) shareText += `\n👨‍🎤 Режиссер: ${director}`;
+        if (genre) shareText += `\n🎭 Жанр: ${genre}`;
+        if (rating > 0) shareText += `\n⭐ Клубная оценка: ${rating.toFixed(1)}/10`;
+        shareText += `\n\n🎬 Посмотрели в киноклубе "Одиссея"!\n👉 Подробнее: ${window.location.href}`;
+
+        if (navigator.share) {
+            navigator.share({
+                title: `${title} - Киноклуб Одиссея`,
+                text: shareText,
+                url: window.location.href
+            }).catch(console.error);
+        } else {
+            navigator.clipboard.writeText(shareText)
+                .then(() => {
+                    this.showNotification('Информация о фильме скопирована в буфер обмена!');
+                })
+                .catch(err => {
+                    console.error('Ошибка копирования:', err);
+                    alert('Скопируйте текст вручную:\n\n' + shareText);
+                });
+        }
+    }
+
+    /**
+     * Закрытие модального окна
+     */
+    closeModal() {
+        if (!this.elements.modal) return;
+
+        this.elements.modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    /**
      * Копирование текста в буфер обмена
      */
     async copyToClipboard(text) {
@@ -560,11 +819,6 @@ class DiscussionsModule {
 
     /**
      * Создание мета-информации фильма
-     * Генерирует HTML для отдельной мета-информации фильма
-     * 
-     * @param {string} label - Подпись мета-информации
-     * @param {string} value - Значение мета-информации
-     * @returns {string} - HTML строка мета-информации или пустая строка
      */
     createFilmMeta(label, value) {
         if (value === null || value === undefined || value === '') return '';
@@ -573,7 +827,6 @@ class DiscussionsModule {
 
     /**
      * Обновление кнопки "Загрузить еще"
-     * Обновляет состояние и видимость кнопки пагинации на основе текущего состояния
      */
     updateLoadMoreButton() {
         if (!this.elements.loadMoreBtn) return;
@@ -595,10 +848,6 @@ class DiscussionsModule {
 
     /**
      * Парсинг даты из строки
-     * Преобразует строку даты в формате DD.MM.YYYY в объект Date
-     * 
-     * @param {string} dateString - Строка с датой в формате DD.MM.YYYY
-     * @returns {Date} - Объект Date или нулевая дата при ошибке
      */
     parseDate(dateString) {
         if (!dateString) return new Date(0);
@@ -616,10 +865,6 @@ class DiscussionsModule {
 
     /**
      * Форматирование даты
-     * Преобразует строку даты в единообразный формат DD.MM.YYYY
-     * 
-     * @param {string} dateString - Строка с датой
-     * @returns {string} - Отформатированная дата или исходная строка при ошибке
      */
     formatDate(dateString) {
         if (!dateString) return 'дата не указана';
@@ -630,10 +875,6 @@ class DiscussionsModule {
 
     /**
      * Парсинг рейтинга
-     * Преобразует рейтинг из различных форматов в число от 0 до 10
-     * 
-     * @param {string|number} rating - Рейтинг в строковом или числовом формате
-     * @returns {number} - Числовой рейтинг от 0 до 10
      */
     parseRating(rating) {
         if (!rating && rating !== 0) return 0;
@@ -643,11 +884,17 @@ class DiscussionsModule {
     }
 
     /**
+     * Получение цвета для рейтинга
+     */
+    getRatingColor(rating) {
+        if (rating >= 8) return '#4CAF50';
+        if (rating >= 6) return '#FF9800';
+        if (rating >= 4) return '#FF5722';
+        return '#F44336';
+    }
+
+    /**
      * Создание звезд рейтинга
-     * Генерирует HTML для визуального отображения рейтинга в виде звезд
-     * 
-     * @param {number} rating - Числовой рейтинг от 0 до 10
-     * @returns {string} - HTML строка со звездами рейтинга
      */
     createRatingStars(rating) {
         const num = this.parseRating(rating);
@@ -684,11 +931,6 @@ class DiscussionsModule {
 
     /**
      * Генерация URL для КиноПоиска
-     * Создает ссылку для поиска информации о фильме на КиноПоиске
-     * 
-     * @param {string} filmName - Название фильма
-     * @param {string} filmYear - Год выпуска фильма
-     * @returns {string|null} - URL для поиска на КиноПоиске или null при ошибке
      */
     generateKinopoiskUrl(filmName, filmYear) {
         if (!filmName) return null;
@@ -703,28 +945,7 @@ class DiscussionsModule {
     }
 
     /**
-     * Генерация URL для Зоны
-     */
-    generateZoneUrl(filmName) {
-        if (!filmName) return null;
-
-        const russianTitle = this.extractRussianTitle(filmName);
-        const cleanName = russianTitle
-            .replace(/[^\w\sа-яА-ЯёЁ\-:]/gi, ' ')
-            .replace(/\s+/g, ' ')
-            .trim()
-            .toLowerCase();
-
-        const encodedName = encodeURIComponent(cleanName);
-        return `${this.config.zonaPlus.baseUrl}${encodedName}`;
-    }
-
-    /**
      * Экранирование HTML
-     * Заменяет специальные символы HTML на их безопасные эквиваленты
-     * 
-     * @param {string} unsafe - Исходная небезопасная строка
-     * @returns {string} - Безопасная экранированная строка
      */
     escapeHtml(unsafe) {
         if (unsafe === null || unsafe === undefined) return '';
@@ -742,13 +963,12 @@ class DiscussionsModule {
 
 /**
  * Инициализация модуля обсуждений
- * Проверяет наличие секции film-archive и инициализирует модуль
  */
 function initDiscussionsModule() {
     console.log('Проверяем наличие секции film-archive...');
     if (document.querySelector('#film-archive')) {
         console.log('Секция film-archive найдена, инициализируем модуль...');
-        new DiscussionsModule();
+        window.discussionsModule = new DiscussionsModule();
     } else {
         console.log('Секция film-archive НЕ найдена!');
     }
