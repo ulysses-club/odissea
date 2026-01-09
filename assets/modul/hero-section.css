@@ -1,12 +1,7 @@
 /* ===== ГЕРОЙ СЕКЦИЯ - АВТОНОМНЫЙ МОДУЛЬ ===== */
 
 .hero-container {
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    width: 100%;
     overflow: hidden;
     z-index: 1;
     min-height: 100vh;
@@ -15,6 +10,7 @@
     justify-content: center;
     padding: var(--space-xxxl, 64px) var(--space-lg, 24px);
     position: relative;
+    margin: 0;
 }
 
 /* Основной герой блок */
@@ -29,6 +25,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: var(--radius-lg, 20px);
+    margin: 0 auto;
 }
 
 /* Кинематографичные эффекты */
@@ -61,18 +59,19 @@
             transparent);
     animation: filmStripMove 20s linear infinite;
     z-index: 1;
+    border-radius: var(--radius-lg, 20px) var(--radius-lg, 20px) 0 0;
 }
 
 /* Основной контейнеры */
 .hero__content {
-    max-width: 1800px;
+    max-width: 1200px;
     width: 100%;
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-xxl, 48px);
     align-items: center;
     z-index: 2;
-    padding: 0 var(--space-lg, 24px);
+    padding: var(--space-xl, 32px);
     margin: 0 auto;
 }
 
@@ -84,7 +83,7 @@
 
 /* Кинематографичный заголовок */
 .hero__title {
-    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 800;
     margin-bottom: var(--space-lg, 24px);
     line-height: 1.1;
@@ -118,7 +117,7 @@
 }
 
 .hero__subtitle {
-    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    font-size: clamp(1.1rem, 2.2vw, 1.4rem);
     color: rgba(255, 255, 255, 0.85);
     margin-bottom: var(--space-xl, 32px);
     line-height: 1.6;
@@ -135,7 +134,7 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--space-md, 16px);
     justify-content: center;
-    max-width: 1400px;
+    max-width: 1000px;
     margin: 0 auto;
     width: 100%;
 }
@@ -149,13 +148,14 @@
     letter-spacing: 0.5px;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-decoration: none;
-    border-radius: 9999px !important;
+    border-radius: var(--radius-full) !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-sm, 8px);
     min-height: 48px;
     font-size: var(--text-base, 1rem);
+    min-width: 0;
 }
 
 .hero__cta .btn--primary {
@@ -190,6 +190,13 @@
 
 .btn-icon {
     font-size: 1.1em;
+    flex-shrink: 0;
+}
+
+.btn-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Кинематографичное изображение */
@@ -335,6 +342,7 @@
     .hero__content {
         grid-template-columns: 1fr 1fr;
         gap: var(--space-xxl, 48px);
+        padding: var(--space-xxl, 48px);
     }
 
     .hero__text {
@@ -360,7 +368,7 @@
 /* Очень широкие экраны */
 @media (min-width: 1400px) {
     .hero__content {
-        max-width: 1600px;
+        max-width: 1400px;
     }
 
     .hero__cta {
@@ -375,7 +383,7 @@
 /* Большие десктопы */
 @media (min-width: 1600px) {
     .hero__content {
-        max-width: 1800px;
+        max-width: 1600px;
     }
 
     .hero__cta {
@@ -389,15 +397,22 @@
 
 /* Планшеты (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
+    .hero-container {
+        padding: var(--space-xxl, 48px) var(--space-lg, 24px);
+    }
+
+    .hero {
+        min-height: 70vh;
+    }
+
     .hero__content {
         grid-template-columns: 1fr;
         gap: var(--space-xl, 32px);
-        padding: 0 var(--space-lg, 24px);
+        padding: var(--space-xl, 32px);
     }
 
     .hero__text {
         padding-right: 0;
-        padding-bottom: var(--space-xl, 32px);
         text-align: center;
     }
 
@@ -408,89 +423,151 @@
 
     .hero__cta {
         grid-template-columns: repeat(2, 1fr);
+        max-width: 800px;
     }
 
     .hero__image {
+        display: block;
         max-width: 600px;
         margin: 0 auto;
         transform: none;
     }
 }
 
-/* Мобильные устройства */
+/* Мобильные устройства (до 767px) */
 @media (max-width: 767px) {
     .hero-container {
-        left: 0;
-        right: 0;
-        margin-left: 0;
-        margin-right: 0;
-        width: 100%;
+        padding: var(--space-xl, 32px) var(--space-md, 16px);
+        min-height: auto;
     }
 
     .hero {
-        min-height: 70vh;
-        padding: var(--space-xl, 32px) 0;
+        min-height: auto;
+        padding: var(--space-xl, 32px) var(--space-md, 16px);
+        border-radius: var(--radius-md, 12px);
     }
 
     .hero__content {
-        padding: 0 var(--space-md, 16px);
+        padding: var(--space-lg, 24px);
+        gap: var(--space-xl, 32px);
     }
 
     .hero__title {
-        font-size: clamp(2.2rem, 5vw, 3rem);
+        font-size: clamp(2rem, 4.5vw, 2.8rem);
         margin-bottom: var(--space-md, 16px);
     }
 
     .hero__title::after {
         bottom: -15px;
         width: 150px;
+        height: 2px;
     }
 
     .hero__subtitle {
-        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-size: clamp(1rem, 1.8vw, 1.2rem);
         margin-bottom: var(--space-lg, 24px);
     }
 
+    /* Кнопки на мобильных - адаптивная сетка */
     .hero__cta {
         grid-template-columns: 1fr;
         gap: var(--space-md, 16px);
-        padding: 0 var(--space-sm, 8px);
+    }
+
+    /* Для страницы с 7 кнопками - делаем 2 колонки */
+    .hero[data-page="index"] .hero__cta {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .hero__cta .btn {
         width: 100%;
-        max-width: 300px;
-        padding: var(--space-md, 16px) var(--space-lg, 24px);
-        margin: 0 auto;
+        padding: var(--space-sm, 12px) var(--space-md, 16px);
+        font-size: var(--text-sm, 0.875rem);
+        min-height: 44px;
+    }
+
+    .btn-icon {
+        font-size: 1em;
+    }
+
+    .hero__image {
+        display: none; /* На мобильных скрываем изображение */
     }
 }
 
-/* Маленькие мобильные */
+/* Маленькие мобильные (до 480px) */
 @media (max-width: 480px) {
+    .hero-container {
+        padding: var(--space-lg, 24px) var(--space-sm, 12px);
+    }
+
     .hero {
-        min-height: 60vh;
-        padding: var(--space-lg, 24px) 0;
+        padding: var(--space-lg, 24px) var(--space-sm, 12px);
+        border-radius: var(--radius-sm, 8px);
     }
 
     .hero__content {
-        padding: 0 var(--space-sm, 8px);
+        padding: var(--space-md, 16px);
+        gap: var(--space-lg, 24px);
     }
 
     .hero__title {
-        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
     }
 
     .hero__subtitle {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 
-    .hero__image-img {
-        height: 250px;
+    /* На очень маленьких экранах - 1 колонка */
+    .hero[data-page="index"] .hero__cta {
+        grid-template-columns: 1fr;
     }
 
     .hero__cta .btn {
-        font-size: var(--text-sm, 0.875rem);
-        padding: var(--space-sm, 8px) var(--space-md, 16px);
+        padding: var(--space-xs, 8px) var(--space-sm, 12px);
+        font-size: var(--text-xs, 0.75rem);
+        min-height: 40px;
+    }
+
+    /* Скрываем иконки на очень маленьких экранах для экономии места */
+    @media (max-width: 360px) {
+        .btn-icon {
+            display: none;
+        }
+        
+        .hero__cta .btn {
+            justify-content: center;
+        }
+    }
+}
+
+/* Ориентация ландшафт на мобильных */
+@media (max-width: 767px) and (orientation: landscape) {
+    .hero-container {
+        padding: var(--space-lg, 24px) var(--space-md, 16px);
+        min-height: 70vh;
+    }
+
+    .hero {
+        min-height: 60vh;
+    }
+
+    .hero__content {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg, 24px);
+    }
+
+    .hero__title {
+        font-size: clamp(1.8rem, 3.5vw, 2.2rem);
+    }
+
+    .hero__cta {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero[data-page="index"] .hero__cta {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -516,4 +593,29 @@
 .hero__cta .btn:focus-visible {
     outline: 2px solid var(--primary, #6a11cb);
     outline-offset: 2px;
+}
+
+/* Состояния загрузки */
+.hero-container.loading {
+    position: relative;
+    min-height: 200px;
+}
+
+.hero-container.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--gray-light, #dee2e6);
+    border-top-color: var(--primary, #6a11cb);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }

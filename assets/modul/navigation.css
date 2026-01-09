@@ -22,7 +22,7 @@
     height: 100%;
 }
 
-/* Основная ссылка-переключатель - теперь всегда кликабельная */
+/* Основная ссылка-переключатель */
 .nav__link.dropdown-toggle {
     display: flex;
     align-items: center;
@@ -283,7 +283,7 @@
         border-bottom: none;
     }
 
-    /* Категории в мобильном меню - теперь кликабельные как ссылки */
+    /* Категории в мобильном меню */
     .nav__link.dropdown-toggle {
         width: 100%;
         justify-content: space-between;
