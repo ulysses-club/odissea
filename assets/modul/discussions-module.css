@@ -750,52 +750,188 @@
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .film-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: var(--space-lg);
+    /* Исправление контейнера архива */
+    .film-archive {
+        display: block !important;
+        width: 100% !important;
+        padding: var(--space-lg) 0 !important;
+        overflow: visible !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
-    .discussion-header {
-        flex-direction: column;
-        gap: var(--space-xs);
+    .film-archive .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 var(--space-md) !important;
+        display: block !important;
     }
 
-    .film-kinopoisk-button {
-        padding: var(--space-sm) var(--space-md);
-        font-size: var(--text-xs);
+    /* Исправление контейнера фильмов */
+    #films-container,
+    .film-grid,
+    .film-archive #films-container,
+    .film-archive .film-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        padding: 16px !important;
+        width: 100% !important;
+        min-height: auto !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin: 0 !important;
+        background: transparent !important;
     }
 
+    /* Исправление карточек фильмов */
+    .film-card {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        margin: 0 !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+
+    /* Исправление контейнера изображения */
+    .film-card-image {
+        width: 100% !important;
+        aspect-ratio: 2/3 !important;
+        position: relative !important;
+        overflow: hidden !important;
+        display: block !important;
+        background: #1a1a2a !important;
+    }
+
+    /* Исправление изображения */
+    .film-thumbnail {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+        position: relative !important;
+    }
+
+    /* Исправление информации о фильме */
+    .film-info {
+        padding: 16px !important;
+        display: block !important;
+        width: 100% !important;
+    }
+
+    /* Исправление заголовка */
+    .film-card h3 {
+        font-size: 18px !important;
+        margin: 8px 0 !important;
+        color: var(--light) !important;
+        display: block !important;
+    }
+
+    /* Исправление мета-информации */
+    .film-meta {
+        margin: 4px 0 !important;
+        font-size: 14px !important;
+        display: block !important;
+    }
+
+    /* Исправление описания */
+    .film-description {
+        margin-top: 8px !important;
+        font-size: 14px !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+
+    /* Исправление блока с рейтингом */
+    .film-rating {
+        position: absolute !important;
+        top: 8px !important;
+        right: 8px !important;
+        background: rgba(0, 0, 0, 0.7) !important;
+        backdrop-filter: blur(5px) !important;
+        padding: 4px 8px !important;
+        border-radius: 20px !important;
+        z-index: 2 !important;
+    }
+
+    /* Исправление кнопок действий */
     .film-actions {
-        flex-direction: column;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        margin-top: 12px !important;
+        padding-top: 12px !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 
     .film-action-btn {
-        width: 100%;
-        min-width: unset;
+        width: 100% !important;
+        padding: 10px !important;
+        font-size: 14px !important;
+        text-align: center !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+    }
+
+    /* Исправление кнопки "Показать еще" */
+    .load-more-btn {
+        display: block !important;
+        width: calc(100% - 32px) !important;
+        margin: 20px auto 0 !important;
+        padding: 12px !important;
+        font-size: 16px !important;
+        text-align: center !important;
+    }
+
+    /* Убираем все скрывающие стили */
+    [style*="display: none"] {
+        display: block !important;
+    }
+
+    .film-archive [style*="display: none"] {
+        display: grid !important;
     }
 }
 
+/* Для очень маленьких экранов */
 @media (max-width: 480px) {
-    .load-more-btn {
-        width: 100%;
-        max-width: 300px;
-        padding: var(--space-md) var(--space-lg);
+    #films-container,
+    .film-grid {
+        gap: 12px !important;
+        padding: 12px !important;
     }
 
-    .film-kinopoisk-button {
-        padding: var(--space-sm) var(--space-md);
-        font-size: var(--text-xs);
+    .film-info {
+        padding: 12px !important;
     }
 
-    .share-modal-content {
-        width: 95%;
-        padding: var(--space-lg);
+    .film-card h3 {
+        font-size: 16px !important;
     }
 
-    .share-option {
-        padding: var(--space-sm) var(--space-md);
-        font-size: var(--text-sm);
+    .film-meta {
+        font-size: 13px !important;
     }
+
+    .film-action-btn {
+        padding: 8px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* Диагностический стиль - временно, для отладки */
+.film-archive::before {
+    display: none !important;
 }
 
 /* Поддержка для браузеров, которые не поддерживают aspect-ratio */

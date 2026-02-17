@@ -241,18 +241,23 @@ class NextMeetingModule {
                                 ${this.renderDetailItem('🎬 Режиссер', director)}
                                 ${this.renderDetailItem('🎭 Жанр', genre)}
                                 ${this.renderDetailItem('🌍 Страна', country)}
-                                ${this.renderDetailItem('📍 Место встречи', place)}
-                                ${this.renderDetailItem('📅 Дата встречи', date)}
-                                ${this.renderDetailItem('🕒 Время встречи', time)}
-                            </div>
+                                </div>
 
-                            <!-- Актеры -->
+                                                            <!-- Актеры -->
                             ${cast && cast !== 'Нет данных' ? `
                                 <div class="meeting-detail-item" style="grid-column: span 2;">
                                     <div class="detail-label">👥 В главных ролях</div>
                                     <div class="detail-value">${this.escapeHtml(cast)}</div>
                                 </div>
                             ` : ''}
+
+                                <div class="meeting-details-grid">
+                                ${this.renderDetailItem('📍 Место встречи', place)}
+                                ${this.renderDetailItem('📅 Дата встречи', date)}
+                                ${this.renderDetailItem('🕒 Время встречи', time)}
+                            </div>
+
+
 
                             <!-- Неделя встречи -->
                             <div class="meeting-header">

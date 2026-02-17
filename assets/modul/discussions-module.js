@@ -60,6 +60,34 @@ class DiscussionsModule {
         await this.preloadZonaLogo();
         await this.loadData();
         this.renderFilms();
+        this.checkContainerVisibility();
+    }
+
+    /**
+     * Принудительная проверка видимости контейнера
+     */
+    checkContainerVisibility() {
+        if (this.elements.filmsContainer && this.elements.filmsContainer.nodeType === 1) {
+            try {
+                const styles = window.getComputedStyle(this.elements.filmsContainer);
+                console.log('Container styles:', {
+                    display: styles.display,
+                    visibility: styles.visibility,
+                    opacity: styles.opacity,
+                    height: styles.height,
+                    width: styles.width
+                });
+
+                // Принудительно устанавливаем правильные стили
+                this.elements.filmsContainer.style.display = 'grid';
+                this.elements.filmsContainer.style.visibility = 'visible';
+                this.elements.filmsContainer.style.opacity = '1';
+            } catch (error) {
+                console.warn('Ошибка при проверке видимости контейнера:', error);
+            }
+        } else {
+            console.warn('Контейнер фильмов не является элементом DOM или не существует');
+        }
     }
 
     /**
@@ -410,7 +438,12 @@ class DiscussionsModule {
             this.createFilmCard(film, index)
         ).join('');
 
+        // Принудительно устанавливаем стили для мобильных
         this.elements.filmsContainer.innerHTML = filmsHTML;
+        this.elements.filmsContainer.style.display = 'grid';
+        this.elements.filmsContainer.style.visibility = 'visible';
+        this.elements.filmsContainer.style.opacity = '1';
+
         console.log(`Отображено ${paginatedFilms.length} фильмов из ${this.state.sortedFilms.length}`);
 
         // Инициализируем кнопки поделиться после рендера
