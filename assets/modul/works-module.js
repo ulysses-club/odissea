@@ -1,9 +1,18 @@
 /**
  * Модуль архива работ
  * @class WorksModule
+ * @description Отвечает за загрузку и отображение архива видеоработ киноклуба.
+ * Управляет состоянием, рендерингом карточек и обработкой кликов по ссылкам.
  */
 class WorksModule {
     constructor() {
+        /**
+         * Конфигурация модуля
+         * @property {string} dataUrl - Основной путь к JSON с данными
+         * @property {string} containerId - ID контейнера для вставки карточек
+         * @property {string} defaultPoster - Путь к изображению-заглушке
+         * @property {Object} messages - Текстовые сообщения для интерфейса
+         */
         this.config = {
             dataUrl: '../data/works.json',
             containerId: '#works-container',
@@ -14,14 +23,17 @@ class WorksModule {
             }
         };
         
+        /** @property {Object} state - Состояние модуля (массив загруженных работ) */
         this.state = { works: [] };
-        // Инициализируем сразу, не ждем DOMContentLoaded
         this.init();
     }
 
-    /** Инициализация модуля */
+    /**
+     * Инициализация модуля
+     * @async
+     * @description Ожидает загрузки DOM, находит контейнер, загружает данные и рендерит карточки
+     */
     async init() {
-        // Ждем полной загрузки DOM для надежности
         if (document.readyState === 'loading') {
             await new Promise(resolve => {
                 document.addEventListener('DOMContentLoaded', resolve);
@@ -36,16 +48,20 @@ class WorksModule {
         
         await this.loadData();
         this.renderWorks();
+        this.attachClickHandlers();
     }
 
-    /** Загрузка данных с резервными источниками */
+    /**
+     * Загрузка данных
+     * @async
+     * @description Пытается загрузить данные из JSON, при ошибке или пустом массиве использует мок-данные
+     */
     async loadData() {
         try {
             this.showLoading();
             const data = await this.fetchWithFallback();
             this.state.works = Array.isArray(data) ? data : [];
             
-            // Если данные загрузились, но массив пуст - используем моковые данные
             if (this.state.works.length === 0) {
                 console.warn('Получен пустой массив работ, используем демо-данные');
                 this.state.works = this.getMockData();
@@ -57,7 +73,13 @@ class WorksModule {
         }
     }
 
-    /** Fetch с альтернативными путями */
+    /**
+     * Запрос к API с резервными путями
+     * @async
+     * @description Последовательно пробует загрузить данные из разных источников
+     * @returns {Promise<Array>} Массив работ
+     * @throws {Error} Если все источники недоступны
+     */
     async fetchWithFallback() {
         const urls = [
             this.config.dataUrl,
@@ -67,12 +89,9 @@ class WorksModule {
         
         for (const url of urls) {
             try {
-                console.log('Попытка загрузки работ из:', url);
                 const response = await fetch(url);
                 if (response.ok) {
-                    const data = await response.json();
-                    console.log('Данные успешно загружены из:', url, data);
-                    return data;
+                    return await response.json();
                 }
             } catch (e) {
                 console.warn(`Не удалось загрузить ${url}:`, e);
@@ -81,7 +100,10 @@ class WorksModule {
         throw new Error('Все источники недоступны');
     }
 
-    /** Демо-данные */
+    /**
+     * Получение мок-данных для демонстрации
+     * @returns {Array} Массив тестовых работ
+     */
     getMockData() {
         return [{
             "Название": "Трейлер фильма \"Всезон\"",
@@ -100,7 +122,10 @@ class WorksModule {
         }];
     }
 
-    /** Отображение состояния загрузки */
+    /**
+     * Отображение состояния загрузки
+     * @description Показывает спиннер и сообщение о загрузке в контейнере
+     */
     showLoading() {
         if (!this.container) return;
         this.container.innerHTML = `
@@ -111,7 +136,10 @@ class WorksModule {
         `;
     }
 
-    /** Отображение состояния ошибки */
+    /**
+     * Отображение ошибки
+     * @description Показывает сообщение об отсутствии данных
+     */
     showError() {
         if (!this.container) return;
         this.container.innerHTML = `
@@ -119,100 +147,111 @@ class WorksModule {
         `;
     }
 
-    /** Рендеринг всех работ */
+    /**
+     * Рендеринг всех работ
+     * @description Преобразует массив работ в HTML-карточки и вставляет в контейнер
+     */
     renderWorks() {
-        if (!this.container) {
-            console.error('Контейнер для работ не найден при рендеринге');
-            return;
-        }
+        if (!this.container) return;
         
         if (!this.state.works.length) {
             this.showError();
             return;
         }
         
-        console.log('Рендеринг работ:', this.state.works.length);
         this.container.innerHTML = this.state.works
             .map(work => this.createWorkCard(work))
             .join('');
     }
 
-    /** Создание HTML карточки работы */
+    /**
+     * Прикрепление обработчиков кликов к кнопкам
+     * @description Добавляет слушатели событий на кнопки для открытия ссылок через window.open
+     */
+    attachClickHandlers() {
+        const buttons = this.container.querySelectorAll('.film-kinopoisk-button');
+        buttons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const href = button.getAttribute('href');
+                
+                if (button.style.pointerEvents === 'none') {
+                    e.preventDefault();
+                    return;
+                }
+                
+                if (href && href !== '#' && !href.includes('undefined')) {
+                    e.preventDefault();
+                    window.open(href, '_blank');
+                } else {
+                    e.preventDefault();
+                }
+            });
+        });
+    }
+
+    /**
+     * Создание HTML-карточки работы
+     * @param {Object} work - Данные работы
+     * @returns {string} HTML-разметка карточки
+     */
     createWorkCard(work) {
         const title = work['Название'] || 'Неизвестная работа';
         const year = work['Год'] || '';
         const type = work['Тип'] || 'Работа';
         const videoUrl = work['Ссылка на видео'] || '#';
         const hasVideo = videoUrl && videoUrl !== '#' && !videoUrl.includes('undefined');
-        const safeTitle = this.escapeHtml(title);
-        const safeYear = this.escapeHtml(year);
-        const safeType = this.escapeHtml(type);
         const description = work['Описание'] || '';
         
+        const buttonStyle = !hasVideo 
+            ? 'style="pointer-events: none; cursor: not-allowed; opacity: 0.6;"' 
+            : '';
+        
         return `
-        <article class="film-card" role="article" aria-label="${safeType}: ${safeTitle}">
+        <article class="film-card" role="article" aria-label="${type}: ${title}">
             <div class="film-card-image">
                 <img src="${work['URL постера'] || this.config.defaultPoster}" 
-                     alt="${safeType}: ${safeTitle} (${safeYear})" 
+                     alt="${type}: ${title} (${year})" 
                      class="poster-image" 
                      loading="lazy"
                      onerror="this.src='${this.config.defaultPoster}'">
-                <span class="work-type">${safeType}</span>
+                <span class="work-type">${type}</span>
             </div>
             
             <div class="work-info">
                 <div class="work-header">
-                    ${year ? `<span class="work-year">${safeYear}</span>` : ''}
+                    ${year ? `<span class="work-year">${year}</span>` : ''}
                     <span class="video-link">${hasVideo ? '🎬 Видео доступно' : '📺 Нет видео'}</span>
                 </div>
                 
-                <h3>${safeTitle}</h3>
+                <h3>${title}</h3>
                 
                 ${description ? `
-                <p class="work-description">${this.escapeHtml(description)}</p>
+                <p class="work-description">${description}</p>
                 ` : ''}
                 
                 <a href="${videoUrl}" 
-                   ${hasVideo ? 'target="_blank" rel="noopener noreferrer"' : ''} 
                    class="film-kinopoisk-button"
-                   ${!hasVideo ? 'style="pointer-events: none; cursor: default; opacity: 0.6;"' : ''}>
+                   ${buttonStyle}>
                     🎬 ${hasVideo ? 'Смотреть работу' : 'Нет видео'}
                 </a>
             </div>
         </article>
         `;
     }
-
-    /** Экранирование HTML для безопасности */
-    escapeHtml(text) {
-        if (text == null) return '';
-        return String(text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
 }
 
-/** Инициализация модуля при наличии контейнера */
-function initWorksModule() {
-    console.log('Инициализация WorksModule...');
-    new WorksModule();
-}
-
-// Автоматическая инициализация - всегда вызываем
-console.log('Запуск WorksModule инициализации...');
-initWorksModule();
-
-/** Инициализация модуля при наличии контейнера */
+/** 
+ * Инициализация модуля при наличии контейнера
+ * @function initWorksModule
+ * @description Проверяет наличие контейнера и создает экземпляр WorksModule
+ */
 function initWorksModule() {
     if (document.querySelector('#works-container')) {
         new WorksModule();
     }
 }
 
-// Автоматическая инициализация
+// Автоматическая инициализация в зависимости от состояния загрузки страницы
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initWorksModule);
 } else {
