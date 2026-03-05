@@ -8,6 +8,8 @@
 
     <title>Киноклуб "ОДИССЕЯ"</title>
 
+    <link rel="manifest" href="/odissea/manifest.webmanifest">
+
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../modul/navigation.css">
     <link rel="stylesheet" href="../modul/hero-section.css">
@@ -303,6 +305,18 @@
     <script src="../modul/next-meeting-module.js"></script>
     <script src="../modul/map-module.js"></script>
     <script src="../modul/weather-module.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/odissea/service-worker.js').then(function (registration) {
+                    console.log('ServiceWorker зарегистрирован');
+                }, function (err) {
+                    console.log('Ошибка регистрации ServiceWorker: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 
 </html>
