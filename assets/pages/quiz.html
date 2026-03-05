@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Квиз "Odissea" | Киноклуб ОДИССЕЯ</title>
+    
+    <!-- Основные стили -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/quiz.css">
     <link rel="stylesheet" href="../modul/navigation.css">
@@ -14,8 +16,8 @@
     <link rel="stylesheet" href="../modul/seasons-effects.css">
     <link rel="stylesheet" href="../modul/scroll-to-top.css">
     <link rel="stylesheet" href="../modul/weather-module.css">
-    <meta name="description"
-        content="Квиз Odissea - проверьте свои знания о кино! Увлекательная викторина от киноклуба Одиссея.">
+    
+    <meta name="description" content="Квиз Odissea - проверьте свои знания о кино! Увлекательная викторина от киноклуба Одиссея.">
     <meta name="keywords" content="кино, квиз, викторина, тест, фильмы, Одиссея">
 </head>
 
@@ -57,203 +59,144 @@
     <div class="hero-container"></div>
 
     <!-- Правила квиза -->
-    <section id="quiz-rules" class="about">
-        <h2 class="section__title fade-in">Правила квиза</h2>
-        <div class="about__content">
-            <div class="faq-grid fade-in delay-1">
-
+    <section class="quiz-section">
+        <div class="container">
+            <h2 class="quiz-title">Правила квиза</h2>
+            <div class="quiz-faq-grid">
                 <!-- Колонка 1 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">⏱️</span>
-                            <h3>Время</h3>
-                        </div>
-                        <p class="faq-answer">На каждый вопрос дается ограниченное время. Думай быстро, но внимательно!
-                        </p>
+                <div class="quiz-card">
+                    <div class="faq-question">
+                        <span class="faq-icon" aria-hidden="true">⏱️</span>
+                        <h3>Время</h3>
                     </div>
+                    <p class="faq-answer">На каждый вопрос дается ограниченное время. Думай быстро, но внимательно!</p>
                 </div>
 
                 <!-- Колонка 2 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🏆</span>
-                            <h3>Рейтинг</h3>
-                        </div>
-                        <p class="faq-answer">Зарабатывай очки за правильные ответы и попади в таблицу лидеров киноклуба.
-                        </p>
+                <div class="quiz-card">
+                    <div class="faq-question">
+                        <span class="faq-icon" aria-hidden="true">🏆</span>
+                        <h3>Рейтинг</h3>
                     </div>
+                    <p class="faq-answer">Зарабатывай очки за правильные ответы и попади в таблицу лидеров киноклуба.</p>
                 </div>
 
                 <!-- Колонка 3 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">💡</span>
-                            <h3>Подсказки</h3>
-                        </div>
-                        <p class="faq-answer">У тебя есть ограниченное количество подсказок. Используй их мудро! Они заключены в картинках и скрытом смысле вопроса.
-                        </p>
+                <div class="quiz-card">
+                    <div class="faq-question">
+                        <span class="faq-icon" aria-hidden="true">💡</span>
+                        <h3>Подсказки</h3>
                     </div>
+                    <p class="faq-answer">У тебя есть ограниченное количество подсказок. Используй их мудро! Они заключены в картинках и скрытом смысле вопроса.</p>
                 </div>
-            </div>
-
-            <div class="faq-grid fade-in delay-1">
 
                 <!-- Колонка 4 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">⛔</span>
-                            <h3>Зарет гаджетов</h3>
-                        </div>
-                        <p class="faq-answer">Запрещается использовать умные устройства для поиска ответа! Нарушение будет караться штрафом в виде списания баллов.
-                        </p>
+                <div class="quiz-card">
+                    <div class="faq-question">
+                        <span class="faq-icon" aria-hidden="true">⛔</span>
+                        <h3>Запрет гаджетов</h3>
                     </div>
+                    <p class="faq-answer">Запрещается использовать умные устройства для поиска ответа! Нарушение будет караться штрафом в виде списания баллов.</p>
                 </div>
 
                 <!-- Колонка 5 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">⌛</span>
-                            <h3>Время сдачи ответов</h3>
-                        </div>
-                        <p class="faq-answer">Сдайте листы с ответами в течение отведённого времени до того, как будут объявлены правильные ответы.
-                        </p>
+                <div class="quiz-card">
+                    <div class="faq-question">
+                        <span class="faq-icon" aria-hidden="true">⌛</span>
+                        <h3>Время сдачи ответов</h3>
                     </div>
+                    <p class="faq-answer">Сдайте листы с ответами в течение отведённого времени до того, как будут объявлены правильные ответы.</p>
                 </div>
 
                 <!-- Колонка 6 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🤓</span>
-                            <h3>Поведение</h3>
-                        </div>
-                        <p class="faq-answer">Ведите себя достойно! Не давайте окружающим повода чувствовать себя некомфортно. 
-                        </p>
+                <div class="quiz-card">
+                    <div class="faq-question">
+                        <span class="faq-icon" aria-hidden="true">🤓</span>
+                        <h3>Поведение</h3>
                     </div>
+                    <p class="faq-answer">Ведите себя достойно! Не давайте окружающим повода чувствовать себя некомфортно.</p>
                 </div>
             </div>
 
-            <div class="rules-actions text-center fade-in delay-2">
-                <a href="#quiz-start" class="btn btn--primary" style="margin-right: var(--space-md);">Начать квиз</a>
-                <button class="btn btn--outline" id="view-leaders">Таблица лидеров</button>
-            </div>
-            <div class="rules-actions text-center fade-in delay-2">
-
+            <div class="rules-actions text-center">
+                <a href="#quiz-start" class="btn btn--primary quiz-nav-btn">Начать квиз</a>
+                <button class="btn btn--outline quiz-nav-btn" id="view-leaders">Таблица лидеров</button>
             </div>
         </div>
     </section>
 
     <!-- Основная часть квиза -->
-    <section id="quiz-start" class="about">
-        <div class="about__content">
-            <div class="quiz-container fade-in">
-                <!-- Здесь будет динамическое содержимое квиза -->
+    <section id="quiz-start" class="quiz-section">
+        <div class="container">
+            <div class="quiz-main-container">
+                <!-- Приветственный экран -->
                 <div class="quiz-welcome" id="quiz-welcome">
-                    <div class="welcome-content text-center">
-                        <h2 class="section__title">Готовы проверить свои знания?</h2>
-                        <p class="faq-answer" style="max-width: 600px; margin: 0 auto var(--space-xl);">
-                            Квиз состоит из 7 туров о фильмах, которые возможно мы обсуждали в киноклубе.
-                            Постарайтесь ответить правильно на как можно больше вопросов!
-                        </p>
+                    <h2 class="quiz-title">Готовы проверить свои знания?</h2>
+                    <p class="quiz-description">
+                        Квиз состоит из 7 туров о фильмах, которые возможно мы обсуждали в киноклубе.
+                        Постарайтесь ответить правильно на как можно больше вопросов!
+                    </p>
 
-                        <div class="faq-grid" style="margin-bottom: var(--space-xl);">
-                            <div class="faq-column">
-                                <div class="faq-item text-center">
-                                    <div class="stat-number"
-                                        style="font-size: var(--text-xxxl); color: var(--secondary); margin-bottom: var(--space-sm);">
-                                        7</div>
-                                    <div class="stat-label" style="font-weight: 600;">Туров</div>
-                                </div>
-                            </div>
-                            <div class="faq-column">
-                                <div class="faq-item text-center">
-                                    <div class="stat-number"
-                                        style="font-size: var(--text-xxxl); color: var(--secondary); margin-bottom: var(--space-sm);">
-                                        60</div>
-                                    <div class="stat-label" style="font-weight: 600;">Всего примерно вопросов</div>
-                                </div>
-                            </div>
-                            <div class="faq-column">
-                                <div class="faq-item text-center">
-                                    <div class="stat-number"
-                                        style="font-size: var(--text-xxxl); color: var(--secondary); margin-bottom: var(--space-sm);">
-                                        60</div>
-                                    <div class="stat-label" style="font-weight: 600;">Время на ответ</div>
-                                </div>
-                            </div>
+                    <div class="quiz-stats-grid">
+                        <div class="quiz-stat-item">
+                            <div class="quiz-stat-number">7</div>
+                            <div class="quiz-stat-label">Туров</div>
                         </div>
-
-                        <button class="btn btn--primary start-quiz-btn" id="start-quiz-btn"
-                            style="font-size: var(--text-lg); padding: var(--space-lg) var(--space-xl);">
-                            Начать квиз
-                        </button>
+                        <div class="quiz-stat-item">
+                            <div class="quiz-stat-number">60</div>
+                            <div class="quiz-stat-label">Всего вопросов</div>
+                        </div>
+                        <div class="quiz-stat-item">
+                            <div class="quiz-stat-number">60</div>
+                            <div class="quiz-stat-label">Секунд на ответ</div>
+                        </div>
                     </div>
+
+                    <button class="btn btn--primary start-quiz-btn" id="start-quiz-btn">
+                        Начать квиз
+                    </button>
                 </div>
 
                 <!-- Контейнер для вопросов (будет заполняться JS) -->
-                <div class="quiz-questions" id="quiz-questions" style="display: none;">
-                    <!-- Вопросы будут добавляться динамически -->
-                </div>
+                <div class="quiz-questions" id="quiz-questions" style="display: none;"></div>
 
                 <!-- Результаты квиза -->
-                <div class="quiz-results" id="quiz-results" style="display: none;">
-                    <!-- Результаты будут добавляться динамически -->
-                </div>
+                <div class="quiz-results" id="quiz-results" style="display: none;"></div>
             </div>
         </div>
     </section>
 
-    <section id="quiz-rules" class="about">
-        <h2 class="section__title fade-in">Рекомендации</h2>
-        <div class="about__content">
-            <div class="faq-grid fade-in delay-1">
-
+    <!-- Рекомендации -->
+    <section class="quiz-section">
+        <div class="container">
+            <h2 class="quiz-title">Рекомендации</h2>
+            <div class="quiz-faq-grid">
                 <!-- Колонка 1 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🎞️</span>
-                            <h3>Экран</h3>
-                        </div>
-                        <p class="faq-answer">Внимательно изучайте задание и вопрос! В них могут быть важные подсказки
-                            или критерии оценки.
-                        </p>
+                <div class="quiz-card">
+                    <div class="faq-question">
+                        <span class="faq-icon" aria-hidden="true">🎞️</span>
+                        <h3>Экран</h3>
                     </div>
+                    <p class="faq-answer">Внимательно изучайте задание и вопрос! В них могут быть важные подсказки или критерии оценки.</p>
                 </div>
 
                 <!-- Колонка 2 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">👥</span>
-                            <h3>Команда</h3>
-                        </div>
-                        <p class="faq-answer">Играйте в команде! Это поможет провести время ярче и глубже погрузиться в
-                            игру.
-                        </p>
+                <div class="quiz-card">
+                    <div class="faq-question">
+                        <span class="faq-icon" aria-hidden="true">👥</span>
+                        <h3>Команда</h3>
                     </div>
+                    <p class="faq-answer">Играйте в команде! Это поможет провести время ярче и глубже погрузиться в игру.</p>
                 </div>
 
                 <!-- Колонка 3 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">📓</span>
-                            <h3>Заметки</h3>
-                        </div>
-                        <p class="faq-answer">Записывайте свои идеи и мнения! Так можно лучше направить мысль в нужное
-                            русло.
-                        </p>
+                <div class="quiz-card">
+                    <div class="faq-question">
+                        <span class="faq-icon" aria-hidden="true">📓</span>
+                        <h3>Заметки</h3>
                     </div>
+                    <p class="faq-answer">Записывайте свои идеи и мнения! Так можно лучше направить мысль в нужное русло.</p>
                 </div>
-            </div>
-
-            <div class="rules-actions text-center fade-in delay-2">
             </div>
         </div>
     </section>
@@ -261,6 +204,20 @@
     <!-- Футер -->
     <div id="footer-container"></div>
 
+    <!-- Модальное окно таблицы лидеров -->
+    <div class="modal-overlay" id="leaderboard-modal" style="display: none;">
+        <div class="leaderboard-content">
+            <h2>🏆 Таблица лидеров</h2>
+            <div class="leaderboard-list" id="leaderboard-list">
+                <!-- Заполняется динамически -->
+            </div>
+            <div class="leaderboard-actions">
+                <button class="btn btn--primary" id="close-leaderboard">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
     <script src="../js/script.js"></script>
     <script src="../js/quiz.js"></script>
     <script src="../modul/navigation.js"></script>

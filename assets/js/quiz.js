@@ -24,29 +24,19 @@ class Quiz {
         await this.loadQuestions();
         this.bindEvents();
 
-        // Для трансляции сразу применяем специальные стили
         if (this.isBroadcastMode) {
             this.applyBroadcastStyles();
         }
     }
 
     applyBroadcastStyles() {
-        // Увеличиваем шрифты для лучшей читаемости в трансляции
         const style = document.createElement('style');
         style.textContent = `
             .quiz-broadcast .question-text {
-                font-size: 2.5em !important;
-                font-weight: 600;
+                font-size: clamp(1.5rem, 4vw, 2.5rem) !important;
             }
             .quiz-broadcast .answer-text {
-                font-size: 1.8em !important;
-                font-weight: 500;
-            }
-            .quiz-broadcast .quiz-instruction {
-                font-size: 1.3em !important;
-            }
-            .quiz-broadcast .instruction-badge {
-                font-size: 1.4em !important;
+                font-size: clamp(1rem, 2.5vw, 1.25rem) !important;
             }
         `;
         document.head.appendChild(style);
@@ -65,9 +55,7 @@ class Quiz {
     }
 
     loadFallbackQuestions() {
-        // Резервные вопросы по новой структуре
         this.questions = [
-            // Тур 1: Фото + открытый ответ (1 минута)
             {
                 round: 1,
                 type: 'open',
@@ -76,7 +64,6 @@ class Quiz {
                 correctAnswer: "Бегущий по лезвию 2049, Дени Вильнёв",
                 time: 60
             },
-            // Тур 2: Фото + открытый ответ (1 минута)
             {
                 round: 2,
                 type: 'open',
@@ -85,7 +72,6 @@ class Quiz {
                 correctAnswer: "Роберт Де Ниро, Таксист",
                 time: 60
             },
-            // Тур 3: Вопрос с выбором (1 минута)
             {
                 round: 3,
                 type: 'multiple',
@@ -99,7 +85,6 @@ class Quiz {
                 correctAnswer: 1,
                 time: 60
             },
-            // Тур 4: Фото + открытый ответ (1 минута)
             {
                 round: 4,
                 type: 'open',
@@ -108,7 +93,6 @@ class Quiz {
                 correctAnswer: "Космическая одиссея 2001 года",
                 time: 60
             },
-            // Тур 5: Фото + открытый ответ (1 минута)  
             {
                 round: 5,
                 type: 'open',
@@ -117,7 +101,6 @@ class Quiz {
                 correctAnswer: "Андрей Тарковский, Сталкер",
                 time: 60
             },
-            // Тур 6: Фото + открытый ответ (1 минута)
             {
                 round: 6,
                 type: 'open',
@@ -126,7 +109,6 @@ class Quiz {
                 correctAnswer: "Расёмон",
                 time: 60
             },
-            // Тур 7: Блиц (30 секунд)
             {
                 round: 7,
                 type: 'blitz',
@@ -173,7 +155,22 @@ class Quiz {
             });
         }
 
-        // Плавная прокрутка только для обычного режима
+        const closeLeaderboard = document.getElementById('close-leaderboard');
+        if (closeLeaderboard) {
+            closeLeaderboard.addEventListener('click', () => {
+                document.getElementById('leaderboard-modal').style.display = 'none';
+            });
+        }
+
+        const modal = document.getElementById('leaderboard-modal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
         if (!this.isBroadcastMode) {
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -210,7 +207,7 @@ class Quiz {
 
         questionsContainer.innerHTML = `
             <div class="instructions-container">
-                <h2>🎬 Инструкция к квизу</h2>
+                <h2 class="quiz-title">🎬 Инструкция к квизу</h2>
                 <div class="instructions-content">
                     <div class="instruction-item">
                         <div class="instruction-icon">📝</div>
@@ -251,7 +248,7 @@ class Quiz {
                     </div>
                 </div>
                 <div class="instructions-warning">
-                    ⚠️ <strong>Внимание:</strong> <br>Данная игра является исключительно развлекательным продуктом. Она не несёт никакого подтекста и не призывает ни к каким действиям. <br>Всё было задумано для вашего удовольствия, поэтому рекомендуем отнестись к игровому процессу просто и с долей здорового юмора. Помните, главная цель — получить удовольствие!
+                    ⚠️ <strong>Внимание:</strong> <br>Данная игра является исключительно развлекательным продуктом. Она не несёт никакого подтекста и не призывает ни к каким действиям. <br>Всё было задумано для вашего удовольствия, поэтому рекомендуем отнестись к игровому процессу просто и с долей здорового юмора.
                 </div>
                 <button class="btn btn--primary start-quiz-after-instructions">
                     Понятно, начинаем квиз!
@@ -270,22 +267,22 @@ class Quiz {
 
         questionsContainer.innerHTML = `
             <div class="round-intro">
-                <h2>Тур ${this.currentRound}</h2>
+                <h2 class="quiz-title">Тур ${this.currentRound}</h2>
                 <div class="round-info">
                     ${this.getRoundDescription(this.currentRound)}
                 </div>
-                <div class="round-stats">
-                    <div class="stat-item">
-                        <div class="stat-number">${currentRoundQuestions.length}</div>
-                        <div class="stat-label">вопросов</div>
+                <div class="quiz-stats-grid">
+                    <div class="quiz-stat-item">
+                        <div class="quiz-stat-number">${currentRoundQuestions.length}</div>
+                        <div class="quiz-stat-label">вопросов</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">${this.getRoundTime(this.currentRound)}</div>
-                        <div class="stat-label">секунд на вопрос</div>
+                    <div class="quiz-stat-item">
+                        <div class="quiz-stat-number">${this.getRoundTime(this.currentRound)}</div>
+                        <div class="quiz-stat-label">секунд</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">${this.getRoundType(this.currentRound)}</div>
-                        <div class="stat-label">тип вопросов</div>
+                    <div class="quiz-stat-item">
+                        <div class="quiz-stat-number">${this.getRoundType(this.currentRound)}</div>
+                        <div class="quiz-stat-label">тип</div>
                     </div>
                 </div>
                 <div class="round-instruction">
@@ -355,9 +352,6 @@ class Quiz {
                     ${question.image ? `
                         <div class="question-image">
                             <img src="${question.image}" alt="Изображение к вопросу" loading="lazy">
-                            <div class="quiz-logo">
-                                <img src="../images/quiz-logo.png" alt="Логотип Odissea Quiz">
-                            </div>
                         </div>
                     ` : ''}
                     
@@ -376,7 +370,7 @@ class Quiz {
                         </button>
                     </div>
                     <div class="nav-hint">
-                        Используйте кнопки для ручного перехода между вопросами
+                        Используйте кнопки для ручного перехода
                     </div>
                 </div>
             </div>
@@ -398,7 +392,7 @@ class Quiz {
                             </div>
                         `).join('')}
                     </div>
-                    <div class="answer-hint">Выберите правильный вариант и запишите букву ответа (A, B, C, D)</div>
+                    <div class="answer-hint">Запишите букву ответа (A, B, C, D)</div>
                 `;
             case 'blitz':
                 return `
@@ -409,10 +403,10 @@ class Quiz {
                             </div>
                         `).join('')}
                     </div>
-                    <div class="answer-hint">Запишите ответы на все 5 вопросов последовательно</div>
+                    <div class="answer-hint">Запишите ответы на все 5 вопросов</div>
                 `;
-            default: // open
-                return ``;
+            default:
+                return `<div class="answer-hint">Запишите ответ на листе бумаги</div>`;
         }
     }
 
@@ -420,22 +414,32 @@ class Quiz {
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
 
-        prevBtn.addEventListener('click', () => {
-            this.goToPreviousQuestion();
-        });
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                this.goToPreviousQuestion();
+            });
+        }
 
-        nextBtn.addEventListener('click', () => {
-            this.goToNextQuestion();
-        });
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                this.goToNextQuestion();
+            });
+        }
 
-        // Добавляем обработчики клавиатуры
-        document.addEventListener('keydown', (e) => {
+        const keyHandler = (e) => {
             if (e.key === 'ArrowLeft') {
+                e.preventDefault();
                 this.goToPreviousQuestion();
             } else if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
                 this.goToNextQuestion();
             }
-        });
+        };
+
+        document.addEventListener('keydown', keyHandler);
+        
+        // Сохраняем обработчик для удаления
+        this.keyHandler = keyHandler;
     }
 
     goToPreviousQuestion() {
@@ -461,16 +465,20 @@ class Quiz {
     startTimer(time) {
         this.timeLeft = time;
         const timerElement = document.getElementById('time-left');
-        const timeRemainingElement = document.getElementById('time-remaining');
+
+        if (this.timer) {
+            clearInterval(this.timer);
+        }
 
         this.timer = setInterval(() => {
             this.timeLeft--;
 
-            if (timerElement) timerElement.textContent = this.timeLeft;
-            if (timeRemainingElement) timeRemainingElement.textContent = this.timeLeft;
+            if (timerElement) {
+                timerElement.textContent = this.timeLeft;
+            }
 
-            if (this.timeLeft <= 10) {
-                if (timerElement) timerElement.parentElement.classList.add('timer-critical');
+            if (this.timeLeft <= 10 && timerElement) {
+                timerElement.parentElement.classList.add('timer-critical');
             }
 
             if (this.timeLeft <= 0) {
@@ -501,7 +509,7 @@ class Quiz {
             <div class="answer-slide">
                 <div class="question-header">
                     <div class="question-progress">
-                        <span>Проверка ответов • Тур ${this.currentRound} • Ответ ${this.currentAnswerIndex + 1} из ${currentRoundQuestions.length}</span>
+                        <span>Проверка • Тур ${this.currentRound} • ${this.currentAnswerIndex + 1} из ${currentRoundQuestions.length}</span>
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${((this.currentAnswerIndex + 1) / currentRoundQuestions.length) * 100}%"></div>
                         </div>
@@ -515,9 +523,6 @@ class Quiz {
                     ${question.image ? `
                         <div class="question-image">
                             <img src="${question.image}" alt="Изображение к вопросу" loading="lazy">
-                            <div class="quiz-logo">
-                                <img src="../images/quiz-logo.png" alt="Логотип Odissea Quiz">
-                            </div>
                         </div>
                     ` : ''}
                     
@@ -532,15 +537,12 @@ class Quiz {
                             ${this.getCorrectAnswerDisplay(question)}
                         </div>
                     </div>
-
-                    ${this.getAnswerExplanation(question)}
                 </div>
 
                 <div class="quiz-instruction">
                     <div class="instruction-badge">
                         📋 Сверьте с вашими ответами!
                     </div>
-                    <p>Отметьте правильные и неправильные ответы на ваших бланках</p>
                 </div>
 
                 <div class="quiz-navigation">
@@ -551,9 +553,6 @@ class Quiz {
                         <button class="btn btn--primary nav-btn next-answer-btn" id="next-answer-btn">
                             ${this.currentAnswerIndex === currentRoundQuestions.length - 1 ? 'Завершить проверку' : 'Следующий ответ →'}
                         </button>
-                    </div>
-                    <div class="nav-hint">
-                        Проверьте все ответы перед переходом к следующему туру
                     </div>
                 </div>
             </div>
@@ -582,58 +581,44 @@ class Quiz {
                         `).join('')}
                     </div>
                 `;
-            default: // open
-                return `
-                    <div class="open-correct-answer">
-                        <p>${question.correctAnswer}</p>
-                    </div>
-                `;
+            default:
+                return `<div class="open-correct-answer">${question.correctAnswer}</div>`;
         }
-    }
-
-    getAnswerExplanation(question) {
-        if (question.explanation) {
-            return `
-                <div class="answer-explanation">
-                    <div class="explanation-header">
-                        <span class="explanation-icon">💡</span>
-                        <h4>Пояснение:</h4>
-                    </div>
-                    <p>${question.explanation}</p>
-                </div>
-            `;
-        }
-        return '';
     }
 
     bindAnswerNavigationEvents(currentRoundQuestions) {
         const prevBtn = document.getElementById('prev-answer-btn');
         const nextBtn = document.getElementById('next-answer-btn');
 
-        prevBtn.addEventListener('click', () => {
-            if (this.currentAnswerIndex > 0) {
-                this.currentAnswerIndex--;
-                this.showAnswerSlide();
-            }
-        });
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (this.currentAnswerIndex > 0) {
+                    this.currentAnswerIndex--;
+                    this.showAnswerSlide();
+                }
+            });
+        }
 
-        nextBtn.addEventListener('click', () => {
-            if (this.currentAnswerIndex < currentRoundQuestions.length - 1) {
-                this.currentAnswerIndex++;
-                this.showAnswerSlide();
-            } else {
-                this.finishRound();
-            }
-        });
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (this.currentAnswerIndex < currentRoundQuestions.length - 1) {
+                    this.currentAnswerIndex++;
+                    this.showAnswerSlide();
+                } else {
+                    this.finishRound();
+                }
+            });
+        }
 
-        // Обработчики клавиатуры для навигации по ответам
-        document.addEventListener('keydown', (e) => {
+        const keyHandler = (e) => {
             if (e.key === 'ArrowLeft') {
+                e.preventDefault();
                 if (this.currentAnswerIndex > 0) {
                     this.currentAnswerIndex--;
                     this.showAnswerSlide();
                 }
             } else if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
                 if (this.currentAnswerIndex < currentRoundQuestions.length - 1) {
                     this.currentAnswerIndex++;
                     this.showAnswerSlide();
@@ -641,36 +626,47 @@ class Quiz {
                     this.finishRound();
                 }
             }
-        });
+        };
+
+        document.addEventListener('keydown', keyHandler);
+        
+        // Сохраняем обработчик для удаления
+        this.answerKeyHandler = keyHandler;
     }
 
     finishRound() {
         this.showingAnswers = false;
+        
+        if (this.keyHandler) {
+            document.removeEventListener('keydown', this.keyHandler);
+        }
+        if (this.answerKeyHandler) {
+            document.removeEventListener('keydown', this.answerKeyHandler);
+        }
 
         const questionsContainer = document.getElementById('quiz-questions');
         const currentRoundQuestions = this.questions.filter(q => q.round === this.currentRound);
 
         questionsContainer.innerHTML = `
             <div class="round-results">
-                <h2>Тур ${this.currentRound} завершен! 🎯</h2>
+                <h2 class="quiz-title">Тур ${this.currentRound} завершен! 🎯</h2>
                 <div class="round-summary">
                     <p>Вы ответили на <strong>${currentRoundQuestions.length}</strong> вопросов</p>
                     <p>Проверили все правильные ответы</p>
-                    <p>Теперь переходите к следующему туру</p>
                 </div>
 
-                <div class="round-stats">
-                    <div class="stat-item">
-                        <div class="stat-number">${currentRoundQuestions.length}</div>
-                        <div class="stat-label">вопросов</div>
+                <div class="quiz-stats-grid">
+                    <div class="quiz-stat-item">
+                        <div class="quiz-stat-number">${currentRoundQuestions.length}</div>
+                        <div class="quiz-stat-label">вопросов</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">${this.getRoundType(this.currentRound)}</div>
-                        <div class="stat-label">тип тура</div>
+                    <div class="quiz-stat-item">
+                        <div class="quiz-stat-number">${this.getRoundType(this.currentRound)}</div>
+                        <div class="quiz-stat-label">тип</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">${this.currentRound}/7</div>
-                        <div class="stat-label">прогресс</div>
+                    <div class="quiz-stat-item">
+                        <div class="quiz-stat-number">${this.currentRound}/7</div>
+                        <div class="quiz-stat-label">прогресс</div>
                     </div>
                 </div>
 
@@ -709,30 +705,22 @@ class Quiz {
 
         resultsContainer.innerHTML = `
             <div class="results-content">
-                <h2>Квиз завершен! 🎬</h2>
+                <h2 class="quiz-title">Квиз завершен! 🎬</h2>
                 <div class="final-message">
                     <p>Спасибо за участие в квизе "Odissea"!</p>
-                    <p>Вы прошли все 7 туров и проверили ответы.</p>
-                    <p>Сдайте ваши бланки с ответами для окончательной проверки.</p>
+                    <p>Вы прошли все 7 туров.</p>
+                    <p>Сдайте ваши бланки с ответами для проверки.</p>
                 </div>
 
-                <div class="quiz-stats">
-                    <div class="stat-item">
-                        <div class="stat-number">7</div>
-                        <div class="stat-label">туров</div>
+                <div class="quiz-stats-grid">
+                    <div class="quiz-stat-item">
+                        <div class="quiz-stat-number">7</div>
+                        <div class="quiz-stat-label">туров</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">${this.questions.length}</div>
-                        <div class="stat-label">вопросов</div>
+                    <div class="quiz-stat-item">
+                        <div class="quiz-stat-number">${this.questions.length}</div>
+                        <div class="quiz-stat-label">вопросов</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">~15</div>
-                        <div class="stat-label">минут</div>
-                    </div>
-                </div>
-
-                <div class="results-message">
-                    <p>Результаты будут объявлены после проверки всех бланков!</p>
                 </div>
 
                 <div class="results-actions">
@@ -756,16 +744,15 @@ class Quiz {
 
     showLeaderboard() {
         const leaderboard = JSON.parse(localStorage.getItem('odyssey_leaderboard') || '[]');
+        const modal = document.getElementById('leaderboard-modal');
+        const list = document.getElementById('leaderboard-list');
 
-        let leaderboardHTML = `
-            <div class="leaderboard-modal">
-                <div class="leaderboard-content">
-                    <h2>🏆 Таблица лидеров</h2>
-                    <div class="leaderboard-list">
-        `;
+        if (!modal || !list) return;
+
+        let leaderboardHTML = '';
 
         if (leaderboard.length === 0) {
-            leaderboardHTML += `<div class="no-leaders"><p>Пока нет результатов. Будьте первым!</p></div>`;
+            leaderboardHTML = `<div class="no-leaders">Пока нет результатов. Будьте первым!</div>`;
         } else {
             leaderboard.forEach((entry, index) => {
                 const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
@@ -782,34 +769,14 @@ class Quiz {
             });
         }
 
-        leaderboardHTML += `
-                    </div>
-                    <div class="leaderboard-actions">
-                        <button class="btn btn--primary" id="close-leaderboard">Закрыть</button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay';
-        modal.innerHTML = leaderboardHTML;
-        document.body.appendChild(modal);
-
-        document.getElementById('close-leaderboard').addEventListener('click', () => {
-            document.body.removeChild(modal);
-        });
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                document.body.removeChild(modal);
-            }
-        });
+        list.innerHTML = leaderboardHTML;
+        modal.style.display = 'flex';
     }
 }
 
 // Инициализация квиза
 document.addEventListener('DOMContentLoaded', function () {
+    // Небольшая задержка для загрузки DOM
     setTimeout(() => {
         window.quiz = new Quiz();
     }, 100);

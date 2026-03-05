@@ -1417,3 +1417,187 @@ body {
         text-shadow: 0 1px 1px rgba(0,0,0,0.8);
     }
 }
+
+/* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ КВИЗА ===== */
+.text-center {
+    text-align: center;
+}
+
+/* Стили для инструкций */
+.instructions-container {
+    text-align: center;
+    width: 100%;
+}
+
+.instructions-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: clamp(16px, 3vw, 24px);
+    margin: clamp(24px, 5vw, 48px) 0;
+}
+
+.instruction-item {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(12px, 2vw, 16px);
+    text-align: left;
+    background: rgba(255, 255, 255, 0.05);
+    padding: clamp(16px, 3vw, 24px);
+    border-radius: var(--radius-md);
+    height: 100%;
+}
+
+.instruction-icon {
+    font-size: clamp(24px, 4vw, 32px);
+    flex-shrink: 0;
+}
+
+.instruction-text {
+    flex: 1;
+    font-size: clamp(14px, 2.5vw, 16px);
+    line-height: 1.5;
+}
+
+.instructions-warning {
+    background: rgba(255, 193, 7, 0.2);
+    border: 1px solid rgba(255, 193, 7, 0.5);
+    padding: clamp(16px, 3vw, 24px);
+    border-radius: var(--radius-md);
+    margin: clamp(24px, 5vw, 48px) 0;
+    color: #FFC107;
+    font-size: clamp(14px, 2.5vw, 16px);
+    line-height: 1.6;
+}
+
+.round-intro {
+    text-align: center;
+    width: 100%;
+}
+
+.round-info {
+    font-size: clamp(16px, 3vw, 18px);
+    margin-bottom: clamp(24px, 4vw, 32px);
+    color: var(--gray);
+    line-height: 1.6;
+}
+
+.round-instruction {
+    background: rgba(106, 17, 203, 0.1);
+    padding: clamp(16px, 3vw, 24px);
+    border-radius: var(--radius-md);
+    margin: clamp(24px, 4vw, 32px) 0;
+    border-left: 4px solid var(--primary);
+    font-size: clamp(14px, 2.5vw, 16px);
+}
+
+.answer-hint {
+    font-size: clamp(12px, 2vw, 14px);
+    color: var(--gray);
+    margin-top: clamp(8px, 1.5vw, 12px);
+    font-style: italic;
+    text-align: center;
+}
+
+.answer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(4px, 1vw, 8px);
+    padding: clamp(8px, 1.5vw, 12px) clamp(12px, 2vw, 16px);
+    background: rgba(37, 117, 252, 0.2);
+    border-radius: var(--radius-full);
+    font-size: clamp(14px, 2.5vw, 16px);
+    font-weight: bold;
+    color: var(--secondary);
+}
+
+.round-results {
+    text-align: center;
+}
+
+.round-summary {
+    background: rgba(255, 255, 255, 0.05);
+    padding: clamp(20px, 4vw, 32px);
+    border-radius: var(--radius-md);
+    margin: clamp(24px, 5vw, 48px) 0;
+    font-size: clamp(16px, 3vw, 18px);
+    line-height: 1.6;
+}
+
+.round-actions {
+    margin-top: clamp(24px, 5vw, 48px);
+}
+
+.blitz-answers {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.5vw, 12px);
+}
+
+.blitz-answer-item {
+    background: rgba(76, 175, 80, 0.1);
+    padding: clamp(12px, 2vw, 16px);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid #4CAF50;
+    font-size: clamp(14px, 2.5vw, 16px);
+}
+
+.open-correct-answer {
+    background: rgba(76, 175, 80, 0.1);
+    padding: clamp(16px, 3vw, 24px);
+    border-radius: var(--radius-md);
+    border: 2px dashed #4CAF50;
+    text-align: center;
+    font-size: clamp(16px, 3vw, 20px);
+    font-weight: 600;
+}
+
+.no-leaders {
+    text-align: center;
+    color: var(--gray);
+    padding: clamp(24px, 5vw, 48px);
+    font-style: italic;
+    font-size: clamp(14px, 2.5vw, 16px);
+}
+
+.leaderboard-details {
+    color: var(--gray);
+    font-size: clamp(12px, 2vw, 14px);
+}
+
+/* Исправление для модального окна на мобильных */
+@media (max-width: 480px) {
+    .leaderboard-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 4px;
+    }
+    
+    .leaderboard-rank {
+        margin-bottom: 4px;
+    }
+    
+    .leaderboard-name {
+        margin-bottom: 4px;
+    }
+    
+    .leaderboard-details {
+        margin-top: 4px;
+    }
+}
+
+/* Исправление для очень маленьких экранов */
+@media (max-width: 360px) {
+    .instruction-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+    }
+    
+    .nav-btn {
+        width: 100%;
+    }
+}
