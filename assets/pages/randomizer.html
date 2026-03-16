@@ -6,14 +6,16 @@
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Рандомайзер | Киноклуб "ОДИССЕЯ"</title>
+    
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/randomizer.css">
     <link rel="stylesheet" href="../modul/navigation.css">
     <link rel="stylesheet" href="../modul/hero-section.css">
     <link rel="stylesheet" href="../modul/footer-module.css">
     <link rel="stylesheet" href="../modul/seasons-effects.css">
     <link rel="stylesheet" href="../modul/scroll-to-top.css">
     <link rel="stylesheet" href="../modul/weather-module.css">
+    <link rel="stylesheet" href="../css/randomizer.css">
+    
     <meta name="description"
         content="Рандомайзер для выбора случайных чисел и имен. Идеально для жеребьевки и случайных выборов!">
     <meta name="keywords" content="рандомайзер, случайный выбор, жеребьевка, числа, имена, киноклуб">
@@ -50,12 +52,11 @@
     <div class="hero-container"></div>
 
     <!-- Основной контент -->
-    <main class="randomizer-main">
-        <section class="randomizer-intro">
-            <div class="container">
+    <main class="main randomizer-main">
+        <section class="randomizer-intro section section--bg-1">
+            <div class="container section__content">
                 <h2 class="section__title fade-in">Рандомайзер</h2>
-                <p class="intro-text fade-in delay-1">Выберите режим работы рандомайзера для случайного выбора чисел или
-                    имен</p>
+                <p class="intro-text fade-in delay-1">Выберите режим работы рандомайзера для случайного выбора чисел или имен</p>
 
                 <!-- Переключатель режимов -->
                 <div class="mode-switcher fade-in delay-2">
@@ -72,8 +73,8 @@
         </section>
 
         <!-- Режим чисел -->
-        <section id="numbers-mode" class="randomizer-mode active">
-            <div class="container">
+        <section id="numbers-mode" class="randomizer-mode active section section--bg-2">
+            <div class="container section__content">
                 <h3 class="mode-title fade-in">Генератор случайных чисел</h3>
 
                 <div class="input-section fade-in delay-1">
@@ -126,8 +127,8 @@
         </section>
 
         <!-- Режим имен -->
-        <section id="names-mode" class="randomizer-mode">
-            <div class="container">
+        <section id="names-mode" class="randomizer-mode section section--bg-3">
+            <div class="container section__content">
                 <h3 class="mode-title fade-in">Генератор случайных имен</h3>
 
                 <div class="input-section fade-in delay-1">
@@ -135,8 +136,7 @@
                         <label for="names-input">Введите имена через запятую:</label>
                         <textarea id="names-input" placeholder="Например: Анна, Борис, Виктория, Григорий..."
                             rows="4"></textarea>
-                        <div class="input-hint">Разделяйте имена запятыми. Можно вводить списки участников, команд и
-                            т.д.</div>
+                        <div class="input-hint">Разделяйте имена запятыми. Можно вводить списки участников, команд и т.д.</div>
                     </div>
                 </div>
 
@@ -195,8 +195,8 @@
         </section>
 
         <!-- Советы -->
-        <section id="randomizer-tips" class="randomizer-tips">
-            <div class="container">
+        <section id="randomizer-tips" class="randomizer-tips section section--bg-4">
+            <div class="container section__content">
                 <h2 class="section__title fade-in">Советы по использованию</h2>
 
                 <div class="tips-grid fade-in delay-1">
@@ -250,7 +250,12 @@
     <!-- Кнопка прокрутки наверх -->
     <button class="scroll-to-top" aria-label="Наверх">↑</button>
 
+    <div class="film-reel-overlay">
+        <div class="film-perforations"></div>
+    </div>
+
     <!-- Подключаем скрипты -->
+    <script src="../js/script.js"></script>
     <script src="../js/randomizer.js"></script>
     <script src="../modul/navigation.js"></script>
     <script src="../modul/hero-section.js"></script>
@@ -258,6 +263,18 @@
     <script src="../modul/seasons-effects.js"></script>
     <script src="../modul/scroll-to-top.js"></script>
     <script src="../modul/weather-module.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/odissea/service-worker.js').then(function (registration) {
+                    console.log('ServiceWorker зарегистрирован');
+                }, function (err) {
+                    console.log('Ошибка регистрации ServiceWorker: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 
 </html>

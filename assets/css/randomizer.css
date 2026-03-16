@@ -1,23 +1,5 @@
-/* Стили для страницы рандомайзера */
-.randomizer-main {
-    min-height: 100vh;
-    background: linear-gradient(135deg, var(--dark), #16213e);
-}
-
-.randomizer-intro {
-    padding: var(--space-xxl) 5%;
-    text-align: center;
-    background: rgba(10, 10, 20, 0.7);
-}
-
-.intro-text {
-    font-size: var(--text-lg);
-    opacity: 0.9;
-    margin-bottom: var(--space-xl);
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
+/* ===== РАНДОМАЙЗЕР - УНИКАЛЬНЫЕ СТИЛИ ===== */
+/* Все общие стили (секции, кнопки, анимации) берутся из style.css */
 
 /* Переключатель режимов */
 .mode-switcher {
@@ -60,13 +42,13 @@
 /* Режимы рандомайзера */
 .randomizer-mode {
     display: none;
-    padding: var(--space-xxl) 5%;
 }
 
 .randomizer-mode.active {
     display: block;
 }
 
+/* Заголовок режима */
 .mode-title {
     text-align: center;
     font-size: var(--text-xxxl);
@@ -113,6 +95,7 @@
     color: var(--light);
     font-size: var(--text-base);
     transition: var(--transition);
+    width: 100%;
 }
 
 .input-group input:focus,
@@ -210,7 +193,7 @@
 }
 
 .result-value {
-    font-size: var(--text-xxxxl);
+    font-size: 3.5rem;
     font-weight: bold;
     background: linear-gradient(to right, var(--primary), var(--secondary));
     -webkit-background-clip: text;
@@ -220,6 +203,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 1.2;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
 }
 
 /* Множественные результаты */
@@ -257,6 +243,7 @@
 .names-list-section h4 {
     text-align: center;
     margin-bottom: var(--space-md);
+    color: var(--light);
 }
 
 .names-list {
@@ -354,11 +341,6 @@
 }
 
 /* Советы */
-.randomizer-tips {
-    background: rgba(10, 10, 20, 0.7);
-    padding: var(--space-xxl) 5%;
-}
-
 .tips-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -411,7 +393,7 @@
     font-weight: bold;
 }
 
-/* Анимации */
+/* Анимации для рандомайзера */
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
@@ -435,9 +417,53 @@
     opacity: 0;
     pointer-events: none;
     animation: confetti 2s ease-in-out forwards;
+    z-index: 9999;
+}
+
+/* Стили для цитаты в рандомайзере */
+.randomizer-tips .about__quote {
+    max-width: 800px;
+    margin: var(--space-xxl) auto 0;
+    padding: var(--space-xl);
+    text-align: center;
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-lg);
+}
+
+.randomizer-tips .quote-icon {
+    font-size: var(--text-huge);
+    color: var(--primary);
+    opacity: 0.6;
+    display: block;
+    margin-bottom: var(--space-md);
+    line-height: 1;
+}
+
+.randomizer-tips .about__quote p {
+    font-size: var(--text-xl);
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--light);
+    margin-bottom: var(--space-md);
+    font-weight: 500;
+}
+
+.randomizer-tips .quote-author {
+    display: block;
+    font-style: normal;
+    color: var(--gray-light);
+    font-size: var(--text-base);
+    opacity: 0.8;
 }
 
 /* Адаптивность */
+@media (max-width: 1024px) {
+    .result-value {
+        font-size: 3rem;
+    }
+}
+
 @media (max-width: 768px) {
     .mode-switcher {
         flex-direction: column;
@@ -465,7 +491,7 @@
     }
     
     .result-value {
-        font-size: var(--text-xxxl);
+        font-size: 2.5rem;
     }
     
     .tips-grid {
@@ -474,6 +500,18 @@
     
     .names-list {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    
+    .randomizer-tips .about__quote {
+        padding: var(--space-lg);
+    }
+    
+    .randomizer-tips .about__quote p {
+        font-size: var(--text-lg);
+    }
+    
+    .randomizer-tips .quote-icon {
+        font-size: var(--text-xxxl);
     }
 }
 
@@ -485,6 +523,22 @@
     }
     
     .result-value {
-        font-size: var(--text-xxl);
+        font-size: 2rem;
+    }
+    
+    .randomizer-tips .about__quote p {
+        font-size: var(--text-base);
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 360px) {
+    .names-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .result-value {
+        font-size: 1.75rem;
+        flex-direction: column;
     }
 }
