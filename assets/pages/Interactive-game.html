@@ -14,42 +14,13 @@
     
     <!-- Модульные стили -->
     <link rel="stylesheet" href="../modul/navigation.css">
-    <link rel="stylesheet" href="../modul/hero-section.css">
     <link rel="stylesheet" href="../modul/footer-module.css">
     <link rel="stylesheet" href="../modul/seasons-effects.css">
     <link rel="stylesheet" href="../modul/scroll-to-top.css">
-    <link rel="stylesheet" href="../modul/tops-module.css">
-    <link rel="stylesheet" href="../modul/discussions-module.css">
-    <link rel="stylesheet" href="../modul/works-module.css">
-    <link rel="stylesheet" href="../modul/next-meeting-module.css">
-    <link rel="stylesheet" href="../modul/map-module.css">
-    <link rel="stylesheet" href="../modul/weather-module.css">
     
     <meta name="description"
         content="Киноквест Odissea - интерактивный городской квест для любителей кино. Находи коды, отвечай на вопросы, становись легендой!">
     <meta name="keywords" content="киноквест, геоквест, Одиссея, киноклуб, игра, локации, коды">
-    
-    <style>
-        /* Временный фон для героя, пока не загрузится картинка */
-        .quest-hero {
-            background: linear-gradient(135deg, 
-                rgba(10, 10, 20, 0.95), 
-                rgba(30, 30, 46, 0.95)),
-                linear-gradient(45deg, 
-                    rgba(106, 17, 203, 0.1), 
-                    rgba(37, 117, 252, 0.1));
-        }
-        
-        /* Дополнительная анимация для кнопки */
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(106, 17, 203, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(106, 17, 203, 0.6); }
-        }
-        
-        .btn--glow {
-            animation: glow 2s ease-in-out infinite;
-        }
-    </style>
 </head>
 
 <body>
@@ -72,7 +43,7 @@
                 <!-- Содержимое виджета -->
             </div>
 
-            <!-- Навигация справа -->
+            <!-- Навигация справа (будет заполнена через navigation.js) -->
             <nav class="nav-container"></nav>
 
             <!-- Кнопка мобильного меню -->
@@ -115,7 +86,7 @@
     <!-- Основной контент -->
     <main class="main">
         <!-- О квесте -->
-        <section id="about-quest" class="about">
+        <section id="about-quest" class="section section--bg-1">
             <div class="container">
                 <h2 class="section__title fade-in">О киноквесте</h2>
                 
@@ -128,9 +99,8 @@
                                 <h3>Цель игры</h3>
                             </div>
                             <div class="faq-answer">
-                                <p>Набрать максимальное количество баллов, находя коды на реальных локациях в
-                                    городе и правильно отвечая на вопросы.</p>
-                                <p>Каждая найденная локация и правильный ответ приближают вас к победе!</p>
+                                <p>Набрать максимальное количество баллов, находя коды на реальных локациях в городе и правильно отвечая на вопросы.</p>
+                                <p>Каждая найденная локация приближает вас к победе!</p>
                             </div>
                         </div>
                         <div class="faq-item">
@@ -140,8 +110,7 @@
                             </div>
                             <div class="faq-answer">
                                 <p><strong>Физическое присутствие на локациях — обязательно!</strong></p>
-                                <p>Бот отслеживает время ваших ответов. Слишком быстрые ответы караются <span class="highlight">штрафными баллами</span>.</p>
-                                <p>Наслаждайтесь поиском, не спешите!</p>
+                                <p>Бот отслеживает время ответов. Слишком быстрые ответы караются <span class="highlight">штрафами</span>.</p>
                             </div>
                         </div>
                     </div>
@@ -154,21 +123,17 @@
                                 <h3>Система призов</h3>
                             </div>
                             <div class="faq-answer">
-                                <p>За первое прохождение определенного количества точек ваша команда может
-                                    получить <span class="highlight">промокод</span>.</p>
+                                <p>За прохождение точек команда может получить <span class="highlight">промокод</span>.</p>
                                 <p><strong>Важно:</strong> Призы получает только <span class="highlight">первая команда</span>, достигшая рубежа!</p>
-                                <p>Следите за своим прогрессом в боте!</p>
                             </div>
                         </div>
                         <div class="faq-item">
                             <div class="faq-question">
                                 <span class="faq-icon" aria-hidden="true">🎬</span>
-                                <h3>О проекте «Одиссея»</h3>
+                                <h3>О проекте</h3>
                             </div>
                             <div class="faq-answer">
-                                <p>Мы — сообщество кинолюбителей, которые уверены, что кино не может
-                                    существовать без нас и нашего мнения!</p>
-                                <p>С 2020 года создаем лучший кинодосуг в городе!</p>
+                                <p>Сообщество кинолюбителей, создающих лучший кинодосуг в городе с 2020 года!</p>
                             </div>
                         </div>
                     </div>
@@ -181,8 +146,7 @@
                                 <h3>Наша миссия</h3>
                             </div>
                             <div class="faq-answer">
-                                <p>Развивать наше сообщество и создавать <span class="highlight">лучший досуг</span>!</p>
-                                <p>Объединять людей через любовь к кино и приключениям.</p>
+                                <p>Развивать сообщество и создавать <span class="highlight">лучший досуг</span> через любовь к кино и приключениям.</p>
                             </div>
                         </div>
                         <div class="faq-item">
@@ -192,14 +156,12 @@
                             </div>
                             <div class="faq-answer">
                                 <p><strong>15.09.2020</strong></p>
-                                <p>Провели столько кинопоказов, что даже <span class="highlight">Тарантино</span> бы оценил! 🎞️</p>
                                 <p>Более 100 мероприятий и тысячи довольных участников!</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Цитата под карточками -->
                 <div class="about__quote fade-in delay-2">
                     <div class="quote-icon" aria-hidden="true">❝</div>
                     <p>Киноклуб Одиссея - объективностью здесь и не пахнет! (с)</p>
@@ -209,62 +171,55 @@
         </section>
 
         <!-- Как играть -->
-        <section id="how-to-play" class="about">
+        <section id="how-to-play" class="section section--bg-2">
             <div class="container">
                 <h2 class="section__title fade-in">Как играть</h2>
 
                 <div class="faq-grid fade-in delay-1">
-                    <!-- Шаг 1 -->
                     <div class="faq-column">
                         <div class="faq-item">
                             <div class="faq-question">
                                 <span class="faq-icon" aria-hidden="true">1️⃣</span>
-                                <h3>Регистрация команды</h3>
+                                <h3>Регистрация</h3>
                             </div>
                             <div class="faq-answer">
                                 <ol>
                                     <li>Нажмите <strong>/start</strong> в Telegram-боте</li>
-                                    <li>Выберите название команды из предложенного списка</li>
-                                    <li>Введите имена всех участников через запятую</li>
-                                    <li>Готово! Вы в игре! 🚀</li>
+                                    <li>Выберите название команды</li>
+                                    <li>Введите имена участников</li>
                                 </ol>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Шаг 2 -->
                     <div class="faq-column">
                         <div class="faq-item">
                             <div class="faq-question">
                                 <span class="faq-icon" aria-hidden="true">2️⃣</span>
-                                <h3>Выбор и прохождение точки</h3>
+                                <h3>Выбор точки</h3>
                             </div>
                             <div class="faq-answer">
                                 <ol>
                                     <li>Ожидайте <strong>старта</strong> от админов</li>
-                                    <li>В главном меню нажмите «🌍 Выбрать точку»</li>
-                                    <li>Выбирайте любую доступную локацию</li>
-                                    <li>Получите описание и загадку-подсказку</li>
-                                    <li>Найдите реальную локацию в городе</li>
+                                    <li>Нажмите «🌍 Выбрать точку»</li>
+                                    <li>Получите загадку-подсказку</li>
+                                    <li>Найдите локацию в городе</li>
                                 </ol>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Шаг 3 -->
                     <div class="faq-column">
                         <div class="faq-item">
                             <div class="faq-question">
                                 <span class="faq-icon" aria-hidden="true">3️⃣</span>
-                                <h3>Ответы на вопросы</h3>
+                                <h3>Ответы</h3>
                             </div>
                             <div class="faq-answer">
                                 <ol>
-                                    <li>Найдя код, <strong>введите его</strong> в чат бота</li>
-                                    <li>Если код верный — откроется вопрос о кино</li>
-                                    <li>Отвечайте на вопросы о фильмах и локациях</li>
-                                    <li><strong>Следите за временем</strong> ответов</li>
-                                    <li>Получайте баллы и поднимайтесь в топе!</li>
+                                    <li>Введите найденный код</li>
+                                    <li>Ответьте на вопрос о кино</li>
+                                    <li>Получайте баллы</li>
                                 </ol>
                             </div>
                         </div>
@@ -274,29 +229,25 @@
         </section>
 
         <!-- Правила -->
-        <section id="rules" class="about">
+        <section id="rules" class="section section--bg-3">
             <div class="container">
-                <h2 class="section__title fade-in">Правила и система баллов</h2>
+                <h2 class="section__title fade-in">Правила и баллы</h2>
 
                 <div class="faq-grid fade-in delay-1">
-                    <!-- Система баллов -->
                     <div class="faq-column">
                         <div class="faq-item">
                             <div class="faq-question">
                                 <span class="faq-icon" aria-hidden="true">📊</span>
-                                <h3>Система начисления очков</h3>
+                                <h3>Начисление очков</h3>
                             </div>
                             <div class="faq-answer">
-                                <p><strong>✅ Правильный ответ:</strong> От <span class="highlight">1 до 10 баллов</span> за вопрос</p>
-                                <p><strong>⚡ Слишком быстрый ответ (&lt; n секунд):</strong> <span class="highlight">-3 балла</span> к стоимости вопроса</p>
-                                <p><strong>❌ Неправильный ответ на вопрос:</strong> <span class="highlight">-1 балл</span></p>
-                                <p><strong>🚫 Неверный код локации:</strong> <span class="highlight">-1 балл</span> за каждую неудачную попытку</p>
-                                <p><strong>💎 Минимальная награда за вопрос:</strong> <span class="highlight">1 балл</span> (даже после всех штрафов)</p>
+                                <p>✅ Правильный ответ: <span class="highlight">1-10 баллов</span></p>
+                                <p>⚡ Слишком быстрый ответ: <span class="highlight">-3 балла</span></p>
+                                <p>❌ Неправильный ответ: <span class="highlight">-1 балл</span></p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Функции бота -->
                     <div class="faq-column">
                         <div class="faq-item">
                             <div class="faq-question">
@@ -304,29 +255,25 @@
                                 <h3>Функции бота</h3>
                             </div>
                             <div class="faq-answer">
-                                <p><strong>📊 Прогресс:</strong> Ваш счёт, пройденные точки, время в игре</p>
-                                <p><strong>🏆 Топ команд:</strong> Рейтинг всех участников в реальном времени</p>
-                                <p><strong>🎁 Мои призы:</strong> Посмотреть полученные вашей командой промокоды</p>
-                                <p><strong>ℹ️ Информация:</strong> Полные правила, контакты организаторов, карта всех точек</p>
-                                <p><strong>❓ Помощь:</strong> Подсказки и ответы на частые вопросы</p>
+                                <p>📊 Прогресс команды</p>
+                                <p>🏆 Топ команд</p>
+                                <p>🎁 Мои призы</p>
+                                <p>ℹ️ Информация</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Советы -->
                     <div class="faq-column">
                         <div class="faq-item">
                             <div class="faq-question">
                                 <span class="faq-icon" aria-hidden="true">💡</span>
-                                <h3>Советы от бота</h3>
+                                <h3>Советы</h3>
                             </div>
                             <div class="faq-answer">
                                 <ul>
-                                    <li><strong>Не спешите!</strong> Наслаждайтесь поиском — спешка = штрафы</li>
-                                    <li><strong>Внимательно читайте</strong> описание и загадку — в них всегда есть прямые подсказки</li>
-                                    <li><strong>Думайте логически.</strong> Ответ на вопрос часто зависит от деталей локации</li>
-                                    <li><strong>Работайте в команде!</strong> Обсуждайте, ищите вместе</li>
-                                    <li><strong>«You know nothing, Jon Snow...»</strong> — но вы узнаете много нового о кино и городе!</li>
+                                    <li><strong>Не спешите</strong> — спешка = штрафы</li>
+                                    <li><strong>Читайте внимательно</strong> подсказки</li>
+                                    <li><strong>Работайте в команде</strong></li>
                                 </ul>
                             </div>
                         </div>
@@ -336,7 +283,7 @@
         </section>
 
         <!-- Призы -->
-        <section id="prizes" class="about">
+        <section id="prizes" class="section section--bg-4">
             <div class="container">
                 <h2 class="section__title fade-in">Система призов</h2>
 
@@ -345,17 +292,13 @@
                         <div class="faq-item">
                             <div class="faq-question">
                                 <span class="faq-icon" aria-hidden="true">🏆</span>
-                                <h3>Промежуточные призы</h3>
+                                <h3>Промежуточные</h3>
                             </div>
                             <div class="faq-answer">
-                                <p>За первое прохождение определенного количества точек ваша команда может получить <span class="highlight">промокод</span>.</p>
-                                <p><strong>🏁 Рубёжные отметки:</strong></p>
-                                <ul>
-                                    <li>5 точек — Малый приз</li>
-                                    <li>10 точек — Средний приз</li>
-                                    <li>15 точек — Большой приз</li>
-                                </ul>
-                                <p><strong>⚠️ Важно:</strong> Приз получает только <span class="highlight">первая команда</span>, достигшая рубежа!</p>
+                                <p>5 точек — Малый приз</p>
+                                <p>10 точек — Средний приз</p>
+                                <p>15 точек — Большой приз</p>
+                                <p class="highlight">Только для первой команды!</p>
                             </div>
                         </div>
                     </div>
@@ -367,15 +310,12 @@
                                 <h3>Главный приз</h3>
                             </div>
                             <div class="faq-answer">
-                                <p><strong>🥇 Команда-победитель</strong>, набравшая наибольшее количество баллов по итогам квеста, получает <span class="highlight">главный приз</span>!</p>
-                                <p><strong>Возможные призы:</strong></p>
+                                <p>Команда-победитель получает:</p>
                                 <ul>
-                                    <li>Бесплатные билеты в кино</li>
+                                    <li>Билеты в кино</li>
                                     <li>Мерч киноклуба</li>
                                     <li>Книги о кино</li>
-                                    <li>Сертификаты в кинотеатры</li>
                                 </ul>
-                                <p>Точные условия и призы уточняйте у организаторов перед началом игры.</p>
                             </div>
                         </div>
                     </div>
@@ -387,14 +327,11 @@
                                 <h3>Бонусы для всех</h3>
                             </div>
                             <div class="faq-answer">
-                                <p>Все участники получают:</p>
                                 <ul>
-                                    <li>💫 <strong>Незабываемые впечатления</strong> от поиска локаций</li>
-                                    <li>🧠 <strong>Новые знания</strong> о кино и городе</li>
-                                    <li>👥 <strong>Возможность стать частью</strong> сообщества кинолюбителей</li>
-                                    <li>📸 <strong>Фотографии</strong> с квеста для памяти</li>
-                                    <li>🎉 <strong>Сертификат участника</strong> киноквеста</li>
-                                    <li>🤝 <strong>Новые знакомства</strong> и друзья</li>
+                                    <li>Впечатления от поиска</li>
+                                    <li>Новые знания о кино</li>
+                                    <li>Сертификат участника</li>
+                                    <li>Новые друзья</li>
                                 </ul>
                             </div>
                         </div>
@@ -403,15 +340,15 @@
             </div>
         </section>
 
-        <!-- Контакты для поддержки -->
-        <section id="support" class="contacts">
+        <!-- Контакты -->
+        <section id="support" class="section section--bg-3">
             <div class="container">
                 <h2 class="section__title fade-in">Поддержка</h2>
                 
                 <div class="contacts__grid fade-in delay-1">
                     <div class="contact-card">
                         <div class="contact-card__icon" aria-hidden="true">📱</div>
-                        <h3 class="contact-card__title">Техническая поддержка</h3>
+                        <h3 class="contact-card__title">Техподдержка</h3>
                         <a href="tel:+79787975939" class="contact-card__link">+7 (978) 7975 939</a>
                         <p class="contact-card__note">Стас (разработчик)</p>
                     </div>
@@ -432,23 +369,13 @@
                     </div>
                 </div>
 
-                <div class="about__quote fade-in delay-2">
-                    <div class="quote-icon" aria-hidden="true">❝</div>
-                    <p>"Жизнь — это как коробка шоколадных конфет... а этот квест — как самая вкусная из них!</p>
-                    <div class="quote-author">Если что-то пошло не так или вы заблудились — не стесняйтесь звонить!</div>
-                </div>
-
-                <div id="to-game" class="text-center fade-in delay-3" style="margin-top: var(--space-xxxl);">
+                <div class="text-center fade-in delay-2" style="margin-top: var(--space-xl);">
                     <a href="https://t.me/Odyssey_Cinema_Club_bot" 
                        target="_blank" 
                        rel="noopener noreferrer"
-                       class="btn btn--pulse btn--glow"
-                       style="font-size: var(--text-lg); padding: var(--space-lg) var(--space-xl);">
-                        🚀 НАЧАТЬ КВЕСТ В TELEGRAM
+                       class="btn btn--glow">
+                        🚀 НАЧАТЬ КВЕСТ
                     </a>
-                    <p style="margin-top: var(--space-md); color: var(--gray-light); font-size: var(--text-sm);">
-                        Нажмите кнопку выше, чтобы перейти к боту и начать приключение!
-                    </p>
                 </div>
             </div>
         </section>
@@ -460,21 +387,13 @@
     <!-- Скрипты -->
     <script src="../js/script.js"></script>
     <script src="../modul/navigation.js"></script>
-    <script src="../modul/hero-section.js"></script>
     <script src="../modul/footer-module.js"></script>
     <script src="../modul/seasons-effects.js"></script>
     <script src="../modul/scroll-to-top.js"></script>
-    <script src="../modul/tops-module.js"></script>
-    <script src="../modul/discussions-module.js"></script>
-    <script src="../modul/works-module.js"></script>
-    <script src="../modul/next-meeting-module.js"></script>
-    <script src="../modul/map-module.js"></script>
-    <script src="../modul/weather-module.js"></script>
     
-    <!-- Инициализация анимаций для квеста -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация анимаций при скролле
+            // Анимации при скролле
             const observer = new IntersectionObserver(
                 (entries) => {
                     entries.forEach(entry => {
@@ -483,51 +402,10 @@
                         }
                     });
                 },
-                {
-                    threshold: 0.1,
-                    rootMargin: '0px 0px -50px 0px'
-                }
+                { threshold: 0.1 }
             );
 
-            // Наблюдаем за всеми анимируемыми элементами
             document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-            
-            // Добавляем классы для раздельных задержек
-            document.querySelectorAll('.fade-in').forEach((el, index) => {
-                el.classList.add(`delay-${(index % 4) + 1}`);
-            });
-            
-            // Эффект при наведении на карточки
-            document.querySelectorAll('.faq-item').forEach(item => {
-                item.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-8px)';
-                });
-                
-                item.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
-            });
-            
-            // Добавляем плавный скролл для якорных ссылок
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    if (targetId === '#') return;
-                    
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        const headerHeight = document.querySelector('.header').offsetHeight;
-                        const targetPosition = targetElement.offsetTop - headerHeight;
-                        
-                        window.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
             
             console.log('🎮 Киноквест инициализирован!');
         });
