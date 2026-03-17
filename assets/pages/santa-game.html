@@ -6,6 +6,8 @@
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Тайный Санта | Киноклуб "ОДИССЕЯ"</title>
+    
+    <!-- Стили -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/santa-game.css">
     <link rel="stylesheet" href="../modul/navigation.css">
@@ -14,8 +16,8 @@
     <link rel="stylesheet" href="../modul/seasons-effects.css">
     <link rel="stylesheet" href="../modul/scroll-to-top.css">
     <link rel="stylesheet" href="../modul/weather-module.css">
-    <meta name="description"
-        content="Тайный Санта от киноклуба Одиссея - волшебный обмен подарками! Узнай, кому ты даришь подарок.">
+    
+    <meta name="description" content="Тайный Санта от киноклуба Одиссея - волшебный обмен подарками! Узнай, кому ты даришь подарок.">
     <meta name="keywords" content="тайный санта, подарки, новый год, рождество, киноклуб, одиссея">
 </head>
 
@@ -23,21 +25,12 @@
     <!-- Шапка -->
     <header class="header">
         <div class="header__inner container">
-            <!-- Логотип слева -->
             <a href="index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
                 <div class="logo__icon"></div>
                 <span class="logo__text">ОДИССЕЯ</span>
             </a>
-
-            <!-- Виджет погоды посередине -->
-            <div class="weather-widget">
-                <!-- Содержимое виджета -->
-            </div>
-
-            <!-- Навигация справа -->
+            <div class="weather-widget"></div>
             <nav class="nav-container"></nav>
-
-            <!-- Кнопка мобильного меню -->
             <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">
                 <span class="burger-line"></span>
                 <span class="burger-line"></span>
@@ -49,96 +42,82 @@
     <!-- Герой секция -->
     <div class="hero-container"></div>
 
-    <!-- О игре -->
-    <section id="about" class="about">
-        <h2 class="section__title fade-in">🎅 О Тайном Санте</h2>
-        <div class="about__content">
-            <!-- Обёртка для карточек FAQ -->
-            <div class="faq-grid fade-in delay-1">
-
-                <!-- Колонка 1 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🤖</span>
-                            <h3>Что это?</h3>
-                        </div>
-                        <p class="faq-answer">Telegram бот для организации игры в Тайного Санту между друзьями,
-                            коллегами или членами семьи. Автоматизирует процесс жеребьёвки и обеспечивает анонимность.
-                        </p>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🏠</span>
-                            <h3>Система комнат</h3>
-                        </div>
-                        <p class="faq-answer">Создавайте отдельные комнаты для разных групп. Присоединяйтесь по
-                            уникальному коду, просматривайте участников и информацию о комнате.</p>
+    <!-- Правила игры / О Тайном Санте -->
+    <section id="about" class="section section--bg-1">
+        <div class="container">
+            <h2 class="section__title">🎅 О Тайном Санте</h2>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-icon">🤖</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Что это?</h3>
+                        <p class="faq-answer">Telegram бот для организации игры в Тайного Санту между друзьями, коллегами или членами семьи. Автоматизирует процесс жеребьёвки и обеспечивает анонимность.</p>
                     </div>
                 </div>
 
-                <!-- Колонка 2 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">👤</span>
-                            <h3>Личный кабинет</h3>
-                        </div>
-                        <p class="faq-answer">Регистрируйтесь в игре с указанием пожеланий, изменяйте имя для удобства
-                            Санты, редактируйте пожелания и просматривайте свои данные.</p>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">⚙️</span>
-                            <h3>Для организаторов</h3>
-                        </div>
-                        <p class="faq-answer">Создавайте комнаты, управляйте участниками, запускайте жеребьёвку и
-                            отслеживайте статистику через удобную админ-панель.</p>
+                <div class="faq-item">
+                    <div class="faq-icon">🏠</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Система комнат</h3>
+                        <p class="faq-answer">Создавайте отдельные комнаты для разных групп. Присоединяйтесь по уникальному коду, просматривайте участников и информацию о комнате.</p>
                     </div>
                 </div>
 
-                <!-- Колонка 3 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🔄</span>
-                            <h3>Как начать?</h3>
-                        </div>
-                        <p class="faq-answer">1. Найдите бота в Telegram<br>2. Нажмите /start<br>3. Получите код
-                            комнаты<br>4. Присоединитесь через меню "Комнаты"</p>
+                <div class="faq-item">
+                    <div class="faq-icon">👤</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Личный кабинет</h3>
+                        <p class="faq-answer">Регистрируйтесь в игре с указанием пожеланий, изменяйте имя для удобства Санты, редактируйте пожелания и просматривайте свои данные.</p>
                     </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🔒</span>
-                            <h3>Безопасность</h3>
-                        </div>
-                        <p class="faq-answer">Изоляция комнат, анонимность участников, валидация данных и автоматическое
-                            резервное копирование.</p>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-icon">⚙️</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Для организаторов</h3>
+                        <p class="faq-answer">Создавайте комнаты, управляйте участниками, запускайте жеребьёвку и отслеживайте статистику через удобную админ-панель.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-icon">🔄</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Как начать?</h3>
+                        <p class="faq-answer">1. Найдите бота в Telegram<br>2. Нажмите /start<br>3. Получите код комнаты<br>4. Присоединитесь через меню "Комнаты"</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-icon">🔒</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Безопасность</h3>
+                        <p class="faq-answer">Изоляция комнат, анонимность участников, валидация данных и автоматическое резервное копирование.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Цитата под карточками -->
-            <div class="about__quote fade-in delay-2">
-                <div class="quote-icon" aria-hidden="true">❝</div>
+            <div class="quote-optimized">
+                <div class="quote-mark">❝</div>
                 <p>"Тайный Санта - это волшебство анонимности и радость неожиданных подарков!"</p>
-                <div class="quote-author">— Тайный Санта</div>
+                <cite>— Тайный Санта</cite>
             </div>
         </div>
     </section>
 
     <!-- Секция аутентификации -->
-    <section id="auth" class="santa-auth">
+    <section id="auth" class="section section--bg-2">
         <div class="container">
-            <h2 class="section__title fade-in">🎅 Тайный Санта</h2>
-            <div class="auth-card fade-in delay-1">
+            <h2 class="section__title">🎅 Тайный Санта</h2>
+
+            <div class="auth-card">
                 <div class="santa-icon">🎄</div>
                 <h3>Введи свой код участника</h3>
                 <p class="auth-description">Получи код в Telegram боте @secret_santa_odyssey_bot</p>
+                <p class="auth-description" style="color: #ffd93d; margin-bottom: var(--space-lg);">Демо-коды: 1111111111, 2222222222, 3333333333</p>
 
                 <div class="auth-form">
-                    <input type="text" id="chatId-input" placeholder="Введите ваш chatId..." maxlength="20"
-                        class="auth-input" aria-label="Код участника">
+                    <input type="text" id="chatId-input" placeholder="Например: 1111111111" maxlength="20" class="auth-input" aria-label="Код участника">
                     <button id="auth-btn" class="btn btn--primary auth-btn">
                         <span class="btn-icon">🎁</span>
                         Узнать своего Санту
@@ -153,57 +132,57 @@
     </section>
 
     <!-- Личный кабинет (скрыт до аутентификации) -->
-    <section id="dashboard" class="santa-dashboard hidden">
+    <section id="dashboard" class="section section--bg-3 hidden">
         <div class="container">
+            <!-- Шапка дашборда -->
+            <div class="dashboard-header">
+                <h2 class="welcome-title">🎄 Добро пожаловать, <span id="user-name"></span>!</h2>
+                <button id="logout-btn" class="btn btn--outline logout-btn" aria-label="Выйти из системы">
+                    <span class="btn-icon">🚪</span>
+                    Выйти
+                </button>
+            </div>
+
             <!-- Информация о комнате -->
-            <div class="room-info fade-in">
-                <div class="dashboard-header">
-                    <h2 class="welcome-title">🎄 Добро пожаловать, <span id="user-name"></span>!</h2>
-                    <button id="logout-btn" class="btn btn--outline logout-btn" aria-label="Выйти из системы">
-                        <span class="btn-icon">🚪</span>
-                        Выйти
-                    </button>
-                </div>
-                <div class="room-card">
-                    <h3>Информация о комнате</h3>
-                    <div class="room-details">
-                        <div class="room-detail">
-                            <span class="detail-label">Комната:</span>
-                            <span id="room-name" class="detail-value"></span>
-                        </div>
-                        <div class="room-detail">
-                            <span class="detail-label">Код комнаты:</span>
-                            <span id="room-code" class="detail-value"></span>
-                        </div>
-                        <div class="room-detail">
-                            <span class="detail-label">Участников:</span>
-                            <span id="participants-count" class="detail-value"></span>
-                        </div>
-                        <div class="room-detail">
-                            <span class="detail-label">Статус:</span>
-                            <span id="draw-status" class="detail-value status-completed"></span>
-                        </div>
+            <div class="room-card">
+                <h3>Информация о комнате</h3>
+                <div class="room-details">
+                    <div class="room-detail">
+                        <span class="detail-label">Комната:</span>
+                        <span id="room-name" class="detail-value"></span>
+                    </div>
+                    <div class="room-detail">
+                        <span class="detail-label">Код комнаты:</span>
+                        <span id="room-code" class="detail-value"></span>
+                    </div>
+                    <div class="room-detail">
+                        <span class="detail-label">Участников:</span>
+                        <span id="participants-count" class="detail-value">0</span>
+                    </div>
+                    <div class="room-detail">
+                        <span class="detail-label">Статус:</span>
+                        <span id="draw-status" class="detail-value status-pending">Ожидается</span>
                     </div>
                 </div>
             </div>
 
             <!-- Информация о подарке -->
-            <div class="gift-info fade-in delay-1">
+            <div class="gift-info">
                 <div class="gift-card">
                     <div class="gift-header">
                         <span class="gift-icon">🎁</span>
                         <h3>Ты даришь подарок:</h3>
                     </div>
                     <div class="receiver-info">
-                        <div class="receiver-name" id="receiver-name"></div>
+                        <div class="receiver-name" id="receiver-name">Информация появится после жеребьёвки</div>
                         <div class="receiver-details">
                             <div class="detail-section">
                                 <h4>🎯 Пожелания:</h4>
-                                <p id="receiver-wishes" class="wishes-text"></p>
+                                <p id="receiver-wishes" class="wishes-text">Ожидайте проведения жеребьёвки</p>
                             </div>
                             <div class="detail-section">
                                 <h4>📮 Контакты:</h4>
-                                <p id="receiver-address" class="address-text"></p>
+                                <p id="receiver-address" class="address-text">Контакты появятся после жеребьёвки</p>
                             </div>
                         </div>
                     </div>
@@ -215,22 +194,22 @@
             </div>
 
             <!-- Список участников -->
-            <div class="participants-section fade-in delay-2">
+            <div class="participants-section">
                 <h3>👥 Участники комнаты</h3>
                 <div id="participants-list" class="participants-grid">
-                    <!-- Участники будут здесь -->
+                    <div class="empty-history">Загрузка участников...</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Правила игры -->
-    <section id="rules" class="santa-rules">
+    <!-- Советы и правила -->
+    <section id="rules" class="section section--bg-4">
         <div class="container">
-            <h2 class="section__title fade-in">📜 Как играть в Тайного Санту</h2>
+            <h2 class="section__title">📜 Как играть в Тайного Санту</h2>
 
             <!-- Процесс игры -->
-            <div class="process-steps fade-in delay-1">
+            <div class="process-steps">
                 <h3>🎮 Основной процесс игры:</h3>
                 <div class="steps-grid">
                     <div class="step-card">
@@ -271,42 +250,47 @@
                 </div>
             </div>
 
-            <!-- Основные правила -->
-            <div class="rules-grid fade-in delay-2">
-                <div class="rule-card">
-                    <div class="rule-icon">🎁</div>
+            <!-- Сетка правил -->
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">🎁</div>
                     <h3>Подготовка подарка</h3>
                     <p>Приготовь подарок согласно пожеланиям получателя. Будь креативным и внимательным к деталям!</p>
                 </div>
-                <div class="rule-card">
-                    <div class="rule-icon">🤫</div>
+
+                <div class="tip-card">
+                    <div class="tip-icon">🤫</div>
                     <h3>Сохраняй тайну</h3>
                     <p>Не раскрывай, кому ты даришь подарок. Волшебство игры - в неожиданности и анонимности!</p>
                 </div>
-                <div class="rule-card">
-                    <div class="rule-icon">⏰</div>
+
+                <div class="tip-card">
+                    <div class="tip-icon">⏰</div>
                     <h3>Соблюдай сроки</h3>
-                    <p>Вручи подарок в установленный срок. Не заставляй бедолагу ждать!</p>
+                    <p>Вручи подарок в установленный срок. Не заставляй получателя ждать!</p>
                 </div>
-                <div class="rule-card">
-                    <div class="rule-icon">💝</div>
+
+                <div class="tip-card">
+                    <div class="tip-icon">💝</div>
                     <h3>Дух праздника</h3>
                     <p>Главное - внимание, забота и творческий подход, а не стоимость подарка.</p>
                 </div>
-                <div class="rule-card">
-                    <div class="rule-icon">📱</div>
+
+                <div class="tip-card">
+                    <div class="tip-icon">📱</div>
                     <h3>Команды бота</h3>
                     <p>/start - главное меню<br>/join - присоединиться<br>/info - профиль<br>/leave - выйти</p>
                 </div>
-                <div class="rule-card">
-                    <div class="rule-icon">🔄</div>
+
+                <div class="tip-card">
+                    <div class="tip-icon">🔄</div>
                     <h3>Обновление данных</h3>
                     <p>Можно изменять пожелания до проведения жеребьёвки. После распределения данные фиксируются.</p>
                 </div>
             </div>
 
             <!-- Для организаторов -->
-            <div class="organizer-info fade-in delay-3">
+            <div class="organizer-info">
                 <h3>⚙️ Для организаторов:</h3>
                 <div class="organizer-steps">
                     <div class="organizer-step">
@@ -323,6 +307,12 @@
                     </div>
                 </div>
             </div>
+
+            <div class="quote-optimized">
+                <div class="quote-mark">❝</div>
+                <p>"В Тайном Санте главное - не подарок, а внимание и забота о ближнем!"</p>
+                <cite>— Опытный Санта</cite>
+            </div>
         </div>
     </section>
 
@@ -332,7 +322,12 @@
     <!-- Кнопка прокрутки наверх -->
     <button class="scroll-to-top" aria-label="Наверх">↑</button>
 
-    <!-- Подключаем скрипты -->
+    <!-- Кинолента -->
+    <div class="film-reel-overlay">
+        <div class="film-perforations"></div>
+    </div>
+
+    <!-- Скрипты -->
     <script src="../js/santa-game.js"></script>
     <script src="../modul/navigation.js"></script>
     <script src="../modul/hero-section.js"></script>
