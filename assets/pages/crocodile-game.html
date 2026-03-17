@@ -6,6 +6,8 @@
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Игра в Крокодила | Киноклуб "ОДИССЕЯ"</title>
+    
+    <!-- Стили -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/crocodile-game.css">
     <link rel="stylesheet" href="../modul/navigation.css">
@@ -14,30 +16,18 @@
     <link rel="stylesheet" href="../modul/seasons-effects.css">
     <link rel="stylesheet" href="../modul/scroll-to-top.css">
     <link rel="stylesheet" href="../modul/weather-module.css">
-    <meta name="description"
-        content="Игра в Крокодила - веселая командная игра для вечеринок. Показывай, рисуй или объясняй слова без слов!">
-    <meta name="keywords" content="крокодил, игра, слова, команды, вечеринка, киноклуб">
 </head>
 
 <body>
     <!-- Шапка -->
     <header class="header">
         <div class="header__inner container">
-            <!-- Логотип слева -->
             <a href="index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
                 <div class="logo__icon"></div>
                 <span class="logo__text">ОДИССЕЯ</span>
             </a>
-
-            <!-- Виджет погоды посередине -->
-            <div class="weather-widget">
-                <!-- Содержимое виджета -->
-            </div>
-
-            <!-- Навигация справа -->
+            <div class="weather-widget"></div>
             <nav class="nav-container"></nav>
-
-            <!-- Кнопка мобильного меню -->
             <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">
                 <span class="burger-line"></span>
                 <span class="burger-line"></span>
@@ -50,123 +40,101 @@
     <div class="hero-container"></div>
 
     <!-- Правила игры -->
-    <section id="rules" class="about">
-        <h2 class="section__title fade-in">Правила игры</h2>
-        <div class="about__content">
-            <div class="faq-grid fade-in delay-1">
-
-                <!-- Колонка 1 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🎯</span>
-                            <h3>Цель игры</h3>
-                        </div>
-                        <p class="faq-answer">Команда должна отгадать слово или фразу, которую показывает один из
-                            игроков, не используя слова и звуки.</p>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">⏱️</span>
-                            <h3>Время</h3>
-                        </div>
-                        <p class="faq-answer">На отгадывание дается 1-2 минуты. Можно установить таймер для большего
-                            азарта!</p>
+    <section id="rules" class="section section--bg-1">
+        <div class="container">
+            <h2 class="section__title">Правила игры</h2>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-icon">🎯</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Цель игры</h3>
+                        <p class="faq-answer">Команда должна отгадать слово или фразу, которую показывает один из игроков.</p>
                     </div>
                 </div>
 
-                <!-- Колонка 2 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🚫</span>
-                            <h3>Запрещено</h3>
-                        </div>
-                        <p class="faq-answer">• Произносить слова и звуки<br>• Писать буквы в воздухе<br>• Показывать на
-                            предметы<br>• Использовать иностранные языки</p>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">✅</span>
-                            <h3>Разрешено</h3>
-                        </div>
-                        <p class="faq-answer">• Жесты и мимика<br>• Рисование (если есть доска)<br>• Разбивать слово на
-                            части<br>• Показывать синонимы</p>
+                <div class="faq-item">
+                    <div class="faq-icon">⏱️</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Время</h3>
+                        <p class="faq-answer">На отгадывание дается 1-2 минуты.</p>
                     </div>
                 </div>
 
-                <!-- Колонка 3 -->
-                <div class="faq-column">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">🏆</span>
-                            <h3>Подсчет очков</h3>
-                        </div>
-                        <p class="faq-answer">• Угаданное слово: +1 очко команде<br>• Сложное слово: +2 очка<br>• Все
-                            слова угаданы: бонус +3 очка</p>
+                <div class="faq-item">
+                    <div class="faq-icon">🚫</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Запрещено</h3>
+                        <p class="faq-answer">Произносить слова, звуки, писать буквы в воздухе.</p>
                     </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <span class="faq-icon" aria-hidden="true">👑</span>
-                            <h3>Победа</h3>
-                        </div>
-                        <p class="faq-answer">Побеждает команда, набравшая наибольшее количество очков после 3-5
-                            раундов.</p>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-icon">✅</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Разрешено</h3>
+                        <p class="faq-answer">Жесты, мимика, рисование.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-icon">🏆</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Подсчет очков</h3>
+                        <p class="faq-answer">Угаданное слово: +1 очко.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-icon">👑</div>
+                    <div class="faq-content">
+                        <h3 class="faq-title">Победа</h3>
+                        <p class="faq-answer">Команда с наибольшим количеством очков.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Цитата под карточками -->
-            <div class="about__quote fade-in delay-2">
-                <div class="quote-icon" aria-hidden="true">❝</div>
+            <div class="quote-optimized">
+                <div class="quote-mark">❝</div>
                 <p>"В Крокодиле главное - не показать, а чтобы поняли!"</p>
-                <div class="quote-author">— Опытный крокодильщик</div>
+                <cite>— Опытный крокодильщик</cite>
             </div>
         </div>
     </section>
 
-    <!-- Начало игры -->
-    <section id="game-start" class="about">
+    <!-- Игровая зона -->
+    <section id="game-start" class="section section--bg-2">
         <div class="container">
-            <h2 class="section__title fade-in">Начнем игру!</h2>
+            <h2 class="section__title">Начнем игру!</h2>
 
-            <!-- Выбор тематики -->
-            <div class="theme-selection fade-in delay-1">
+            <div class="theme-selection">
                 <h3>Выбери тематику:</h3>
                 <div class="theme-buttons">
                     <button class="theme-btn active" data-theme="all">
-                        <span class="theme-icon">🎲</span>
-                        Всё подряд
+                        <span class="theme-icon">🎲</span> Всё подряд
                     </button>
                     <button class="theme-btn" data-theme="movies">
-                        <span class="theme-icon">🎬</span>
-                        Кино
+                        <span class="theme-icon">🎬</span> Кино
                     </button>
                     <button class="theme-btn" data-theme="games">
-                        <span class="theme-icon">🎮</span>
-                        Игры
+                        <span class="theme-icon">🎮</span> Игры
                     </button>
                     <button class="theme-btn" data-theme="mixed">
-                        <span class="theme-icon">🌈</span>
-                        Микс
+                        <span class="theme-icon">🌈</span> Микс
                     </button>
                 </div>
             </div>
 
-            <!-- Игровая зона -->
-            <div class="game-area fade-in delay-2">
+            <div class="game-area">
                 <div class="game-controls">
-                    <button id="start-game" class="btn btn--primary game-btn">
-                        <span class="btn-icon">▶️</span>
-                        Играть!
+                    <button id="start-game" class="btn btn--primary">
+                        <span class="btn-icon">▶️</span> Играть!
                     </button>
-                    <button id="next-word" class="btn btn--outline game-btn" disabled>
-                        <span class="btn-icon">⏭️</span>
-                        Следующее
+                    <button id="next-word" class="btn btn--outline" disabled>
+                        <span class="btn-icon">⏭️</span> Следующее
                     </button>
-                    <button id="reset-game" class="btn btn--outline game-btn">
-                        <span class="btn-icon">🔄</span>
-                        Новая игра
+                    <button id="reset-game" class="btn btn--outline">
+                        <span class="btn-icon">🔄</span> Новая игра
                     </button>
                 </div>
 
@@ -195,7 +163,6 @@
                     </div>
                 </div>
 
-                <!-- Таймер -->
                 <div class="timer-section">
                     <div class="timer-display">
                         <div class="timer-circle">
@@ -203,19 +170,17 @@
                         </div>
                     </div>
                     <div class="timer-controls">
-                        <button id="start-timer" class="btn btn--outline timer-btn">
-                            <span class="btn-icon">⏱️</span>
-                            Старт таймер
+                        <button id="start-timer" class="btn btn--outline">
+                            <span class="btn-icon">⏱️</span> Старт
                         </button>
-                        <button id="stop-timer" class="btn btn--outline timer-btn" disabled>
-                            <span class="btn-icon">⏸️</span>
-                            Стоп
+                        <button id="stop-timer" class="btn btn--outline" disabled>
+                            <span class="btn-icon">⏸️</span> Стоп
                         </button>
                     </div>
                 </div>
             </div>
-            <!-- История игры -->
-            <div class="game-history fade-in delay-3">
+
+            <div class="game-history">
                 <h3>Уже показано:</h3>
                 <div id="used-words" class="used-words-list">
                     <div class="empty-history">Слова появятся здесь после показа</div>
@@ -225,11 +190,11 @@
     </section>
 
     <!-- Советы -->
-    <section class="about crocodile-tips">
+    <section class="section section--bg-3">
         <div class="container">
-            <h2 class="section__title fade-in">Советы для игроков</h2>
+            <h2 class="section__title">Советы для игроков</h2>
 
-            <div class="tips-grid fade-in delay-1">
+            <div class="tips-grid">
                 <div class="tip-card">
                     <div class="tip-icon">💡</div>
                     <h3>Для показывающего</h3>
@@ -237,7 +202,6 @@
                         <li>Разбивай сложные слова на части</li>
                         <li>Используй ассоциации</li>
                         <li>Показывай количество слов пальцами</li>
-                        <li>Имитируй действия персонажей</li>
                     </ul>
                 </div>
 
@@ -248,7 +212,6 @@
                         <li>Слушайте все версии команды</li>
                         <li>Следите за жестами внимательно</li>
                         <li>Начинайте с общего понятия</li>
-                        <li>Не перебивайте друг друга</li>
                     </ul>
                 </div>
 
@@ -258,17 +221,14 @@
                     <ul>
                         <li>"Да" - кивок, "Нет" - мотание головой</li>
                         <li>Близко - манить к себе, далеко - отталкивать</li>
-                        <li>Прошлое - указать за спину</li>
-                        <li>Будущее - указать вперед</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Цитата в стиле index.html -->
-            <div class="about__quote fade-in delay-2">
-                <div class="quote-icon" aria-hidden="true">❝</div>
+            <div class="quote-optimized">
+                <div class="quote-mark">❝</div>
                 <p>"В Крокодиле побеждает не тот, кто лучше показывает, а тот, чья команда лучше понимает!"</p>
-                <div class="quote-author">— Мудрый игрок</div>
+                <cite>— Мудрый игрок</cite>
             </div>
         </div>
     </section>
@@ -279,7 +239,12 @@
     <!-- Кнопка прокрутки наверх -->
     <button class="scroll-to-top" aria-label="Наверх">↑</button>
 
-    <!-- Подключаем скрипты -->
+    <!-- Кинолента -->
+    <div class="film-reel-overlay">
+        <div class="film-perforations"></div>
+    </div>
+
+    <!-- Скрипты -->
     <script src="../js/crocodile-game.js"></script>
     <script src="../modul/navigation.js"></script>
     <script src="../modul/hero-section.js"></script>
