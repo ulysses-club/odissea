@@ -16,6 +16,7 @@ class CrocodileGame {
         this.currentTheme = 'all';
         this.usedWords = [];
         this.availableWords = [];
+        this.currentWordData = null;
         this.isGameStarted = false;
         this.timer = null;
         this.timeLeft = 60;
@@ -171,8 +172,9 @@ class CrocodileGame {
                 
                 if (this.isGameStarted) {
                     this.resetGame();
+                } else {
+                    this.updateStats();
                 }
-                this.updateStats();
             });
         });
 
@@ -196,12 +198,25 @@ class CrocodileGame {
             this.stopTimer();
         });
 
+        // Добавляем обработчики с защитой от всплытия событий
+        const stopPropagation = (e) => e.stopPropagation();
+        
+        [this.startBtn, this.nextBtn, this.resetBtn, 
+         this.startTimerBtn, this.stopTimerBtn].forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', stopPropagation);
+            }
+        });
+
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && this.isGameStarted) {
+            if (e.code === 'Space' && this.isGameStarted && !this.nextBtn.disabled) {
                 e.preventDefault();
+                e.stopPropagation();
                 this.nextWord();
             }
             if (e.code === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
                 this.resetGame();
             }
         });
@@ -217,8 +232,16 @@ class CrocodileGame {
         this.isGameStarted = true;
         this.usedWords = [];
         this.wordsGuessed = 0;
+        this.currentWordData = null;
 
         this.prepareWordList();
+        
+        if (this.availableWords.length === 0) {
+            alert('Нет слов для выбранной тематики!');
+            this.resetGame();
+            return;
+        }
+
         this.updateStats();
         this.updateUsedWordsList();
 
@@ -252,28 +275,31 @@ class CrocodileGame {
      * @public
      */
     nextWord() {
+        if (!this.isGameStarted) return;
+        
+        this.stopTimer();
+
         if (this.availableWords.length === 0) {
             this.endGame();
             return;
         }
 
         const wordData = this.availableWords.pop();
-
-        if (!wordData) {
-            this.nextWord();
-            return;
-        }
-
+        this.currentWordData = wordData;
         this.usedWords.push(wordData);
-        this.wordsGuessed++;
+        this.wordsGuessed++; // Увеличиваем счетчик угаданных слов
 
         this.displayWord(wordData);
         this.updateStats();
         this.updateUsedWordsList();
 
-        if (!this.timer) {
-            this.startTimer();
-        }
+        // Сбрасываем таймер
+        this.timeLeft = 60;
+        this.timerDisplay.textContent = this.timeLeft;
+        this.timerCircle.classList.remove('warning');
+        
+        // Автоматически запускаем таймер
+        this.startTimer();
     }
 
     /**
@@ -283,11 +309,12 @@ class CrocodileGame {
      */
     displayWord(wordData) {
         let category = 'Разное';
-        Object.entries(this.words).forEach(([cat, words]) => {
+        for (const [cat, words] of Object.entries(this.words)) {
             if (words.some(w => w.word === wordData.word)) {
                 category = this.getCategoryName(cat);
+                break;
             }
-        });
+        }
 
         this.wordCategory.textContent = category;
         this.theWord.textContent = wordData.word;
@@ -329,6 +356,7 @@ class CrocodileGame {
         this.timeLeft = 60;
         this.timerDisplay.textContent = this.timeLeft;
         this.timerCircle.classList.add('running');
+        this.timerCircle.classList.remove('warning');
         this.startTimerBtn.disabled = true;
         this.stopTimerBtn.disabled = false;
 
@@ -342,7 +370,14 @@ class CrocodileGame {
 
             if (this.timeLeft <= 0) {
                 this.stopTimer();
-                this.nextWord();
+                // При истечении времени автоматически переходим к следующему слову
+                if (this.isGameStarted) {
+                    if (this.availableWords.length > 0) {
+                        this.nextWord();
+                    } else {
+                        this.endGame();
+                    }
+                }
             }
         }, 1000);
     }
@@ -371,6 +406,7 @@ class CrocodileGame {
         this.isGameStarted = false;
         this.usedWords = [];
         this.wordsGuessed = 0;
+        this.currentWordData = null;
         this.timeLeft = 60;
 
         this.timerDisplay.textContent = this.timeLeft;
@@ -402,6 +438,9 @@ class CrocodileGame {
 
         this.startBtn.disabled = false;
         this.nextBtn.disabled = true;
+        
+        // Обновляем статистику
+        this.updateStats();
     }
 
     /**
@@ -410,7 +449,7 @@ class CrocodileGame {
      */
     updateStats() {
         const wordsLeft = this.isGameStarted ? this.availableWords.length : this.getTotalWordsCount();
-        const totalWords = this.isGameStarted ? this.totalWords : this.getTotalWordsCount();
+        const totalWords = this.getTotalWordsCount();
 
         this.wordsLeft.textContent = wordsLeft;
         this.wordsGuessedElement.textContent = this.wordsGuessed;
@@ -439,7 +478,8 @@ class CrocodileGame {
         }
 
         this.usedWordsList.innerHTML = this.usedWords
-            .slice(-10)
+            .slice()
+            .reverse()
             .map(wordData =>
                 `<div class="used-word" title="${wordData.hint}">${wordData.word}</div>`
             )
@@ -478,10 +518,13 @@ class CrocodileGame {
  * @function
  */
 function initCrocodileGame() {
-    if (document.querySelector('.theme-btn')) {
-        window.crocodileGame = new CrocodileGame();
-        console.log('Крокодил игра инициализирована');
-    }
+    // Небольшая задержка, чтобы другие модули успели инициализироваться
+    setTimeout(() => {
+        if (document.querySelector('.theme-btn')) {
+            window.crocodileGame = new CrocodileGame();
+            console.log('Крокодил игра инициализирована');
+        }
+    }, 100);
 }
 
 if (document.readyState === 'loading') {
