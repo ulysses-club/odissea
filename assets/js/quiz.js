@@ -13,6 +13,9 @@ class Quiz {
         this.roundResults = [];
         this.showingAnswers = false;
         this.currentAnswerIndex = 0;
+        this.isRetryMode = false;
+        this.retryQuestions = [];
+        this.retryIndex = 0;
 
         // Определяем режим
         this.isBroadcastMode = document.body.classList.contains('quiz-broadcast');
@@ -48,6 +51,7 @@ class Quiz {
             const data = await response.json();
             this.questions = data.questions;
             this.quizConfig = data.config;
+            this.retryTimeLimit = this.quizConfig?.retryTime || 15;
         } catch (error) {
             console.error('Ошибка загрузки вопросов:', error);
             this.loadFallbackQuestions();
@@ -61,68 +65,13 @@ class Quiz {
                 type: 'open',
                 question: "Назовите фильм и режиссера по кадру",
                 image: "../images/quiz/round1-1.jpg",
+                video: null,
+                audio: null,
                 correctAnswer: "Бегущий по лезвию 2049, Дени Вильнёв",
                 time: 60
-            },
-            {
-                round: 2,
-                type: 'open',
-                question: "Какой актер изображен на фото и в каком фильме?",
-                image: "../images/quiz/round2-1.jpg",
-                correctAnswer: "Роберт Де Ниро, Таксист",
-                time: 60
-            },
-            {
-                round: 3,
-                type: 'multiple',
-                question: "Кто режиссер фильма 'Семь самураев'?",
-                answers: [
-                    "Ясудзиро Одзу",
-                    "Акира Куросава",
-                    "Кэнжи Мидзогути",
-                    "Хироси Тэсигахара"
-                ],
-                correctAnswer: 1,
-                time: 60
-            },
-            {
-                round: 4,
-                type: 'open',
-                question: "Определите фильм по этому iconic кадру",
-                image: "../images/quiz/round4-1.jpg",
-                correctAnswer: "Космическая одиссея 2001 года",
-                time: 60
-            },
-            {
-                round: 5,
-                type: 'open',
-                question: "Назовите режиссер и фильм",
-                image: "../images/quiz/round5-1.jpg",
-                correctAnswer: "Андрей Тарковский, Сталкер",
-                time: 60
-            },
-            {
-                round: 6,
-                type: 'open',
-                question: "Какой фильм представлен на изображении?",
-                image: "../images/quiz/round6-1.jpg",
-                correctAnswer: "Расёмон",
-                time: 60
-            },
-            {
-                round: 7,
-                type: 'blitz',
-                question: "Блиц-раунд! Ответьте на 5 быстрых вопросов",
-                blitzQuestions: [
-                    { question: "В каком году вышел 'Крестный отец'?", correctAnswer: "1972" },
-                    { question: "Кто сыграл главную роль в 'Заводном апельсине'?", correctAnswer: "Малкольм Макдауэлл" },
-                    { question: "Какой фильм получил Оскар за лучший фильм в 1994?", correctAnswer: "Форрест Гамп" },
-                    { question: "Режиссер 'Подводной лодки'?", correctAnswer: "Вольфганг Петерсен" },
-                    { question: "Актер, сыгравший Дарта Вейдера в оригинальной трилогии?", correctAnswer: "Дэвид Проуз" }
-                ],
-                time: 30
             }
         ];
+        this.retryTimeLimit = 15;
     }
 
     bindEvents() {
@@ -175,12 +124,32 @@ class Quiz {
         this.roundResults = [];
         this.showingAnswers = false;
         this.currentAnswerIndex = 0;
+        this.isRetryMode = false;
 
         document.getElementById('quiz-welcome').style.display = 'none';
         document.getElementById('quiz-questions').style.display = 'block';
         document.getElementById('quiz-results').style.display = 'none';
 
         this.showInstructions();
+    }
+
+    stopAllMedia() {
+        // Останавливаем все видео и аудио на странице
+        document.querySelectorAll('video, audio').forEach(media => {
+            media.pause();
+            media.currentTime = 0;
+        });
+    }
+
+    renderMedia(question) {
+        if (question.image) {
+            return `<div class="media-container"><img src="${question.image}" alt="Изображение к вопросу" loading="lazy"></div>`;
+        } else if (question.video) {
+            return `<div class="media-container"><video controls autoplay muted><source src="${question.video}" type="video/mp4">Ваш браузер не поддерживает видео</video></div>`;
+        } else if (question.audio) {
+            return `<div class="media-container"><audio controls autoplay><source src="${question.audio}" type="audio/mpeg">Ваш браузер не поддерживает аудио</audio></div>`;
+        }
+        return '';
     }
 
     showInstructions() {
@@ -207,8 +176,12 @@ class Quiz {
                         <div class="instruction-text"><strong>Система баллов:</strong><br>• Фото-вопросы: 15 баллов<br>• Вопросы с выбором: 10 баллов<br>• Блиц-вопросы: 5 баллов за ответ</div>
                     </div>
                     <div class="instruction-item">
+                        <div class="instruction-icon">🔄</div>
+                        <div class="instruction-text"><strong>Повтор вопросов:</strong><br>После каждого тура будет показан повтор всех вопросов тура за ${this.retryTimeLimit} секунд</div>
+                    </div>
+                    <div class="instruction-item">
                         <div class="instruction-icon">🔍</div>
-                        <div class="instruction-text"><strong>Проверка ответов:</strong><br>После каждого тура будут показаны правильные ответы для самопроверки</div>
+                        <div class="instruction-text"><strong>Проверка ответов:</strong><br>После повторного просмотра будут показаны правильные ответы для самопроверки</div>
                     </div>
                 </div>
                 <div class="instructions-warning">
@@ -242,6 +215,8 @@ class Quiz {
         `;
 
         document.querySelector('.start-round-btn').addEventListener('click', () => {
+            this.isRetryMode = false;
+            this.currentQuestionIndex = 0;
             this.showQuestion();
         });
     }
@@ -254,7 +229,7 @@ class Quiz {
             4: "Фото-тур: Iconic кадры кино",
             5: "Фото-тур: Режиссеры и их фильмы",
             6: "Фото-тур: Классика мирового кино",
-            7: "Блиц-раунд: 5 быстрых вопросов за 30 секунд!"
+            7: "Блиц-раунд: 7 быстрых вопросов за 30 секунд!"
         };
         return descriptions[round] || `Тур ${round}`;
     }
@@ -263,41 +238,57 @@ class Quiz {
     getRoundType(round) { return [1, 2, 4, 5, 6].includes(round) ? 'Фото' : (round === 3 ? 'Выбор' : 'Блиц'); }
 
     showQuestion() {
-        const currentRoundQuestions = this.questions.filter(q => q.round === this.currentRound);
-        if (this.currentQuestionIndex >= currentRoundQuestions.length) {
-            this.showRoundAnswers();
+        this.stopAllMedia();
+
+        let questions;
+        if (this.isRetryMode) {
+            questions = this.retryQuestions;
+        } else {
+            questions = this.questions.filter(q => q.round === this.currentRound);
+        }
+
+        if (this.currentQuestionIndex >= questions.length) {
+            if (this.isRetryMode) {
+                this.showRoundAnswers();
+            } else {
+                this.startRetryRound();
+            }
             return;
         }
 
-        const question = currentRoundQuestions[this.currentQuestionIndex];
+        const question = questions[this.currentQuestionIndex];
         const questionsContainer = document.getElementById('quiz-questions');
 
+        const mediaHtml = this.renderMedia(question);
+        const retryBadge = this.isRetryMode ? '<div class="retry-badge">🔄 ПОВТОРНЫЙ ПРОСМОТР</div>' : '';
+
         questionsContainer.innerHTML = `
-            <div class="question-slide">
+            <div class="${this.isRetryMode ? 'retry-slide' : 'question-slide'}">
                 <div class="question-header">
                     <div class="question-progress">
-                        <span>Тур ${this.currentRound} • Вопрос ${this.currentQuestionIndex + 1} из ${currentRoundQuestions.length}</span>
-                        <div class="progress-bar"><div class="progress-fill" style="width: ${((this.currentQuestionIndex + 1) / currentRoundQuestions.length) * 100}%"></div></div>
+                        <span>${this.isRetryMode ? 'Повтор • ' : ''}Тур ${this.currentRound} • Вопрос ${this.currentQuestionIndex + 1} из ${questions.length}</span>
+                        <div class="progress-bar"><div class="progress-fill" style="width: ${((this.currentQuestionIndex + 1) / questions.length) * 100}%"></div></div>
                     </div>
-                    <div class="question-timer" id="timer"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg><span id="time-left">${question.time}</span></div>
+                    <div class="question-timer" id="timer"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg><span id="time-left">${this.isRetryMode ? this.retryTimeLimit : question.time}</span></div>
                 </div>
+                ${retryBadge}
                 <div class="question-content">
-                    ${question.image ? `<div class="question-image"><img src="${question.image}" alt="Изображение к вопросу" loading="lazy"></div>` : ''}
+                    ${mediaHtml}
                     <h3 class="question-text">${question.question}</h3>
                     ${this.renderQuestionContent(question)}
                 </div>
                 <div class="quiz-navigation">
                     <div class="nav-buttons">
                         <button class="btn btn--outline nav-btn prev-btn" id="prev-btn" ${this.currentQuestionIndex === 0 ? 'disabled' : ''}>← Назад</button>
-                        <button class="btn btn--primary nav-btn next-btn" id="next-btn">${this.currentQuestionIndex === currentRoundQuestions.length - 1 ? 'Завершить тур' : 'Далее →'}</button>
+                        <button class="btn btn--primary nav-btn next-btn" id="next-btn">${this.currentQuestionIndex === questions.length - 1 ? (this.isRetryMode ? 'Завершить повтор' : 'Завершить тур') : 'Далее →'}</button>
                     </div>
-                    <div class="nav-hint">Используйте кнопки для ручного перехода</div>
+                    <div class="nav-hint">${this.isRetryMode ? 'Время на повторный просмотр' : 'Используйте кнопки для ручного перехода'}</div>
                 </div>
             </div>
         `;
 
-        this.bindNavigationEvents(currentRoundQuestions);
-        this.startTimer(question.time);
+        this.bindNavigationEvents(questions);
+        this.startTimer(this.isRetryMode ? this.retryTimeLimit : question.time);
     }
 
     renderQuestionContent(question) {
@@ -305,27 +296,27 @@ class Quiz {
             case 'multiple':
                 return `<div class="answers-grid">${question.answers.map((answer, index) => `<div class="answer-option"><span class="answer-letter">${String.fromCharCode(65 + index)}</span><span class="answer-text">${answer}</span></div>`).join('')}</div><div class="answer-hint">Запишите букву ответа (A, B, C, D)</div>`;
             case 'blitz':
-                return `<div class="blitz-container">${question.blitzQuestions.map((blitzQ, index) => `<div class="blitz-question"><p><strong>${index + 1}.</strong> ${blitzQ.question}</p></div>`).join('')}</div><div class="answer-hint">Запишите ответы на все 5 вопросов</div>`;
+                return `<div class="blitz-container">${question.blitzQuestions.map((blitzQ, index) => `<div class="blitz-question"><p><strong>${index + 1}.</strong> ${blitzQ.question}</p></div>`).join('')}</div><div class="answer-hint">Запишите ответы на все вопросы</div>`;
             default:
                 return `<div class="answer-hint">Запишите ответ на листе бумаги</div>`;
         }
     }
 
-    bindNavigationEvents(currentRoundQuestions) {
+    bindNavigationEvents(questions) {
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
-        if (prevBtn) prevBtn.addEventListener('click', () => this.goToPreviousQuestion());
-        if (nextBtn) nextBtn.addEventListener('click', () => this.goToNextQuestion());
+        if (prevBtn) prevBtn.addEventListener('click', () => this.goToPreviousQuestion(questions));
+        if (nextBtn) nextBtn.addEventListener('click', () => this.goToNextQuestion(questions));
 
         const keyHandler = (e) => {
-            if (e.key === 'ArrowLeft') { e.preventDefault(); this.goToPreviousQuestion(); }
-            else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); this.goToNextQuestion(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); this.goToPreviousQuestion(questions); }
+            else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); this.goToNextQuestion(questions); }
         };
         document.addEventListener('keydown', keyHandler);
         this.keyHandler = keyHandler;
     }
 
-    goToPreviousQuestion() {
+    goToPreviousQuestion(questions) {
         if (this.currentQuestionIndex > 0) {
             clearInterval(this.timer);
             this.currentQuestionIndex--;
@@ -333,15 +324,25 @@ class Quiz {
         }
     }
 
-    goToNextQuestion() {
-        const currentRoundQuestions = this.questions.filter(q => q.round === this.currentRound);
+    goToNextQuestion(questions) {
         clearInterval(this.timer);
-        if (this.currentQuestionIndex < currentRoundQuestions.length - 1) {
+        if (this.currentQuestionIndex < questions.length - 1) {
             this.currentQuestionIndex++;
             this.showQuestion();
         } else {
-            this.showRoundAnswers();
+            if (this.isRetryMode) {
+                this.showRoundAnswers();
+            } else {
+                this.startRetryRound();
+            }
         }
+    }
+
+    startRetryRound() {
+        this.isRetryMode = true;
+        this.currentQuestionIndex = 0;
+        this.retryQuestions = [...this.questions.filter(q => q.round === this.currentRound)];
+        this.showQuestion();
     }
 
     startTimer(time) {
@@ -352,17 +353,33 @@ class Quiz {
             this.timeLeft--;
             if (timerElement) timerElement.textContent = this.timeLeft;
             if (this.timeLeft <= 10 && timerElement) timerElement.parentElement.classList.add('timer-critical');
-            if (this.timeLeft <= 0) { clearInterval(this.timer); this.goToNextQuestion(); }
+            if (this.timeLeft <= 0) {
+                clearInterval(this.timer);
+                const questions = this.isRetryMode ? this.retryQuestions : this.questions.filter(q => q.round === this.currentRound);
+                if (this.currentQuestionIndex < questions.length - 1) {
+                    this.currentQuestionIndex++;
+                    this.showQuestion();
+                } else {
+                    if (this.isRetryMode) {
+                        this.showRoundAnswers();
+                    } else {
+                        this.startRetryRound();
+                    }
+                }
+            }
         }, 1000);
     }
 
     showRoundAnswers() {
+        this.isRetryMode = false;
         this.showingAnswers = true;
         this.currentAnswerIndex = 0;
         this.showAnswerSlide();
     }
 
     showAnswerSlide() {
+        this.stopAllMedia();
+        
         const currentRoundQuestions = this.questions.filter(q => q.round === this.currentRound);
         if (this.currentAnswerIndex >= currentRoundQuestions.length) {
             this.finishRound();
@@ -371,6 +388,7 @@ class Quiz {
 
         const question = currentRoundQuestions[this.currentAnswerIndex];
         const questionsContainer = document.getElementById('quiz-questions');
+        const mediaHtml = this.renderMedia(question);
 
         questionsContainer.innerHTML = `
             <div class="answer-slide">
@@ -379,7 +397,7 @@ class Quiz {
                     <div class="answer-badge">🔍 Проверка</div>
                 </div>
                 <div class="question-content">
-                    ${question.image ? `<div class="question-image"><img src="${question.image}" alt="Изображение к вопросу" loading="lazy"></div>` : ''}
+                    ${mediaHtml}
                     <h3 class="question-text">${question.question}</h3>
                     <div class="correct-answer-section">
                         <div class="correct-answer-header"><span class="answer-icon">✅</span><h4>Правильный ответ:</h4></div>
@@ -436,7 +454,7 @@ class Quiz {
         questionsContainer.innerHTML = `
             <div class="round-results">
                 <h2 class="quiz-title">Тур ${this.currentRound} завершен! 🎯</h2>
-                <div class="round-summary"><p>Вы ответили на <strong>${currentRoundQuestions.length}</strong> вопросов</p><p>Проверили все правильные ответы</p></div>
+                <div class="round-summary"><p>Вы просмотрели <strong>${currentRoundQuestions.length}</strong> вопросов</p><p>Проверили все правильные ответы</p></div>
                 <div class="quiz-stats-grid">
                     <div class="quiz-stat-item"><div class="quiz-stat-number">${currentRoundQuestions.length}</div><div class="quiz-stat-label">вопросов</div></div>
                     <div class="quiz-stat-item"><div class="quiz-stat-number">${this.getRoundType(this.currentRound)}</div><div class="quiz-stat-label">тип</div></div>

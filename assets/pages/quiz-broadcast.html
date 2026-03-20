@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/quiz.css">
     
-    <!-- Специальные стили для режима трансляции -->
     <style>
         /* ===== РЕЖИМ ТРАНСЛЯЦИИ - ПОЛНОЭКРАННАЯ АДАПТАЦИЯ ===== */
         :root {
@@ -178,6 +177,17 @@
             background: rgba(255, 77, 77, 0.15);
         }
 
+        .quiz-broadcast .retry-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff9800, #f44336);
+            padding: clamp(4px, 1vh, 8px) clamp(12px, 2vw, 20px);
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: clamp(12px, 2vh, 16px);
+            margin-bottom: clamp(8px, 1.5vh, 12px);
+            text-align: center;
+        }
+
         .quiz-broadcast .question-content {
             width: 100%;
             display: flex;
@@ -197,7 +207,7 @@
             padding: 0;
         }
 
-        .quiz-broadcast .question-image {
+        .quiz-broadcast .media-container {
             max-width: min(90%, 800px);
             max-height: min(35vh, 400px);
             margin: 0 auto;
@@ -207,12 +217,22 @@
             flex-shrink: 0;
         }
 
-        .quiz-broadcast .question-image img {
+        .quiz-broadcast .media-container img,
+        .quiz-broadcast .media-container video {
             width: 100%;
             height: auto;
             max-height: 35vh;
             object-fit: contain;
             display: block;
+        }
+
+        .quiz-broadcast .media-container audio {
+            width: 100%;
+            margin: clamp(8px, 1.5vh, 12px) 0;
+        }
+
+        .quiz-broadcast .media-container video {
+            background: #000;
         }
 
         .quiz-broadcast .quiz-answers-section {
@@ -606,6 +626,7 @@
 
         .quiz-broadcast .question-slide,
         .quiz-broadcast .answer-slide,
+        .quiz-broadcast .retry-slide,
         .quiz-broadcast .instructions-container,
         .quiz-broadcast .round-intro,
         .quiz-broadcast .round-results {
@@ -626,16 +647,18 @@
         }
 
         @media (max-width: 480px) {
-            .quiz-broadcast .question-image { max-height: 28vh; }
-            .quiz-broadcast .question-image img { max-height: 28vh; }
+            .quiz-broadcast .media-container { max-height: 28vh; }
+            .quiz-broadcast .media-container img,
+            .quiz-broadcast .media-container video { max-height: 28vh; }
             .quiz-broadcast .answer-option { padding: 6px 8px; min-height: 36px; }
             .quiz-broadcast .answer-letter { width: 22px; height: 22px; font-size: 11px; }
             .quiz-broadcast .quiz-stats-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-height: 600px) {
-            .quiz-broadcast .question-image { max-height: 25vh; }
-            .quiz-broadcast .question-image img { max-height: 25vh; }
+            .quiz-broadcast .media-container { max-height: 25vh; }
+            .quiz-broadcast .media-container img,
+            .quiz-broadcast .media-container video { max-height: 25vh; }
             .quiz-broadcast .quiz-instruction { display: none; }
             .quiz-broadcast .instruction-badge { display: none; }
         }
@@ -647,7 +670,7 @@
         }
 
         @media (max-width: 900px) and (orientation: landscape) {
-            .quiz-broadcast .question-image { max-height: 30vh; }
+            .quiz-broadcast .media-container { max-height: 30vh; }
             .quiz-broadcast .answers-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
@@ -734,94 +757,6 @@
     </section>
 
     <script src="../js/quiz.js"></script>
-    <script>
-        (function() {
-            const originalShowQuestion = Quiz.prototype.showQuestion;
-            const originalShowAnswerSlide = Quiz.prototype.showAnswerSlide;
-            const originalShowInstructions = Quiz.prototype.showInstructions;
-            const originalShowRoundIntro = Quiz.prototype.showRoundIntro;
-            const originalFinishRound = Quiz.prototype.finishRound;
-
-            function addStructuralSections(slide) {
-                if (!slide || slide.querySelector('.quiz-top-section')) return;
-                const header = slide.querySelector('.question-header');
-                const content = slide.querySelector('.question-content');
-                const navigation = slide.querySelector('.quiz-navigation');
-                const instruction = slide.querySelector('.quiz-instruction');
-
-                if (header && content) {
-                    let topSection = slide.querySelector('.quiz-top-section');
-                    if (!topSection) {
-                        topSection = document.createElement('div');
-                        topSection.className = 'quiz-top-section';
-                        slide.insertBefore(topSection, slide.firstChild);
-                    }
-                    if (header.parentElement !== topSection) topSection.appendChild(header);
-
-                    let middleSection = slide.querySelector('.quiz-middle-section');
-                    if (!middleSection) {
-                        middleSection = document.createElement('div');
-                        middleSection.className = 'quiz-middle-section';
-                        topSection.insertAdjacentElement('afterend', middleSection);
-                    }
-                    if (content.parentElement !== middleSection) middleSection.appendChild(content);
-
-                    const answersSection = content.querySelector('.answers-grid, .blitz-container, .open-answer-instruction, .correct-answer-section');
-                    let answersContainer = middleSection.querySelector('.quiz-answers-section');
-                    if (answersSection) {
-                        if (!answersContainer) {
-                            answersContainer = document.createElement('div');
-                            answersContainer.className = 'quiz-answers-section';
-                            content.appendChild(answersContainer);
-                        }
-                        if (answersSection.parentElement !== answersContainer) answersContainer.appendChild(answersSection);
-                    }
-
-                    let bottomSection = slide.querySelector('.quiz-bottom-section');
-                    if (!bottomSection) {
-                        bottomSection = document.createElement('div');
-                        bottomSection.className = 'quiz-bottom-section';
-                        middleSection.insertAdjacentElement('afterend', bottomSection);
-                    }
-                    if (instruction) bottomSection.appendChild(instruction);
-                    if (navigation) bottomSection.appendChild(navigation);
-                }
-            }
-
-            function adaptAllSlides() {
-                setTimeout(() => {
-                    document.querySelectorAll('.question-slide, .answer-slide, .instructions-container, .round-intro, .round-results').forEach(slide => addStructuralSections(slide));
-                }, 30);
-            }
-
-            Quiz.prototype.showQuestion = function() { originalShowQuestion.apply(this, arguments); adaptAllSlides(); };
-            Quiz.prototype.showAnswerSlide = function() { originalShowAnswerSlide.apply(this, arguments); adaptAllSlides(); };
-            Quiz.prototype.showInstructions = function() { originalShowInstructions.apply(this, arguments); adaptAllSlides(); };
-            Quiz.prototype.showRoundIntro = function() { originalShowRoundIntro.apply(this, arguments); adaptAllSlides(); };
-            Quiz.prototype.finishRound = function() { originalFinishRound.apply(this, arguments); adaptAllSlides(); };
-
-            function handleResize() {
-                const container = document.querySelector('.quiz-container');
-                if (container) {
-                    container.style.height = window.innerHeight + 'px';
-                    container.style.width = window.innerWidth + 'px';
-                }
-                adaptAllSlides();
-            }
-
-            document.addEventListener('DOMContentLoaded', function() {
-                const container = document.querySelector('.quiz-container');
-                if (container) {
-                    container.style.height = window.innerHeight + 'px';
-                    container.style.width = window.innerWidth + 'px';
-                }
-                window.addEventListener('resize', handleResize);
-                const observer = new MutationObserver(adaptAllSlides);
-                observer.observe(document.querySelector('#quiz-questions') || document.body, { childList: true, subtree: true });
-                adaptAllSlides();
-            });
-        })();
-    </script>
 </body>
 
 </html>

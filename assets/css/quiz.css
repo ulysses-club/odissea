@@ -136,8 +136,24 @@
 }
 
 /* ===== ВОПРОСЫ ===== */
-.question-slide, .answer-slide {
+.question-slide, .answer-slide, .retry-slide {
     animation: slideInQuestion .5s ease;
+}
+
+.retry-slide {
+    background: linear-gradient(135deg, rgba(255,193,7,0.1), rgba(255,87,34,0.1));
+    border-radius: var(--radius-lg);
+    padding: clamp(16px, 3vw, 24px);
+}
+
+.retry-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff9800, #f44336);
+    padding: clamp(4px, 1vw, 8px) clamp(12px, 2vw, 20px);
+    border-radius: var(--radius-full);
+    font-weight: bold;
+    font-size: clamp(12px, 2vw, 14px);
+    margin-bottom: clamp(12px, 2vw, 16px);
 }
 
 .question-header {
@@ -194,17 +210,28 @@
     color: var(--light);
 }
 
-.question-image {
+/* ===== МЕДИА-КОНТЕЙНЕР ===== */
+.media-container {
     max-width: min(800px, 100%);
     margin: 0 auto clamp(16px, 3vw, 24px);
     border-radius: var(--radius-md);
     overflow: hidden;
 }
 
-.question-image img {
+.media-container img,
+.media-container video {
     width: 100%;
     max-height: 50vh;
     object-fit: contain;
+}
+
+.media-container audio {
+    width: 100%;
+    margin: clamp(12px, 2vw, 20px) 0;
+}
+
+.media-container video {
+    background: #000;
 }
 
 /* ===== ОТВЕТЫ ===== */
@@ -543,6 +570,10 @@
     border-radius: var(--radius-full);
     font-weight: 700;
     color: var(--secondary);
+}
+
+.retry-badge {
+    background: linear-gradient(135deg, #ff9800, #f44336);
 }
 
 /* ===== АНИМАЦИИ ===== */
