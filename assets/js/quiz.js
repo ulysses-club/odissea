@@ -3,19 +3,16 @@ class Quiz {
         this.questions = [];
         this.currentQuestionIndex = 0;
         this.currentRound = 1;
-        this.score = 0;
         this.timer = null;
         this.timeLeft = 0;
-        this.hintsUsed = 0;
-        this.maxHints = 2;
-        this.userAnswers = [];
         this.quizStarted = false;
-        this.roundResults = [];
         this.showingAnswers = false;
         this.currentAnswerIndex = 0;
         this.isRetryMode = false;
         this.retryQuestions = [];
         this.retryIndex = 0;
+        this.keyHandler = null;
+        this.answerKeyHandler = null;
 
         // Определяем режим
         this.isBroadcastMode = document.body.classList.contains('quiz-broadcast');
@@ -88,7 +85,8 @@ class Quiz {
         const closeLeaderboard = document.getElementById('close-leaderboard');
         if (closeLeaderboard) {
             closeLeaderboard.addEventListener('click', () => {
-                document.getElementById('leaderboard-modal').style.display = 'none';
+                const modal = document.getElementById('leaderboard-modal');
+                if (modal) modal.style.display = 'none';
             });
         }
 
@@ -100,41 +98,28 @@ class Quiz {
                 }
             });
         }
-
-        if (!this.isBroadcastMode) {
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            });
-        }
     }
 
     startQuiz() {
         this.quizStarted = true;
         this.currentQuestionIndex = 0;
         this.currentRound = 1;
-        this.score = 0;
-        this.hintsUsed = 0;
-        this.userAnswers = [];
-        this.roundResults = [];
         this.showingAnswers = false;
         this.currentAnswerIndex = 0;
         this.isRetryMode = false;
 
-        document.getElementById('quiz-welcome').style.display = 'none';
-        document.getElementById('quiz-questions').style.display = 'block';
-        document.getElementById('quiz-results').style.display = 'none';
+        const welcomeEl = document.getElementById('quiz-welcome');
+        const questionsEl = document.getElementById('quiz-questions');
+        const resultsEl = document.getElementById('quiz-results');
+        
+        if (welcomeEl) welcomeEl.style.display = 'none';
+        if (questionsEl) questionsEl.style.display = 'block';
+        if (resultsEl) resultsEl.style.display = 'none';
 
         this.showInstructions();
     }
 
     stopAllMedia() {
-        // Останавливаем все видео и аудио на странице
         document.querySelectorAll('video, audio').forEach(media => {
             media.pause();
             media.currentTime = 0;
@@ -154,6 +139,7 @@ class Quiz {
 
     showInstructions() {
         const questionsContainer = document.getElementById('quiz-questions');
+        if (!questionsContainer) return;
 
         questionsContainer.innerHTML = `
             <div class="instructions-container">
@@ -191,13 +177,18 @@ class Quiz {
             </div>
         `;
 
-        document.querySelector('.start-quiz-after-instructions').addEventListener('click', () => {
-            this.showRoundIntro();
-        });
+        const startBtn = document.querySelector('.start-quiz-after-instructions');
+        if (startBtn) {
+            startBtn.addEventListener('click', () => {
+                this.showRoundIntro();
+            });
+        }
     }
 
     showRoundIntro() {
         const questionsContainer = document.getElementById('quiz-questions');
+        if (!questionsContainer) return;
+        
         const currentRoundQuestions = this.questions.filter(q => q.round === this.currentRound);
 
         questionsContainer.innerHTML = `
@@ -214,11 +205,14 @@ class Quiz {
             </div>
         `;
 
-        document.querySelector('.start-round-btn').addEventListener('click', () => {
-            this.isRetryMode = false;
-            this.currentQuestionIndex = 0;
-            this.showQuestion();
-        });
+        const startBtn = document.querySelector('.start-round-btn');
+        if (startBtn) {
+            startBtn.addEventListener('click', () => {
+                this.isRetryMode = false;
+                this.currentQuestionIndex = 0;
+                this.showQuestion();
+            });
+        }
     }
 
     getRoundDescription(round) {
@@ -237,15 +231,23 @@ class Quiz {
     getRoundTime(round) { return round === 7 ? 30 : 60; }
     getRoundType(round) { return [1, 2, 4, 5, 6].includes(round) ? 'Фото' : (round === 3 ? 'Выбор' : 'Блиц'); }
 
+    getCurrentQuestions() {
+        if (this.isRetryMode) {
+            return this.retryQuestions;
+        }
+        return this.questions.filter(q => q.round === this.currentRound);
+    }
+
     showQuestion() {
         this.stopAllMedia();
-
-        let questions;
-        if (this.isRetryMode) {
-            questions = this.retryQuestions;
-        } else {
-            questions = this.questions.filter(q => q.round === this.currentRound);
+        
+        // Удаляем старые обработчики клавиш
+        if (this.keyHandler) {
+            document.removeEventListener('keydown', this.keyHandler);
+            this.keyHandler = null;
         }
+
+        const questions = this.getCurrentQuestions();
 
         if (this.currentQuestionIndex >= questions.length) {
             if (this.isRetryMode) {
@@ -258,31 +260,38 @@ class Quiz {
 
         const question = questions[this.currentQuestionIndex];
         const questionsContainer = document.getElementById('quiz-questions');
+        if (!questionsContainer) return;
 
         const mediaHtml = this.renderMedia(question);
         const retryBadge = this.isRetryMode ? '<div class="retry-badge">🔄 ПОВТОРНЫЙ ПРОСМОТР</div>' : '';
 
         questionsContainer.innerHTML = `
             <div class="${this.isRetryMode ? 'retry-slide' : 'question-slide'}">
-                <div class="question-header">
-                    <div class="question-progress">
-                        <span>${this.isRetryMode ? 'Повтор • ' : ''}Тур ${this.currentRound} • Вопрос ${this.currentQuestionIndex + 1} из ${questions.length}</span>
-                        <div class="progress-bar"><div class="progress-fill" style="width: ${((this.currentQuestionIndex + 1) / questions.length) * 100}%"></div></div>
+                <div class="quiz-top-section">
+                    <div class="question-header">
+                        <div class="question-progress">
+                            <span>${this.isRetryMode ? 'Повтор • ' : ''}Тур ${this.currentRound} • Вопрос ${this.currentQuestionIndex + 1} из ${questions.length}</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: ${((this.currentQuestionIndex + 1) / questions.length) * 100}%"></div></div>
+                        </div>
+                        <div class="question-timer" id="timer"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg><span id="time-left">${this.isRetryMode ? this.retryTimeLimit : question.time}</span></div>
                     </div>
-                    <div class="question-timer" id="timer"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg><span id="time-left">${this.isRetryMode ? this.retryTimeLimit : question.time}</span></div>
                 </div>
                 ${retryBadge}
-                <div class="question-content">
-                    ${mediaHtml}
-                    <h3 class="question-text">${question.question}</h3>
-                    ${this.renderQuestionContent(question)}
-                </div>
-                <div class="quiz-navigation">
-                    <div class="nav-buttons">
-                        <button class="btn btn--outline nav-btn prev-btn" id="prev-btn" ${this.currentQuestionIndex === 0 ? 'disabled' : ''}>← Назад</button>
-                        <button class="btn btn--primary nav-btn next-btn" id="next-btn">${this.currentQuestionIndex === questions.length - 1 ? (this.isRetryMode ? 'Завершить повтор' : 'Завершить тур') : 'Далее →'}</button>
+                <div class="quiz-middle-section">
+                    <div class="question-content">
+                        ${mediaHtml}
+                        <h3 class="question-text">${question.question}</h3>
+                        ${this.renderQuestionContent(question)}
                     </div>
-                    <div class="nav-hint">${this.isRetryMode ? 'Время на повторный просмотр' : 'Используйте кнопки для ручного перехода'}</div>
+                </div>
+                <div class="quiz-bottom-section">
+                    <div class="quiz-navigation">
+                        <div class="nav-buttons">
+                            <button class="btn btn--outline nav-btn prev-btn" id="prev-btn" ${this.currentQuestionIndex === 0 ? 'disabled' : ''}>← Назад</button>
+                            <button class="btn btn--primary nav-btn next-btn" id="next-btn">${this.currentQuestionIndex === questions.length - 1 ? (this.isRetryMode ? 'Завершить повтор' : 'Завершить тур') : 'Далее →'}</button>
+                        </div>
+                        <div class="nav-hint">${this.isRetryMode ? 'Время на повторный просмотр' : 'Используйте кнопки для ручного перехода'}</div>
+                    </div>
                 </div>
             </div>
         `;
@@ -294,38 +303,47 @@ class Quiz {
     renderQuestionContent(question) {
         switch (question.type) {
             case 'multiple':
-                return `<div class="answers-grid">${question.answers.map((answer, index) => `<div class="answer-option"><span class="answer-letter">${String.fromCharCode(65 + index)}</span><span class="answer-text">${answer}</span></div>`).join('')}</div><div class="answer-hint">Запишите букву ответа (A, B, C, D)</div>`;
+                return `<div class="quiz-answers-section"><div class="answers-grid">${question.answers.map((answer, index) => `<div class="answer-option"><span class="answer-letter">${String.fromCharCode(65 + index)}</span><span class="answer-text">${answer}</span></div>`).join('')}</div><div class="answer-hint">Запишите букву ответа (A, B, C, D)</div></div>`;
             case 'blitz':
-                return `<div class="blitz-container">${question.blitzQuestions.map((blitzQ, index) => `<div class="blitz-question"><p><strong>${index + 1}.</strong> ${blitzQ.question}</p></div>`).join('')}</div><div class="answer-hint">Запишите ответы на все вопросы</div>`;
+                return `<div class="quiz-answers-section"><div class="blitz-container">${question.blitzQuestions.map((blitzQ, index) => `<div class="blitz-question"><p><strong>${index + 1}.</strong> ${blitzQ.question}</p></div>`).join('')}</div><div class="answer-hint">Запишите ответы на все вопросы</div></div>`;
             default:
-                return `<div class="answer-hint">Запишите ответ на листе бумаги</div>`;
+                return `<div class="quiz-answers-section"><div class="open-answer-instruction"><div class="writing-icon">✍️</div><p>Запишите ответ на листе бумаги</p></div></div>`;
         }
     }
 
     bindNavigationEvents(questions) {
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
-        if (prevBtn) prevBtn.addEventListener('click', () => this.goToPreviousQuestion(questions));
-        if (nextBtn) nextBtn.addEventListener('click', () => this.goToNextQuestion(questions));
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.goToPreviousQuestion(questions));
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.goToNextQuestion(questions));
+        }
 
-        const keyHandler = (e) => {
-            if (e.key === 'ArrowLeft') { e.preventDefault(); this.goToPreviousQuestion(questions); }
-            else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); this.goToNextQuestion(questions); }
+        this.keyHandler = (e) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                this.goToPreviousQuestion(questions);
+            } else if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                this.goToNextQuestion(questions);
+            }
         };
-        document.addEventListener('keydown', keyHandler);
-        this.keyHandler = keyHandler;
+        document.addEventListener('keydown', this.keyHandler);
     }
 
     goToPreviousQuestion(questions) {
         if (this.currentQuestionIndex > 0) {
-            clearInterval(this.timer);
+            this.clearTimer();
             this.currentQuestionIndex--;
             this.showQuestion();
         }
     }
 
     goToNextQuestion(questions) {
-        clearInterval(this.timer);
+        this.clearTimer();
         if (this.currentQuestionIndex < questions.length - 1) {
             this.currentQuestionIndex++;
             this.showQuestion();
@@ -345,17 +363,28 @@ class Quiz {
         this.showQuestion();
     }
 
+    clearTimer() {
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+    }
+
     startTimer(time) {
+        this.clearTimer();
         this.timeLeft = time;
         const timerElement = document.getElementById('time-left');
-        if (this.timer) clearInterval(this.timer);
+        const timerParent = timerElement?.parentElement;
+        
+        if (timerParent) timerParent.classList.remove('timer-critical');
+        
         this.timer = setInterval(() => {
             this.timeLeft--;
             if (timerElement) timerElement.textContent = this.timeLeft;
-            if (this.timeLeft <= 10 && timerElement) timerElement.parentElement.classList.add('timer-critical');
+            if (this.timeLeft <= 10 && timerParent) timerParent.classList.add('timer-critical');
             if (this.timeLeft <= 0) {
-                clearInterval(this.timer);
-                const questions = this.isRetryMode ? this.retryQuestions : this.questions.filter(q => q.round === this.currentRound);
+                this.clearTimer();
+                const questions = this.getCurrentQuestions();
                 if (this.currentQuestionIndex < questions.length - 1) {
                     this.currentQuestionIndex++;
                     this.showQuestion();
@@ -374,6 +403,13 @@ class Quiz {
         this.isRetryMode = false;
         this.showingAnswers = true;
         this.currentAnswerIndex = 0;
+        
+        // Удаляем старые обработчики клавиш
+        if (this.keyHandler) {
+            document.removeEventListener('keydown', this.keyHandler);
+            this.keyHandler = null;
+        }
+        
         this.showAnswerSlide();
     }
 
@@ -388,27 +424,35 @@ class Quiz {
 
         const question = currentRoundQuestions[this.currentAnswerIndex];
         const questionsContainer = document.getElementById('quiz-questions');
+        if (!questionsContainer) return;
+        
         const mediaHtml = this.renderMedia(question);
 
         questionsContainer.innerHTML = `
             <div class="answer-slide">
-                <div class="question-header">
-                    <div class="question-progress"><span>Проверка • Тур ${this.currentRound} • ${this.currentAnswerIndex + 1} из ${currentRoundQuestions.length}</span><div class="progress-bar"><div class="progress-fill" style="width: ${((this.currentAnswerIndex + 1) / currentRoundQuestions.length) * 100}%"></div></div></div>
-                    <div class="answer-badge">🔍 Проверка</div>
-                </div>
-                <div class="question-content">
-                    ${mediaHtml}
-                    <h3 class="question-text">${question.question}</h3>
-                    <div class="correct-answer-section">
-                        <div class="correct-answer-header"><span class="answer-icon">✅</span><h4>Правильный ответ:</h4></div>
-                        <div class="correct-answer-content">${this.getCorrectAnswerDisplay(question)}</div>
+                <div class="quiz-top-section">
+                    <div class="question-header">
+                        <div class="question-progress"><span>Проверка • Тур ${this.currentRound} • ${this.currentAnswerIndex + 1} из ${currentRoundQuestions.length}</span><div class="progress-bar"><div class="progress-fill" style="width: ${((this.currentAnswerIndex + 1) / currentRoundQuestions.length) * 100}%"></div></div></div>
+                        <div class="answer-badge">🔍 Проверка</div>
                     </div>
                 </div>
-                <div class="quiz-instruction"><div class="instruction-badge">📋 Сверьте с вашими ответами!</div></div>
-                <div class="quiz-navigation">
-                    <div class="nav-buttons">
-                        <button class="btn btn--outline nav-btn prev-answer-btn" id="prev-answer-btn" ${this.currentAnswerIndex === 0 ? 'disabled' : ''}>← Назад</button>
-                        <button class="btn btn--primary nav-btn next-answer-btn" id="next-answer-btn">${this.currentAnswerIndex === currentRoundQuestions.length - 1 ? 'Завершить проверку' : 'Следующий ответ →'}</button>
+                <div class="quiz-middle-section">
+                    <div class="question-content">
+                        ${mediaHtml}
+                        <h3 class="question-text">${question.question}</h3>
+                        <div class="correct-answer-section">
+                            <div class="correct-answer-header"><span class="answer-icon">✅</span><h4>Правильный ответ:</h4></div>
+                            <div class="correct-answer-content">${this.getCorrectAnswerDisplay(question)}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quiz-bottom-section">
+                    <div class="quiz-instruction"><div class="instruction-badge">📋 Сверьте с вашими ответами!</div></div>
+                    <div class="quiz-navigation">
+                        <div class="nav-buttons">
+                            <button class="btn btn--outline nav-btn prev-answer-btn" id="prev-answer-btn" ${this.currentAnswerIndex === 0 ? 'disabled' : ''}>← Назад</button>
+                            <button class="btn btn--primary nav-btn next-answer-btn" id="next-answer-btn">${this.currentAnswerIndex === currentRoundQuestions.length - 1 ? 'Завершить проверку' : 'Следующий ответ →'}</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -432,23 +476,62 @@ class Quiz {
     bindAnswerNavigationEvents(currentRoundQuestions) {
         const prevBtn = document.getElementById('prev-answer-btn');
         const nextBtn = document.getElementById('next-answer-btn');
-        if (prevBtn) prevBtn.addEventListener('click', () => { if (this.currentAnswerIndex > 0) { this.currentAnswerIndex--; this.showAnswerSlide(); } });
-        if (nextBtn) nextBtn.addEventListener('click', () => { if (this.currentAnswerIndex < currentRoundQuestions.length - 1) { this.currentAnswerIndex++; this.showAnswerSlide(); } else { this.finishRound(); } });
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (this.currentAnswerIndex > 0) {
+                    this.currentAnswerIndex--;
+                    this.showAnswerSlide();
+                }
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (this.currentAnswerIndex < currentRoundQuestions.length - 1) {
+                    this.currentAnswerIndex++;
+                    this.showAnswerSlide();
+                } else {
+                    this.finishRound();
+                }
+            });
+        }
 
-        const keyHandler = (e) => {
-            if (e.key === 'ArrowLeft') { e.preventDefault(); if (this.currentAnswerIndex > 0) { this.currentAnswerIndex--; this.showAnswerSlide(); } }
-            else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); if (this.currentAnswerIndex < currentRoundQuestions.length - 1) { this.currentAnswerIndex++; this.showAnswerSlide(); } else { this.finishRound(); } }
+        this.answerKeyHandler = (e) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (this.currentAnswerIndex > 0) {
+                    this.currentAnswerIndex--;
+                    this.showAnswerSlide();
+                }
+            } else if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (this.currentAnswerIndex < currentRoundQuestions.length - 1) {
+                    this.currentAnswerIndex++;
+                    this.showAnswerSlide();
+                } else {
+                    this.finishRound();
+                }
+            }
         };
-        document.addEventListener('keydown', keyHandler);
-        this.answerKeyHandler = keyHandler;
+        document.addEventListener('keydown', this.answerKeyHandler);
     }
 
     finishRound() {
         this.showingAnswers = false;
-        if (this.keyHandler) document.removeEventListener('keydown', this.keyHandler);
-        if (this.answerKeyHandler) document.removeEventListener('keydown', this.answerKeyHandler);
+        
+        // Удаляем обработчики клавиш
+        if (this.keyHandler) {
+            document.removeEventListener('keydown', this.keyHandler);
+            this.keyHandler = null;
+        }
+        if (this.answerKeyHandler) {
+            document.removeEventListener('keydown', this.answerKeyHandler);
+            this.answerKeyHandler = null;
+        }
 
         const questionsContainer = document.getElementById('quiz-questions');
+        if (!questionsContainer) return;
+        
         const currentRoundQuestions = this.questions.filter(q => q.round === this.currentRound);
 
         questionsContainer.innerHTML = `
@@ -465,26 +548,38 @@ class Quiz {
         `;
 
         if (this.currentRound < 7) {
-            document.querySelector('.next-round-btn').addEventListener('click', () => {
-                this.currentRound++;
-                this.currentQuestionIndex = 0;
-                this.currentAnswerIndex = 0;
-                this.showRoundIntro();
-            });
+            const nextBtn = document.querySelector('.next-round-btn');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    this.currentRound++;
+                    this.currentQuestionIndex = 0;
+                    this.currentAnswerIndex = 0;
+                    this.showRoundIntro();
+                });
+            }
         } else {
-            document.querySelector('.finish-quiz-btn').addEventListener('click', () => this.finishQuiz());
+            const finishBtn = document.querySelector('.finish-quiz-btn');
+            if (finishBtn) {
+                finishBtn.addEventListener('click', () => this.finishQuiz());
+            }
         }
     }
 
     finishQuiz() {
         this.quizStarted = false;
-        document.getElementById('quiz-questions').style.display = 'none';
-        document.getElementById('quiz-results').style.display = 'block';
+        const questionsEl = document.getElementById('quiz-questions');
+        const resultsEl = document.getElementById('quiz-results');
+        
+        if (questionsEl) questionsEl.style.display = 'none';
+        if (resultsEl) resultsEl.style.display = 'block';
+        
         this.showResults();
     }
 
     showResults() {
         const resultsContainer = document.getElementById('quiz-results');
+        if (!resultsContainer) return;
+        
         resultsContainer.innerHTML = `
             <div class="results-content">
                 <h2 class="quiz-title">Квиз завершен! 🎬</h2>
@@ -497,9 +592,15 @@ class Quiz {
             </div>
         `;
 
-        document.getElementById('restart-quiz').addEventListener('click', () => this.startQuiz());
+        const restartBtn = document.getElementById('restart-quiz');
+        if (restartBtn) {
+            restartBtn.addEventListener('click', () => this.startQuiz());
+        }
+        
         const leaderboardBtn = document.getElementById('view-leaderboard-final');
-        if (leaderboardBtn) leaderboardBtn.addEventListener('click', () => this.showLeaderboard());
+        if (leaderboardBtn) {
+            leaderboardBtn.addEventListener('click', () => this.showLeaderboard());
+        }
     }
 
     showLeaderboard() {
