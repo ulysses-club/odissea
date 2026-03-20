@@ -10,13 +10,9 @@
 
     /* Цвета фона для секций */
     --bg-section-1: #0a0a14;
-    /* Основной тёмный */
     --bg-section-2: #0f0f1a;
-    /* Слегка светлее */
     --bg-section-3: #141422;
-    /* Ещё светлее */
     --bg-section-4: #1a1a2a;
-    /* Самый светлый */
 
     /* Прозрачности */
     --primary-light: rgba(106, 17, 203, 0.2);
@@ -45,7 +41,7 @@
     --radius-lg: 20px;
     --radius-full: 9999px;
 
-    /* ОТСТУПЫ  */
+    /* Отступы */
     --space-xs: 4px;
     --space-sm: 8px;
     --space-md: 16px;
@@ -56,23 +52,14 @@
 
     /* Шрифты */
     --font-base: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    --font-mono: 'Courier New', monospace;
     --text-xs: 0.75rem;
-    /* 12px */
     --text-sm: 0.875rem;
-    /* 14px */
     --text-base: 1rem;
-    /* 16px */
     --text-lg: 1.125rem;
-    /* 18px */
     --text-xl: 1.25rem;
-    /* 20px */
     --text-xxl: 1.5rem;
-    /* 24px */
     --text-xxxl: 2rem;
-    /* 32px */
     --text-huge: 2.5rem;
-    /* 40px */
 }
 
 /* ===== БАЗОВЫЕ СТИЛИ ===== */
@@ -94,14 +81,11 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    /* Основной тёмный фон */
     background-color: var(--dark);
     position: relative;
 }
 
-/* ===== ДВИЖУЩАЯСЯ КИНОЛЕНТА С ПЕРФОРАЦИЕЙ ===== */
+/* ===== ДВИЖУЩАЯСЯ КИНОЛЕНТА ===== */
 .film-reel-overlay {
     position: fixed;
     top: 0;
@@ -119,49 +103,20 @@ body {
     left: 0;
     width: 100%;
     height: 400%;
-
-    /* Левая перфорация */
-    background-image:
-        repeating-linear-gradient(to bottom,
-            transparent 0px,
-            transparent 28px,
-            rgba(255, 255, 255, 0.3) 28px,
-            rgba(255, 255, 255, 0.300) 80px,
-            transparent 56px,
-            transparent 72px),
-        repeating-linear-gradient(to bottom,
-            transparent 0px,
-            transparent 28px,
-            rgba(255, 255, 255, 0.300) 28px,
-            rgba(255, 255, 255, 0.300) 80px,
-            transparent 56px,
-            transparent 72px);
-
-    /* Располагаем перфорации по краям с увеличенным отступом */
-    background-position:
-        left center,
-        right center;
-
+    background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 28px, rgba(255, 255, 255, 0.3) 28px, rgba(255, 255, 255, 0.3) 80px, transparent 56px, transparent 72px), repeating-linear-gradient(to bottom, transparent 0px, transparent 28px, rgba(255, 255, 255, 0.3) 28px, rgba(255, 255, 255, 0.3) 80px, transparent 56px, transparent 72px);
+    background-position: left center, right center;
     background-repeat: repeat-y;
     background-size: 32px 100px;
-
-    /* Анимация движения ленты сверху вниз */
     animation: moveFilmReel 20s linear infinite;
     opacity: 0.35;
 }
 
-/* Анимация движения киноленты */
 @keyframes moveFilmReel {
-    0% {
-        transform: translateY(0);
-    }
-
-    100% {
-        transform: translateY(-50%);
-    }
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
 }
 
-/* Контейнер */
+/* ===== КОНТЕЙНЕР ===== */
 .container {
     width: 100%;
     max-width: 1200px;
@@ -171,84 +126,26 @@ body {
     z-index: 1;
 }
 
-/* Основной контейнер контента */
-.main {
-    padding-top: 80px;
-    position: relative;
-    z-index: 1;
-}
-
-/* ===== ОБЩИЕ КЛАССЫ ДЛЯ СЕКЦИЙ ===== */
+/* ===== СЕКЦИИ ===== */
 .section {
     padding: var(--space-xxxl) 0;
     position: relative;
     z-index: 1;
 }
 
-/* Фоновое разделение секций */
-.section--bg-1 {
-    background: var(--gradient-section-1);
+.section--bg-1, .section--bg-2, .section--bg-3, .section--bg-4 {
     position: relative;
     overflow: hidden;
 }
 
-.section--bg-1::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(circle at 20% 30%, rgba(106, 17, 203, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(37, 117, 252, 0.03) 0%, transparent 50%);
-    z-index: 0;
-}
+.section--bg-1 { background: var(--gradient-section-1); }
+.section--bg-2 { background: var(--gradient-section-2); }
+.section--bg-3 { background: var(--gradient-section-3); }
+.section--bg-4 { background: var(--gradient-section-4); }
 
-.section--bg-2 {
-    background: var(--gradient-section-2);
-    position: relative;
-    overflow: hidden;
-}
-
-.section--bg-2::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(circle at 30% 20%, rgba(255, 77, 77, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 70% 80%, rgba(106, 17, 203, 0.03) 0%, transparent 50%);
-    z-index: 0;
-}
-
-.section--bg-3 {
-    background: var(--gradient-section-3);
-    position: relative;
-    overflow: hidden;
-}
-
-.section--bg-3::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(circle at 40% 40%, rgba(37, 117, 252, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 60% 60%, rgba(255, 77, 77, 0.03) 0%, transparent 50%);
-    z-index: 0;
-}
-
-.section--bg-4 {
-    background: var(--gradient-section-4);
-    position: relative;
-    overflow: hidden;
-}
-
+.section--bg-1::before,
+.section--bg-2::before,
+.section--bg-3::before,
 .section--bg-4::before {
     content: '';
     position: absolute;
@@ -256,36 +153,40 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background:
-        radial-gradient(circle at 25% 75%, rgba(106, 17, 203, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 75% 25%, rgba(37, 117, 252, 0.03) 0%, transparent 50%);
     z-index: 0;
 }
 
-/* Контент секции поверх фона */
-.section__content {
-    position: relative;
-    z-index: 1;
+.section--bg-1::before {
+    background: radial-gradient(circle at 20% 30%, rgba(106, 17, 203, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(37, 117, 252, 0.03) 0%, transparent 50%);
+}
+.section--bg-2::before {
+    background: radial-gradient(circle at 30% 20%, rgba(255, 77, 77, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(106, 17, 203, 0.03) 0%, transparent 50%);
+}
+.section--bg-3::before {
+    background: radial-gradient(circle at 40% 40%, rgba(37, 117, 252, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 60% 60%, rgba(255, 77, 77, 0.03) 0%, transparent 50%);
+}
+.section--bg-4::before {
+    background: radial-gradient(circle at 25% 75%, rgba(106, 17, 203, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 25%, rgba(37, 117, 252, 0.03) 0%, transparent 50%);
 }
 
-/* Заголовки секций */
-.section__title {
+.section__content { position: relative; z-index: 1; }
+.section__title, .section-title {
     text-align: center;
     font-size: var(--text-xxxl);
     font-weight: 800;
     margin-bottom: var(--space-xxl);
     position: relative;
     padding-bottom: var(--space-lg);
-    color: var(--light);
-    text-transform: uppercase;
-    letter-spacing: 1px;
     background: linear-gradient(to right, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
-
-.section__title::after {
+.section__title::after, .section-title::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -295,9 +196,7 @@ body {
     height: 5px;
     background: linear-gradient(to right, var(--primary), var(--secondary));
     border-radius: var(--radius-full);
-    box-shadow: 0 2px 8px rgba(106, 17, 203, 0.4);
 }
-
 .section__title--sub {
     font-size: var(--text-xxl);
     margin-top: var(--space-xxxl);
@@ -308,43 +207,7 @@ body {
     background-clip: text;
     color: transparent;
 }
-
-.section__title--sub::after {
-    left: 0;
-    transform: none;
-    width: 80px;
-    background: linear-gradient(to right, var(--accent), #ff9966);
-}
-
-/* Заголовок для "Ближайшая встреча" */
-.section-title {
-    text-align: center;
-    font-size: var(--text-xxxl);
-    font-weight: 800;
-    margin-bottom: var(--space-xxl);
-    position: relative;
-    padding-bottom: var(--space-lg);
-    color: var(--light);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 5px;
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    border-radius: var(--radius-full);
-    box-shadow: 0 2px 8px rgba(106, 17, 203, 0.4);
-}
+.section__title--sub::after { left: 0; transform: none; width: 80px; background: linear-gradient(to right, var(--accent), #ff9966); }
 
 /* ===== ШАПКА ===== */
 .header {
@@ -355,12 +218,9 @@ body {
     z-index: 1000;
     background: var(--dark-transparent);
     backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     transition: var(--transition);
 }
-
-/* Исправленное расположение элементов в header */
 .header__inner {
     display: flex;
     align-items: center;
@@ -370,8 +230,6 @@ body {
     width: 100%;
     gap: var(--space-lg);
 }
-
-/* Логотип слева */
 .logo {
     display: flex;
     align-items: center;
@@ -383,12 +241,7 @@ body {
     transition: var(--transition);
     flex-shrink: 0;
 }
-
-.logo:hover {
-    color: var(--accent);
-    transform: scale(1.05);
-}
-
+.logo:hover { color: var(--accent); transform: scale(1.05); }
 .logo__icon {
     width: 36px;
     height: 36px;
@@ -397,28 +250,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--light);
-    font-size: var(--text-lg);
 }
+.logo__text { font-weight: 800; letter-spacing: 1px; }
 
-.logo__text {
-    font-weight: 800;
-    letter-spacing: 1px;
-}
-
-/* Погода между логотипом и навигацией */
-.weather-widget {
-    margin: 0;
-    flex-shrink: 0;
-}
-
-/* Навигация справа */
-.nav-container {
-    display: flex;
-    align-items: center;
-}
-
-/* Кнопка мобильного меню */
+.weather-widget { margin: 0; flex-shrink: 0; }
+.nav-container { display: flex; align-items: center; }
 .mobile-menu-btn {
     display: none;
     flex-direction: column;
@@ -432,7 +268,6 @@ body {
     z-index: 1001;
     flex-shrink: 0;
 }
-
 .burger-line {
     display: block;
     width: 100%;
@@ -442,24 +277,150 @@ body {
     transition: var(--transition);
 }
 
-/* ===== ПРЕДСТОЯЩАЯ ВСТРЕЧА ===== */
-.next-meeting__content {
+/* ===== СЕКЦИЯ "О НАС" ===== */
+.about { padding: var(--space-xxl) 0; position: relative; background: linear-gradient(135deg, rgba(20,20,34,.95) 0%, rgba(30,30,46,.95) 100%); }
+.about .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-lg); }
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    margin: var(--space-xl) 0 var(--space-xxl);
+    contain: layout style;
+}
+.faq-item {
     background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+    min-height: 100%;
+}
+.faq-item:hover { transform: translateY(-4px); border-color: rgba(106, 17, 203, 0.3); }
+.faq-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-lg);
+    color: var(--light);
+    font-weight: 600;
+}
+.faq-content { flex: 1; }
+.faq-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--light);
+    margin-bottom: var(--space-xs);
+    line-height: 1.4;
+}
+.faq-answer {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--gray-light);
+    opacity: 0.9;
+}
+
+.image-optimized {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin: var(--space-xxl) 0;
+    max-width: 100%;
+    contain: layout paint;
+}
+.image-optimized img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background: linear-gradient(45deg, rgba(106,17,203,.1), rgba(37,117,252,.1));
+    transition: transform 0.5s ease;
+}
+.image-optimized:hover img { transform: scale(1.02); }
+.image-caption {
+    position: absolute;
+    bottom: var(--space-lg);
+    left: var(--space-lg);
+    background: linear-gradient(90deg, rgba(107,17,203,.3), rgba(37,117,252,.3));
+    color: var(--light);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-base);
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+    animation: fadeInUp 0.6s ease 0.3s both;
+}
+
+.quote-optimized {
+    max-width: 800px;
+    margin: var(--space-xxl) auto 0;
+    padding: var(--space-xl);
+    text-align: center;
+    position: relative;
+    contain: layout style;
+}
+.quote-optimized::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(106,17,203,.1), rgba(37,117,252,.1));
+    border-radius: var(--radius-lg);
+    z-index: 0;
+    animation: subtlePulse 6s ease-in-out infinite;
+}
+.quote-optimized > * { position: relative; z-index: 1; }
+.quote-mark {
+    font-size: var(--text-huge);
+    color: var(--primary);
+    opacity: 0.6;
+    display: block;
+    margin-bottom: var(--space-md);
+    line-height: 1;
+    animation: subtleFloat 3s ease-in-out infinite;
+}
+.quote-optimized p {
+    font-size: var(--text-xl);
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--light);
+    margin-bottom: var(--space-md);
+    font-weight: 500;
+}
+.quote-optimized cite {
+    display: block;
+    font-style: normal;
+    color: var(--gray-light);
+    font-size: var(--text-base);
+    opacity: 0.8;
+}
+
+/* ===== ДРУГИЕ СЕКЦИИ ===== */
+.next-meeting__content {
+    background: rgba(255,255,255,.05);
     border-radius: var(--radius-lg);
     padding: var(--space-xl);
     border: 1px solid var(--light-transparent);
     margin-top: var(--space-xl);
     backdrop-filter: blur(10px);
 }
-
-/* ===== ТОПЫ ===== */
 .tops-controls {
     display: flex;
     justify-content: center;
     gap: var(--space-md);
     margin-bottom: var(--space-xl);
 }
-
 .toggle-tops-btn {
     padding: var(--space-sm) var(--space-lg);
     background: transparent;
@@ -471,23 +432,14 @@ body {
     cursor: pointer;
     transition: var(--transition);
 }
-
-.toggle-tops-btn:hover {
-    background: rgba(106, 17, 203, 0.1);
-}
-
-.toggle-tops-btn.active {
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    box-shadow: var(--shadow-primary);
-}
-
+.toggle-tops-btn:hover { background: rgba(106, 17, 203, 0.1); }
+.toggle-tops-btn.active { background: linear-gradient(to right, var(--primary), var(--secondary)); box-shadow: var(--shadow-primary); }
 .tops-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-xl);
     margin-top: var(--space-xl);
 }
-
 .top-section {
     background: rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-lg);
@@ -495,7 +447,6 @@ body {
     border: 1px solid var(--light-transparent);
     backdrop-filter: blur(10px);
 }
-
 .top-title {
     font-size: var(--text-lg);
     font-weight: 600;
@@ -505,21 +456,17 @@ body {
     align-items: center;
     gap: var(--space-sm);
 }
-
 .top-list {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
 }
-
-/* ===== КОНТАКТЫ ===== */
 .contacts__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-xl);
     margin-top: var(--space-xl);
 }
-
 .contact-card {
     background: rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-lg);
@@ -529,25 +476,9 @@ body {
     transition: var(--transition);
     backdrop-filter: blur(10px);
 }
-
-.contact-card:hover {
-    border-color: var(--primary-light);
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
-}
-
-.contact-card__icon {
-    font-size: var(--text-xxxl);
-    margin-bottom: var(--space-md);
-}
-
-.contact-card__title {
-    font-size: var(--text-lg);
-    font-weight: 600;
-    margin-bottom: var(--space-sm);
-    color: var(--accent);
-}
-
+.contact-card:hover { border-color: var(--primary-light); transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+.contact-card__icon { font-size: var(--text-xxxl); margin-bottom: var(--space-md); }
+.contact-card__title { font-size: var(--text-lg); font-weight: 600; margin-bottom: var(--space-sm); color: var(--accent); }
 .contact-card__link {
     display: block;
     color: var(--secondary);
@@ -557,53 +488,29 @@ body {
     text-decoration: none;
     transition: var(--transition);
 }
+.contact-card__link:hover { color: var(--accent); text-decoration: underline; }
+.contact-card__note { font-size: var(--text-sm); color: var(--gray); margin-top: var(--space-xs); }
 
-.contact-card__link:hover {
-    color: var(--accent);
-    text-decoration: underline;
-}
-
-.contact-card__note {
-    font-size: var(--text-sm);
-    color: var(--gray);
-    margin-top: var(--space-xs);
-}
-
-/* ===== АРХИВ ФИЛЬМОВ ===== */
-.film-archive {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-.film-archive .container {
-    max-width: 100%;
-    padding: 0;
-}
-
-.film-archive .section__title,
-.film-archive .section__title--sub {
-    padding-left: var(--space-lg);
-    padding-right: var(--space-lg);
-}
-
-#works-container,
-#films-container {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--space-lg);
-    padding: var(--space-lg);
-    margin-top: 0;
-}
-
-.video-posters-grid,
-.film-grid {
+.video-posters-grid, .film-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--space-lg);
     margin-top: var(--space-xl);
     width: 100%;
 }
+.film-archive {
+    padding-left: 0;
+    padding-right: 0;
+}
+.film-archive .container { max-width: 100%; padding: 0; }
+.film-archive .section__title, .film-archive .section__title--sub { padding-left: var(--space-lg); padding-right: var(--space-lg); }
+#works-container, #films-container {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    margin-top: 0;
+}
 
-/* ===== ФУТЕР ===== */
 .footer {
     background: rgba(0, 0, 0, 0.9);
     border-top: 1px solid var(--light-transparent);
@@ -611,34 +518,17 @@ body {
     margin-top: var(--space-xxxl);
 }
 
-/* ===== АНИМАЦИИ И ЗАГРУЗКА ===== */
+/* ===== АНИМАЦИИ И УТИЛИТЫ ===== */
 .fade-in {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.6s ease, transform 0.6s ease;
 }
-
-.fade-in.animated {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.delay-1 {
-    transition-delay: 0.1s;
-}
-
-.delay-2 {
-    transition-delay: 0.2s;
-}
-
-.delay-3 {
-    transition-delay: 0.3s;
-}
-
-.delay-4 {
-    transition-delay: 0.4s;
-}
-
+.fade-in.animated { opacity: 1; transform: translateY(0); }
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
 .spinner {
     display: inline-block;
     width: 24px;
@@ -648,13 +538,7 @@ body {
     border-top-color: var(--primary);
     animation: spin 1s linear infinite;
 }
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
+@keyframes spin { to { transform: rotate(360deg); } }
 .loading-message {
     display: flex;
     flex-direction: column;
@@ -664,13 +548,7 @@ body {
     color: var(--gray);
     text-align: center;
 }
-
-.loading-text {
-    margin-top: var(--space-md);
-    font-size: var(--text-base);
-}
-
-/* ===== ГРАДИЕНТНЫЕ ССЫЛКИ ===== */
+.loading-text { margin-top: var(--space-md); font-size: var(--text-base); }
 .gradient-link {
     background: linear-gradient(to right, var(--primary), var(--secondary));
     -webkit-background-clip: text;
@@ -680,14 +558,8 @@ body {
     position: relative;
     text-decoration: none;
 }
+.gradient-link:hover { background: linear-gradient(to right, var(--secondary), var(--primary)); -webkit-background-clip: text; background-clip: text; }
 
-.gradient-link:hover {
-    background: linear-gradient(to right, var(--secondary), var(--primary));
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-
-/* ===== КНОПКИ ===== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -702,277 +574,17 @@ body {
     cursor: pointer;
     transition: var(--transition);
 }
-
 .btn--primary {
     background: linear-gradient(to right, var(--primary), var(--secondary));
     color: var(--light);
 }
-
-.btn--primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-primary);
-}
-
+.btn--primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-primary); }
 .btn--outline {
     background: transparent;
     border: 2px solid var(--primary);
     color: var(--light);
 }
 
-/* ===== СЕКЦИЯ "О НАШЕМ КИНОКЛУБЕ" - ОПТИМИЗИРОВАННАЯ ===== */
-
-/**
- * @name about
- * @description Оптимизированная секция с FAQ и цитатой
- * @optimizations Минимальный CSS, no-JS анимации, оптимизированные изображения
- */
-.about {
-    padding: var(--space-xxl) 0;
-    position: relative;
-    background: linear-gradient(135deg, 
-        rgba(20, 20, 34, 0.95) 0%, 
-        rgba(30, 30, 46, 0.95) 100%);
-}
-
-.about .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--space-lg);
-}
-
-/* ===== FAQ СЕТКА ===== */
-/**
- * @name faq-grid
- * @description Адаптивная сетка FAQ с минимальными эффектами
- * @method Использует CSS Grid с fallback на flex
- */
-.faq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-lg);
-    margin: var(--space-xl) 0 var(--space-xxl);
-    contain: layout style;
-}
-
-/**
- * @name faq-item
- * @description Карточка FAQ с простыми hover-эффектами
- * @performance Использует transform вместо box-shadow для анимации
- */
-.faq-item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-lg);
-    padding: var(--space-lg);
-    transition: transform 0.3s ease, border-color 0.3s ease;
-    display: flex;
-    gap: var(--space-md);
-    align-items: flex-start;
-    min-height: 100%;
-    will-change: transform;
-}
-
-.faq-item:hover {
-    transform: translateY(-4px);
-    border-color: rgba(106, 17, 203, 0.3);
-}
-
-/**
- * @name faq-icon
- * @description Иконка FAQ с градиентом
- * @optimization CSS-only градиент без изображений
- */
-.faq-icon {
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--text-lg);
-    color: var(--light);
-    font-weight: 600;
-}
-
-/**
- * @name faq-content
- * @description Контент FAQ с минимальными стилями
- */
-.faq-content {
-    flex: 1;
-}
-
-.faq-title {
-    font-size: var(--text-base);
-    font-weight: 600;
-    color: var(--light);
-    margin-bottom: var(--space-xs);
-    line-height: 1.4;
-}
-
-.faq-answer {
-    font-size: var(--text-sm);
-    line-height: 1.6;
-    color: var(--gray-light);
-    opacity: 0.9;
-}
-
-/* ===== ОПТИМИЗИРОВАННОЕ ИЗОБРАЖЕНИЕ ===== */
-/**
- * @name image-optimized
- * @description Контейнер для изображения с ленивой загрузкой
- * @optimizations loading="lazy", decoding="async", правильные размеры
- */
-.image-optimized {
-    position: relative;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin: var(--space-xxl) 0;
-    max-width: 100%;
-    contain: layout paint;
-}
-
-.image-optimized img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    background: linear-gradient(45deg, 
-        rgba(106, 17, 203, 0.1), 
-        rgba(37, 117, 252, 0.1));
-    transition: transform 0.5s ease;
-    will-change: transform;
-}
-
-.image-optimized:hover img {
-    transform: scale(1.02);
-}
-
-/**
- * @name image-caption
- * @description Подпись к изображению с плавным появлением
- */
-.image-caption {
-    position: absolute;
-    bottom: var(--space-lg);
-    left: var(--space-lg);
-    background: linear-gradient(90deg, 
-        rgba(107, 17, 203, 0.295), 
-        rgba(37, 117, 252, 0.295));
-    color: var(--light);
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-sm);
-    font-size: var(--text-base);
-    font-weight: 600;
-    backdrop-filter: blur(4px);
-    animation: fadeInUp 0.6s ease 0.3s both;
-}
-
-/* ===== ЦИТАТА ===== */
-/**
- * @name quote-optimized
- * @description Простая, но эффектная цитата с минимальными эффектами
- * @method Использует CSS градиенты без изображений
- */
-.quote-optimized {
-    max-width: 800px;
-    margin: var(--space-xxl) auto 0;
-    padding: var(--space-xl);
-    text-align: center;
-    position: relative;
-    contain: layout style;
-}
-
-.quote-optimized::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(106, 17, 203, 0.1), 
-        rgba(37, 117, 252, 0.1));
-    border-radius: var(--radius-lg);
-    z-index: 0;
-    animation: subtlePulse 6s ease-in-out infinite;
-}
-
-.quote-optimized > * {
-    position: relative;
-    z-index: 1;
-}
-
-/**
- * @name quote-mark
- * @description Декоративная кавычка с анимацией
- */
-.quote-mark {
-    font-size: var(--text-huge);
-    color: var(--primary);
-    opacity: 0.6;
-    display: block;
-    margin-bottom: var(--space-md);
-    line-height: 1;
-    animation: subtleFloat 3s ease-in-out infinite;
-}
-
-.quote-optimized p {
-    font-size: var(--text-xl);
-    font-style: italic;
-    line-height: 1.6;
-    color: var(--light);
-    margin-bottom: var(--space-md);
-    font-weight: 500;
-}
-
-.quote-optimized cite {
-    display: block;
-    font-style: normal;
-    color: var(--gray-light);
-    font-size: var(--text-base);
-    opacity: 0.8;
-}
-
-/* ===== МИНИМАЛЬНЫЕ АНИМАЦИИ ===== */
-/**
- * @name subtlePulse
- * @description Еле заметная пульсация фона
- * @performance Использует opacity вместо сложных трансформаций
- */
-@keyframes subtlePulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 0.7; }
-}
-
-/**
- * @name subtleFloat
- * @description Плавное плавание элемента
- */
-@keyframes subtleFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-}
-
-/**
- * @name fadeInUp
- * @description Плавное появление с подъемом
- */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ===== СЕТИ СТАТУС ===== */
 .network-status {
     position: fixed;
     top: 90px;
@@ -986,29 +598,12 @@ body {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
-.network-status.online {
-    background: rgba(40, 167, 69, 0.9);
-    color: white;
-}
-
-.network-status.offline {
-    background: rgba(220, 53, 69, 0.9);
-    color: white;
-}
-
+.network-status.online { background: rgba(40, 167, 69, 0.9); color: white; }
+.network-status.offline { background: rgba(220, 53, 69, 0.9); color: white; }
 @keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
-
-/* ===== ОШИБКИ ===== */
 .error-message {
     text-align: center;
     padding: var(--space-xl);
@@ -1016,13 +611,7 @@ body {
     border-radius: var(--radius-lg);
     border: 1px solid rgba(220, 53, 69, 0.3);
 }
-
-.error-message p {
-    color: #f8d7da;
-    margin-bottom: var(--space-md);
-    font-size: var(--text-base);
-}
-
+.error-message p { color: #f8d7da; margin-bottom: var(--space-md); font-size: var(--text-base); }
 .retry-button {
     background: linear-gradient(to right, var(--primary), var(--secondary));
     color: var(--light);
@@ -1034,570 +623,105 @@ body {
     cursor: pointer;
     transition: var(--transition);
 }
+.retry-button:hover { transform: translateY(-2px); box-shadow: var(--shadow-primary); }
 
-.retry-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-primary);
+.text-center { text-align: center; }
+
+@keyframes subtlePulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.7; }
+}
+@keyframes subtleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===== АДАПТИВНОСТЬ ===== */
-
-/* Планшеты */
 @media (max-width: 1024px) {
-    :root {
-        --space-xl: 24px;
-        --space-xxl: 40px;
-        --space-xxxl: 56px;
-    }
-
-    .header__inner {
-        gap: var(--space-md);
-    }
-
-    .contacts__grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .map-container {
-        grid-template-columns: 1fr;
-    }
-
-    .tops-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .image-optimized img {
-        height: 350px;
-    }
-
-    /* Адаптивность киноленты для планшетов */
-    .film-perforations {
-        background-size: 20px 48px;
-    }
+    :root { --space-xl: 24px; --space-xxl: 40px; --space-xxxl: 56px; }
+    .header__inner { gap: var(--space-md); }
+    .contacts__grid { grid-template-columns: repeat(2, 1fr); }
+    .tops-grid { grid-template-columns: 1fr; }
+    .image-optimized img { height: 350px; }
+    .film-perforations { background-size: 20px 48px; }
 }
-
-/* Мобильные устройства */
 @media (max-width: 768px) {
-    :root {
-        --space-lg: 16px;
-        --space-xl: 20px;
-        --space-xxl: 32px;
-        --space-xxxl: 48px;
-    }
-
-    .section {
-        padding: var(--space-xxl) 0;
-    }
-
-    .container {
-        padding: 0 var(--space-md);
-    }
-
-    .header__inner {
-        padding: 0 var(--space-md);
-        gap: var(--space-sm);
-        justify-content: flex-start;
-    }
-
-    /* Логотип остается слева */
-    .logo {
-        order: 1;
-        margin-right: 0;
-    }
-
-    /* Погода после логотипа */
-    .weather-widget {
-        order: 2;
-        margin-left: var(--space-sm);
-    }
-
-    /* Навигация скрывается */
-    .nav-container {
-        display: none;
-    }
-
-    /* Кнопка меню справа */
-    .mobile-menu-btn {
-        display: flex;
-        order: 3;
-        margin-left: auto;
-    }
-
-    .section__title {
-        font-size: var(--text-xxl);
-        margin-bottom: var(--space-xl);
-    }
-
-    .section-title {
-        font-size: var(--text-xxl);
-        margin-bottom: var(--space-xl);
-    }
-
-    .contacts__grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-lg);
-    }
-
-    .video-posters-grid,
-    .film-grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: var(--space-md);
-    }
-
-    .image-optimized img {
-        height: 300px;
-    }
-
-    .quote-optimized {
-        padding: var(--space-lg);
-    }
-
-    .quote-optimized p {
-        font-size: var(--text-lg);
-    }
-
-    /* Адаптивность киноленты для мобильных */
-    .film-perforations {
-        background-size: 16px 40px;
-        opacity: 0.25;
-    }
-
-    /* FAQ адаптивность */
-    .faq-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-md);
-        margin: var(--space-lg) 0 var(--space-xl);
-    }
-    
-    .faq-item {
-        padding: var(--space-md);
-        gap: var(--space-sm);
-    }
-    
-    .faq-icon {
-        width: 40px;
-        height: 40px;
-        font-size: var(--text-base);
-    }
-    
-    .image-optimized img {
-        height: 250px;
-    }
-    
-    .image-caption {
-        font-size: var(--text-sm);
-        padding: var(--space-xs) var(--space-sm);
-        bottom: var(--space-md);
-        left: var(--space-md);
-    }
-    
-    .quote-optimized {
-        margin: var(--space-xl) auto 0;
-    }
-    
-    .quote-mark {
-        font-size: var(--text-xxxl);
-    }
+    :root { --space-lg: 16px; --space-xl: 20px; --space-xxl: 32px; --space-xxxl: 48px; }
+    .section { padding: var(--space-xxl) 0; }
+    .container { padding: 0 var(--space-md); }
+    .header__inner { padding: 0 var(--space-md); gap: var(--space-sm); justify-content: flex-start; }
+    .logo { order: 1; margin-right: 0; }
+    .weather-widget { order: 2; margin-left: var(--space-sm); }
+    .nav-container { display: none; }
+    .mobile-menu-btn { display: flex; order: 3; margin-left: auto; }
+    .section__title, .section-title { font-size: var(--text-xxl); margin-bottom: var(--space-xl); }
+    .contacts__grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+    .video-posters-grid, .film-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--space-md); }
+    .image-optimized img { height: 300px; }
+    .quote-optimized { padding: var(--space-lg); }
+    .quote-optimized p { font-size: var(--text-lg); }
+    .film-perforations { background-size: 16px 40px; opacity: 0.25; }
+    .faq-grid { grid-template-columns: 1fr; gap: var(--space-md); margin: var(--space-lg) 0 var(--space-xl); }
+    .faq-item { padding: var(--space-md); gap: var(--space-sm); }
+    .faq-icon { width: 40px; height: 40px; font-size: var(--text-base); }
+    .image-optimized img { height: 250px; }
+    .image-caption { font-size: var(--text-sm); padding: var(--space-xs) var(--space-sm); bottom: var(--space-md); left: var(--space-md); }
+    .quote-optimized { margin: var(--space-xl) auto 0; }
+    .quote-mark { font-size: var(--text-xxxl); }
 }
-
-/* Маленькие мобильные */
 @media (max-width: 480px) {
-    :root {
-        --space-md: 12px;
-        --space-lg: 16px;
-        --space-xl: 20px;
-    }
-
-    .header__inner {
-        gap: var(--space-xs);
-    }
-
-    .section__title {
-        font-size: var(--text-xl);
-    }
-
-    .section-title {
-        font-size: var(--text-xl);
-    }
-
-    .logo {
-        font-size: var(--text-lg);
-    }
-
-    .logo__icon {
-        width: 32px;
-        height: 32px;
-    }
-
-    .contact-card {
-        padding: var(--space-lg);
-    }
-
-    .top-section {
-        padding: var(--space-lg);
-    }
-
-    .image-optimized img {
-        height: 200px;
-    }
-
-    .quote-optimized p {
-        font-size: var(--text-base);
-    }
-
-    /* Адаптивность киноленты для маленьких экранов */
-    .film-perforations {
-        background-size: 14px 50px;
-        opacity: 0.2;
-    }
-
-    /* FAQ маленькие экраны */
-    .about {
-        padding: var(--space-lg) 0;
-    }
-    
-    .faq-grid {
-        margin: var(--space-md) 0 var(--space-lg);
-    }
-    
-    .faq-item {
-        padding: var(--space-sm);
-    }
-    
-    .faq-title {
-        font-size: var(--text-sm);
-    }
-    
-    .faq-answer {
-        font-size: var(--text-xs);
-    }
+    :root { --space-md: 12px; --space-lg: 16px; --space-xl: 20px; }
+    .header__inner { gap: var(--space-xs); }
+    .section__title, .section-title { font-size: var(--text-xl); }
+    .logo { font-size: var(--text-lg); }
+    .logo__icon { width: 32px; height: 32px; }
+    .contact-card { padding: var(--space-lg); }
+    .top-section { padding: var(--space-lg); }
+    .image-optimized img { height: 200px; }
+    .quote-optimized p { font-size: var(--text-base); }
+    .film-perforations { background-size: 14px 50px; opacity: 0.2; }
+    .about { padding: var(--space-lg) 0; }
+    .faq-grid { margin: var(--space-md) 0 var(--space-lg); }
+    .faq-item { padding: var(--space-sm); }
+    .faq-title { font-size: var(--text-sm); }
+    .faq-answer { font-size: var(--text-xs); }
 }
-
-/* Очень маленькие экраны */
 @media (max-width: 360px) {
-    .logo__text {
-        display: none;
-    }
-    
-    .faq-icon {
-        width: 36px;
-        height: 36px;
-    }
+    .logo__text { display: none; }
+    .faq-icon { width: 36px; height: 36px; }
 }
-
-/* Поддержка темной темы */
 @media (prefers-color-scheme: dark) {
-    :root {
-        --light: #f8f9fa;
-        --dark: #121212;
-        --bg-section-1: #121212;
-        --bg-section-2: #1a1a1a;
-        --bg-section-3: #212121;
-        --bg-section-4: #2a2a2a;
-    }
+    :root { --light: #f8f9fa; --dark: #121212; --bg-section-1: #121212; --bg-section-2: #1a1a1a; --bg-section-3: #212121; --bg-section-4: #2a2a2a; }
 }
-
-/* Поддержка печати */
 @media print {
-    .header,
-    .footer,
-    .mobile-menu-btn,
-    .weather-widget {
-        display: none;
-    }
-
-    .film-reel-overlay {
-        display: none;
-    }
-
-    body {
-        color: #000;
-        background: #fff;
-    }
-
-    .section {
-        padding: 20px 0;
-        break-inside: avoid;
-        background: none !important;
-    }
-
-    .section::before {
-        display: none;
-    }
+    .header, .footer, .mobile-menu-btn, .weather-widget, .film-reel-overlay { display: none; }
+    body { color: #000; background: #fff; }
+    .section { padding: 20px 0; break-inside: avoid; background: none !important; }
+    .section::before { display: none; }
 }
-
-/* Поддержка уменьшения движения */
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-
-    html {
-        scroll-behavior: auto;
-    }
-
-    .film-perforations {
-        animation: none !important;
-    }
-    
-    .quote-optimized::before,
-    .quote-mark,
-    .image-caption {
-        animation: none !important;
-    }
-    
-    .faq-item:hover {
-        transform: none;
-    }
-    
-    .image-optimized:hover img {
-        transform: none;
-    }
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+    .film-perforations, .quote-optimized::before, .quote-mark, .image-caption { animation: none !important; }
+    .faq-item:hover, .image-optimized:hover img { transform: none; }
 }
-
-/* Доступность для фокуса */
-*:focus {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-}
-
-*:focus:not(:focus-visible) {
-    outline: none;
-}
-
-*:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-}
-
-/* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ РАСПОЛОЖЕНИЯ ===== */
-
-/* Для очень широких экранов */
+*:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+*:focus:not(:focus-visible) { outline: none; }
+*:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 @media (min-width: 1400px) {
-    .header__inner {
-        justify-content: flex-start;
-    }
-
-    .weather-widget {
-        margin-left: var(--space-xl);
-        margin-right: var(--space-xl);
-    }
+    .header__inner { justify-content: flex-start; }
+    .weather-widget { margin-left: var(--space-xl); margin-right: var(--space-xl); }
 }
-
-/* Для узких экранов (но больше мобильных) */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .logo__text {
-        font-size: var(--text-lg);
-    }
-}
-
-/* Исправление для Safari */
+@media (min-width: 769px) and (max-width: 1024px) { .logo__text { font-size: var(--text-lg); } }
 @supports (-webkit-touch-callout: none) {
-    .header {
-        -webkit-backdrop-filter: blur(15px);
-    }
-    
-    .weather-widget {
-        -webkit-backdrop-filter: blur(10px);
-    }
+    .header { -webkit-backdrop-filter: blur(15px); }
+    .weather-widget { -webkit-backdrop-filter: blur(10px); }
 }
-
-/* ===== ДОСТУПНОСТЬ И КАЧЕСТВО ===== */
 @media (prefers-contrast: high) {
-    .faq-item {
-        border: 2px solid var(--light);
-    }
-    
-    .faq-title {
-        color: #fff;
-        text-shadow: 0 1px 1px rgba(0,0,0,0.8);
-    }
-}
-
-/* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ КВИЗА ===== */
-.text-center {
-    text-align: center;
-}
-
-/* Стили для инструкций */
-.instructions-container {
-    text-align: center;
-    width: 100%;
-}
-
-.instructions-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-    gap: clamp(16px, 3vw, 24px);
-    margin: clamp(24px, 5vw, 48px) 0;
-}
-
-.instruction-item {
-    display: flex;
-    align-items: flex-start;
-    gap: clamp(12px, 2vw, 16px);
-    text-align: left;
-    background: rgba(255, 255, 255, 0.05);
-    padding: clamp(16px, 3vw, 24px);
-    border-radius: var(--radius-md);
-    height: 100%;
-}
-
-.instruction-icon {
-    font-size: clamp(24px, 4vw, 32px);
-    flex-shrink: 0;
-}
-
-.instruction-text {
-    flex: 1;
-    font-size: clamp(14px, 2.5vw, 16px);
-    line-height: 1.5;
-}
-
-.instructions-warning {
-    background: rgba(255, 193, 7, 0.2);
-    border: 1px solid rgba(255, 193, 7, 0.5);
-    padding: clamp(16px, 3vw, 24px);
-    border-radius: var(--radius-md);
-    margin: clamp(24px, 5vw, 48px) 0;
-    color: #FFC107;
-    font-size: clamp(14px, 2.5vw, 16px);
-    line-height: 1.6;
-}
-
-.round-intro {
-    text-align: center;
-    width: 100%;
-}
-
-.round-info {
-    font-size: clamp(16px, 3vw, 18px);
-    margin-bottom: clamp(24px, 4vw, 32px);
-    color: var(--gray);
-    line-height: 1.6;
-}
-
-.round-instruction {
-    background: rgba(106, 17, 203, 0.1);
-    padding: clamp(16px, 3vw, 24px);
-    border-radius: var(--radius-md);
-    margin: clamp(24px, 4vw, 32px) 0;
-    border-left: 4px solid var(--primary);
-    font-size: clamp(14px, 2.5vw, 16px);
-}
-
-.answer-hint {
-    font-size: clamp(12px, 2vw, 14px);
-    color: var(--gray);
-    margin-top: clamp(8px, 1.5vw, 12px);
-    font-style: italic;
-    text-align: center;
-}
-
-.answer-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: clamp(4px, 1vw, 8px);
-    padding: clamp(8px, 1.5vw, 12px) clamp(12px, 2vw, 16px);
-    background: rgba(37, 117, 252, 0.2);
-    border-radius: var(--radius-full);
-    font-size: clamp(14px, 2.5vw, 16px);
-    font-weight: bold;
-    color: var(--secondary);
-}
-
-.round-results {
-    text-align: center;
-}
-
-.round-summary {
-    background: rgba(255, 255, 255, 0.05);
-    padding: clamp(20px, 4vw, 32px);
-    border-radius: var(--radius-md);
-    margin: clamp(24px, 5vw, 48px) 0;
-    font-size: clamp(16px, 3vw, 18px);
-    line-height: 1.6;
-}
-
-.round-actions {
-    margin-top: clamp(24px, 5vw, 48px);
-}
-
-.blitz-answers {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(8px, 1.5vw, 12px);
-}
-
-.blitz-answer-item {
-    background: rgba(76, 175, 80, 0.1);
-    padding: clamp(12px, 2vw, 16px);
-    border-radius: var(--radius-sm);
-    border-left: 3px solid #4CAF50;
-    font-size: clamp(14px, 2.5vw, 16px);
-}
-
-.open-correct-answer {
-    background: rgba(76, 175, 80, 0.1);
-    padding: clamp(16px, 3vw, 24px);
-    border-radius: var(--radius-md);
-    border: 2px dashed #4CAF50;
-    text-align: center;
-    font-size: clamp(16px, 3vw, 20px);
-    font-weight: 600;
-}
-
-.no-leaders {
-    text-align: center;
-    color: var(--gray);
-    padding: clamp(24px, 5vw, 48px);
-    font-style: italic;
-    font-size: clamp(14px, 2.5vw, 16px);
-}
-
-.leaderboard-details {
-    color: var(--gray);
-    font-size: clamp(12px, 2vw, 14px);
-}
-
-/* Исправление для модального окна на мобильных */
-@media (max-width: 480px) {
-    .leaderboard-item {
-        flex-direction: column;
-        text-align: center;
-        gap: 4px;
-    }
-    
-    .leaderboard-rank {
-        margin-bottom: 4px;
-    }
-    
-    .leaderboard-name {
-        margin-bottom: 4px;
-    }
-    
-    .leaderboard-details {
-        margin-top: 4px;
-    }
-}
-
-/* Исправление для очень маленьких экранов */
-@media (max-width: 360px) {
-    .instruction-item {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .nav-buttons {
-        flex-direction: column;
-    }
-    
-    .nav-btn {
-        width: 100%;
-    }
+    .faq-item { border: 2px solid var(--light); }
+    .faq-title { color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,0.8); }
 }

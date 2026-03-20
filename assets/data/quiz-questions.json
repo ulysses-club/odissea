@@ -10,6 +10,7 @@
       "6": 60,
       "7": 30
     },
+    "retryTime": 15,
     "scoring": {
       "open": 15,
       "multiple": 10,
@@ -23,7 +24,8 @@
         "⏱️ Время на ответ: 1-6 туры - 60 сек, 7 тур - 30 сек",
         "🏆 Баллы: открытые вопросы - 15, выбор - 10, блиц - 5 за ответ",
         "🎯 За неправильные ответы баллы не снимаются",
-        "📸 Фото-вопросы требуют точного названия фильма и режиссера"
+        "📸 Фото-вопросы требуют точного названия фильма и режиссера",
+        "🔄 После каждого тура - повтор вопросов за 15 секунд"
       ]
     }
   },
@@ -33,6 +35,8 @@
       "type": "open",
       "question": "Мультфильмы. Назовите полнометражный фильм/мультфильм, в котором робот влюбляется в машину, что способна его убить.",
       "image": "../images/quiz/round1-1.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "ВАЛЛ·И / WALL·E (реж. Эндрю Стэнтон)",
       "time": 60
     },
@@ -41,6 +45,8 @@
       "type": "open",
       "question": "Фильмы. Узнайте фильм по кадру: рыцари, несущиеся в бой, безуспешно стучат кокосами.",
       "image": "../images/quiz/round1-2.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Монти Пайтон и Священный Грааль / Monty Python and the Holy Grail (реж. Терри Гиллиам и Терри Джонс)",
       "time": 60
     },
@@ -49,6 +55,8 @@
       "type": "open",
       "question": "Фильмы. Какой фильм, состоящий из шести переплетающихся историй из разных эпох, представлен на изображении?",
       "image": "../images/quiz/round1-3.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Облачный атлас / Cloud Atlas (реж. Том Тыквер, Лана и Лилли Вачовски)",
       "time": 60
     },
@@ -57,7 +65,9 @@
       "type": "open",
       "question": "Фильмы. Определите фильм по кадру: главный герой в замешательстве смотрит на две разноцветные пилюли.",
       "image": "../images/quiz/round1-4.jpg",
-      "correctAnswer": "Красная таблетка / The Red Pill (реж. Касси Джей)",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "Матрица / The Matrix (реж. Лана и Лилли Вачовски)",
       "time": 60
     },
     {
@@ -65,6 +75,8 @@
       "type": "open",
       "question": "Фильмы. Узнайте фильм по характерному кадру: жители средневековой деревни, окруженной лесом, полным чудовищ.",
       "image": "../images/quiz/round1-5.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Таинственный лес / The Village (реж. М. Найт Шьямалан)",
       "time": 60
     },
@@ -73,6 +85,8 @@
       "type": "open",
       "question": "Фильмы. Назовите фильм по визуальному ряду: ночной Париж, джазовый саундтрек и женщина в лифте.",
       "image": "../images/quiz/round1-6.jpg",
+      "video": null,
+      "audio": "../audio/quiz/jazz-sample.mp3",
       "correctAnswer": "Лифт на эшафот / Ascenseur pour l'échafaud (реж. Луи Маль)",
       "time": 60
     },
@@ -81,82 +95,104 @@
       "type": "open",
       "question": "Фильмы. Какой фильм, рассказывающий о 121-летнем ветеране Дикого Запада, изображен на фото?",
       "image": "../images/quiz/round1-7.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Маленький Большой Человек / Little Big Man (реж. Артур Пенн)",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "",
+      "question": "Актеры. Узнайте актера по кадру из фильма, где его персонаж произносит знаменитую фразу 'Я тебя сделаю!'",
       "image": "../images/quiz/round2-1.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "Аль Пачино, 'Лицо со шрамом' / Scarface (реж. Брайан Де Пальма)",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "",
+      "question": "Актеры. Какой актер изображен в культовой сцене с бейсбольной битой?",
       "image": "../images/quiz/round2-2.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "Джек Николсон, 'Сияние' / The Shining (реж. Стэнли Кубрик)",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "",
+      "question": "Актеры. Узнайте актера и фильм по кадру: мужчина в черном плаще и шляпе танцует в пустыне.",
       "image": "../images/quiz/round2-3.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "Питер О'Тул, 'Лоуренс Аравийский' / Lawrence of Arabia (реж. Дэвид Лин)",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "",
+      "question": "Актеры. Кто этот актер в роли безумного ученого, создавшего монстра?",
       "image": "../images/quiz/round2-4.jpg",
-      "correctAnswer": "",
+      "video": "../video/quiz/frankenstein-clip.mp4",
+      "audio": null,
+      "correctAnswer": "Борис Карлофф, 'Франкенштейн' / Frankenstein (реж. Джеймс Уэйл)",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "",
+      "question": "Актеры. Узнайте актрису по кадру из фильма, где она сыграла роль светской львицы в Нью-Йорке.",
       "image": "../images/quiz/round2-5.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "Одри Хепберн, 'Завтрак у Тиффани' / Breakfast at Tiffany's (реж. Блейк Эдвардс)",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "",
+      "question": "Актеры. Какой актер изображен в роли гангстера, сидящего за столом с цветком в петлице?",
       "image": "../images/quiz/round2-6.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "Марлон Брандо, 'Крестный отец' / The Godfather (реж. Фрэнсис Форд Коппола)",
       "time": 60
     },
     {
       "round": 2,
       "type": "open",
-      "question": "",
+      "question": "Актеры. Узнайте актера по кадру: он смотрит в зеркало заднего вида, преследуя грузовик.",
       "image": "../images/quiz/round2-7.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "Стив Маккуин, 'Буллит' / Bullitt (реж. Питер Йетс)",
       "time": 60
     },
     {
       "round": 3,
       "type": "multiple",
       "question": "Кто является режиссером фильма «Облачный атлас»?",
+      "image": null,
+      "video": null,
+      "audio": null,
       "answers": [
         "Том Тыквер",
         "Лана и Лилли Вачовски",
         "Эндрю Стэнтон",
         "Дэвид Линч"
       ],
-      "correctAnswer": 0,
+      "correctAnswer": 1,
       "time": 60
     },
     {
       "round": 3,
       "type": "multiple",
       "question": "Режиссером какого из перечисленных фильмов является Дэвид Финчер?",
+      "image": null,
+      "video": null,
+      "audio": null,
       "answers": [
         "«Исчезнувшая»",
         "«Горбатая гора»",
@@ -170,6 +206,9 @@
       "round": 3,
       "type": "multiple",
       "question": "Какой фильм снял режиссер Жан-Пьер и Люк Дарденн?",
+      "image": null,
+      "video": null,
+      "audio": null,
       "answers": [
         "«Розетта»",
         "«Паприка»",
@@ -183,6 +222,9 @@
       "round": 3,
       "type": "multiple",
       "question": "Какой из этих фильмов является работой российского режиссера Бориса Хлебникова?",
+      "image": null,
+      "video": null,
+      "audio": null,
       "answers": [
         "«Аритмия»",
         "«Листопад»",
@@ -196,6 +238,9 @@
       "round": 3,
       "type": "multiple",
       "question": "Фильм «Огни рампы» — это классическая работа:",
+      "image": null,
+      "video": null,
+      "audio": null,
       "answers": [
         "Чарли Чаплина",
         "Федерико Феллини",
@@ -209,6 +254,9 @@
       "round": 3,
       "type": "multiple",
       "question": "Картина «Тайна в его глазах» получила «Оскар» как лучший фильм на иностранном языке. Из какой она страны?",
+      "image": null,
+      "video": null,
+      "audio": null,
       "answers": [
         "Аргентина",
         "Испания",
@@ -222,6 +270,9 @@
       "round": 3,
       "type": "multiple",
       "question": "Фильм «Женщина в песках» — это выдающееся произведение:",
+      "image": null,
+      "video": null,
+      "audio": null,
       "answers": [
         "Японского кинематографа",
         "Итальянского неореализма",
@@ -234,57 +285,71 @@
     {
       "round": 4,
       "type": "open",
-      "question": "",
+      "question": "Классика кино. Узнайте фильм по кадру: человек висит на часах башни, пытаясь спастись от преследователей.",
       "image": "../images/quiz/round4-1.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Безопасность последней!» / Safety Last! (реж. Фред Ньюмейер и Сэм Тейлор)",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "",
+      "question": "Классика кино. Какой фильм изображен на кадре: космический корабль на фоне Земли?",
       "image": "../images/quiz/round4-2.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«2001 год: Космическая одиссея» / 2001: A Space Odyssey (реж. Стэнли Кубрик)",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "",
+      "question": "Классика кино. Узнайте фильм по кадру: черно-белая сцена, где группа людей стоит на причале у воды.",
       "image": "../images/quiz/round4-3.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Правила игры» / La Règle du jeu (реж. Жан Ренуар)",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "",
+      "question": "Классика кино. Какой фильм представлен на изображении: сцена с вращающейся комнатой?",
       "image": "../images/quiz/round4-4.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Унесенные ветром» / Gone with the Wind (реж. Виктор Флеминг)",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "",
+      "question": "Классика кино. Определите фильм по кадру: крупный план глаз актрисы в черно-белом изображении.",
       "image": "../images/quiz/round4-5.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Персона» / Persona (реж. Ингмар Бергман)",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "",
+      "question": "Классика кино. Узнайте фильм по кадру: силуэт человека на лошади на фоне заката.",
       "image": "../images/quiz/round4-6.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Искатели» / The Searchers (реж. Джон Форд)",
       "time": 60
     },
     {
       "round": 4,
       "type": "open",
-      "question": "",
+      "question": "Классика кино. Какой фильм изображен на кадре: сцена бала в роскошном дворце?",
       "image": "../images/quiz/round4-7.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Барри Линдон» / Barry Lyndon (реж. Стэнли Кубрик)",
       "time": 60
     },
     {
@@ -292,6 +357,8 @@
       "type": "open",
       "question": "Режиссеры. Назовите режиссера и фильм по кадру: сцена в стиле «мета-арт», где герои покидают запасной выход музея.",
       "image": "../images/quiz/round5-1.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Бэнкси, «Выход через сувенирную лавку» / Exit Through the Gift Shop",
       "time": 60
     },
@@ -300,6 +367,8 @@
       "type": "open",
       "question": "Режиссеры. Узнайте режиссера и его работу по характерному визуальному стилю: черно-белая хроника, похороны в латвийской деревне.",
       "image": "../images/quiz/round5-2.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Марис Мартинсонс, «Листопад»",
       "time": 60
     },
@@ -308,6 +377,8 @@
       "type": "open",
       "question": "Режиссеры. Определите режиссера и фильм по кадру: молодой человек принимает таблетку, раскрывающую потенциал его мозга.",
       "image": "../images/quiz/round5-3.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Нил Бергер, «Области тьмы» / Limitless",
       "time": 60
     },
@@ -316,6 +387,8 @@
       "type": "open",
       "question": "Режиссеры. Какой режиссер и какой фильм? Двое братьев-гинекологов в идентичных костюмах.",
       "image": "../images/quiz/round5-4.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Дэвид Кроненберг, «Связанные насмерть» / Dead Ringers",
       "time": 60
     },
@@ -324,7 +397,9 @@
       "type": "open",
       "question": "Режиссеры. Назовите режиссера и фильм по кадру: абсурдистская сцена, где мужчина в костюме акулы разговаривает с главным героем.",
       "image": "../images/quiz/round5-5.jpg",
-      "correctAnswer": "Джако Ван Дормел, «Собаки не носят штанов» / Koirat eivät käytä housuja",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "Ян Форсман и Яре Лааксонен, «Собаки не носят штанов» / Koirat eivät käytä housuja",
       "time": 60
     },
     {
@@ -332,6 +407,8 @@
       "type": "open",
       "question": "Режиссеры. Узнайте режиссера по его работе: аниматор входит в сны пациентов с помощью украденного устройства.",
       "image": "../images/quiz/round5-6.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Сатоси Кон, «Паприка» / Paprika",
       "time": 60
     },
@@ -340,97 +417,116 @@
       "type": "open",
       "question": "Режиссеры. Определите режиссера и фильм по характерному кадру: аукционист-затворник в своем секретном зале с коллекцией портретов.",
       "image": "../images/quiz/round5-7.jpg",
+      "video": null,
+      "audio": null,
       "correctAnswer": "Джузеппе Торнаторе, «Лучшее предложение» / La migliore offerta",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "",
+      "question": "Культовые фильмы. Узнайте фильм по кадру: человек сидит в ванной с пистолетом в руке.",
       "image": "../images/quiz/round6-1.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Таксист» / Taxi Driver (реж. Мартин Скорсезе)",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "",
+      "question": "Культовые фильмы. Какой фильм изображен на кадре: сцена с прыжком через вертолет?",
       "image": "../images/quiz/round6-2.jpg",
-      "correctAnswer": "",
+      "video": "../video/quiz/goldeneye-jump.mp4",
+      "audio": null,
+      "correctAnswer": "«Золотой глаз» / GoldenEye (реж. Мартин Кэмпбелл)",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "",
+      "question": "Культовые фильмы. Определите фильм по кадру: группа заключенных в оранжевых комбинезонах бежит по коридору.",
       "image": "../images/quiz/round6-3.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Побег из Шоушенка» / The Shawshank Redemption (реж. Фрэнк Дарабонт)",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "",
+      "question": "Культовые фильмы. Узнайте фильм по кадру: человек стоит на носу корабля, раскинув руки.",
       "image": "../images/quiz/round6-4.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Титаник» / Titanic (реж. Джеймс Кэмерон)",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "",
+      "question": "Культовые фильмы. Какой фильм представлен на изображении: сцена с вертолетом и бегущим человеком?",
       "image": "../images/quiz/round6-5.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Миссия невыполнима» / Mission: Impossible (реж. Брайан Де Пальма)",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "",
+      "question": "Культовые фильмы. Определите фильм по кадру: человек в черном плаще с маской на лице.",
       "image": "../images/quiz/round6-6.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«V — значит вендетта» / V for Vendetta (реж. Джеймс МакТиг)",
       "time": 60
     },
     {
       "round": 6,
       "type": "open",
-      "question": "",
+      "question": "Культовые фильмы. Узнайте фильм по кадру: сцена с офисными работниками, прыгающими на копировальном аппарате.",
       "image": "../images/quiz/round6-7.jpg",
-      "correctAnswer": "",
+      "video": null,
+      "audio": null,
+      "correctAnswer": "«Офисное пространство» / Office Space (реж. Майк Джадж)",
       "time": 60
     },
     {
       "round": 7,
       "type": "blitz",
       "question": "Блиц-раунд! Ответьте на 7 быстрых вопросов за 30 секунд!",
+      "image": null,
+      "video": null,
+      "audio": null,
       "blitzQuestions": [
         {
-          "question": "",
-          "correctAnswer": ""
+          "question": "В каком году вышел первый фильм о Джеймсе Бонде «Доктор Ноу»?",
+          "correctAnswer": "1962"
         },
         {
-          "question": "",
-          "correctAnswer": ""
+          "question": "Кто сыграл главную роль в фильме «Бешеные псы» (1992)?",
+          "correctAnswer": "Харви Кейтель, Тим Рот, Майкл Мэдсен, Стив Бушеми (любой из них)"
         },
         {
-          "question": "",
-          "correctAnswer": ""
+          "question": "Как называется знаменитая сцена с душем в фильме Альфреда Хичкока?",
+          "correctAnswer": "Сцена в душе / The Shower Scene (из «Психо»)"
         },
         {
-          "question": "",
-          "correctAnswer": ""
+          "question": "Какой актер сыграл Хана Соло в оригинальной трилогии «Звездных войн»?",
+          "correctAnswer": "Харрисон Форд"
         },
         {
-          "question": "",
-          "correctAnswer": ""
+          "question": "Назовите режиссера фильма «Бойцовский клуб».",
+          "correctAnswer": "Дэвид Финчер"
         },
         {
-          "question": "",
-          "correctAnswer": ""
+          "question": "Как называется фильм, где главный герой живет один в аэропорту несколько лет?",
+          "correctAnswer": "Терминал / The Terminal"
         },
         {
-          "question": "",
-          "correctAnswer": ""
+          "question": "Кто снял фильм «Криминальное чтиво»?",
+          "correctAnswer": "Квентин Тарантино"
         }
       ],
       "time": 30

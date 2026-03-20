@@ -19,7 +19,6 @@
             --broadcast-gap: clamp(4px, 1vh, 12px);
         }
 
-        /* Базовые настройки для body в режиме трансляции */
         body.quiz-broadcast {
             margin: 0;
             padding: 0;
@@ -35,7 +34,6 @@
             bottom: 0;
         }
 
-        /* Скрываем лишние элементы */
         .quiz-broadcast .header,
         .quiz-broadcast .hero-container,
         .quiz-broadcast .quiz-section:first-of-type,
@@ -46,7 +44,6 @@
             display: none !important;
         }
 
-        /* Контейнер секции */
         .quiz-broadcast .about {
             height: 100vh;
             width: 100vw;
@@ -68,7 +65,6 @@
             justify-content: center;
         }
 
-        /* Основной контейнер квиза */
         .quiz-broadcast .quiz-container {
             height: 100vh;
             width: 100vw;
@@ -88,7 +84,6 @@
             overflow: hidden;
         }
 
-        /* ===== ОБЩАЯ СТРУКТУРА СЛАЙДОВ ===== */
         .quiz-broadcast .quiz-screen {
             height: 100%;
             width: 100%;
@@ -97,13 +92,11 @@
             overflow: hidden;
         }
 
-        /* Верхняя секция (прогресс, таймер) */
         .quiz-broadcast .quiz-top-section {
             flex-shrink: 0;
             margin-bottom: var(--broadcast-gap);
         }
 
-        /* Центральная секция (контент) - растягивается */
         .quiz-broadcast .quiz-middle-section {
             flex: 1;
             display: flex;
@@ -117,13 +110,11 @@
             padding: 0 var(--broadcast-padding);
         }
 
-        /* Нижняя секция (навигация, инструкции) */
         .quiz-broadcast .quiz-bottom-section {
             flex-shrink: 0;
             margin-top: var(--broadcast-gap);
         }
 
-        /* ===== HEADER ВОПРОСА ===== */
         .quiz-broadcast .question-header {
             display: flex;
             justify-content: space-between;
@@ -187,7 +178,6 @@
             background: rgba(255, 77, 77, 0.15);
         }
 
-        /* ===== КОНТЕНТ ВОПРОСА ===== */
         .quiz-broadcast .question-content {
             width: 100%;
             display: flex;
@@ -225,7 +215,6 @@
             display: block;
         }
 
-        /* ===== КОНТЕЙНЕР ОТВЕТОВ ===== */
         .quiz-broadcast .quiz-answers-section {
             width: 100%;
             display: flex;
@@ -236,7 +225,6 @@
             flex: 1;
         }
 
-        /* Сетка ответов */
         .quiz-broadcast .answers-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -294,7 +282,6 @@
             word-break: break-word;
         }
 
-        /* Блиц-раунд */
         .quiz-broadcast .blitz-container {
             width: min(95%, 1000px);
             max-height: 100%;
@@ -313,7 +300,6 @@
             color: #f8f9fa;
         }
 
-        /* Открытые ответы */
         .quiz-broadcast .open-answer-instruction {
             padding: clamp(12px, 3vh, 24px);
             background: rgba(255, 255, 255, 0.03);
@@ -333,7 +319,6 @@
             color: #6c757d;
         }
 
-        /* ===== ИНСТРУКЦИИ ===== */
         .quiz-broadcast .instructions-container {
             height: 100%;
             display: flex;
@@ -394,7 +379,6 @@
             font-size: clamp(14px, 2.5vh, 18px);
         }
 
-        /* ===== ПРАВИЛЬНЫЕ ОТВЕТЫ ===== */
         .quiz-broadcast .correct-answer-section {
             background: rgba(76, 175, 80, 0.15);
             border: 2px solid rgba(76, 175, 80, 0.3);
@@ -461,7 +445,6 @@
             color: #f8f9fa;
         }
 
-        /* ===== НАВИГАЦИЯ ===== */
         .quiz-broadcast .quiz-navigation {
             padding-top: clamp(6px, 1.5vh, 12px);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -500,7 +483,6 @@
             font-style: italic;
         }
 
-        /* ===== ИНСТРУКЦИЯ КВИЗА ===== */
         .quiz-broadcast .quiz-instruction {
             padding: clamp(4px, 1vh, 8px) clamp(8px, 1.5vw, 12px);
             background: rgba(255, 255, 255, 0.05);
@@ -527,7 +509,6 @@
             margin: 0;
         }
 
-        /* ===== ПРИВЕТСТВИЕ И РЕЗУЛЬТАТЫ ===== */
         .quiz-broadcast .quiz-welcome,
         .quiz-broadcast .quiz-results {
             height: 100%;
@@ -613,21 +594,14 @@
             flex-wrap: wrap;
         }
 
-        /* ===== АНИМАЦИИ ===== */
         @keyframes broadcastPulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
         }
 
         @keyframes broadcastFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .quiz-broadcast .question-slide,
@@ -642,127 +616,52 @@
             overflow: hidden;
         }
 
-        /* ===== АДАПТИВНОСТЬ ===== */
         @media (max-width: 768px) {
-            .quiz-broadcast .answers-grid {
-                grid-template-columns: 1fr;
-                width: 98%;
-            }
-            
-            .quiz-broadcast .question-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .quiz-broadcast .question-progress {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .quiz-broadcast .nav-buttons {
-                flex-direction: column;
-            }
-            
-            .quiz-broadcast .nav-btn {
-                width: 100%;
-                max-width: none;
-            }
-            
-            .quiz-broadcast .instructions-content {
-                grid-template-columns: 1fr;
-            }
+            .quiz-broadcast .answers-grid { grid-template-columns: 1fr; width: 98%; }
+            .quiz-broadcast .question-header { flex-direction: column; text-align: center; }
+            .quiz-broadcast .question-progress { width: 100%; justify-content: center; }
+            .quiz-broadcast .nav-buttons { flex-direction: column; }
+            .quiz-broadcast .nav-btn { width: 100%; max-width: none; }
+            .quiz-broadcast .instructions-content { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 480px) {
-            .quiz-broadcast .question-image {
-                max-height: 28vh;
-            }
-            
-            .quiz-broadcast .question-image img {
-                max-height: 28vh;
-            }
-            
-            .quiz-broadcast .answer-option {
-                padding: 6px 8px;
-                min-height: 36px;
-            }
-            
-            .quiz-broadcast .answer-letter {
-                width: 22px;
-                height: 22px;
-                font-size: 11px;
-            }
-            
-            .quiz-broadcast .quiz-stats-grid {
-                grid-template-columns: 1fr;
-            }
+            .quiz-broadcast .question-image { max-height: 28vh; }
+            .quiz-broadcast .question-image img { max-height: 28vh; }
+            .quiz-broadcast .answer-option { padding: 6px 8px; min-height: 36px; }
+            .quiz-broadcast .answer-letter { width: 22px; height: 22px; font-size: 11px; }
+            .quiz-broadcast .quiz-stats-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-height: 600px) {
-            .quiz-broadcast .question-image {
-                max-height: 25vh;
-            }
-            
-            .quiz-broadcast .question-image img {
-                max-height: 25vh;
-            }
-            
-            .quiz-broadcast .quiz-instruction {
-                display: none;
-            }
-            
-            .quiz-broadcast .instruction-badge {
-                display: none;
-            }
+            .quiz-broadcast .question-image { max-height: 25vh; }
+            .quiz-broadcast .question-image img { max-height: 25vh; }
+            .quiz-broadcast .quiz-instruction { display: none; }
+            .quiz-broadcast .instruction-badge { display: none; }
         }
 
         @media (max-height: 500px) {
-            .quiz-broadcast .question-header {
-                padding: 4px 8px;
-            }
-            
-            .quiz-broadcast .answer-option {
-                min-height: 32px;
-                padding: 4px 6px;
-            }
-            
-            .quiz-broadcast .blitz-question {
-                padding: 4px 6px;
-            }
+            .quiz-broadcast .question-header { padding: 4px 8px; }
+            .quiz-broadcast .answer-option { min-height: 32px; padding: 4px 6px; }
+            .quiz-broadcast .blitz-question { padding: 4px 6px; }
         }
 
-        /* Ландшафтная ориентация */
         @media (max-width: 900px) and (orientation: landscape) {
-            .quiz-broadcast .question-image {
-                max-height: 30vh;
-            }
-            
-            .quiz-broadcast .answers-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .quiz-broadcast .question-image { max-height: 30vh; }
+            .quiz-broadcast .answers-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* Уменьшение движения */
         @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-            
-            .quiz-broadcast .answer-option:hover {
-                transform: none;
-            }
+            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+            .quiz-broadcast .answer-option:hover { transform: none; }
         }
 
-        /* Индикатор режима трансляции */
         .broadcast-overlay {
             position: fixed;
             top: clamp(5px, 2vh, 10px);
             right: clamp(5px, 2vw, 10px);
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             color: white;
             padding: clamp(4px, 1vh, 8px) clamp(8px, 2vw, 12px);
             border-radius: 30px;
@@ -775,7 +674,6 @@
             pointer-events: none;
         }
 
-        /* Переключатель версий */
         .quiz-version-switcher {
             position: fixed;
             top: clamp(5px, 2vh, 10px);
@@ -788,7 +686,6 @@
             padding: clamp(4px, 1vh, 8px) clamp(8px, 2vw, 12px);
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 30px;
             color: white;
@@ -804,92 +701,49 @@
             border-color: #6a11cb;
         }
 
-        .quiz-version-switcher .btn:active {
-            transform: translateY(0);
-        }
-
-        /* Стили для кнопок */
-        .btn--primary {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            color: white;
-        }
-
-        .btn--outline {
-            background: transparent;
-            border: 2px solid #6a11cb;
-            color: white;
-        }
+        .btn--primary { background: linear-gradient(to right, #6a11cb, #2575fc); color: white; }
+        .btn--outline { background: transparent; border: 2px solid #6a11cb; color: white; }
     </style>
 </head>
 
 <body class="quiz-broadcast">
-    <!-- Индикатор режима трансляции -->
-    <div class="broadcast-overlay">
-        🎬 РЕЖИМ ТРАНСЛЯЦИИ
-    </div>
-
+    <div class="broadcast-overlay">🎬 РЕЖИМ ТРАНСЛЯЦИИ</div>
     <div class="quiz-version-switcher">
-        <button class="btn btn--outline" onclick="window.location.href='quiz.html'">
-            📱 Обычный режим
-        </button>
+        <button class="btn btn--outline" onclick="window.location.href='quiz.html'">📱 Обычный режим</button>
     </div>
 
-    <!-- Основной контейнер квиза -->
     <section id="quiz-start" class="about">
         <div class="about__content">
             <div class="quiz-container">
-                <!-- Приветственный экран -->
                 <div class="quiz-welcome" id="quiz-welcome">
                     <div class="welcome-content">
                         <h2>КВИЗ ODISSEA</h2>
                         <p>Готовы начать трансляцию?</p>
-                        
                         <div class="quiz-stats-grid">
-                            <div class="quiz-stat-item">
-                                <div class="quiz-stat-number">7</div>
-                                <div class="quiz-stat-label">Туров</div>
-                            </div>
-                            <div class="quiz-stat-item">
-                                <div class="quiz-stat-number">~60</div>
-                                <div class="quiz-stat-label">Вопросов</div>
-                            </div>
-                            <div class="quiz-stat-item">
-                                <div class="quiz-stat-number">60</div>
-                                <div class="quiz-stat-label">Секунд</div>
-                            </div>
+                            <div class="quiz-stat-item"><div class="quiz-stat-number">7</div><div class="quiz-stat-label">Туров</div></div>
+                            <div class="quiz-stat-item"><div class="quiz-stat-number">~60</div><div class="quiz-stat-label">Вопросов</div></div>
+                            <div class="quiz-stat-item"><div class="quiz-stat-number">60</div><div class="quiz-stat-label">Секунд</div></div>
                         </div>
-                        
-                        <button class="btn btn--primary start-quiz-btn" id="start-quiz-btn">
-                            НАЧАТЬ КВИЗ
-                        </button>
+                        <button class="btn btn--primary start-quiz-btn" id="start-quiz-btn">НАЧАТЬ КВИЗ</button>
                     </div>
                 </div>
-
-                <!-- Контейнер для вопросов (заполняется JS) -->
                 <div class="quiz-questions" id="quiz-questions" style="display: none;"></div>
-                
-                <!-- Результаты квиза -->
                 <div class="quiz-results" id="quiz-results" style="display: none;"></div>
             </div>
         </div>
     </section>
 
-    <!-- Скрипты -->
     <script src="../js/quiz.js"></script>
     <script>
-        // Адаптер для режима трансляции - добавляет структурные секции
         (function() {
-            // Сохраняем оригинальные методы
             const originalShowQuestion = Quiz.prototype.showQuestion;
             const originalShowAnswerSlide = Quiz.prototype.showAnswerSlide;
             const originalShowInstructions = Quiz.prototype.showInstructions;
             const originalShowRoundIntro = Quiz.prototype.showRoundIntro;
-            const originalShowRoundAnswers = Quiz.prototype.showRoundAnswers;
             const originalFinishRound = Quiz.prototype.finishRound;
 
             function addStructuralSections(slide) {
                 if (!slide || slide.querySelector('.quiz-top-section')) return;
-
                 const header = slide.querySelector('.question-header');
                 const content = slide.querySelector('.question-content');
                 const navigation = slide.querySelector('.quiz-navigation');
@@ -902,9 +756,7 @@
                         topSection.className = 'quiz-top-section';
                         slide.insertBefore(topSection, slide.firstChild);
                     }
-                    if (header.parentElement !== topSection) {
-                        topSection.appendChild(header);
-                    }
+                    if (header.parentElement !== topSection) topSection.appendChild(header);
 
                     let middleSection = slide.querySelector('.quiz-middle-section');
                     if (!middleSection) {
@@ -912,22 +764,17 @@
                         middleSection.className = 'quiz-middle-section';
                         topSection.insertAdjacentElement('afterend', middleSection);
                     }
-                    if (content.parentElement !== middleSection) {
-                        middleSection.appendChild(content);
-                    }
+                    if (content.parentElement !== middleSection) middleSection.appendChild(content);
 
                     const answersSection = content.querySelector('.answers-grid, .blitz-container, .open-answer-instruction, .correct-answer-section');
                     let answersContainer = middleSection.querySelector('.quiz-answers-section');
-                    
                     if (answersSection) {
                         if (!answersContainer) {
                             answersContainer = document.createElement('div');
                             answersContainer.className = 'quiz-answers-section';
                             content.appendChild(answersContainer);
                         }
-                        if (answersSection.parentElement !== answersContainer) {
-                            answersContainer.appendChild(answersSection);
-                        }
+                        if (answersSection.parentElement !== answersContainer) answersContainer.appendChild(answersSection);
                     }
 
                     let bottomSection = slide.querySelector('.quiz-bottom-section');
@@ -936,7 +783,6 @@
                         bottomSection.className = 'quiz-bottom-section';
                         middleSection.insertAdjacentElement('afterend', bottomSection);
                     }
-                    
                     if (instruction) bottomSection.appendChild(instruction);
                     if (navigation) bottomSection.appendChild(navigation);
                 }
@@ -944,40 +790,15 @@
 
             function adaptAllSlides() {
                 setTimeout(() => {
-                    const slides = document.querySelectorAll('.question-slide, .answer-slide, .instructions-container, .round-intro, .round-results');
-                    slides.forEach(slide => addStructuralSections(slide));
+                    document.querySelectorAll('.question-slide, .answer-slide, .instructions-container, .round-intro, .round-results').forEach(slide => addStructuralSections(slide));
                 }, 30);
             }
 
-            Quiz.prototype.showQuestion = function() {
-                originalShowQuestion.apply(this, arguments);
-                adaptAllSlides();
-            };
-
-            Quiz.prototype.showAnswerSlide = function() {
-                originalShowAnswerSlide.apply(this, arguments);
-                adaptAllSlides();
-            };
-
-            Quiz.prototype.showInstructions = function() {
-                originalShowInstructions.apply(this, arguments);
-                adaptAllSlides();
-            };
-
-            Quiz.prototype.showRoundIntro = function() {
-                originalShowRoundIntro.apply(this, arguments);
-                adaptAllSlides();
-            };
-
-            Quiz.prototype.showRoundAnswers = function() {
-                originalShowRoundAnswers.apply(this, arguments);
-                adaptAllSlides();
-            };
-
-            Quiz.prototype.finishRound = function() {
-                originalFinishRound.apply(this, arguments);
-                adaptAllSlides();
-            };
+            Quiz.prototype.showQuestion = function() { originalShowQuestion.apply(this, arguments); adaptAllSlides(); };
+            Quiz.prototype.showAnswerSlide = function() { originalShowAnswerSlide.apply(this, arguments); adaptAllSlides(); };
+            Quiz.prototype.showInstructions = function() { originalShowInstructions.apply(this, arguments); adaptAllSlides(); };
+            Quiz.prototype.showRoundIntro = function() { originalShowRoundIntro.apply(this, arguments); adaptAllSlides(); };
+            Quiz.prototype.finishRound = function() { originalFinishRound.apply(this, arguments); adaptAllSlides(); };
 
             function handleResize() {
                 const container = document.querySelector('.quiz-container');
@@ -995,13 +816,8 @@
                     container.style.width = window.innerWidth + 'px';
                 }
                 window.addEventListener('resize', handleResize);
-                
                 const observer = new MutationObserver(adaptAllSlides);
-                observer.observe(document.querySelector('#quiz-questions') || document.body, {
-                    childList: true,
-                    subtree: true
-                });
-                
+                observer.observe(document.querySelector('#quiz-questions') || document.body, { childList: true, subtree: true });
                 adaptAllSlides();
             });
         })();

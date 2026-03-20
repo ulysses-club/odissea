@@ -26,13 +26,6 @@
     font-weight: 800;
 }
 
-.quiz-subtitle {
-    font-size: clamp(18px, 4vw, 32px);
-    text-align: center;
-    margin-bottom: clamp(24px, 5vw, 48px);
-    color: var(--light);
-}
-
 .quiz-description {
     font-size: clamp(16px, 3vw, 20px);
     text-align: center;
@@ -41,7 +34,7 @@
     color: var(--gray);
 }
 
-/* ===== FAQ ===== */
+/* ===== FAQ (только специфичные для квиза) ===== */
 .quiz-faq-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
@@ -96,7 +89,7 @@
     opacity: .9;
 }
 
-/* ===== СТАТИСТИКА (общая) ===== */
+/* ===== СТАТИСТИКА ===== */
 .quiz-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
@@ -136,40 +129,6 @@
 }
 
 /* ===== КНОПКИ ===== */
-.quiz-btn, .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: clamp(12px, 2vw, 20px) clamp(20px, 4vw, 40px);
-    font-size: clamp(16px, 3vw, 20px);
-    border-radius: clamp(30px, 5vw, 50px);
-    font-weight: 600;
-    transition: var(--transition);
-    cursor: pointer;
-    border: none;
-}
-
-.btn--primary {
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    color: var(--light);
-}
-
-.btn--primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-primary);
-}
-
-.btn--outline {
-    background: transparent;
-    border: 2px solid var(--primary);
-    color: var(--light);
-}
-
-.btn--outline:hover {
-    background: rgba(106,17,203,.1);
-    transform: translateY(-2px);
-}
-
 .start-quiz-btn {
     display: block;
     margin: 0 auto;
@@ -374,7 +333,7 @@
     font-weight: 600;
 }
 
-/* ===== ИНСТРУКЦИИ ===== */
+/* ===== ИНСТРУКЦИИ (только для квиза) ===== */
 .instructions-container {
     text-align: center;
 }
@@ -394,13 +353,16 @@
     background: rgba(255,255,255,.05);
     padding: clamp(16px, 3vw, 24px);
     border-radius: var(--radius-md);
+    height: 100%;
 }
 
 .instruction-icon {
     font-size: clamp(24px, 4vw, 32px);
+    flex-shrink: 0;
 }
 
 .instruction-text {
+    flex: 1;
     font-size: clamp(14px, 2.5vw, 16px);
     line-height: 1.5;
 }
@@ -411,7 +373,7 @@
     padding: clamp(16px, 3vw, 24px);
     border-radius: var(--radius-md);
     margin: clamp(24px, 5vw, 48px) 0;
-    color: #ffc107;
+    color: #FFC107;
 }
 
 .start-quiz-after-instructions {
@@ -610,6 +572,7 @@
     .answers-grid { grid-template-columns: 1fr; }
     .question-progress { width: 100%; }
     .progress-bar { width: 100%; }
+    .instruction-item { flex-direction: column; align-items: center; text-align: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
