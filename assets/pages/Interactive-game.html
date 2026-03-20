@@ -1,415 +1,255 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Киноквест "Odissea" | Киноклуб "ОДИССЕЯ"</title>
-    
-    <!-- Основные стили -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Квиз Odissea - Трансляция</title>
     <link rel="stylesheet" href="../css/style.css">
-    <!-- Стили для интерактивной игры -->
-    <link rel="stylesheet" href="../css/interactive-game.css">
-    
-    <!-- Модульные стили -->
-    <link rel="stylesheet" href="../modul/navigation.css">
-    <link rel="stylesheet" href="../modul/footer-module.css">
-    <link rel="stylesheet" href="../modul/seasons-effects.css">
-    <link rel="stylesheet" href="../modul/scroll-to-top.css">
-    
-    <meta name="description"
-        content="Киноквест Odissea - интерактивный городской квест для любителей кино. Находи коды, отвечай на вопросы, становись легендой!">
-    <meta name="keywords" content="киноквест, геоквест, Одиссея, киноклуб, игра, локации, коды">
-</head>
+    <link rel="stylesheet" href="../css/quiz.css">
+    <style>
+        /* Только уникальные стили для трансляции */
+        body.quiz-broadcast {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0a0a14 0%, #1a1a2e 100%);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            inset: 0;
+        }
 
-<body>
-    <!-- Движущаяся кинолента -->
-    <div class="film-reel-overlay">
-        <div class="film-perforations"></div>
+        .broadcast-overlay {
+            position: fixed;
+            top: clamp(5px, 2vh, 10px);
+            right: clamp(5px, 2vw, 10px);
+            background: rgba(0,0,0,.8);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: clamp(4px, 1vh, 8px) clamp(8px, 2vw, 12px);
+            border-radius: 30px;
+            font-size: clamp(10px, 2vh, 14px);
+            z-index: 2000;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,.2);
+            pointer-events: none;
+        }
+
+        .quiz-version-switcher {
+            position: fixed;
+            top: clamp(5px, 2vh, 10px);
+            left: clamp(5px, 2vw, 10px);
+            z-index: 2000;
+        }
+
+        .quiz-version-switcher .btn {
+            font-size: clamp(10px, 2vh, 14px);
+            padding: clamp(4px, 1vh, 8px) clamp(8px, 2vw, 12px);
+            background: rgba(0,0,0,.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 30px;
+            color: #fff;
+            font-weight: 600;
+            transition: all .3s;
+            cursor: pointer;
+        }
+
+        .quiz-version-switcher .btn:hover {
+            background: rgba(106,17,203,.5);
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        /* Скрытие лишних элементов */
+        .quiz-broadcast .header,
+        .quiz-broadcast .hero-container,
+        .quiz-broadcast #quiz-rules,
+        .quiz-broadcast #footer-container,
+        .quiz-broadcast .mobile-menu-btn,
+        .quiz-broadcast .weather-widget,
+        .quiz-broadcast .nav-container {
+            display: none !important;
+        }
+
+        /* Основной контейнер */
+        .quiz-broadcast .about {
+            height: 100vh;
+            width: 100vw;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+
+        .quiz-broadcast .about__content {
+            height: 100%;
+            width: 100%;
+        }
+
+        .quiz-broadcast .quiz-container {
+            height: 100vh;
+            width: 100vw;
+            max-width: 100%;
+            margin: 0;
+            border-radius: 0;
+            padding: clamp(8px, 2vh, 20px);
+            background: rgba(10,10,20,.95);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        /* Структура экрана */
+        .quiz-broadcast .question-slide,
+        .quiz-broadcast .answer-slide,
+        .quiz-broadcast .instructions-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .quiz-broadcast .question-header {
+            flex-shrink: 0;
+            margin-bottom: clamp(5px, 1.5vh, 15px);
+        }
+
+        .quiz-broadcast .question-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .quiz-broadcast .answers-grid {
+            grid-template-columns: repeat(2, 1fr);
+            max-height: 100%;
+            overflow-y: auto;
+        }
+
+        .quiz-broadcast .blitz-container {
+            max-height: 100%;
+            overflow-y: auto;
+        }
+
+        .quiz-broadcast .quiz-navigation {
+            flex-shrink: 0;
+            margin-top: clamp(5px, 1.5vh, 15px);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .quiz-broadcast .answers-grid { grid-template-columns: 1fr; }
+            .quiz-broadcast .nav-buttons { flex-direction: column; }
+            .quiz-broadcast .nav-btn { width: 100%; max-width: none; }
+        }
+
+        @media (max-width: 480px) {
+            .quiz-broadcast .question-text { font-size: clamp(16px, 3.5vh, 20px) !important; }
+            .quiz-broadcast .answer-option { font-size: clamp(12px, 2.5vh, 14px) !important; }
+        }
+
+        @media (max-height: 600px) {
+            .quiz-broadcast .question-image { max-height: 20vh; }
+            .quiz-broadcast .quiz-instruction { display: none; }
+        }
+    </style>
+</head>
+<body class="quiz-broadcast">
+    <div class="broadcast-overlay">🎬 РЕЖИМ ТРАНСЛЯЦИИ</div>
+    <div class="quiz-version-switcher">
+        <button class="btn btn--outline" onclick="window.location.href='quiz.html'">📱 Обычный режим</button>
     </div>
 
-    <!-- Шапка -->
-    <header class="header">
-        <div class="header__inner container">
-            <!-- Логотип слева -->
-            <a href="index.html" class="logo" aria-label="Киноклуб Одиссея - главная страница">
-                <div class="logo__icon"></div>
-                <span class="logo__text">ОДИССЕЯ</span>
-            </a>
-
-            <!-- Виджет погоды посередине -->
-            <div class="weather-widget">
-                <!-- Содержимое виджета -->
-            </div>
-
-            <!-- Навигация справа (будет заполнена через navigation.js) -->
-            <nav class="nav-container"></nav>
-
-            <!-- Кнопка мобильного меню -->
-            <button class="mobile-menu-btn" aria-label="Меню" aria-expanded="false">
-                <span class="burger-line"></span>
-                <span class="burger-line"></span>
-                <span class="burger-line"></span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Герой секция для квеста -->
-    <section class="quest-hero">
-        <div class="container">
-            <div class="hero-content fade-in">
-                <h1 class="hero-title">КИНОКВЕСТ ODISSEA</h1>
-                <p class="hero-subtitle">
-                    Интерактивный городской квест для настоящих киноманов.<br>
-                    Находи тайные коды, отвечай на вопросы и становись легендой киноклуба!
-                </p>
-                
-                <div class="quest-stats fade-in delay-1">
-                    <div class="stat-item">
-                        <span class="stat-number">15+</span>
-                        <span class="stat-label">Локаций</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">50+</span>
-                        <span class="stat-label">Вопросов</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">∞</span>
-                        <span class="stat-label">Впечатлений</span>
+    <section id="quiz-start" class="about">
+        <div class="about__content">
+            <div class="quiz-container">
+                <div class="quiz-welcome" id="quiz-welcome">
+                    <div class="welcome-content">
+                        <h2>КВИЗ ODISSEA</h2>
+                        <p>Готовы начать трансляцию?</p>
+                        <div class="quiz-stats-grid">
+                            <div class="quiz-stat-item"><div class="quiz-stat-number">7</div><div class="quiz-stat-label">Туров</div></div>
+                            <div class="quiz-stat-item"><div class="quiz-stat-number">~60</div><div class="quiz-stat-label">Вопросов</div></div>
+                            <div class="quiz-stat-item"><div class="quiz-stat-number">60</div><div class="quiz-stat-label">Секунд</div></div>
+                        </div>
+                        <button class="btn btn--primary start-quiz-btn" id="start-quiz-btn">НАЧАТЬ КВИЗ</button>
                     </div>
                 </div>
+                <div class="quiz-questions" id="quiz-questions" style="display: none;"></div>
+                <div class="quiz-results" id="quiz-results" style="display: none;"></div>
             </div>
         </div>
     </section>
 
-    <!-- Основной контент -->
-    <main class="main">
-        <!-- О квесте -->
-        <section id="about-quest" class="section section--bg-1">
-            <div class="container">
-                <h2 class="section__title fade-in">О киноквесте</h2>
-                
-                <div class="faq-grid fade-in delay-1">
-                    <!-- Колонка 1 -->
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">🎯</span>
-                                <h3>Цель игры</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Набрать максимальное количество баллов, находя коды на реальных локациях в городе и правильно отвечая на вопросы.</p>
-                                <p>Каждая найденная локация приближает вас к победе!</p>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">⚠️</span>
-                                <h3>Главное правило</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p><strong>Физическое присутствие на локациях — обязательно!</strong></p>
-                                <p>Бот отслеживает время ответов. Слишком быстрые ответы караются <span class="highlight">штрафами</span>.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Колонка 2 -->
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">🏆</span>
-                                <h3>Система призов</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p>За прохождение точек команда может получить <span class="highlight">промокод</span>.</p>
-                                <p><strong>Важно:</strong> Призы получает только <span class="highlight">первая команда</span>, достигшая рубежа!</p>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">🎬</span>
-                                <h3>О проекте</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Сообщество кинолюбителей, создающих лучший кинодосуг в городе с 2020 года!</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Колонка 3 -->
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">🌟</span>
-                                <h3>Наша миссия</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Развивать сообщество и создавать <span class="highlight">лучший досуг</span> через любовь к кино и приключениям.</p>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">📅</span>
-                                <h3>С нами с</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p><strong>15.09.2020</strong></p>
-                                <p>Более 100 мероприятий и тысячи довольных участников!</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="about__quote fade-in delay-2">
-                    <div class="quote-icon" aria-hidden="true">❝</div>
-                    <p>Киноклуб Одиссея - объективностью здесь и не пахнет! (с)</p>
-                    <div class="quote-author">— Неизвестный критик</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Как играть -->
-        <section id="how-to-play" class="section section--bg-2">
-            <div class="container">
-                <h2 class="section__title fade-in">Как играть</h2>
-
-                <div class="faq-grid fade-in delay-1">
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">1️⃣</span>
-                                <h3>Регистрация</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <ol>
-                                    <li>Нажмите <strong>/start</strong> в Telegram-боте</li>
-                                    <li>Выберите название команды</li>
-                                    <li>Введите имена участников</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">2️⃣</span>
-                                <h3>Выбор точки</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <ol>
-                                    <li>Ожидайте <strong>старта</strong> от админов</li>
-                                    <li>Нажмите «🌍 Выбрать точку»</li>
-                                    <li>Получите загадку-подсказку</li>
-                                    <li>Найдите локацию в городе</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">3️⃣</span>
-                                <h3>Ответы</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <ol>
-                                    <li>Введите найденный код</li>
-                                    <li>Ответьте на вопрос о кино</li>
-                                    <li>Получайте баллы</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Правила -->
-        <section id="rules" class="section section--bg-3">
-            <div class="container">
-                <h2 class="section__title fade-in">Правила и баллы</h2>
-
-                <div class="faq-grid fade-in delay-1">
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">📊</span>
-                                <h3>Начисление очков</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p>✅ Правильный ответ: <span class="highlight">1-10 баллов</span></p>
-                                <p>⚡ Слишком быстрый ответ: <span class="highlight">-3 балла</span></p>
-                                <p>❌ Неправильный ответ: <span class="highlight">-1 балл</span></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">🤖</span>
-                                <h3>Функции бота</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p>📊 Прогресс команды</p>
-                                <p>🏆 Топ команд</p>
-                                <p>🎁 Мои призы</p>
-                                <p>ℹ️ Информация</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">💡</span>
-                                <h3>Советы</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <ul>
-                                    <li><strong>Не спешите</strong> — спешка = штрафы</li>
-                                    <li><strong>Читайте внимательно</strong> подсказки</li>
-                                    <li><strong>Работайте в команде</strong></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Призы -->
-        <section id="prizes" class="section section--bg-4">
-            <div class="container">
-                <h2 class="section__title fade-in">Система призов</h2>
-
-                <div class="faq-grid fade-in delay-1">
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">🏆</span>
-                                <h3>Промежуточные</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p>5 точек — Малый приз</p>
-                                <p>10 точек — Средний приз</p>
-                                <p>15 точек — Большой приз</p>
-                                <p class="highlight">Только для первой команды!</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">🎁</span>
-                                <h3>Главный приз</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Команда-победитель получает:</p>
-                                <ul>
-                                    <li>Билеты в кино</li>
-                                    <li>Мерч киноклуба</li>
-                                    <li>Книги о кино</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="faq-column">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span class="faq-icon" aria-hidden="true">🌟</span>
-                                <h3>Бонусы для всех</h3>
-                            </div>
-                            <div class="faq-answer">
-                                <ul>
-                                    <li>Впечатления от поиска</li>
-                                    <li>Новые знания о кино</li>
-                                    <li>Сертификат участника</li>
-                                    <li>Новые друзья</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Контакты -->
-        <section id="support" class="section section--bg-3">
-            <div class="container">
-                <h2 class="section__title fade-in">Поддержка</h2>
-                
-                <div class="contacts__grid fade-in delay-1">
-                    <div class="contact-card">
-                        <div class="contact-card__icon" aria-hidden="true">📱</div>
-                        <h3 class="contact-card__title">Техподдержка</h3>
-                        <a href="tel:+79787975939" class="contact-card__link">+7 (978) 7975 939</a>
-                        <p class="contact-card__note">Стас (разработчик)</p>
-                    </div>
-                    
-                    <div class="contact-card">
-                        <div class="contact-card__icon" aria-hidden="true">👨‍💼</div>
-                        <h3 class="contact-card__title">Организатор</h3>
-                        <a href="tel:+79787363212" class="contact-card__link">+7 (978) 7363 212</a>
-                        <p class="contact-card__note">Настенька (организатор)</p>
-                    </div>
-                    
-                    <div class="contact-card">
-                        <div class="contact-card__icon" aria-hidden="true">🤖</div>
-                        <h3 class="contact-card__title">Telegram бот</h3>
-                        <a href="https://t.me/Odyssey_Cinema_Club_bot" target="_blank" rel="noopener noreferrer" 
-                           class="contact-card__link">@Odyssey_Cinema_Club_bot</a>
-                        <p class="contact-card__note">Начать игру</p>
-                    </div>
-                </div>
-
-                <div class="text-center fade-in delay-2" style="margin-top: var(--space-xl);">
-                    <a href="https://t.me/Odyssey_Cinema_Club_bot" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       class="btn btn--glow">
-                        🚀 НАЧАТЬ КВЕСТ
-                    </a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Футер -->
-    <div id="footer-container"></div>
-
-    <!-- Скрипты -->
-    <script src="../js/script.js"></script>
-    <script src="../modul/navigation.js"></script>
-    <script src="../modul/footer-module.js"></script>
-    <script src="../modul/seasons-effects.js"></script>
-    <script src="../modul/scroll-to-top.js"></script>
-    
+    <script src="../js/quiz.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Анимации при скролле
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('animated');
+        document.addEventListener('DOMContentLoaded', () => {
+            const fitContainer = () => {
+                const container = document.querySelector('.quiz-container');
+                if (container) {
+                    container.style.height = window.innerHeight + 'px';
+                    container.style.width = window.innerWidth + 'px';
+                }
+            };
+            fitContainer();
+            window.addEventListener('resize', fitContainer);
+            
+            new MutationObserver(fitContainer).observe(document.body, { childList: true, subtree: true });
+        });
+
+        // Переопределение методов для адаптации
+        (function() {
+            const originalShowQuestion = Quiz.prototype.showQuestion;
+            const originalShowAnswerSlide = Quiz.prototype.showAnswerSlide;
+            
+            Quiz.prototype.showQuestion = function() {
+                originalShowQuestion.call(this);
+                setTimeout(() => {
+                    document.querySelectorAll('.question-slide').forEach(slide => {
+                        slide.classList.add('force-fit');
+                        if (!slide.querySelector('.quiz-top-section')) {
+                            const header = slide.querySelector('.question-header');
+                            const content = slide.querySelector('.question-content');
+                            const nav = slide.querySelector('.quiz-navigation');
+                            if (header && content && nav) {
+                                const topDiv = document.createElement('div');
+                                topDiv.className = 'quiz-top-section';
+                                header.parentNode.insertBefore(topDiv, header);
+                                topDiv.appendChild(header);
+                                
+                                const midDiv = document.createElement('div');
+                                midDiv.className = 'quiz-middle-section';
+                                topDiv.parentNode.insertBefore(midDiv, topDiv.nextSibling);
+                                midDiv.appendChild(content);
+                                
+                                const answersDiv = document.createElement('div');
+                                answersDiv.className = 'quiz-answers-section';
+                                const answersGrid = content.querySelector('.answers-grid, .blitz-container, .open-answer-instruction');
+                                if (answersGrid) {
+                                    answersDiv.appendChild(answersGrid);
+                                    content.appendChild(answersDiv);
+                                }
+                                
+                                const bottomDiv = document.createElement('div');
+                                bottomDiv.className = 'quiz-bottom-section';
+                                midDiv.parentNode.insertBefore(bottomDiv, midDiv.nextSibling);
+                                bottomDiv.appendChild(nav);
+                            }
                         }
                     });
-                },
-                { threshold: 0.1 }
-            );
-
-            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+                }, 50);
+            };
             
-            console.log('🎮 Киноквест инициализирован!');
-        });
+            Quiz.prototype.showAnswerSlide = function() {
+                originalShowAnswerSlide.call(this);
+                setTimeout(() => document.querySelectorAll('.answer-slide').forEach(s => s.classList.add('force-fit')), 50);
+            };
+        })();
     </script>
 </body>
-
 </html>
