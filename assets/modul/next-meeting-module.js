@@ -82,12 +82,31 @@ class NextMeetingModule {
     /**
      * Загрузка данных встречи
      */
-    async loadMeeting() {
-        try {
-            const response = await fetch(this.config.dataUrl, {
-                cache: 'no-cache',
-                headers: { 'Accept': 'application/json' }
-            });
+async loadMeeting() {
+    try {
+        // Сначала пробуем загрузить из localStorage
+        const localData = localStorage.getItem('odissea_next_meeting');
+        if (localData) {
+            const data = JSON.parse(localData);
+            if (data.film && data.film.trim() !== '') {
+                data.weekday = this.getWeekdayFromDate(data.date);
+                data.botInfo = {
+                    username: '@Odyssey_Cinema_Club_bot',
+                    schedule: 'Каждые выходные',
+                    description: 'Получайте анонсы встреч первыми'
+                };
+                this.state.meeting = data;
+                this.cacheData(data);
+                this.renderMeeting(data);
+                return;
+            }
+        }
+        
+        // Если нет в localStorage, пробуем загрузить из файла
+        const response = await fetch(this.config.dataUrl, {
+            cache: 'no-cache',
+            headers: { 'Accept': 'application/json' }
+        });
 
             if (!response.ok) throw new Error('Network response not ok');
 

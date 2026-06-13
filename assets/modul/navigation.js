@@ -33,7 +33,6 @@ class NavigationModule {
                         { title: "Тайный Санта", href: "santa-game.html", badge: "NEW" }
                     ]
                 },
-                // ДОБАВЛЕН НОВЫЙ ПУНКТ
                 {
                     title: "Автор сайта",
                     href: "stanislav.html",
@@ -51,7 +50,12 @@ class NavigationModule {
         };
 
         // Кэш DOM элементов
-        this.elements = {};
+        this.elements = {
+            nav: null,
+            mobileMenuBtn: null,
+            overlay: null,
+            dropdowns: []
+        };
 
         // Дебаунс для ресайза
         this.debouncedResize = this.debounce(this.handleResize.bind(this), 150);
@@ -366,6 +370,8 @@ class NavigationModule {
         // Навигация Tab внутри выпадающего меню
         if (e.key === 'Tab' && this.state.currentOpenDropdown) {
             const menu = this.state.currentOpenDropdown.querySelector('.dropdown-menu');
+            if (!menu) return;
+
             const items = menu.querySelectorAll('.dropdown-item');
             const activeElement = document.activeElement;
 
@@ -380,6 +386,8 @@ class NavigationModule {
      * Открытие выпадающего меню
      */
     openDropdown(dropdown) {
+        if (!dropdown) return;
+
         if (this.state.currentOpenDropdown && this.state.currentOpenDropdown !== dropdown) {
             this.closeDropdown(this.state.currentOpenDropdown);
         }
@@ -388,24 +396,35 @@ class NavigationModule {
         const menu = dropdown.querySelector('.dropdown-menu');
         const toggle = dropdown.querySelector('.dropdown-toggle');
 
-        menu.setAttribute('aria-hidden', 'false');
-        toggle.setAttribute('aria-expanded', 'true');
+        if (menu) {
+            menu.setAttribute('aria-hidden', 'false');
+        }
+        if (toggle) {
+            toggle.setAttribute('aria-expanded', 'true');
+        }
 
         this.state.currentOpenDropdown = dropdown;
     }
 
     /**
-     * Закрытие выпадающего меню
+     * Закрытие выпадающего меню - ИСПРАВЛЕНА ОШИБКА
      */
     closeDropdown(dropdown) {
+        // Проверка на null и undefined
         if (!dropdown) return;
 
         dropdown.classList.remove('open');
+
         const menu = dropdown.querySelector('.dropdown-menu');
         const toggle = dropdown.querySelector('.dropdown-toggle');
 
-        menu.setAttribute('aria-hidden', 'true');
-        toggle.setAttribute('aria-expanded', 'false');
+        // Проверяем существование элементов перед вызовом setAttribute
+        if (menu && menu.setAttribute) {
+            menu.setAttribute('aria-hidden', 'true');
+        }
+        if (toggle && toggle.setAttribute) {
+            toggle.setAttribute('aria-expanded', 'false');
+        }
 
         if (this.state.currentOpenDropdown === dropdown) {
             this.state.currentOpenDropdown = null;
@@ -419,14 +438,18 @@ class NavigationModule {
      * Переключение выпадающего меню на мобильном
      */
     toggleMobileDropdown(dropdown) {
+        if (!dropdown) return;
+
         const isOpening = !dropdown.classList.contains('open');
 
         // Закрываем другие открытые dropdowns
-        this.elements.dropdowns.forEach(d => {
-            if (d !== dropdown && d.classList.contains('open')) {
-                this.closeDropdown(d);
-            }
-        });
+        if (this.elements.dropdowns && this.elements.dropdowns.length) {
+            this.elements.dropdowns.forEach(d => {
+                if (d !== dropdown && d.classList.contains('open')) {
+                    this.closeDropdown(d);
+                }
+            });
+        }
 
         if (isOpening) {
             this.openDropdown(dropdown);
@@ -450,12 +473,14 @@ class NavigationModule {
      * Открытие мобильного меню
      */
     openMobileMenu() {
-        this.elements.nav?.classList.add('mobile-open');
-        this.elements.mobileMenuBtn?.classList.add('active');
-        this.elements.overlay?.classList.add('active');
+        if (this.elements.nav) this.elements.nav.classList.add('mobile-open');
+        if (this.elements.mobileMenuBtn) this.elements.mobileMenuBtn.classList.add('active');
+        if (this.elements.overlay) this.elements.overlay.classList.add('active');
         document.body.classList.add('menu-open');
 
-        this.elements.mobileMenuBtn?.setAttribute('aria-label', 'Закрыть меню');
+        if (this.elements.mobileMenuBtn) {
+            this.elements.mobileMenuBtn.setAttribute('aria-label', 'Закрыть меню');
+        }
         this.state.isMobileMenuOpen = true;
 
         // Закрываем все dropdowns при открытии мобильного меню
@@ -466,18 +491,20 @@ class NavigationModule {
      * Закрытие мобильного меню
      */
     closeMobileMenu() {
-        this.elements.nav?.classList.remove('mobile-open');
-        this.elements.mobileMenuBtn?.classList.remove('active');
-        this.elements.overlay?.classList.remove('active');
+        if (this.elements.nav) this.elements.nav.classList.remove('mobile-open');
+        if (this.elements.mobileMenuBtn) this.elements.mobileMenuBtn.classList.remove('active');
+        if (this.elements.overlay) this.elements.overlay.classList.remove('active');
         document.body.classList.remove('menu-open');
 
-        this.elements.mobileMenuBtn?.setAttribute('aria-label', 'Открыть меню');
+        if (this.elements.mobileMenuBtn) {
+            this.elements.mobileMenuBtn.setAttribute('aria-label', 'Открыть меню');
+        }
         this.state.isMobileMenuOpen = false;
         this.closeAllDropdowns();
     }
 
     /**
-     * Закрытие всех выпадающих меню
+     * Закрытие всех выпадающих меню - ИСПРАВЛЕНА ОШИБКА
      */
     closeAllDropdowns() {
         // Очищаем таймер
@@ -486,9 +513,13 @@ class NavigationModule {
             this.state.closeDropdownTimeout = null;
         }
 
-        this.elements.dropdowns?.forEach(dropdown => {
-            this.closeDropdown(dropdown);
-        });
+        // Проверяем наличие dropdowns и что это массив/NodeList
+        if (this.elements.dropdowns && this.elements.dropdowns.forEach) {
+            this.elements.dropdowns.forEach(dropdown => {
+                this.closeDropdown(dropdown);
+            });
+        }
+
         this.state.currentOpenDropdown = null;
         this.state.isHoveringDropdown = false;
     }
