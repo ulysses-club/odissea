@@ -1,14 +1,14 @@
 {
-  "date": "12.04.2026",
-  "time": "15:30",
-  "place": "Кофейня \"Том Сойер\", ул. Шмидта, 12",
-  "film": "Sunshine/Пекло",
-  "director": "Дэнни Бойл",
-  "genre": "фантастика, триллер",
-  "country": "Великобритания, США",
-  "year": 2007,
-  "poster": "https://sun9-7.userapi.com/s/v1/ig2/OgPl5X138YswtXKj9_ND8flpIcS4VxPJM6axnn6MDDdBurzbpWiwnmiLTRWa7DRD9QAZTR0eKSWMD0cAnGW1h9kc.jpg?quality=95&as=32x47,48x71,72x107,108x160,160x237,240x355,360x533,480x710,540x799,640x947,720x1066,1000x1480&from=bu&u=NKiM-tJPYH-o49sy7meaYkeMAijBFwioceeWTcKRNzg&cs=1000x0",
-  "discussionNumber": 287,
-  "cast": "Киллиан Мерфи, Роуз Бирн, Клифф Кёртис, Мишель Йео, Крис Эванс, Хироюки Санада, Марк Стронг, Трой Гэрити, Бенедикт Вонг, Чипо Чанг",
-  "requirements": "Рекомендуем посмотреть фильм заранее"
+    "film": "Никогда",
+    "year": 1962,
+    "date": "14.06.2026",
+    "time": "14:00",
+    "place": "Кофейня \"Том Сойер\", ул. Шмидта, 12",
+    "director": "Владимир Дьяченко, Пётр Тодоровский",
+    "genre": "драма",
+    "country": "СССР",
+    "poster": "https://sun9-4.vkuserphoto.ru/s/v1/ig2/FxMNuHvcfll0JbE0eeHm4nXFMU2h9BdZU0b-RUnxECvUbn6LIi3YpSu_TgxhgVyF3-PmO1mzivwI5KNkHj18WqM3.jpg?quality=95&as=32x52,48x78,72x117,108x176,160x261,240x391,360x586,480x782,485x790&from=bu&cs=485x0",
+    "cast": "Евгений Евстигнеев, Нинель Мышкова, Петр Горин, Станислав Хитров, Евгений Лавровский, Евгений Григорьев, Леонид Пархоменко, Валентина Владимирова, Валерий Носик, Светлана Живанкова",
+    "requirements": "",
+    "discussionNumber": 296
 }
