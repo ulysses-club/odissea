@@ -1,14 +1,14 @@
 {
-    "film": "Никогда",
-    "year": 1962,
-    "date": "14.06.2026",
-    "time": "14:00",
+    "film": "Здесь был Юра",
+    "year": 2025,
+    "date": "21.06.2026",
+    "time": "15:00",
     "place": "Кофейня \"Том Сойер\", ул. Шмидта, 12",
-    "director": "Владимир Дьяченко, Пётр Тодоровский",
-    "genre": "драма",
-    "country": "СССР",
-    "poster": "https://sun9-4.vkuserphoto.ru/s/v1/ig2/FxMNuHvcfll0JbE0eeHm4nXFMU2h9BdZU0b-RUnxECvUbn6LIi3YpSu_TgxhgVyF3-PmO1mzivwI5KNkHj18WqM3.jpg?quality=95&as=32x52,48x78,72x117,108x176,160x261,240x391,360x586,480x782,485x790&from=bu&cs=485x0",
-    "cast": "Евгений Евстигнеев, Нинель Мышкова, Петр Горин, Станислав Хитров, Евгений Лавровский, Евгений Григорьев, Леонид Пархоменко, Валентина Владимирова, Валерий Носик, Светлана Живанкова",
+    "director": "Сергей Малкин",
+    "genre": "драма, комедия, музыка",
+    "country": "Россия",
+    "poster": "https://sun9-63.vkuserphoto.ru/s/v1/ig2/MsT6O5W8kBnZnF6Q3TlWrnbaktwxiTr2wswBpjmaUM71hpxjpvhVRLSj38GYtflRYzS903t3mh2GBjPJGuz0aq7j.jpg?quality=95&crop=0,0,1800,2560&as=32x46,48x68,72x102,108x154,160x228,240x341,360x512,480x683,540x768,640x910,720x1024,1080x1536,1280x1820,1440x2048,1800x2560&from=bu&cs=1800x0",
+    "cast": "Константин Хабенский, Денис Парамонов, Кузьма Котрелёв, Александр Поршин, Василий Михайлов, Даша Котрелёва, Юлия Черепнина, Елена Моисеева, Лев Малишава, Мила Исаева",
     "requirements": "",
-    "discussionNumber": 296
+    "discussionNumber": 297
 }
